@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "title": "Sofra — Sıcacık restoran yazılımı",
+    "description": "QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — mutfağa saygılı tek platform, Cenevre'de el emeğiyle. Sofra, misafirler için kurulan sofradır."
+  },
+  "header": {
+    "features": "Mutfakta ne var",
+    "pricing": "Menü",
+    "waitlist": "Bekleme listesine katıl",
+    "themeToggle": "Karanlık modu değiştir",
+    "localeSwitcher": "Dili değiştir"
+  },
+  "hero": {
+    "stamp": "Cenevre'de el yapımı",
+    "titleLine1": "Sofrayı kurun.",
+    "titleLine2": "Gerisi bizden.",
+    "subtitle": "Sofra, sıcacık bir restoran platformu: QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — salonunuzun ve mutfağınızın ihtiyacı olan her şey, tek sofrada.",
+    "note": "Sofra, misafirler için kurulan masadır. Bütün felsefemiz bu.",
+    "ctaPrimary": "Bekleme listesine katıl",
+    "ctaSecondary": "Mutfakta ne var, bak",
+    "proof": "Cenevre'deki RUMI Restaurant'ın tüm servisi Sofra ile dönüyor — siparişler, mutfak, rezervasyonlar ve yazıcılar, canlı."
+  },
+  "features": {
+    "label": "Mutfakta ne var",
+    "title": "Her şey tek sofrada",
+    "subtitle": "Altı kap, dolgu malzemesi yok. Her biri bu sayfaya gelmeden önce gerçek bir restoranda pişti.",
+    "items": {
+      "qr": {
+        "title": "QR menü & sipariş",
+        "text": "Misafirler masadan okutup menüye bakar, sipariş verir — fotoğraflar, alerjenler ve özelleştirmelerle. Uygulama indirmek yok."
+      },
+      "live": {
+        "title": "Canlı sipariş panoları",
+        "text": "Mutfak, kasa ve garsonların her birinin kendi canlı ekranı var. Siparişler verildiği saniye düşer."
+      },
+      "reservations": {
+        "title": "Rezervasyonlar",
+        "text": "Masa planı, çalışma saatleri ve müsaitlik — misafir internetten ayırtır, siz tek dokunuşla onaylarsınız."
+      },
+      "loyalty": {
+        "title": "Sadakat puanları",
+        "text": "Müdavimleri geri getiren puanlar; müşteri gruplarına göre indirim kuralları sizin elinizde."
+      },
+      "printing": {
+        "title": "Mutfak fişleri, kâğıtta",
+        "text": "Yardımcı uygulama termal yazıcılarınızı sürer — siparişler mutfağa kâğıt üstünde, tam istediğiniz yere düşer."
+      },
+      "languages": {
+        "title": "9 dil hazır",
+        "text": "Menünüz misafirlerinizin dilini konuşur — Fransızcadan Türkçeye, Japoncaya kadar."
+      }
+    }
+  },
+  "how": {
+    "label": "Nasıl çalışır",
+    "title": "Üç adım, tören yok",
+    "steps": {
+      "one": {
+        "title": "Mekânınızı anlatın",
+        "text": "İsim, menü, masalar, saatler. Kurulum sihirbazı değil, sohbet."
+      },
+      "two": {
+        "title": "Sofranızı kuralım",
+        "text": "Menünüzü, QR kodlarınızı, yazıcılarınızı ve personel ekranlarınızı hazırlayıp anahtarı size teslim ediyoruz."
+      },
+      "three": {
+        "title": "Siz servis yapın",
+        "text": "Siparişler akar, fişler basılır, müdavimler puan toplar. Biz perde arkasında tabakları döndürürüz."
+      }
+    }
+  },
+  "pricing": {
+    "label": "Menü",
+    "title": "Günün menüsü",
+    "subtitle": "Erken erişim — kara tahta kadar sade.",
+    "founding": {
+      "name": "Kurucu restoranlar",
+      "price": "ikramımız",
+      "detail": "Erken erişim boyunca ücretsiz. Birebir kurulum, kuruculara direkt hat ve sıradaki tarifte söz hakkı."
+    },
+    "regular": {
+      "name": "Normal menü",
+      "price": "çok yakında",
+      "detail": "Erken erişim bitince adil bir aylık fiyat. Kurucu restoranların indirimi ömür boyu sürer."
+    },
+    "note": "Kart gerekmez. Bağlayıcılık yok. Verileriniz sizindir."
+  },
+  "waitlist": {
+    "label": "Yerinizi ayırtın",
+    "title": "Sofrada size de yer var",
+    "subtitle": "Restoranları küçük gruplar hâlinde, birebir ağırlıyoruz. Bilgilerinizi bırakın, size de bir tabak koyalım.",
+    "form": {
+      "name": "Adınız",
+      "email": "E-posta",
+      "restaurant": "Restoran adı",
+      "city": "Şehir",
+      "submit": "Bekleme listesine katıl",
+      "sending": "Gönderiliyor…",
+      "success": "Listedesiniz! Yakında yazacağız — afiyet olsun.",
+      "error": "Bir şeyler ters gitti. Bize e-posta yazın:",
+      "invalidEmail": "Lütfen geçerli bir e-posta adresi girin."
+    }
+  },
+  "footer": {
+    "tagline": "Sofra, misafirler için kurulan masadır.",
+    "madeIn": "Cenevre'de pişirildi",
+    "nav": {
+      "features": "Mutfakta ne var",
+      "pricing": "Menü",
+      "waitlist": "Bekleme listesi"
+    },
+    "copyright": "© {year} Sofra. Tüm hakları saklıdır."
+  }
+}

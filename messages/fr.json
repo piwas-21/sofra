@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "title": "Sofra — Le logiciel de restaurant au grand cœur",
+    "description": "Menus QR, commandes en direct, réservations et fidélité — une plateforme pensée pour la cuisine, fabriquée à Genève. Sofra signifie une table dressée pour les invités."
+  },
+  "header": {
+    "features": "Au menu",
+    "pricing": "La carte",
+    "waitlist": "Rejoindre la liste",
+    "themeToggle": "Basculer le mode sombre",
+    "localeSwitcher": "Changer de langue"
+  },
+  "hero": {
+    "stamp": "Fabriqué à Genève",
+    "titleLine1": "Dressez la table.",
+    "titleLine2": "On s'occupe du reste.",
+    "subtitle": "Sofra est la plateforme de restaurant au grand cœur : menus QR, commandes en direct, réservations et fidélité — tout ce dont votre salle et votre cuisine ont besoin, sur une seule table.",
+    "note": "Une « sofra », c'est une table dressée pour les invités. Toute notre philosophie tient là.",
+    "ctaPrimary": "Rejoindre la liste d'attente",
+    "ctaSecondary": "Voir ce qui mijote",
+    "proof": "Fait tourner tous les services du RUMI Restaurant à Genève — commandes, cuisine, réservations et imprimantes, en production."
+  },
+  "features": {
+    "label": "Au menu",
+    "title": "Tout sur une seule table",
+    "subtitle": "Six plats, rien de superflu. Chacun éprouvé dans un vrai restaurant avant d'arriver sur cette page.",
+    "items": {
+      "qr": {
+        "title": "Menus QR & commande",
+        "text": "Vos clients scannent, parcourent et commandent depuis la table — photos, allergènes et personnalisations. Aucune appli à installer."
+      },
+      "live": {
+        "title": "Tableaux de commandes en direct",
+        "text": "Cuisine, caisse et serveurs ont chacun leur vue en direct. Les commandes arrivent à la seconde."
+      },
+      "reservations": {
+        "title": "Réservations",
+        "text": "Plan de salle, horaires et disponibilités — vos clients réservent en ligne, vous validez d'un geste."
+      },
+      "loyalty": {
+        "title": "Points de fidélité",
+        "text": "Des points qui font revenir les habitués, avec des règles de remise par groupe de clients."
+      },
+      "printing": {
+        "title": "Tickets cuisine imprimés",
+        "text": "Une appli compagnon pilote vos imprimantes thermiques — les commandes arrivent en cuisine sur papier, là où vous le voulez."
+      },
+      "languages": {
+        "title": "9 langues intégrées",
+        "text": "Votre menu parle la langue de vos clients — du français au turc en passant par le japonais."
+      }
+    }
+  },
+  "how": {
+    "label": "Comment ça marche",
+    "title": "Trois étapes, sans cérémonie",
+    "steps": {
+      "one": {
+        "title": "Parlez-nous de chez vous",
+        "text": "Nom, menu, tables, horaires. Une conversation, pas un assistant d'installation."
+      },
+      "two": {
+        "title": "On dresse votre sofra",
+        "text": "On configure menu, codes QR, imprimantes et vues du personnel — puis on vous remet les clés."
+      },
+      "three": {
+        "title": "Vous servez",
+        "text": "Les commandes défilent, les tickets s'impriment, les habitués cumulent des points. On fait tourner les assiettes en coulisses."
+      }
+    }
+  },
+  "pricing": {
+    "label": "La carte",
+    "title": "Menu du jour",
+    "subtitle": "Accès anticipé — simple comme une ardoise.",
+    "founding": {
+      "name": "Restaurants fondateurs",
+      "price": "offert",
+      "detail": "Gratuit pendant l'accès anticipé. Accompagnement personnalisé, ligne directe avec les fondateurs, et votre mot à dire sur la suite."
+    },
+    "regular": {
+      "name": "Carte régulière",
+      "price": "bientôt",
+      "detail": "Un tarif mensuel honnête à la sortie de l'accès anticipé. Les fondateurs gardent une remise à vie."
+    },
+    "note": "Pas de carte bancaire. Pas d'engagement. Vos données restent les vôtres."
+  },
+  "waitlist": {
+    "label": "Réservez votre place",
+    "title": "Prenez place à la table",
+    "subtitle": "Nous accueillons les restaurants par petites tablées, personnellement. Laissez vos coordonnées, on vous met un couvert.",
+    "form": {
+      "name": "Votre nom",
+      "email": "E-mail",
+      "restaurant": "Nom du restaurant",
+      "city": "Ville",
+      "submit": "Rejoindre la liste",
+      "sending": "Envoi…",
+      "success": "Vous êtes sur la liste ! On vous écrit très vite — afiyet olsun.",
+      "error": "Une erreur s'est produite. Écrivez-nous plutôt :",
+      "invalidEmail": "Merci d'indiquer une adresse e-mail valide."
+    }
+  },
+  "footer": {
+    "tagline": "Une sofra, c'est une table dressée pour les invités.",
+    "madeIn": "Mijoté à Genève",
+    "nav": {
+      "features": "Au menu",
+      "pricing": "La carte",
+      "waitlist": "Liste d'attente"
+    },
+    "copyright": "© {year} Sofra. Tous droits réservés."
+  }
+}

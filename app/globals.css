@@ -1,0 +1,345 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Sofra Design System — craft/handmade, food-warm (v1)
+   Colours named after kitchen & pantry things. Zero gradients.
+   Ported from domainio's Pastel/Handmade v2, re-flavoured:
+   coral→terracotta, sage→olive, lavender→saffron.
+   Dark mode is a different atmosphere (late-evening kitchen),
+   not an invert.
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* Surfaces */
+    --background: 32 100% 97%; /* warm cream paper #FFF9F2 */
+    --foreground: 23 22% 19%; /* warm ink / roasted coffee #3B2E26 */
+    --card: 34 100% 99%; /* warm white plate #FFFCF8 */
+    --card-foreground: 23 22% 19%;
+
+    /* Primary: paprika / terracotta clay — #A84B2F.
+       5.4:1 on cream: WCAG AA both as text and as a button bg
+       under cream text (same treatment domainio gave #AE5038). */
+    --primary: 14 56% 42%;
+    --primary-foreground: 32 100% 97%;
+
+    /* Secondary: olive branch #7C8450 (surfaces/decoration).
+       For TEXT on cream use --craft-olive-text (#5A6139, 5.2:1). */
+    --secondary: 69 25% 42%;
+    --secondary-foreground: 32 100% 97%;
+
+    /* Muted: warm beige / kraft paper #EAE0D2 */
+    --muted: 35 39% 87%;
+    /* Ink-adjacent muted text — 6.5:1 on cream */
+    --muted-foreground: 24 10% 34%;
+
+    /* Accent: saffron threads #D9A441 — decorative/large text only;
+       small text uses --craft-saffron-text (#8A6D2B). */
+    --accent: 39 67% 55%;
+    --accent-foreground: 23 22% 19%;
+
+    /* Destructive: soft brick #CC5A50 (clearly pinker than primary) */
+    --destructive: 5 55% 56%;
+    --destructive-foreground: 32 100% 97%;
+
+    /* Borders & inputs */
+    --border: 35 39% 87%;
+    --input: 35 39% 87%;
+    --ring: 14 56% 42%;
+
+    /* Radius: tight — craft feel */
+    --radius: 0.125rem;
+
+    /* Craft semantic tokens */
+    --craft-terracotta: 14 56% 42%;
+    --craft-terracotta-foreground: 32 100% 97%;
+    --craft-olive: 69 25% 42%;
+    --craft-olive-foreground: 32 100% 97%;
+    --craft-olive-text: 71 26% 30%; /* #5A6139 */
+    --craft-saffron: 39 67% 55%;
+    --craft-saffron-foreground: 23 22% 19%;
+    --craft-saffron-text: 41 52% 35%; /* #8A6D2B */
+    --craft-success: 142 23% 64%; /* muted moss #8CB89A */
+    --craft-warning: 39 67% 55%;
+    --craft-error: 5 55% 56%;
+  }
+
+  .dark {
+    /* Surfaces — late-evening kitchen: deep warm aubergine, not cold black */
+    --background: 22 20% 11%; /* #211A16 */
+    --foreground: 34 45% 91%; /* warm cream #F2E9DD */
+    --card: 23 17% 15%; /* #2C241F */
+    --card-foreground: 34 45% 91%;
+
+    /* Primary: luminous apricot #F2B48C — 9.4:1 on the aubergine bg */
+    --primary: 24 80% 75%;
+    --primary-foreground: 22 20% 11%;
+
+    /* Secondary: pale olive #B5BC8A */
+    --secondary: 68 27% 64%;
+    --secondary-foreground: 22 20% 11%;
+
+    /* Muted: warm dark umber #3E3630 */
+    --muted: 26 13% 22%;
+    --muted-foreground: 33 18% 62%;
+
+    /* Accent: pale saffron #E8C87C */
+    --accent: 42 70% 70%;
+    --accent-foreground: 22 20% 11%;
+
+    /* Destructive: soft terracotta glow */
+    --destructive: 5 67% 73%;
+    --destructive-foreground: 22 20% 11%;
+
+    /* Borders & inputs */
+    --border: 26 13% 22%;
+    --input: 26 13% 22%;
+    --ring: 24 80% 75%;
+
+    /* Craft tokens — dark variants */
+    --craft-terracotta: 24 80% 75%;
+    --craft-terracotta-foreground: 22 20% 11%;
+    --craft-olive: 68 27% 64%;
+    --craft-olive-foreground: 22 20% 11%;
+    --craft-olive-text: 68 27% 64%;
+    --craft-saffron: 42 70% 70%;
+    --craft-saffron-foreground: 22 20% 11%;
+    --craft-saffron-text: 42 70% 70%;
+    --craft-success: 142 23% 64%;
+    --craft-warning: 42 70% 70%;
+    --craft-error: 5 67% 73%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ============================================================
+   Craft Utility Classes
+   ============================================================ */
+
+@layer components {
+  /* ---- Paper texture overlay (SVG noise filter) ---- */
+  .paper-texture {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .paper-texture-dark {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  /* ---- Torn paper edge (SVG mask) ---- */
+  .torn-edge {
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 20' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'%3E%3Cpath d='M0,20 L0,0 C10,5 20,15 30,5 C40,15 50,0 60,10 C70,15 80,0 90,5 C100,10 110,0 120,5 C130,15 140,5 150,15 C160,5 170,10 180,0 C190,15 200,5 210,10 C220,5 230,15 240,0 C250,10 260,5 270,15 C280,0 290,10 300,5 C310,15 320,0 330,10 C340,5 350,15 360,0 C370,10 380,5 390,15 C400,0 410,10 420,5 C430,15 440,0 450,10 C460,5 470,15 480,0 C490,10 500,5 510,15 C520,0 530,10 540,5 C550,15 560,0 570,10 C580,5 590,15 600,0 C610,10 620,5 630,15 C640,0 650,10 660,5 C670,15 680,0 690,10 C700,5 710,15 720,0 C730,10 740,5 750,15 C760,0 770,10 780,5 C790,15 800,0 810,10 C820,5 830,15 840,0 C850,10 860,5 870,15 C880,0 890,10 900,5 C910,15 920,0 930,10 C940,5 950,15 960,0 C970,10 980,5 990,15 C1000,0 L1000,20 Z' fill='black'/%3E%3C/svg%3E");
+    mask-size: 100% 20px;
+    mask-repeat: no-repeat;
+    mask-position: bottom;
+    padding-bottom: 20px;
+  }
+
+  /* ---- Scribble underline (hand-drawn wavy line SVG) ---- */
+  .scribble-underline {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 15C15 15 25 5 40 8C55 11 65 18 80 15C90 13 95 8 98 10' stroke='%237C8450' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 15px;
+    background-position: bottom;
+    padding-bottom: 10px;
+  }
+
+  .scribble-underline-terracotta {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 15C15 15 25 5 40 8C55 11 65 18 80 15C90 13 95 8 98 10' stroke='%23A84B2F' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 15px;
+    background-position: bottom;
+    padding-bottom: 10px;
+  }
+
+  /* ---- Hand-drawn / organic border (irregular radius) ---- */
+  .hand-drawn-border {
+    border: 2px solid hsl(var(--border));
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  }
+
+  /* ---- Deckled edge (subtly irregular clip-path) ---- */
+  .deckled-edge {
+    clip-path: polygon(
+      0% 2%,
+      2% 0%,
+      98% 1%,
+      100% 3%,
+      99% 97%,
+      97% 100%,
+      3% 99%,
+      0% 98%,
+      1% 50%
+    );
+  }
+
+  /* ---- Masking-tape section label ---- */
+  .masking-tape {
+    clip-path: polygon(2% 8%, 98% 0%, 100% 88%, 1% 100%);
+    background: hsl(var(--muted) / 0.8);
+    transform: rotate(-1.5deg);
+  }
+
+  /* ---- Rubber stamp badge ---- */
+  .stamp {
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    transform: rotate(-3deg);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='black'/%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  }
+
+  /* ---- Artisanal button (physical offset shadow + hover lift) ---- */
+  .btn-artisanal {
+    transition: all 0.2s ease;
+    box-shadow: 3px 3px 0 hsl(var(--muted));
+  }
+
+  .btn-artisanal:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 hsl(var(--border));
+  }
+
+  .btn-artisanal:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 hsl(var(--border));
+  }
+
+  /* ---- Ruled-paper lines (notebook lines) ---- */
+  .ruled-lines {
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      hsl(var(--muted) / 0.2) 31px,
+      hsl(var(--muted) / 0.2) 32px
+    );
+    background-attachment: local;
+  }
+
+  /* ---- Dotted menu leaders (item ..... price) ---- */
+  .menu-leaders {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .menu-leaders::before {
+    content: "";
+    order: 2;
+    flex: 1;
+    border-bottom: 2px dotted hsl(var(--muted-foreground) / 0.5);
+    margin-bottom: 0.3em;
+    min-width: 2rem;
+  }
+  .menu-leaders > :first-child {
+    order: 1;
+  }
+  .menu-leaders > :last-child {
+    order: 3;
+  }
+
+  /* ---- Luminous glow (dark mode — watercolour elements) ---- */
+  .craft-glow {
+    filter: drop-shadow(0 0 20px hsl(var(--craft-terracotta) / 0.15));
+  }
+
+  /* ---- Primary button — flat terracotta, letterpress feel ---- */
+  .btn-primary {
+    @apply bg-craft-terracotta-light text-craft-cream-light dark:bg-craft-terracotta-dark dark:text-craft-cream-dark
+           px-6 py-3 rounded-craft font-bold
+           shadow-[3px_3px_0_hsl(var(--muted))]
+           hover:shadow-[5px_5px_0_hsl(var(--border))]
+           hover:-translate-x-0.5 hover:-translate-y-0.5
+           active:translate-x-0 active:translate-y-0
+           active:shadow-[1px_1px_0_hsl(var(--border))]
+           transition-all duration-200;
+    font-family: var(--font-display), "Amatic SC", cursive;
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---- Secondary button — outlined, neutral ---- */
+  .btn-secondary {
+    @apply bg-transparent text-foreground px-6 py-3 rounded-craft font-medium
+           border-2 border-[hsl(var(--border))]
+           hover:border-craft-terracotta-light dark:hover:border-craft-terracotta-dark
+           hover:text-craft-terracotta-light dark:hover:text-craft-terracotta-dark
+           transition-all duration-200;
+    font-family: var(--font-label), "Kalam", cursive;
+  }
+
+  /* ---- Primary input — craft paper style ---- */
+  .input-primary {
+    @apply w-full px-4 py-3 rounded-craft
+           border-2 border-[hsl(var(--border))]
+           bg-background
+           focus:border-craft-terracotta-light dark:focus:border-craft-terracotta-dark
+           focus:ring-2 focus:ring-craft-terracotta-light/20 dark:focus:ring-craft-terracotta-dark/20
+           outline-none transition-all duration-200;
+    font-family: var(--font-label), "Kalam", cursive;
+    font-size: 1.125rem;
+  }
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-fade-in,
+  .animate-rise-in {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Global HTML
+   ============================================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6);
+}

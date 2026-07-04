@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "title": "Sofra — Restaurant software with a warm heart",
+    "description": "QR menus, live orders, reservations and loyalty — one kitchen-friendly platform, handcrafted in Geneva. Sofra means a table laid for guests."
+  },
+  "header": {
+    "features": "What's cooking",
+    "pricing": "Menu",
+    "waitlist": "Join the waitlist",
+    "themeToggle": "Toggle dark mode",
+    "localeSwitcher": "Change language"
+  },
+  "hero": {
+    "stamp": "Handcrafted in Geneva",
+    "titleLine1": "Set the table.",
+    "titleLine2": "We'll handle the rest.",
+    "subtitle": "Sofra is the warm-hearted restaurant platform: QR menus, live orders, reservations and loyalty — everything your front-of-house and kitchen need, on one table.",
+    "note": "A «sofra» is a table laid for guests. That's the whole philosophy.",
+    "ctaPrimary": "Join the waitlist",
+    "ctaSecondary": "See what's cooking",
+    "proof": "Running every service at RUMI Restaurant, Geneva — orders, kitchen, reservations and printers, live in production."
+  },
+  "features": {
+    "label": "What's cooking",
+    "title": "Everything on one table",
+    "subtitle": "Six courses, no filler. Each one battle-tested in a real restaurant before it ever reached this page.",
+    "items": {
+      "qr": {
+        "title": "QR menus & ordering",
+        "text": "Guests scan, browse and order from the table — with photos, allergens and customizations. No app to install."
+      },
+      "live": {
+        "title": "Live order boards",
+        "text": "Kitchen, cashier and servers each get their own live view. New orders arrive the second they're placed."
+      },
+      "reservations": {
+        "title": "Reservations",
+        "text": "Table planning, working hours and availability — guests book online, you approve with a tap."
+      },
+      "loyalty": {
+        "title": "Loyalty points",
+        "text": "Fidelity points that bring regulars back, with discount rules you control per customer group."
+      },
+      "printing": {
+        "title": "Kitchen tickets, printed",
+        "text": "A companion app drives your thermal printers — orders hit the kitchen on paper, exactly where you want them."
+      },
+      "languages": {
+        "title": "9 languages built in",
+        "text": "Your menu speaks your guests' languages out of the box — from French to Turkish to Japanese."
+      }
+    }
+  },
+  "how": {
+    "label": "How it works",
+    "title": "Three steps, no ceremony",
+    "steps": {
+      "one": {
+        "title": "Tell us about your place",
+        "text": "Name, menu, tables, hours. A conversation, not a setup wizard."
+      },
+      "two": {
+        "title": "We lay your sofra",
+        "text": "We set up your menu, QR codes, printers and staff views — and hand you the keys."
+      },
+      "three": {
+        "title": "You serve",
+        "text": "Orders flow, tickets print, regulars collect points. We keep the plates spinning behind the scenes."
+      }
+    }
+  },
+  "pricing": {
+    "label": "Menu",
+    "title": "Menu du jour",
+    "subtitle": "Early access — simple as a chalkboard.",
+    "founding": {
+      "name": "Founding restaurants",
+      "price": "on the house",
+      "detail": "Free during early access. White-glove onboarding, direct line to the founders, and a say in what we cook next."
+    },
+    "regular": {
+      "name": "Regular menu",
+      "price": "coming soon",
+      "detail": "Fair monthly pricing when we're out of early access. Founding restaurants keep a lifetime discount."
+    },
+    "note": "No card required. No lock-in. Your data is yours."
+  },
+  "waitlist": {
+    "label": "Reserve your spot",
+    "title": "Get a seat at the table",
+    "subtitle": "We're onboarding a handful of restaurants at a time, personally. Leave your details and we'll set a place for you.",
+    "form": {
+      "name": "Your name",
+      "email": "Email",
+      "restaurant": "Restaurant name",
+      "city": "City",
+      "submit": "Join the waitlist",
+      "sending": "Sending…",
+      "success": "You're on the list! We'll be in touch soon — afiyet olsun.",
+      "error": "Something went wrong. Please email us instead:",
+      "invalidEmail": "Please enter a valid email address."
+    }
+  },
+  "footer": {
+    "tagline": "A sofra is a table laid for guests.",
+    "madeIn": "Cooked up in Geneva",
+    "nav": {
+      "features": "What's cooking",
+      "pricing": "Menu",
+      "waitlist": "Waitlist"
+    },
+    "copyright": "© {year} Sofra. All rights reserved."
+  }
+}
