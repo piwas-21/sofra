@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
-const CONTACT_EMAIL = "hello@fooderist.com"; // swap at Sofra domain cutover
+const CONTACT_EMAIL = "mahmutkaya.nl@gmail.com"; // founder inbox (owner-approved); move to a sofra-domain alias later
 
 type Status = "idle" | "sending" | "success" | "error" | "invalid";
 

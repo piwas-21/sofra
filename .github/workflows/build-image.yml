@@ -50,7 +50,7 @@ jobs:
           file: ./Dockerfile
           push: true
           build-args: |
-            NEXT_PUBLIC_SITE_URL=${{ vars.SITE_URL || 'https://staging.fooderist.com' }}
+            NEXT_PUBLIC_SITE_URL=${{ vars.SITE_URL || 'https://sofrapiwas.com' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
