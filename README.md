@@ -3,12 +3,12 @@
 **Sofra** (Turkish: a table laid for guests) is the restaurant-management SaaS grown
 out of the system running [RUMI Restaurant, Geneva](https://www.rumirestaurant.ch) —
 QR menus & ordering, live order boards (kitchen/cashier/server), reservations,
-loyalty points, thermal-printer companion app, 9 locales.
+loyalty points, thermal-printer companion app, 10 locales.
 
 This repo is **live at https://sofrapiwas.com**: the marketing site + the control
 plane (partner program — Auth.js v5 credentials/JWT + Prisma 7 on Postgres).
-Next.js 15 App Router, Tailwind, next-intl (en/fr/tr; control plane is en-only,
-outside `[locale]`). Design system: craft/handmade — see
+Next.js 15 App Router, Tailwind, next-intl (en/fr/de/nl/tr/ar — ar is RTL;
+control plane is en-only, outside `[locale]`). Design system: craft/handmade — see
 [docs/design-tokens.md](docs/design-tokens.md). Architecture decisions: [docs/adr/](docs/adr/) (ADR-001–011).
 
 Master plan: `rumi-workspace/docs/plans/SOFRA-SAAS-PLAN.md`; partner program:
