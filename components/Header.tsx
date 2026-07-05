@@ -16,6 +16,9 @@ export default function Header() {
           <a href="#features" className="hover:text-primary transition-colors">
             {t("features")}
           </a>
+          <a href="#showcase" className="hover:text-primary transition-colors">
+            {t("live")}
+          </a>
           <a href="#pricing" className="hover:text-primary transition-colors">
             {t("pricing")}
           </a>

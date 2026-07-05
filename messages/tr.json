@@ -8,7 +8,8 @@
     "pricing": "Menü",
     "waitlist": "Bekleme listesine katıl",
     "themeToggle": "Karanlık modu değiştir",
-    "localeSwitcher": "Dili değiştir"
+    "localeSwitcher": "Dili değiştir",
+    "live": "Canlı örnek"
   },
   "hero": {
     "stamp": "Cenevre'de el yapımı",
@@ -69,6 +70,21 @@
       }
     }
   },
+  "showcase": {
+    "label": "Tadı damağında",
+    "title": "Canlı deneyin",
+    "subtitle": "Sofra bir sunum demosu değil — ilk günden beri gerçek bir restoranı her serviste çalıştırıyor.",
+    "cardStamp": "Canlı yayında",
+    "cardTitle": "RUMI Restaurant — Cenevre",
+    "cardBody": "Her masada QR menü, mutfak ve kasa ekranlarına akan siparişler, rezervasyonlar, sadakat puanları ve termal fişler — hepsi Sofra üzerinde.",
+    "cardHint": "Menüyü bir misafir gibi açıp gezin — alacağınız ürün tam olarak bu.",
+    "visit": "rumirestaurant.ch'yi ziyaret edin",
+    "ctaTitle": "Aynısını kendi mekânınızda ister misiniz?",
+    "ctaBody": "Restoran, kafe ya da paket servis — mekânınızı anlatın, bir gün içinde dönüş yapalım.",
+    "demo": "Demo isteyin",
+    "call": "Görüşme ayarlayın",
+    "quote": "Teklif alın"
+  },
   "pricing": {
     "label": "Menü",
     "title": "Günün menüsü",
@@ -98,7 +114,15 @@
       "sending": "Gönderiliyor…",
       "success": "Listedesiniz! Yakında yazacağız — afiyet olsun.",
       "error": "Bir şeyler ters gitti. Bize e-posta yazın:",
-      "invalidEmail": "Lütfen geçerli bir e-posta adresi girin."
+      "invalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
+      "intentLabel": "Ne istersiniz?",
+      "intents": {
+        "waitlist": "Bekleme listesine katıl",
+        "demo": "Demo isteyin",
+        "call": "Görüşme ayarlayın",
+        "quote": "Teklif alın"
+      },
+      "successRequest": "Aldık! Bir gün içinde dönüş yapacağız — afiyet olsun."
     }
   },
   "footer": {
@@ -107,7 +131,8 @@
     "nav": {
       "features": "Mutfakta ne var",
       "pricing": "Menü",
-      "waitlist": "Bekleme listesi"
+      "waitlist": "Bekleme listesi",
+      "live": "Canlı örnek"
     },
     "copyright": "© {year} Sofra. Tüm hakları saklıdır."
   }

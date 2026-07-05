@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 const CONTACT_EMAIL = "mahmutkaya.nl@gmail.com"; // founder inbox (owner-approved); move to a sofra-domain alias later
+
+const INTENTS = ["waitlist", "demo", "call", "quote"] as const;
+type Intent = (typeof INTENTS)[number];
 
 type Status = "idle" | "sending" | "success" | "error" | "invalid";
 
@@ -11,6 +14,18 @@ export default function WaitlistForm() {
   const t = useTranslations("waitlist.form");
   const locale = useLocale();
   const [status, setStatus] = useState<Status>("idle");
+  const [intent, setIntent] = useState<Intent>("waitlist");
+
+  // ShowcaseSection's demo/call/quote buttons preselect the request type
+  // (see IntentLink) — the anchor scroll and the select update together.
+  useEffect(() => {
+    function onIntent(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (INTENTS.includes(detail)) setIntent(detail);
+    }
+    window.addEventListener("sofra:intent", onIntent);
+    return () => window.removeEventListener("sofra:intent", onIntent);
+  }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,7 +58,7 @@ export default function WaitlistForm() {
         role="status"
         className="hand-drawn-border bg-card px-6 py-5 font-hand text-2xl text-craft-olive-text dark:text-craft-olive-dark"
       >
-        {t("success")}
+        {intent === "waitlist" ? t("success") : t("successRequest")}
       </p>
     );
   }
@@ -80,6 +95,19 @@ export default function WaitlistForm() {
         aria-label={t("city")}
         className="input-primary"
       />
+      <select
+        name="intent"
+        value={intent}
+        onChange={(e) => setIntent(e.target.value as Intent)}
+        aria-label={t("intentLabel")}
+        className="input-primary sm:col-span-2"
+      >
+        {INTENTS.map((i) => (
+          <option key={i} value={i}>
+            {t(`intents.${i}`)}
+          </option>
+        ))}
+      </select>
       {/* Honeypot — hidden from humans, bots fill it and get politely ignored */}
       <input
         name="company"
@@ -91,7 +119,7 @@ export default function WaitlistForm() {
 
       <div className="sm:col-span-2 flex flex-wrap items-center gap-4">
         <button type="submit" disabled={status === "sending"} className="btn-primary disabled:opacity-60">
-          {status === "sending" ? t("sending") : t("submit")}
+          {status === "sending" ? t("sending") : t(`intents.${intent}`)}
         </button>
 
         {status === "invalid" && (

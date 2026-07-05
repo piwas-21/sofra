@@ -46,16 +46,17 @@ export default function Hero() {
           </a>
         </div>
 
-        {/* Proof line — tenant 1, on a paper scrap */}
-        <div
-          className="mt-16 max-w-md hand-drawn-border bg-card px-5 py-4 rotate-[-0.8deg] animate-rise-in"
+        {/* Proof line — tenant 1, on a paper scrap; links to the live showcase */}
+        <a
+          href="#showcase"
+          className="block mt-16 max-w-md hand-drawn-border bg-card px-5 py-4 rotate-[-0.8deg] animate-rise-in hover:rotate-0 transition-transform"
           style={{ animationDelay: "360ms" }}
         >
           <p className="font-label text-sm leading-relaxed text-muted-foreground">
             <span className="text-craft-success-text dark:text-craft-success font-bold">● </span>
             {t("proof")}
           </p>
-        </div>
+        </a>
       </div>
     </section>
   );

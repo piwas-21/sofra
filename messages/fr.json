@@ -8,7 +8,8 @@
     "pricing": "La carte",
     "waitlist": "Rejoindre la liste",
     "themeToggle": "Basculer le mode sombre",
-    "localeSwitcher": "Changer de langue"
+    "localeSwitcher": "Changer de langue",
+    "live": "Voir en vrai"
   },
   "hero": {
     "stamp": "Fabriqué à Genève",
@@ -69,6 +70,21 @@
       }
     }
   },
+  "showcase": {
+    "label": "La preuve par l'assiette",
+    "title": "Goûtez-le en vrai",
+    "subtitle": "Sofra n'est pas une démo sur diapositives — il fait tourner une vraie salle, à chaque service, depuis le premier jour.",
+    "cardStamp": "En production",
+    "cardTitle": "RUMI Restaurant — Genève",
+    "cardBody": "Menus QR sur chaque table, commandes envoyées aux écrans cuisine et caisse, réservations, points de fidélité et tickets thermiques — le tout sur Sofra.",
+    "cardHint": "Ouvrez le menu et parcourez-le comme un client — c'est exactement le produit.",
+    "visit": "Visiter rumirestaurant.ch",
+    "ctaTitle": "Envie de la même chose chez vous ?",
+    "ctaBody": "Restaurant, café ou vente à emporter — parlez-nous de votre établissement et nous revenons vers vous sous 24 h.",
+    "demo": "Demander une démo",
+    "call": "Réserver un appel",
+    "quote": "Obtenir un devis"
+  },
   "pricing": {
     "label": "La carte",
     "title": "Menu du jour",
@@ -98,7 +114,15 @@
       "sending": "Envoi…",
       "success": "Vous êtes sur la liste ! On vous écrit très vite — afiyet olsun.",
       "error": "Une erreur s'est produite. Écrivez-nous plutôt :",
-      "invalidEmail": "Merci d'indiquer une adresse e-mail valide."
+      "invalidEmail": "Merci d'indiquer une adresse e-mail valide.",
+      "intentLabel": "Que souhaitez-vous ?",
+      "intents": {
+        "waitlist": "Rejoindre la liste d'attente",
+        "demo": "Demander une démo",
+        "call": "Réserver un appel",
+        "quote": "Obtenir un devis"
+      },
+      "successRequest": "C'est noté ! Nous revenons vers vous sous 24 h — afiyet olsun."
     }
   },
   "footer": {
@@ -107,7 +131,8 @@
     "nav": {
       "features": "Au menu",
       "pricing": "La carte",
-      "waitlist": "Liste d'attente"
+      "waitlist": "Liste d'attente",
+      "live": "Voir en vrai"
     },
     "copyright": "© {year} Sofra. Tous droits réservés."
   }

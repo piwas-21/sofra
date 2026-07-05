@@ -8,7 +8,8 @@
     "pricing": "Menu",
     "waitlist": "Join the waitlist",
     "themeToggle": "Toggle dark mode",
-    "localeSwitcher": "Change language"
+    "localeSwitcher": "Change language",
+    "live": "See it live"
   },
   "hero": {
     "stamp": "Handcrafted in Geneva",
@@ -69,6 +70,21 @@
       }
     }
   },
+  "showcase": {
+    "label": "The proof of the pudding",
+    "title": "Taste it live",
+    "subtitle": "Sofra isn't a slideware demo — it has been running a real dining room, every service, since day one.",
+    "cardStamp": "Live in production",
+    "cardTitle": "RUMI Restaurant — Geneva",
+    "cardBody": "QR menus on every table, orders flowing to the kitchen and cashier screens, reservations, loyalty points and thermal tickets — all running on Sofra.",
+    "cardHint": "Open the menu and browse like a guest — that's exactly the product.",
+    "visit": "Visit rumirestaurant.ch",
+    "ctaTitle": "Want this on your tables?",
+    "ctaBody": "Restaurant, café or takeaway — tell us about your place and we'll get back to you within a day.",
+    "demo": "Request a demo",
+    "call": "Book a call",
+    "quote": "Get a quote"
+  },
   "pricing": {
     "label": "Menu",
     "title": "Menu du jour",
@@ -98,7 +114,15 @@
       "sending": "Sending…",
       "success": "You're on the list! We'll be in touch soon — afiyet olsun.",
       "error": "Something went wrong. Please email us instead:",
-      "invalidEmail": "Please enter a valid email address."
+      "invalidEmail": "Please enter a valid email address.",
+      "intentLabel": "What would you like?",
+      "intents": {
+        "waitlist": "Join the waitlist",
+        "demo": "Request a demo",
+        "call": "Book a call",
+        "quote": "Get a quote"
+      },
+      "successRequest": "Got it! We'll be back to you within a day — afiyet olsun."
     }
   },
   "footer": {
@@ -107,7 +131,8 @@
     "nav": {
       "features": "What's cooking",
       "pricing": "Menu",
-      "waitlist": "Waitlist"
+      "waitlist": "Waitlist",
+      "live": "See it live"
     },
     "copyright": "© {year} Sofra. All rights reserved."
   }

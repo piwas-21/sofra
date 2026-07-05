@@ -17,6 +17,9 @@ export default function Footer() {
           <a href="#features" className="hover:text-primary transition-colors">
             {t("nav.features")}
           </a>
+          <a href="#showcase" className="hover:text-primary transition-colors">
+            {t("nav.live")}
+          </a>
           <a href="#pricing" className="hover:text-primary transition-colors">
             {t("nav.pricing")}
           </a>

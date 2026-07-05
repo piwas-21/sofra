@@ -23,6 +23,13 @@ export async function POST(request: Request) {
   const city = String(body.city ?? "").slice(0, 200).trim();
   const locale = String(body.locale ?? "en").slice(0, 5);
   const honeypot = String(body.company ?? "");
+  const intentLabels: Record<string, string> = {
+    waitlist: "waitlist signup",
+    demo: "demo request",
+    call: "call request",
+    quote: "quote request",
+  };
+  const intent = intentLabels[String(body.intent ?? "")] ? String(body.intent) : "waitlist";
 
   // Bots fill the hidden field; pretend success and drop it.
   if (honeypot) {
@@ -53,9 +60,10 @@ export async function POST(request: Request) {
       from: process.env.WAITLIST_FROM ?? "Sofra Waitlist <onboarding@resend.dev>",
       to: [to],
       reply_to: email,
-      subject: `Sofra waitlist: ${restaurant}`,
-      html: `<h2>New waitlist signup</h2>
+      subject: `Sofra ${intentLabels[intent]}: ${restaurant}`,
+      html: `<h2>New ${intentLabels[intent]}</h2>
 <ul>
+  <li><b>Request:</b> ${escape(intentLabels[intent])}</li>
   <li><b>Name:</b> ${escape(name)}</li>
   <li><b>Email:</b> ${escape(email)}</li>
   <li><b>Restaurant:</b> ${escape(restaurant)}</li>
