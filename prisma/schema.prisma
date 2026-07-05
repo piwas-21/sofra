@@ -91,7 +91,8 @@ model Client {
   city           String?
   status         ClientStatus @default(LEAD)
   // Set by ADMIN only, after founder-operated provisioning (ADR-003/006).
-  tenantSlug     String?
+  // Unique: two LIVE clients must never share a tenant.
+  tenantSlug     String?      @unique
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 

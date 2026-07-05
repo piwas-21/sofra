@@ -99,6 +99,10 @@ export async function setClientLiveAction(
   const client = await db.client.findUnique({ where: { id } });
   if (!client) return { error: "Client not found." };
 
+  const taken = await db.client.findUnique({ where: { tenantSlug } });
+  if (taken && taken.id !== id) {
+    return { error: `Tenant slug "${tenantSlug}" is already in use.` };
+  }
   await db.client.update({ where: { id }, data: { tenantSlug, status: "LIVE" } });
   await audit(admin.id, "client.live", "Client", id, { tenantSlug });
 
