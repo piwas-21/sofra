@@ -1,6 +1,6 @@
 import { requirePartner } from "@/lib/rbac";
 import { db } from "@/lib/db";
-import { chf, shortDate } from "@/lib/format";
+import { eur, shortDate } from "@/lib/format";
 
 export default async function LedgerPage() {
   const partner = await requirePartner();
@@ -22,7 +22,7 @@ export default async function LedgerPage() {
 
       <div className="hand-drawn-border bg-card p-6 max-w-sm">
         <p className="font-label text-sm text-muted-foreground">Current balance</p>
-        <p className="mt-1 font-display font-bold text-5xl text-primary">{chf(balanceCents)}</p>
+        <p className="mt-1 font-display font-bold text-5xl text-primary">{eur(balanceCents)}</p>
       </div>
 
       <div className="overflow-x-auto">
@@ -50,7 +50,7 @@ export default async function LedgerPage() {
                     e.amountCents < 0 ? "text-destructive" : ""
                   }`}
                 >
-                  {chf(e.amountCents)}
+                  {eur(e.amountCents)}
                 </td>
               </tr>
             ))}

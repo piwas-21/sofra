@@ -22,10 +22,10 @@ export default function CommissionForm({
       <input
         name="amount"
         type="number"
-        step="0.05"
+        step="0.01"
         required
-        placeholder="Amount (CHF, negative = payout)"
-        aria-label="Amount in CHF"
+        placeholder="Amount (EUR, negative = payout)"
+        aria-label="Amount in EUR"
         className="input-primary"
       />
       <select name="clientId" aria-label="Related client" className="input-primary" defaultValue="">

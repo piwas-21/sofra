@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/rbac";
 import { db } from "@/lib/db";
-import { chf, shortDate } from "@/lib/format";
+import { eur, shortDate } from "@/lib/format";
 import ClientStatusBadge from "@/components/control/ClientStatusBadge";
 import CommissionForm from "@/components/control/CommissionForm";
 
@@ -58,7 +58,7 @@ export default async function AdminPartnerDetailPage({
       <section className="hand-drawn-border bg-card p-6">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <h2 className="font-hand text-3xl font-bold">Commission ledger</h2>
-          <p className="font-display font-bold text-3xl text-primary">{chf(balance)}</p>
+          <p className="font-display font-bold text-3xl text-primary">{eur(balance)}</p>
         </div>
         <div className="mt-4">
           <CommissionForm
@@ -71,7 +71,7 @@ export default async function AdminPartnerDetailPage({
             <li key={e.id} className="flex flex-wrap gap-3 font-label text-sm">
               <span className="font-mono text-xs text-muted-foreground">{shortDate(e.createdAt)}</span>
               <span className={`font-mono ${e.amountCents < 0 ? "text-destructive" : ""}`}>
-                {chf(e.amountCents)}
+                {eur(e.amountCents)}
               </span>
               <span>{e.note}</span>
               <span className="text-muted-foreground">{e.client?.restaurantName ?? ""}</span>

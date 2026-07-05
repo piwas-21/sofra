@@ -1,6 +1,14 @@
 // Sofra craft typography stack — shared by both root layouts
 // (the localized marketing tree and the en-only control plane).
-import { Quicksand, Amatic_SC, Caveat, Kalam, Special_Elite } from "next/font/google";
+import {
+  Quicksand,
+  Amatic_SC,
+  Caveat,
+  Kalam,
+  Special_Elite,
+  Cairo,
+  Aref_Ruqaa,
+} from "next/font/google";
 
 export const quicksand = Quicksand({
   subsets: ["latin", "latin-ext"],
@@ -35,12 +43,30 @@ export const specialElite = Special_Elite({
   display: "swap",
 });
 
+// Arabic companions — the craft fonts above are Latin-only. These sit behind
+// them in the Tailwind font-family chains; unicode-range means browsers only
+// download them on pages that actually render Arabic glyphs.
+export const cairo = Cairo({
+  subsets: ["arabic"],
+  variable: "--font-arabic",
+  display: "swap",
+});
+
+export const arefRuqaa = Aref_Ruqaa({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  variable: "--font-arabic-display",
+  display: "swap",
+});
+
 export const fontClassNames = [
   quicksand.variable,
   amaticSC.variable,
   caveat.variable,
   kalam.variable,
   specialElite.variable,
+  cairo.variable,
+  arefRuqaa.variable,
 ].join(" ");
 
 // Dark-mode init: runs during HTML parse, before hydration, so the page

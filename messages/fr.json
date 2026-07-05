@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Sofra — Le logiciel de restaurant au grand cœur",
-    "description": "Menus QR, commandes en direct, réservations et fidélité — une plateforme pensée pour la cuisine, fabriquée à Genève. Sofra signifie une table dressée pour les invités."
+    "description": "Menus QR, commandes en direct, réservations et fidélité — une plateforme pensée pour la cuisine, éprouvée dans un vrai restaurant à chaque service. Sofra signifie une table dressée pour les invités."
   },
   "header": {
     "features": "Au menu",
@@ -14,7 +14,7 @@
     "signIn": "Connexion"
   },
   "hero": {
-    "stamp": "Fabriqué à Genève",
+    "stamp": "Fait main en Europe",
     "titleLine1": "Dressez la table.",
     "titleLine2": "On s'occupe du reste.",
     "subtitle": "Sofra est la plateforme de restaurant au grand cœur : menus QR, commandes en direct, réservations et fidélité — tout ce dont votre salle et votre cuisine ont besoin, sur une seule table.",
@@ -49,8 +49,8 @@
         "text": "Une appli compagnon pilote vos imprimantes thermiques — les commandes arrivent en cuisine sur papier, là où vous le voulez."
       },
       "languages": {
-        "title": "9 langues intégrées",
-        "text": "Votre menu parle la langue de vos clients — du français au turc en passant par le japonais."
+        "title": "10 langues intégrées",
+        "text": "Votre menu parle la langue de vos clients — du français au néerlandais en passant par l'arabe."
       }
     }
   },
@@ -162,7 +162,7 @@
   },
   "footer": {
     "tagline": "Une sofra, c'est une table dressée pour les invités.",
-    "madeIn": "Mijoté à Genève",
+    "madeIn": "Mijoté aux Pays-Bas, servi d'abord à Genève",
     "nav": {
       "features": "Au menu",
       "pricing": "La carte",
@@ -188,11 +188,11 @@
       },
       "payments": {
         "q": "Mes clients peuvent-ils payer en ligne — y compris avec TWINT ?",
-        "a": "Le paiement en ligne arrive comme module optionnel, avec les moyens de paiement suisses comme TWINT prévus aux côtés des cartes. Aujourd'hui, les commandes arrivent à votre comptoir et vous encaissez comme d'habitude."
+        "a": "Le paiement en ligne arrive comme module optionnel, avec les moyens de paiement locaux comme TWINT en Suisse et iDEAL aux Pays-Bas prévus aux côtés des cartes. Aujourd'hui, les commandes arrivent à votre comptoir et vous encaissez comme d'habitude."
       },
       "languages": {
         "q": "Quelles langues le menu prend-il en charge ?",
-        "a": "Neuf langues dès le départ — dont le français, l'anglais, l'allemand, l'italien, le turc, l'arabe et le japonais. Vos clients commandent dans leur langue, sur le même menu."
+        "a": "Dix langues dès le départ — français, anglais, allemand, néerlandais, italien, espagnol, turc, arabe, russe et chinois. Vos clients commandent dans leur langue, sur le même menu."
       },
       "printing": {
         "q": "Est-ce compatible avec mon imprimante de cuisine ?",
@@ -200,7 +200,7 @@
       },
       "who": {
         "q": "Qui est derrière Sofra, et est-ce vraiment utilisé quelque part ?",
-        "a": "Sofra est conçu à Genève et fait tourner tous les services du RUMI Restaurant (rumirestaurant.ch) — commandes, cuisine, réservations et imprimantes y sont en production depuis juin 2026. Nous accueillons chaque nouveau restaurant personnellement."
+        "a": "Sofra est développé par une petite équipe basée aux Pays-Bas et fait tourner tous les services du RUMI Restaurant à Genève (rumirestaurant.ch) — commandes, cuisine, réservations et imprimantes y sont en production depuis juin 2026. Nous accueillons chaque nouveau restaurant personnellement."
       },
       "domain": {
         "q": "Puis-je utiliser mon propre nom de domaine ?",

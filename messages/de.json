@@ -1,0 +1,211 @@
+{
+  "meta": {
+    "title": "Sofra — Restaurant-Software mit Herz",
+    "description": "QR-Menüs, Live-Bestellungen, Reservierungen und Treuepunkte — eine küchenfreundliche Plattform, bewährt in einem echten Restaurant, Service für Service. Sofra bedeutet: ein gedeckter Tisch für Gäste."
+  },
+  "header": {
+    "features": "Auf dem Herd",
+    "pricing": "Die Karte",
+    "waitlist": "Auf die Warteliste",
+    "themeToggle": "Dunkelmodus umschalten",
+    "localeSwitcher": "Sprache wechseln",
+    "live": "Live ansehen",
+    "partner": "Partner",
+    "signIn": "Anmelden"
+  },
+  "hero": {
+    "stamp": "Handgemacht in Europa",
+    "titleLine1": "Decken Sie den Tisch.",
+    "titleLine2": "Wir kümmern uns um den Rest.",
+    "subtitle": "Sofra ist die herzliche Restaurant-Plattform: QR-Menüs, Live-Bestellungen, Reservierungen und Treuepunkte — alles, was Ihr Service und Ihre Küche brauchen, auf einem Tisch.",
+    "note": "Eine «Sofra» ist ein für Gäste gedeckter Tisch. Das ist unsere ganze Philosophie.",
+    "ctaPrimary": "Auf die Warteliste",
+    "ctaSecondary": "Sehen, was auf dem Herd steht",
+    "proof": "Läuft in jedem Service im RUMI Restaurant, Genf — Bestellungen, Küche, Reservierungen und Drucker, live in Produktion."
+  },
+  "features": {
+    "label": "Auf dem Herd",
+    "title": "Alles auf einem Tisch",
+    "subtitle": "Sechs Gänge, nichts Überflüssiges. Jeder davon in einem echten Restaurant erprobt, bevor er auf diese Seite kam.",
+    "items": {
+      "qr": {
+        "title": "QR-Menüs & Bestellung",
+        "text": "Gäste scannen, stöbern und bestellen direkt am Tisch — mit Fotos, Allergenen und Anpassungen. Keine App nötig."
+      },
+      "live": {
+        "title": "Live-Bestellübersichten",
+        "text": "Küche, Kasse und Service haben je ihre eigene Live-Ansicht. Neue Bestellungen kommen in der Sekunde an, in der sie aufgegeben werden."
+      },
+      "reservations": {
+        "title": "Reservierungen",
+        "text": "Tischplanung, Öffnungszeiten und Verfügbarkeit — Gäste buchen online, Sie bestätigen mit einem Tipp."
+      },
+      "loyalty": {
+        "title": "Treuepunkte",
+        "text": "Punkte, die Stammgäste zurückbringen — mit Rabattregeln, die Sie pro Kundengruppe steuern."
+      },
+      "printing": {
+        "title": "Küchenbons, gedruckt",
+        "text": "Eine Begleit-App steuert Ihre Thermodrucker — Bestellungen landen auf Papier in der Küche, genau dort, wo Sie sie brauchen."
+      },
+      "languages": {
+        "title": "10 Sprachen an Bord",
+        "text": "Ihre Karte spricht die Sprachen Ihrer Gäste — von Französisch über Niederländisch bis Arabisch."
+      }
+    }
+  },
+  "how": {
+    "label": "So funktioniert's",
+    "title": "Drei Schritte, kein Zeremoniell",
+    "steps": {
+      "one": {
+        "title": "Erzählen Sie uns von Ihrem Lokal",
+        "text": "Name, Karte, Tische, Zeiten. Ein Gespräch, kein Einrichtungsassistent."
+      },
+      "two": {
+        "title": "Wir decken Ihre Sofra",
+        "text": "Wir richten Karte, QR-Codes, Drucker und Personal-Ansichten ein — und übergeben Ihnen die Schlüssel."
+      },
+      "three": {
+        "title": "Sie servieren",
+        "text": "Bestellungen fließen, Bons werden gedruckt, Stammgäste sammeln Punkte. Wir halten im Hintergrund die Teller in der Luft."
+      }
+    }
+  },
+  "showcase": {
+    "label": "Probieren geht über Studieren",
+    "title": "Live verkosten",
+    "subtitle": "Sofra ist keine Folien-Demo — es betreibt seit dem ersten Tag einen echten Gastraum, Service für Service.",
+    "cardStamp": "Live in Produktion",
+    "cardTitle": "RUMI Restaurant — Genf",
+    "cardBody": "QR-Menüs auf jedem Tisch, Bestellungen auf den Küchen- und Kassenbildschirmen, Reservierungen, Treuepunkte und Thermobons — alles auf Sofra.",
+    "cardHint": "Öffnen Sie die Karte und stöbern Sie wie ein Gast — genau das ist das Produkt.",
+    "visit": "rumirestaurant.ch besuchen",
+    "ctaTitle": "Wollen Sie das auf Ihren Tischen?",
+    "ctaBody": "Restaurant, Café oder Takeaway — erzählen Sie uns von Ihrem Lokal, wir melden uns innerhalb eines Tages.",
+    "demo": "Demo anfragen",
+    "call": "Gespräch buchen",
+    "quote": "Angebot erhalten"
+  },
+  "pricing": {
+    "label": "Die Karte",
+    "title": "Tagesmenü",
+    "subtitle": "Early Access — einfach wie eine Kreidetafel.",
+    "founding": {
+      "name": "Gründungsrestaurants",
+      "price": "aufs Haus",
+      "detail": "Kostenlos während des Early Access. Persönliche Einrichtung, direkter Draht zu den Gründern und Mitsprache bei dem, was wir als Nächstes kochen."
+    },
+    "regular": {
+      "name": "Reguläre Karte",
+      "price": "bald",
+      "detail": "Faire monatliche Preise nach dem Early Access. Gründungsrestaurants behalten lebenslang ihren Rabatt."
+    },
+    "note": "Keine Kreditkarte nötig. Keine Bindung. Ihre Daten gehören Ihnen."
+  },
+  "partner": {
+    "label": "Partner",
+    "title": "Decken Sie Tische mit uns",
+    "subtitle": "Sie kennen Gastronomen, die bessere Software verdienen. Bringen Sie sie an den Tisch — wir übernehmen die Technik, Sie behalten die Beziehung.",
+    "points": {
+      "find": {
+        "title": "Finden",
+        "text": "Entdecken Sie Restaurants und Cafés, die Sofra lieben würden — Ihr Netzwerk, Ihre Städte."
+      },
+      "onboard": {
+        "title": "Begleiten",
+        "text": "Verfolgen Sie jeden Kunden vom ersten Anruf bis zum Live-Betrieb in Ihrem Partner-Dashboard; die technische Einrichtung übernehmen wir."
+      },
+      "earn": {
+        "title": "Verdienen",
+        "text": "Eine Provision für jedes Restaurant, das Sie bringen und das live geht. Transparentes Kontobuch, kein Kleingedrucktes."
+      }
+    },
+    "form": {
+      "name": "Ihr Name",
+      "email": "E-Mail",
+      "company": "Firma / Agentur (optional)",
+      "city": "Stadt",
+      "message": "Erzählen Sie uns von sich und den Restaurants, an die Sie denken…",
+      "submit": "Als Partner bewerben",
+      "sending": "Wird gesendet…",
+      "success": "Bewerbung erhalten! Wir prüfen jeden Partner persönlich und melden uns innerhalb weniger Tage.",
+      "error": "Etwas ist schiefgelaufen — bitte versuchen Sie es in einer Minute erneut.",
+      "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+    },
+    "loginHint": "Schon Partner?",
+    "loginLink": "Anmelden"
+  },
+  "waitlist": {
+    "label": "Platz reservieren",
+    "title": "Nehmen Sie Platz am Tisch",
+    "subtitle": "Wir nehmen Restaurants in kleinen Runden auf, ganz persönlich. Hinterlassen Sie Ihre Daten und wir decken für Sie mit ein.",
+    "form": {
+      "name": "Ihr Name",
+      "email": "E-Mail",
+      "restaurant": "Name des Restaurants",
+      "city": "Stadt",
+      "submit": "Auf die Warteliste",
+      "sending": "Wird gesendet…",
+      "success": "Sie stehen auf der Liste! Wir melden uns bald — afiyet olsun.",
+      "error": "Etwas ist schiefgelaufen. Schreiben Sie uns stattdessen:",
+      "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+      "intentLabel": "Was darf es sein?",
+      "intents": {
+        "waitlist": "Auf die Warteliste",
+        "demo": "Demo anfragen",
+        "call": "Gespräch buchen",
+        "quote": "Angebot erhalten"
+      },
+      "successRequest": "Angekommen! Wir melden uns innerhalb eines Tages — afiyet olsun."
+    }
+  },
+  "footer": {
+    "tagline": "Eine Sofra ist ein für Gäste gedeckter Tisch.",
+    "madeIn": "Gekocht in den Niederlanden, zuerst serviert in Genf",
+    "nav": {
+      "features": "Auf dem Herd",
+      "pricing": "Die Karte",
+      "waitlist": "Warteliste",
+      "live": "Live ansehen",
+      "partner": "Partner",
+      "faq": "FAQ"
+    },
+    "copyright": "© {year} Sofra. Alle Rechte vorbehalten."
+  },
+  "faq": {
+    "label": "Fragen",
+    "title": "An der Theke gefragt",
+    "subtitle": "Klare Antworten, ohne Fachchinesisch.",
+    "items": {
+      "what": {
+        "q": "Was ist Sofra?",
+        "a": "Sofra ist eine Plattform für Restaurantmanagement: QR-Menüs und Online-Bestellung, Live-Bestellübersichten für Küche, Kasse und Service, Reservierungen, Treuepunkte und Bons auf Thermodruckern — alles an einem Ort. Entstanden ist sie aus dem System, das im RUMI Restaurant in Genf jeden Service betreibt."
+      },
+      "pricing": {
+        "q": "Was kostet Sofra?",
+        "a": "Während des Early Access zahlen Gründungsrestaurants nichts — Einrichtung und Support gehen aufs Haus, und Gründungsrestaurants behalten lebenslang einen Rabatt, wenn die regulären Preise kommen. Die regulären Pläne werden einfach sein: ein fester Monatspreis mit optionalen Zusatzmodulen."
+      },
+      "payments": {
+        "q": "Können meine Gäste online bezahlen — auch mit TWINT?",
+        "a": "Online-Zahlungen stehen als Zusatzmodul auf der Roadmap, mit lokalen Zahlungsmitteln wie TWINT in der Schweiz und iDEAL in den Niederlanden neben Karten. Heute laufen Bestellungen an Ihre Theke und Sie kassieren wie gewohnt."
+      },
+      "languages": {
+        "q": "Welche Sprachen unterstützt die Karte?",
+        "a": "Zehn Sprachen ab Werk — Englisch, Französisch, Deutsch, Niederländisch, Italienisch, Spanisch, Türkisch, Arabisch, Russisch und Chinesisch. Ihre Gäste bestellen in ihrer eigenen Sprache, von derselben Karte."
+      },
+      "printing": {
+        "q": "Funktioniert es mit meinem Küchendrucker?",
+        "a": "Ja. Eine Begleit-App (Windows und Android) steuert ESC/POS-Thermodrucker über das Netzwerk — Bestellungen werden in der Küche gedruckt, genau dort, wo Sie sie brauchen. Ohne zusätzliches Hardware-Abo."
+      },
+      "who": {
+        "q": "Wer steckt hinter Sofra — und wird es wirklich benutzt?",
+        "a": "Sofra wird von einem kleinen Team mit Sitz in den Niederlanden entwickelt und betreibt jeden Live-Service im RUMI Restaurant in Genf (rumirestaurant.ch) — Bestellungen, Küchenübersicht, Reservierungen und Drucker sind dort seit Juni 2026 in Produktion. Neue Restaurants nehmen wir persönlich auf."
+      },
+      "domain": {
+        "q": "Kann ich meinen eigenen Domainnamen verwenden?",
+        "a": "Ja. Jedes Restaurant erhält eine kostenlose Sofra-Subdomain, und Sie können eine Domain verbinden, die Sie bereits besitzen — oder wir registrieren bei der Einrichtung eine ganz neue für Sie."
+      }
+    }
+  }
+}

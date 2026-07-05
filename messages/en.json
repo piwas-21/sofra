@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Sofra — Restaurant software with a warm heart",
-    "description": "QR menus, live orders, reservations and loyalty — one kitchen-friendly platform, handcrafted in Geneva. Sofra means a table laid for guests."
+    "description": "QR menus, live orders, reservations and loyalty — one kitchen-friendly platform, proven in a real restaurant every single service. Sofra means a table laid for guests."
   },
   "header": {
     "features": "What's cooking",
@@ -14,7 +14,7 @@
     "signIn": "Sign in"
   },
   "hero": {
-    "stamp": "Handcrafted in Geneva",
+    "stamp": "Handcrafted in Europe",
     "titleLine1": "Set the table.",
     "titleLine2": "We'll handle the rest.",
     "subtitle": "Sofra is the warm-hearted restaurant platform: QR menus, live orders, reservations and loyalty — everything your front-of-house and kitchen need, on one table.",
@@ -49,8 +49,8 @@
         "text": "A companion app drives your thermal printers — orders hit the kitchen on paper, exactly where you want them."
       },
       "languages": {
-        "title": "9 languages built in",
-        "text": "Your menu speaks your guests' languages out of the box — from French to Turkish to Japanese."
+        "title": "10 languages built in",
+        "text": "Your menu speaks your guests' languages out of the box — from French to Dutch to Arabic."
       }
     }
   },
@@ -162,7 +162,7 @@
   },
   "footer": {
     "tagline": "A sofra is a table laid for guests.",
-    "madeIn": "Cooked up in Geneva",
+    "madeIn": "Cooked up in the Netherlands, first served in Geneva",
     "nav": {
       "features": "What's cooking",
       "pricing": "Menu",
@@ -188,11 +188,11 @@
       },
       "payments": {
         "q": "Can my guests pay online — including TWINT?",
-        "a": "Online payments are on the roadmap as an add-on module, with Swiss payment methods like TWINT planned alongside cards. Today, orders flow to your counter and you charge as you always have."
+        "a": "Online payments are on the roadmap as an add-on module, with local payment methods like TWINT in Switzerland and iDEAL in the Netherlands planned alongside cards. Today, orders flow to your counter and you charge as you always have."
       },
       "languages": {
         "q": "Which languages does the menu support?",
-        "a": "Nine languages out of the box — including English, French, German, Italian, Turkish, Arabic and Japanese. Your guests order in their own language from the same menu."
+        "a": "Ten languages out of the box — English, French, German, Dutch, Italian, Spanish, Turkish, Arabic, Russian and Chinese. Your guests order in their own language from the same menu."
       },
       "printing": {
         "q": "Does it work with my kitchen printer?",
@@ -200,7 +200,7 @@
       },
       "who": {
         "q": "Who is behind Sofra, and is it actually used anywhere?",
-        "a": "Sofra is built in Geneva and runs every live service at RUMI Restaurant (rumirestaurant.ch) — orders, kitchen board, reservations and printers have been in production there since June 2026. We onboard new restaurants personally."
+        "a": "Sofra is built by a small team based in the Netherlands, and it runs every live service at RUMI Restaurant in Geneva (rumirestaurant.ch) — orders, kitchen board, reservations and printers have been in production there since June 2026. We onboard new restaurants personally."
       },
       "domain": {
         "q": "Can I use my own domain name?",

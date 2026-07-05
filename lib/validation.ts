@@ -29,7 +29,7 @@ export const noteSchema = z.object({
 export const commissionSchema = z.object({
   partnerId: z.string().min(1),
   clientId: z.string().optional().or(z.literal("")),
-  // Accept "120.50" style input in CHF; stored as cents.
+  // Accept "120.50" style input in EUR; stored as cents.
   amount: z.coerce.number().finite().gt(-100_000).lt(100_000),
   note: z.string().trim().min(1).max(500),
 });

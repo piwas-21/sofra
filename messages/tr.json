@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Sofra — Sıcacık restoran yazılımı",
-    "description": "QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — mutfağa saygılı tek platform, Cenevre'de el emeğiyle. Sofra, misafirler için kurulan sofradır."
+    "description": "QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — mutfağa saygılı tek platform, gerçek bir restoranda her serviste sınandı. Sofra, misafirler için kurulan sofradır."
   },
   "header": {
     "features": "Mutfakta ne var",
@@ -14,7 +14,7 @@
     "signIn": "Giriş"
   },
   "hero": {
-    "stamp": "Cenevre'de el yapımı",
+    "stamp": "Avrupa'da el yapımı",
     "titleLine1": "Sofrayı kurun.",
     "titleLine2": "Gerisi bizden.",
     "subtitle": "Sofra, sıcacık bir restoran platformu: QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — salonunuzun ve mutfağınızın ihtiyacı olan her şey, tek sofrada.",
@@ -49,8 +49,8 @@
         "text": "Yardımcı uygulama termal yazıcılarınızı sürer — siparişler mutfağa kâğıt üstünde, tam istediğiniz yere düşer."
       },
       "languages": {
-        "title": "9 dil hazır",
-        "text": "Menünüz misafirlerinizin dilini konuşur — Fransızcadan Türkçeye, Japoncaya kadar."
+        "title": "10 dil hazır",
+        "text": "Menünüz misafirlerinizin dilini konuşur — Fransızcadan Hollandacaya, Arapçaya kadar."
       }
     }
   },
@@ -162,7 +162,7 @@
   },
   "footer": {
     "tagline": "Sofra, misafirler için kurulan masadır.",
-    "madeIn": "Cenevre'de pişirildi",
+    "madeIn": "Hollanda'da pişti, ilk servis Cenevre'de",
     "nav": {
       "features": "Mutfakta ne var",
       "pricing": "Menü",
@@ -188,11 +188,11 @@
       },
       "payments": {
         "q": "Misafirlerim online ödeyebilir mi — TWINT dahil?",
-        "a": "Online ödeme, ek modül olarak yol haritamızda; kartların yanında TWINT gibi İsviçre ödeme yöntemleri de planlandı. Bugün siparişler kasanıza düşer, her zamanki gibi tahsil edersiniz."
+        "a": "Online ödeme, ek modül olarak yol haritamızda; kartların yanında İsviçre'de TWINT, Hollanda'da iDEAL gibi yerel ödeme yöntemleri de planlandı. Bugün siparişler kasanıza düşer, her zamanki gibi tahsil edersiniz."
       },
       "languages": {
         "q": "Menü hangi dilleri destekliyor?",
-        "a": "Kutudan dokuz dil — Türkçe, İngilizce, Fransızca, Almanca, İtalyanca, Arapça ve Japonca dahil. Misafirleriniz aynı menüden kendi dillerinde sipariş verir."
+        "a": "Kutudan on dil — Türkçe, İngilizce, Fransızca, Almanca, Hollandaca, İtalyanca, İspanyolca, Arapça, Rusça ve Çince. Misafirleriniz aynı menüden kendi dillerinde sipariş verir."
       },
       "printing": {
         "q": "Mutfak yazıcımla çalışır mı?",
@@ -200,7 +200,7 @@
       },
       "who": {
         "q": "Sofra'nın arkasında kim var, gerçekten kullanılıyor mu?",
-        "a": "Sofra Cenevre'de geliştiriliyor ve RUMI Restaurant'ın (rumirestaurant.ch) tüm canlı servisini yürütüyor — siparişler, mutfak panosu, rezervasyonlar ve yazıcılar Haziran 2026'dan beri orada üretimde. Yeni restoranları birebir ağırlıyoruz."
+        "a": "Sofra, Hollanda merkezli küçük bir ekip tarafından geliştiriliyor ve Cenevre'deki RUMI Restaurant'ın (rumirestaurant.ch) tüm canlı servisini yürütüyor — siparişler, mutfak panosu, rezervasyonlar ve yazıcılar Haziran 2026'dan beri orada üretimde. Yeni restoranları birebir ağırlıyoruz."
       },
       "domain": {
         "q": "Kendi alan adımı kullanabilir miyim?",

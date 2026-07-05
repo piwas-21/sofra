@@ -56,7 +56,12 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} suppressHydrationWarning className={fontClassNames}>
+    <html
+      lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      suppressHydrationWarning
+      className={fontClassNames}
+    >
       <body className="min-h-screen bg-background text-foreground antialiased font-sans paper-texture">
         {/* Theme init before hydration — see lib/fonts.ts */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
