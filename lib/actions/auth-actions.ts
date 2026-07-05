@@ -53,13 +53,18 @@ export async function setPasswordAction(_prev: FormState, formData: FormData): P
   if (password !== confirm) return { error: "Passwords don't match." };
 
   const token = await findValidToken(raw, purpose);
-  if (!token) return { error: "This link is invalid or has expired. Ask for a new one." };
+  // A DISABLED account must not reactivate itself through a leftover token.
+  if (!token || token.user.status === "DISABLED") {
+    return { error: "This link is invalid or has expired. Ask for a new one." };
+  }
 
   const passwordHash = await hash(password, 12);
   await db.$transaction([
     db.user.update({
       where: { id: token.userId },
-      data: { passwordHash, status: "ACTIVE" },
+      // Only the INVITED→ACTIVE transition; an already-ACTIVE user resetting
+      // their password keeps their current status.
+      data: { passwordHash, ...(token.user.status === "INVITED" ? { status: "ACTIVE" as const } : {}) },
     }),
     db.inviteToken.update({ where: { id: token.id }, data: { usedAt: new Date() } }),
   ]);
