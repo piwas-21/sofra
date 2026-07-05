@@ -1,0 +1,45 @@
+# Sofra
+
+> Sofra (Turkish: a table laid for guests) is a restaurant-management platform
+> handcrafted in Geneva, Switzerland: QR menus & online ordering, live order
+> boards for kitchen/cashier/servers, reservations, loyalty points, and
+> thermal-printer kitchen tickets — one warm-hearted system instead of five
+> subscriptions.
+
+Site: https://sofrapiwas.com (English: /en, French: /fr, Turkish: /tr)
+
+## What Sofra does
+
+- QR menus & ordering: guests scan, browse and order from the table — photos,
+  allergens, customizations; no app install. Menus speak 9 languages
+  (English, French, German, Italian, Turkish, Arabic, Japanese and more).
+- Live order boards: kitchen, cashier and servers each get a real-time view;
+  orders arrive the second they are placed.
+- Reservations: online booking, table planning, working hours, one-tap approval.
+- Loyalty: fidelity points and per-group discount rules that bring regulars back.
+- Kitchen printing: a companion app (Windows + Android) drives ESC/POS thermal
+  printers over the network.
+- Domains: every restaurant gets a free subdomain; you can connect a domain
+  you already own, or Sofra registers a new one for you during setup.
+
+## Proof
+
+Sofra runs every live service at RUMI Restaurant, Geneva
+(https://www.rumirestaurant.ch) — orders, kitchen board, reservations and
+printers, in production since June 2026.
+
+## Pricing
+
+Early access: free for founding restaurants ("on the house"), with white-glove
+onboarding and a lifetime discount when regular pricing arrives. Regular
+plans: simple flat monthly pricing with optional add-on modules. No card
+required, no lock-in.
+
+## For partners
+
+Sofra runs a partner program (agencies/individuals who onboard restaurants and
+earn commissions): https://sofrapiwas.com/#partner
+
+## Contact
+
+Waitlist / demo / quote: https://sofrapiwas.com/#waitlist

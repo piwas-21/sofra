@@ -168,8 +168,44 @@
       "pricing": "La carte",
       "waitlist": "Liste d'attente",
       "live": "Voir en vrai",
-      "partner": "Partenaires"
+      "partner": "Partenaires",
+      "faq": "FAQ"
     },
     "copyright": "© {year} Sofra. Tous droits réservés."
+  },
+  "faq": {
+    "label": "Questions",
+    "title": "On nous demande souvent",
+    "subtitle": "Des réponses franches, sans jargon.",
+    "items": {
+      "what": {
+        "q": "Qu'est-ce que Sofra ?",
+        "a": "Sofra est une plateforme de gestion de restaurant : menus QR et commande en ligne, tableaux de commandes en direct pour la cuisine, la caisse et les serveurs, réservations, points de fidélité et tickets sur imprimante thermique — le tout au même endroit. Elle est née du système qui fait tourner tous les services du RUMI Restaurant à Genève."
+      },
+      "pricing": {
+        "q": "Combien coûte Sofra ?",
+        "a": "Pendant l'accès anticipé, les restaurants fondateurs ne paient rien — installation et accompagnement offerts, et ils gardent une remise à vie quand la tarification régulière arrivera. Les formules seront simples : un prix mensuel fixe avec des modules optionnels."
+      },
+      "payments": {
+        "q": "Mes clients peuvent-ils payer en ligne — y compris avec TWINT ?",
+        "a": "Le paiement en ligne arrive comme module optionnel, avec les moyens de paiement suisses comme TWINT prévus aux côtés des cartes. Aujourd'hui, les commandes arrivent à votre comptoir et vous encaissez comme d'habitude."
+      },
+      "languages": {
+        "q": "Quelles langues le menu prend-il en charge ?",
+        "a": "Neuf langues dès le départ — dont le français, l'anglais, l'allemand, l'italien, le turc, l'arabe et le japonais. Vos clients commandent dans leur langue, sur le même menu."
+      },
+      "printing": {
+        "q": "Est-ce compatible avec mon imprimante de cuisine ?",
+        "a": "Oui. Une application compagnon (Windows et Android) pilote les imprimantes thermiques ESC/POS via le réseau : les commandes s'impriment en cuisine, là où vous le voulez — sans abonnement matériel supplémentaire."
+      },
+      "who": {
+        "q": "Qui est derrière Sofra, et est-ce vraiment utilisé quelque part ?",
+        "a": "Sofra est conçu à Genève et fait tourner tous les services du RUMI Restaurant (rumirestaurant.ch) — commandes, cuisine, réservations et imprimantes y sont en production depuis juin 2026. Nous accueillons chaque nouveau restaurant personnellement."
+      },
+      "domain": {
+        "q": "Puis-je utiliser mon propre nom de domaine ?",
+        "a": "Oui. Chaque restaurant reçoit un sous-domaine sofra gratuit, et vous pouvez connecter un domaine que vous possédez déjà — ou nous enregistrons un tout nouveau domaine pour vous lors de l'installation."
+      }
+    }
   }
 }

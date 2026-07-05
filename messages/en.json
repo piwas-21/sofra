@@ -168,8 +168,44 @@
       "pricing": "Menu",
       "waitlist": "Waitlist",
       "live": "See it live",
-      "partner": "Partners"
+      "partner": "Partners",
+      "faq": "FAQ"
     },
     "copyright": "© {year} Sofra. All rights reserved."
+  },
+  "faq": {
+    "label": "Questions",
+    "title": "Asked at the counter",
+    "subtitle": "Straight answers, no menu-speak.",
+    "items": {
+      "what": {
+        "q": "What is Sofra?",
+        "a": "Sofra is a restaurant management platform: QR menus and online ordering, live order boards for kitchen, cashier and servers, reservations, loyalty points and thermal-printer tickets — all in one place. It grew out of the system running every service at RUMI Restaurant in Geneva."
+      },
+      "pricing": {
+        "q": "How much does Sofra cost?",
+        "a": "During early access, founding restaurants pay nothing — setup and support are on the house, and founding restaurants keep a lifetime discount when regular pricing arrives. Regular plans will be simple flat monthly pricing with optional add-on modules."
+      },
+      "payments": {
+        "q": "Can my guests pay online — including TWINT?",
+        "a": "Online payments are on the roadmap as an add-on module, with Swiss payment methods like TWINT planned alongside cards. Today, orders flow to your counter and you charge as you always have."
+      },
+      "languages": {
+        "q": "Which languages does the menu support?",
+        "a": "Nine languages out of the box — including English, French, German, Italian, Turkish, Arabic and Japanese. Your guests order in their own language from the same menu."
+      },
+      "printing": {
+        "q": "Does it work with my kitchen printer?",
+        "a": "Yes. A companion app (Windows and Android) drives ESC/POS thermal printers over the network, so orders print in the kitchen exactly where you want them — no extra hardware subscription."
+      },
+      "who": {
+        "q": "Who is behind Sofra, and is it actually used anywhere?",
+        "a": "Sofra is built in Geneva and runs every live service at RUMI Restaurant (rumirestaurant.ch) — orders, kitchen board, reservations and printers have been in production there since June 2026. We onboard new restaurants personally."
+      },
+      "domain": {
+        "q": "Can I use my own domain name?",
+        "a": "Yes. Every restaurant gets a free sofra subdomain, and you can connect a domain you already own — or we register a brand-new one for you during setup."
+      }
+    }
   }
 }

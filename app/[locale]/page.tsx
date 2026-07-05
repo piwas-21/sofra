@@ -5,9 +5,11 @@ import FeatureCards from "@/components/FeatureCards";
 import HowItWorks from "@/components/HowItWorks";
 import ShowcaseSection from "@/components/ShowcaseSection";
 import MenuBoard from "@/components/MenuBoard";
+import FaqSection from "@/components/FaqSection";
 import WaitlistSection from "@/components/WaitlistSection";
 import PartnerSection from "@/components/PartnerSection";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 
 export default async function LandingPage({
   params,
@@ -19,6 +21,7 @@ export default async function LandingPage({
 
   return (
     <>
+      <JsonLd locale={locale} />
       <Header />
       <main>
         <Hero />
@@ -26,6 +29,7 @@ export default async function LandingPage({
         <HowItWorks />
         <ShowcaseSection />
         <MenuBoard />
+        <FaqSection />
         <WaitlistSection />
         <PartnerSection />
       </main>
