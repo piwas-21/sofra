@@ -22,7 +22,7 @@ it needs accounts, sessions, and persistence inside the sofra app. domainio
   postgres container** — DB-per-concern on a shared server, mirroring
   ADR-001; RUMI staging's `restaurantdb` untouched.
 - **Migrations are founder-run, never on container start**: the CI publishes
-  a sibling `ghcr.io/piwas-21/sofra-migrate` image (full deps + prisma CLI +
+  a sibling `ghcr.io/piwas-21/sofra:migrate` image (full deps + prisma CLI +
   seed script); the slim runtime image ships no DB tooling.
 - **Control plane is English-only and lives outside `[locale]`** (second
   root layout `(control)`), excluded from the next-intl middleware matcher.

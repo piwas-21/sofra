@@ -19,7 +19,7 @@ RUN npm run build
 # One-off DB tooling for the box (which deploys images only — no repo, no
 # npm in the runtime image). Full deps tree, so the prisma CLI and the seed
 # script's imports (pg, bcryptjs) all resolve; linux-musl binaries because
-# npm ci ran in the deps stage. Published as ghcr.io/piwas-21/sofra-migrate.
+# npm ci ran in the deps stage. Published as ghcr.io/piwas-21/sofra:migrate.
 #   migrate: docker run --rm --network <net> -e DATABASE_URL=… <img>
 #   seed:    docker run --rm --network <net> -e DATABASE_URL=… -e ADMIN_EMAIL=… \
 #              -e ADMIN_NAME=… -e ADMIN_PASSWORD=… <img> node scripts/seed-admin.mjs
@@ -57,7 +57,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/healthcheck.js ./healthcheck.js
 
 # NOTE: DB migrations/seed do NOT live in this image — they run from the
-# sibling `migrate` target (published as ghcr.io/piwas-21/sofra-migrate),
+# sibling `migrate` target (published as ghcr.io/piwas-21/sofra:migrate),
 # keeping this runtime image slim. See DEPLOYMENT.md for the one-off commands.
 
 USER nextjs

@@ -59,14 +59,16 @@ jobs:
 
       # One-off DB tooling image (prisma migrate deploy + admin seed) — pulled
       # on the box only when a release ships migrations. See DEPLOYMENT.md.
+      # Published as a TAG of the main (public) package — a separate
+      # ghcr.io/…/sofra-migrate package would be created private by org
+      # default, and GHCR visibility can't be changed via API.
       - id: meta-migrate
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
-          images: ghcr.io/${{ github.repository }}-migrate
+          images: ghcr.io/${{ github.repository }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,format=long
-            type=ref,event=tag
+            type=raw,value=migrate,enable={{is_default_branch}}
+            type=sha,format=long,prefix=migrate-
 
       - uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
