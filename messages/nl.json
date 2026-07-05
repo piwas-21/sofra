@@ -1,0 +1,211 @@
+{
+  "meta": {
+    "title": "Sofra — Restaurantsoftware met een warm hart",
+    "description": "QR-menu's, live bestellingen, reserveringen en spaarpunten — één keukenvriendelijk platform, elke service bewezen in een echt restaurant. Sofra betekent: een gedekte tafel voor gasten."
+  },
+  "header": {
+    "features": "Op het vuur",
+    "pricing": "De kaart",
+    "waitlist": "Op de wachtlijst",
+    "themeToggle": "Donkere modus wisselen",
+    "localeSwitcher": "Taal wijzigen",
+    "live": "Bekijk het live",
+    "partner": "Partners",
+    "signIn": "Inloggen"
+  },
+  "hero": {
+    "stamp": "Handgemaakt in Europa",
+    "titleLine1": "Dek de tafel.",
+    "titleLine2": "Wij doen de rest.",
+    "subtitle": "Sofra is het warmhartige restaurantplatform: QR-menu's, live bestellingen, reserveringen en spaarpunten — alles wat je bediening en keuken nodig hebben, op één tafel.",
+    "note": "Een «sofra» is een tafel, gedekt voor gasten. Dat is onze hele filosofie.",
+    "ctaPrimary": "Op de wachtlijst",
+    "ctaSecondary": "Kijk wat er op het vuur staat",
+    "proof": "Draait elke service bij RUMI Restaurant in Genève — bestellingen, keuken, reserveringen en printers, live in productie."
+  },
+  "features": {
+    "label": "Op het vuur",
+    "title": "Alles op één tafel",
+    "subtitle": "Zes gangen, geen opvulling. Elk ervan eerst beproefd in een echt restaurant voordat het deze pagina haalde.",
+    "items": {
+      "qr": {
+        "title": "QR-menu's & bestellen",
+        "text": "Gasten scannen, bladeren en bestellen vanaf tafel — met foto's, allergenen en aanpassingen. Geen app nodig."
+      },
+      "live": {
+        "title": "Live bestelborden",
+        "text": "Keuken, kassa en bediening hebben elk hun eigen live overzicht. Nieuwe bestellingen komen binnen op de seconde dat ze geplaatst worden."
+      },
+      "reservations": {
+        "title": "Reserveringen",
+        "text": "Tafelindeling, openingstijden en beschikbaarheid — gasten boeken online, jij keurt goed met één tik."
+      },
+      "loyalty": {
+        "title": "Spaarpunten",
+        "text": "Punten die vaste gasten laten terugkomen, met kortingsregels die jij per klantgroep instelt."
+      },
+      "printing": {
+        "title": "Keukenbonnen, geprint",
+        "text": "Een hulp-app stuurt je thermische printers aan — bestellingen komen op papier de keuken binnen, precies waar jij ze wilt."
+      },
+      "languages": {
+        "title": "10 talen ingebouwd",
+        "text": "Je menukaart spreekt de taal van je gasten — van Frans tot Nederlands tot Arabisch."
+      }
+    }
+  },
+  "how": {
+    "label": "Zo werkt het",
+    "title": "Drie stappen, geen poespas",
+    "steps": {
+      "one": {
+        "title": "Vertel ons over je zaak",
+        "text": "Naam, kaart, tafels, tijden. Een gesprek, geen installatiewizard."
+      },
+      "two": {
+        "title": "Wij dekken jouw sofra",
+        "text": "Wij zetten je menukaart, QR-codes, printers en personeelsschermen klaar — en geven jou de sleutels."
+      },
+      "three": {
+        "title": "Jij serveert",
+        "text": "Bestellingen stromen binnen, bonnen rollen eruit, vaste gasten sparen punten. Wij houden achter de schermen de borden in de lucht."
+      }
+    }
+  },
+  "showcase": {
+    "label": "Het bewijs op het bord",
+    "title": "Proef het live",
+    "subtitle": "Sofra is geen dia-demo — het draait sinds dag één een echte eetzaal, elke service opnieuw.",
+    "cardStamp": "Live in productie",
+    "cardTitle": "RUMI Restaurant — Genève",
+    "cardBody": "QR-menu's op elke tafel, bestellingen op de keuken- en kassaschermen, reserveringen, spaarpunten en thermische bonnen — allemaal op Sofra.",
+    "cardHint": "Open de kaart en blader als een gast — dat is precies het product.",
+    "visit": "Bezoek rumirestaurant.ch",
+    "ctaTitle": "Wil je dit op jouw tafels?",
+    "ctaBody": "Restaurant, café of afhaalzaak — vertel ons over je zaak en we komen binnen een dag bij je terug.",
+    "demo": "Vraag een demo aan",
+    "call": "Plan een gesprek",
+    "quote": "Vraag een offerte"
+  },
+  "pricing": {
+    "label": "De kaart",
+    "title": "Dagmenu",
+    "subtitle": "Vroege toegang — zo simpel als een krijtbord.",
+    "founding": {
+      "name": "Oprichtersrestaurants",
+      "price": "van het huis",
+      "detail": "Gratis tijdens de vroege toegang. Persoonlijke onboarding, een directe lijn met de makers en een stem in wat we hierna koken."
+    },
+    "regular": {
+      "name": "Vaste kaart",
+      "price": "binnenkort",
+      "detail": "Eerlijke maandprijzen zodra de vroege toegang voorbij is. Oprichtersrestaurants houden levenslang korting."
+    },
+    "note": "Geen creditcard nodig. Geen verplichtingen. Je gegevens blijven van jou."
+  },
+  "partner": {
+    "label": "Partners",
+    "title": "Dek tafels met ons mee",
+    "subtitle": "Jij kent restaurateurs die betere software verdienen. Breng ze aan tafel — wij regelen de techniek, jij houdt de relatie.",
+    "points": {
+      "find": {
+        "title": "Vind",
+        "text": "Spot restaurants en cafés die Sofra geweldig zouden vinden — jouw netwerk, jouw steden."
+      },
+      "onboard": {
+        "title": "Begeleid",
+        "text": "Volg elke klant van eerste gesprek tot live service in je partnerdashboard; wij doen de technische installatie."
+      },
+      "earn": {
+        "title": "Verdien",
+        "text": "Een commissie voor elk restaurant dat jij aanbrengt en live gaat. Transparant grootboek, geen kleine lettertjes."
+      }
+    },
+    "form": {
+      "name": "Je naam",
+      "email": "E-mail",
+      "company": "Bedrijf / bureau (optioneel)",
+      "city": "Stad",
+      "message": "Vertel iets over jezelf en de restaurants die je in gedachten hebt…",
+      "submit": "Meld je aan als partner",
+      "sending": "Versturen…",
+      "success": "Aanmelding ontvangen! We bekijken elke partner persoonlijk en komen binnen een paar dagen bij je terug.",
+      "error": "Er ging iets mis — probeer het over een minuut opnieuw.",
+      "invalidEmail": "Vul een geldig e-mailadres in."
+    },
+    "loginHint": "Al partner?",
+    "loginLink": "Inloggen"
+  },
+  "waitlist": {
+    "label": "Reserveer je plek",
+    "title": "Schuif aan tafel",
+    "subtitle": "We verwelkomen restaurants in kleine groepjes, persoonlijk. Laat je gegevens achter en we dekken een plekje voor je.",
+    "form": {
+      "name": "Je naam",
+      "email": "E-mail",
+      "restaurant": "Naam van het restaurant",
+      "city": "Stad",
+      "submit": "Op de wachtlijst",
+      "sending": "Versturen…",
+      "success": "Je staat op de lijst! We laten snel van ons horen — afiyet olsun.",
+      "error": "Er ging iets mis. Mail ons dan:",
+      "invalidEmail": "Vul een geldig e-mailadres in.",
+      "intentLabel": "Wat mag het zijn?",
+      "intents": {
+        "waitlist": "Op de wachtlijst",
+        "demo": "Vraag een demo aan",
+        "call": "Plan een gesprek",
+        "quote": "Vraag een offerte"
+      },
+      "successRequest": "Genoteerd! We komen binnen een dag bij je terug — afiyet olsun."
+    }
+  },
+  "footer": {
+    "tagline": "Een sofra is een tafel, gedekt voor gasten.",
+    "madeIn": "Gekookt in Nederland, voor het eerst geserveerd in Genève",
+    "nav": {
+      "features": "Op het vuur",
+      "pricing": "De kaart",
+      "waitlist": "Wachtlijst",
+      "live": "Bekijk het live",
+      "partner": "Partners",
+      "faq": "FAQ"
+    },
+    "copyright": "© {year} Sofra. Alle rechten voorbehouden."
+  },
+  "faq": {
+    "label": "Vragen",
+    "title": "Gevraagd aan de toonbank",
+    "subtitle": "Rechttoe rechtaan antwoorden, zonder menupraat.",
+    "items": {
+      "what": {
+        "q": "Wat is Sofra?",
+        "a": "Sofra is een platform voor restaurantbeheer: QR-menu's en online bestellen, live bestelborden voor keuken, kassa en bediening, reserveringen, spaarpunten en bonnen op thermische printers — alles op één plek. Het is voortgekomen uit het systeem dat elke service draait bij RUMI Restaurant in Genève."
+      },
+      "pricing": {
+        "q": "Wat kost Sofra?",
+        "a": "Tijdens de vroege toegang betalen oprichtersrestaurants niets — installatie en support zijn van het huis, en oprichters houden levenslang korting wanneer de vaste prijzen komen. De vaste plannen worden simpel: een vast maandbedrag met optionele extra modules."
+      },
+      "payments": {
+        "q": "Kunnen mijn gasten online betalen — ook met iDEAL of TWINT?",
+        "a": "Online betalen staat op de roadmap als extra module, met lokale betaalmethoden zoals iDEAL in Nederland en TWINT in Zwitserland naast kaarten. Vandaag komen bestellingen binnen aan je balie en reken je af zoals je gewend bent."
+      },
+      "languages": {
+        "q": "Welke talen ondersteunt de menukaart?",
+        "a": "Tien talen uit de doos — Engels, Frans, Duits, Nederlands, Italiaans, Spaans, Turks, Arabisch, Russisch en Chinees. Je gasten bestellen in hun eigen taal, van dezelfde kaart."
+      },
+      "printing": {
+        "q": "Werkt het met mijn keukenprinter?",
+        "a": "Ja. Een hulp-app (Windows en Android) stuurt ESC/POS thermische printers aan via het netwerk, zodat bestellingen in de keuken geprint worden, precies waar jij ze wilt — zonder extra hardware-abonnement."
+      },
+      "who": {
+        "q": "Wie zit er achter Sofra, en wordt het echt gebruikt?",
+        "a": "Sofra wordt gebouwd door een klein team uit Nederland en draait elke live service bij RUMI Restaurant in Genève (rumirestaurant.ch) — bestellingen, keukenbord, reserveringen en printers zijn daar sinds juni 2026 in productie. Nieuwe restaurants onboarden we persoonlijk."
+      },
+      "domain": {
+        "q": "Kan ik mijn eigen domeinnaam gebruiken?",
+        "a": "Ja. Elk restaurant krijgt een gratis sofra-subdomein, en je kunt een domein koppelen dat je al bezit — of wij registreren tijdens de installatie een gloednieuw domein voor je."
+      }
+    }
+  }
+}

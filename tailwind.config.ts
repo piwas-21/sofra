@@ -127,14 +127,17 @@ const config: Config = {
         craft: "255px 15px 225px 15px / 15px 225px 15px 255px",
       },
       fontFamily: {
+        // Each chain lists the Latin craft font first, then its Arabic
+        // companion (--font-arabic / --font-arabic-display) — the craft fonts
+        // have no Arabic glyphs, so Arabic text falls through to the companion.
         // Body: soft rounded sans
-        sans: ["var(--font-sans)", "Quicksand", "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "var(--font-arabic)", "Quicksand", "system-ui", "sans-serif"],
         // Display / hero headlines: rough hand-painted feel
-        display: ["var(--font-display)", "Amatic SC", "cursive"],
+        display: ["var(--font-display)", "var(--font-arabic-display)", "Amatic SC", "cursive"],
         // Section headings / subheads: elegant flowing handwriting
-        hand: ["var(--font-hand)", "Caveat", "cursive"],
+        hand: ["var(--font-hand)", "var(--font-arabic-display)", "Caveat", "cursive"],
         // Labels / badges / small UI: neat handwriting
-        label: ["var(--font-label)", "Kalam", "cursive"],
+        label: ["var(--font-label)", "var(--font-arabic)", "Kalam", "cursive"],
         // Code / technical: typewriter with ink-bleed texture
         mono: ["var(--font-mono)", "Special Elite", "monospace"],
       },

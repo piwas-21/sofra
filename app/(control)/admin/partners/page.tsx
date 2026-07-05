@@ -1,6 +1,6 @@
 import { requireAdmin } from "@/lib/rbac";
 import { db } from "@/lib/db";
-import { chf } from "@/lib/format";
+import { eur } from "@/lib/format";
 
 export default async function AdminPartnersPage() {
   await requireAdmin();
@@ -41,7 +41,7 @@ export default async function AdminPartnersPage() {
                 </span>
                 <span className="font-label text-sm text-muted-foreground text-right">
                   {p._count.clients} client{p._count.clients === 1 ? "" : "s"}
-                  <span className="block font-mono">{chf(balance)}</span>
+                  <span className="block font-mono">{eur(balance)}</span>
                 </span>
               </a>
             </li>
