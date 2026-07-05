@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.env
+.env.*
+!.env.example
+lib/generated
+scripts/e2e-local.mjs
+docs
+README.md

@@ -16,6 +16,23 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
 
+# One-off DB tooling for the box (which deploys images only — no repo, no
+# npm in the runtime image). Full deps tree, so the prisma CLI and the seed
+# script's imports (pg, bcryptjs) all resolve; linux-musl binaries because
+# npm ci ran in the deps stage. Published as ghcr.io/piwas-21/sofra-migrate.
+#   migrate: docker run --rm --network <net> -e DATABASE_URL=… <img>
+#   seed:    docker run --rm --network <net> -e DATABASE_URL=… -e ADMIN_EMAIL=… \
+#              -e ADMIN_NAME=… -e ADMIN_PASSWORD=… <img> node scripts/seed-admin.mjs
+FROM node:22-alpine AS migrate
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json prisma.config.ts ./
+COPY prisma ./prisma
+COPY scripts/seed-admin.mjs ./scripts/seed-admin.mjs
+USER node
+CMD ["node", "node_modules/prisma/build/index.js", "migrate", "deploy"]
+
 FROM node:22-alpine AS runner
 WORKDIR /app
 
@@ -38,6 +55,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Healthcheck probe is never imported by the app, so output-file-tracing
 # doesn't bundle it — copy explicitly (same gotcha as the frontend image).
 COPY --from=builder --chown=nextjs:nodejs /app/healthcheck.js ./healthcheck.js
+
+# NOTE: DB migrations/seed do NOT live in this image — they run from the
+# sibling `migrate` target (published as ghcr.io/piwas-21/sofra-migrate),
+# keeping this runtime image slim. See DEPLOYMENT.md for the one-off commands.
 
 USER nextjs
 EXPOSE 3000

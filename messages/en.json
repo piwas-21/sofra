@@ -9,7 +9,9 @@
     "waitlist": "Join the waitlist",
     "themeToggle": "Toggle dark mode",
     "localeSwitcher": "Change language",
-    "live": "See it live"
+    "live": "See it live",
+    "partner": "Partners",
+    "signIn": "Sign in"
   },
   "hero": {
     "stamp": "Handcrafted in Geneva",
