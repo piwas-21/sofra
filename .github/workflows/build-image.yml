@@ -48,10 +48,33 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          target: runner
           push: true
           build-args: |
             NEXT_PUBLIC_SITE_URL=${{ vars.SITE_URL || 'https://sofrapiwas.com' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # One-off DB tooling image (prisma migrate deploy + admin seed) — pulled
+      # on the box only when a release ships migrations. See DEPLOYMENT.md.
+      - id: meta-migrate
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
+        with:
+          images: ghcr.io/${{ github.repository }}-migrate
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=long
+            type=ref,event=tag
+
+      - uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          file: ./Dockerfile
+          target: migrate
+          push: true
+          tags: ${{ steps.meta-migrate.outputs.tags }}
+          labels: ${{ steps.meta-migrate.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

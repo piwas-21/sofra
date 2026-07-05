@@ -22,6 +22,9 @@ export default function Header() {
           <a href="#pricing" className="hover:text-primary transition-colors">
             {t("pricing")}
           </a>
+          <a href="#partner" className="hover:text-primary transition-colors">
+            {t("partner")}
+          </a>
           <a
             href="#waitlist"
             className="btn-artisanal rounded-craft border-2 border-primary text-primary px-4 py-1.5"
@@ -31,6 +34,12 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <a
+            href="/login"
+            className="font-label text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
+            {t("signIn")}
+          </a>
           <LocaleSwitcher label={t("localeSwitcher")} />
           <ThemeToggle label={t("themeToggle")} />
         </div>

@@ -6,6 +6,7 @@ import HowItWorks from "@/components/HowItWorks";
 import ShowcaseSection from "@/components/ShowcaseSection";
 import MenuBoard from "@/components/MenuBoard";
 import WaitlistSection from "@/components/WaitlistSection";
+import PartnerSection from "@/components/PartnerSection";
 import Footer from "@/components/Footer";
 
 export default async function LandingPage({
@@ -26,6 +27,7 @@ export default async function LandingPage({
         <ShowcaseSection />
         <MenuBoard />
         <WaitlistSection />
+        <PartnerSection />
       </main>
       <Footer />
     </>

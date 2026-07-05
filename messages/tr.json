@@ -9,7 +9,9 @@
     "waitlist": "Bekleme listesine katıl",
     "themeToggle": "Karanlık modu değiştir",
     "localeSwitcher": "Dili değiştir",
-    "live": "Canlı örnek"
+    "live": "Canlı örnek",
+    "partner": "Partnerler",
+    "signIn": "Giriş"
   },
   "hero": {
     "stamp": "Cenevre'de el yapımı",
@@ -101,6 +103,39 @@
     },
     "note": "Kart gerekmez. Bağlayıcılık yok. Verileriniz sizindir."
   },
+  "partner": {
+    "label": "Partnerler",
+    "title": "Bizimle sofra kurun",
+    "subtitle": "Daha iyi bir yazılımı hak eden restorancılar tanıyorsunuz. Onları sofraya getirin — teknik tarafı biz üstlenelim, ilişki sizde kalsın.",
+    "points": {
+      "find": {
+        "title": "Bulun",
+        "text": "Sofra'yı sevecek restoran ve kafeleri keşfedin — sizin çevreniz, sizin şehirleriniz."
+      },
+      "onboard": {
+        "title": "Kazandırın",
+        "text": "Her müşteriyi ilk aramadan canlı servise kadar partner panelinizden takip edin; teknik kurulumu biz yapalım."
+      },
+      "earn": {
+        "title": "Kazanın",
+        "text": "Canlıya geçen her restoran için komisyon. Şeffaf hesap defteri, küçük yazı yok."
+      }
+    },
+    "form": {
+      "name": "Adınız",
+      "email": "E-posta",
+      "company": "Şirket / ajans (isteğe bağlı)",
+      "city": "Şehir",
+      "message": "Kendinizden ve aklınızdaki restoranlardan bahsedin…",
+      "submit": "Partner olarak başvur",
+      "sending": "Gönderiliyor…",
+      "success": "Başvurunuz alındı! Her partneri bizzat değerlendiriyoruz; birkaç gün içinde dönüş yapacağız.",
+      "error": "Bir şeyler ters gitti — bir dakika sonra tekrar deneyin.",
+      "invalidEmail": "Lütfen geçerli bir e-posta adresi girin."
+    },
+    "loginHint": "Zaten partner misiniz?",
+    "loginLink": "Giriş yapın"
+  },
   "waitlist": {
     "label": "Yerinizi ayırtın",
     "title": "Sofrada size de yer var",
@@ -132,7 +167,8 @@
       "features": "Mutfakta ne var",
       "pricing": "Menü",
       "waitlist": "Bekleme listesi",
-      "live": "Canlı örnek"
+      "live": "Canlı örnek",
+      "partner": "Partnerler"
     },
     "copyright": "© {year} Sofra. Tüm hakları saklıdır."
   }
