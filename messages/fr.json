@@ -101,6 +101,39 @@
     },
     "note": "Pas de carte bancaire. Pas d'engagement. Vos données restent les vôtres."
   },
+  "partner": {
+    "label": "Partenaires",
+    "title": "Dressez des tables avec nous",
+    "subtitle": "Vous connaissez des restaurateurs qui méritent un meilleur logiciel. Amenez-les à table — nous gérons la technique, vous gardez la relation.",
+    "points": {
+      "find": {
+        "title": "Trouvez",
+        "text": "Repérez les restaurants et cafés qui aimeraient Sofra — votre réseau, vos villes."
+      },
+      "onboard": {
+        "title": "Accompagnez",
+        "text": "Suivez chaque client du premier appel au service en salle dans votre tableau de bord ; nous faisons l'installation technique."
+      },
+      "earn": {
+        "title": "Gagnez",
+        "text": "Une commission pour chaque restaurant que vous amenez et qui passe en production. Registre transparent, sans petites lignes."
+      }
+    },
+    "form": {
+      "name": "Votre nom",
+      "email": "Email",
+      "company": "Société / agence (facultatif)",
+      "city": "Ville",
+      "message": "Parlez-nous de vous et des restaurants auxquels vous pensez…",
+      "submit": "Devenir partenaire",
+      "sending": "Envoi…",
+      "success": "Candidature reçue ! Nous examinons chaque partenaire personnellement et revenons vers vous d'ici quelques jours.",
+      "error": "Une erreur s'est produite — réessayez dans une minute.",
+      "invalidEmail": "Veuillez saisir une adresse email valide."
+    },
+    "loginHint": "Déjà partenaire ?",
+    "loginLink": "Se connecter"
+  },
   "waitlist": {
     "label": "Réservez votre place",
     "title": "Prenez place à la table",
@@ -132,7 +165,8 @@
       "features": "Au menu",
       "pricing": "La carte",
       "waitlist": "Liste d'attente",
-      "live": "Voir en vrai"
+      "live": "Voir en vrai",
+      "partner": "Partenaires"
     },
     "copyright": "© {year} Sofra. Tous droits réservés."
   }

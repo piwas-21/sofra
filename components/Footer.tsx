@@ -26,6 +26,9 @@ export default function Footer() {
           <a href="#waitlist" className="hover:text-primary transition-colors">
             {t("nav.waitlist")}
           </a>
+          <a href="#partner" className="hover:text-primary transition-colors">
+            {t("nav.partner")}
+          </a>
         </nav>
 
         <div className="text-sm text-muted-foreground">
