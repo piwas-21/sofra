@@ -1,0 +1,155 @@
+// Sofra control plane — partner program v1 (SOFRA-PARTNER-PLAN.md).
+// Prisma 7: no Rust engine; runtime goes through @prisma/adapter-pg (see lib/db.ts).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  PARTNER
+}
+
+enum UserStatus {
+  INVITED
+  ACTIVE
+  DISABLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ClientStatus {
+  LEAD
+  CONTACTED
+  DEMO_SCHEDULED
+  AGREED
+  ONBOARDING
+  LIVE
+  CHURNED
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String?
+  name         String
+  role         UserRole   @default(PARTNER)
+  status       UserStatus @default(INVITED)
+  createdAt    DateTime   @default(now())
+
+  profile      PartnerProfile?
+  clients      Client[]
+  notes        ClientNote[]
+  commissions  CommissionEntry[]   @relation("PartnerCommissions")
+  createdEntries CommissionEntry[] @relation("EntryAuthor")
+  inviteTokens InviteToken[]
+  auditLogs    AuditLog[]
+}
+
+model PartnerApplication {
+  id        String            @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  city      String?
+  message   String
+  locale    String            @default("en")
+  status    ApplicationStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+  decidedAt DateTime?
+
+  @@index([status, createdAt])
+}
+
+model PartnerProfile {
+  userId  String  @id
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company String?
+  phone   String?
+  city    String?
+  // Founder-only notes — never rendered in partner-facing views.
+  notes   String?
+}
+
+model Client {
+  id             String       @id @default(cuid())
+  partnerId      String
+  partner        User         @relation(fields: [partnerId], references: [id])
+  restaurantName String
+  contactName    String?
+  email          String?
+  phone          String?
+  city           String?
+  status         ClientStatus @default(LEAD)
+  // Set by ADMIN only, after founder-operated provisioning (ADR-003/006).
+  tenantSlug     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  clientNotes ClientNote[]
+  commissions CommissionEntry[]
+
+  @@index([partnerId, status])
+}
+
+model ClientNote {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([clientId, createdAt])
+}
+
+model CommissionEntry {
+  id          String   @id @default(cuid())
+  partnerId   String
+  partner     User     @relation("PartnerCommissions", fields: [partnerId], references: [id])
+  clientId    String?
+  client      Client?  @relation(fields: [clientId], references: [id])
+  amountCents Int
+  currency    String   @default("CHF")
+  note        String
+  createdAt   DateTime @default(now())
+  createdById String
+  createdBy   User     @relation("EntryAuthor", fields: [createdById], references: [id])
+
+  @@index([partnerId, createdAt])
+}
+
+// Set-password invites and password resets. Token stored hashed, single-use.
+model InviteToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  purpose   String    @default("invite") // "invite" | "reset"
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id])
+  action     String
+  entityType String?
+  entityId   String?
+  meta       Json?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
