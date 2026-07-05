@@ -1,23 +1,19 @@
 "use client";
 
-import { useRef } from "react";
 import { useActionState } from "react";
 import { addNoteAction, type PartnerActionState } from "@/lib/actions/partner-actions";
 import { ErrorMessage } from "./StatusMessage";
 
+/**
+ * Bound directly to the server action so the form also works without JS
+ * (progressive enhancement). The parent keys this component by the note
+ * count, so a successful add re-mounts it with an empty textarea.
+ */
 export default function NoteForm({ clientId }: { clientId: string }) {
-  const ref = useRef<HTMLFormElement>(null);
-  const [state, action, pending] = useActionState<PartnerActionState, FormData>(
-    async (prev: PartnerActionState, fd: FormData) => {
-      const result = await addNoteAction(prev, fd);
-      if (result.ok) ref.current?.reset();
-      return result;
-    },
-    {},
-  );
+  const [state, action, pending] = useActionState<PartnerActionState, FormData>(addNoteAction, {});
 
   return (
-    <form ref={ref} action={action} className="grid gap-3">
+    <form action={action} className="grid gap-3">
       <input type="hidden" name="id" value={clientId} />
       <textarea
         name="body"

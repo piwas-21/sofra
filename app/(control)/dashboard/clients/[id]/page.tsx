@@ -56,7 +56,8 @@ export default async function ClientDetailPage({
       <section className="ruled-lines hand-drawn-border bg-muted/40 p-6">
         <h2 className="font-hand text-3xl font-bold">Notes</h2>
         <div className="mt-4">
-          <NoteForm clientId={client.id} />
+          {/* Keyed by note count: a successful add re-mounts the form empty */}
+          <NoteForm key={client.clientNotes.length} clientId={client.id} />
         </div>
         <ul className="mt-6 grid gap-4">
           {client.clientNotes.map((n) => (
