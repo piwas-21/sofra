@@ -23,6 +23,9 @@ export default function Footer() {
           <a href="#pricing" className="hover:text-primary transition-colors">
             {t("nav.pricing")}
           </a>
+          <a href="#faq" className="hover:text-primary transition-colors">
+            {t("nav.faq")}
+          </a>
           <a href="#waitlist" className="hover:text-primary transition-colors">
             {t("nav.waitlist")}
           </a>

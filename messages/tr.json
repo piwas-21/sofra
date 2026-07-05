@@ -168,8 +168,44 @@
       "pricing": "Menü",
       "waitlist": "Bekleme listesi",
       "live": "Canlı örnek",
-      "partner": "Partnerler"
+      "partner": "Partnerler",
+      "faq": "SSS"
     },
     "copyright": "© {year} Sofra. Tüm hakları saklıdır."
+  },
+  "faq": {
+    "label": "Sorular",
+    "title": "Tezgâhta en çok sorulanlar",
+    "subtitle": "Dolambaçsız, net cevaplar.",
+    "items": {
+      "what": {
+        "q": "Sofra nedir?",
+        "a": "Sofra bir restoran yönetim platformudur: QR menü ve online sipariş, mutfak-kasa-garson için canlı sipariş panoları, rezervasyon, sadakat puanları ve termal yazıcı fişleri — hepsi tek yerde. Cenevre'deki RUMI Restaurant'ın tüm servisini yürüten sistemden doğdu."
+      },
+      "pricing": {
+        "q": "Sofra ne kadar?",
+        "a": "Erken erişim boyunca kurucu restoranlar hiçbir şey ödemez — kurulum ve destek ikramımızdır; normal fiyatlar geldiğinde kurucuların indirimi ömür boyu sürer. Planlar sade olacak: sabit aylık fiyat, isteğe bağlı ek modüller."
+      },
+      "payments": {
+        "q": "Misafirlerim online ödeyebilir mi — TWINT dahil?",
+        "a": "Online ödeme, ek modül olarak yol haritamızda; kartların yanında TWINT gibi İsviçre ödeme yöntemleri de planlandı. Bugün siparişler kasanıza düşer, her zamanki gibi tahsil edersiniz."
+      },
+      "languages": {
+        "q": "Menü hangi dilleri destekliyor?",
+        "a": "Kutudan dokuz dil — Türkçe, İngilizce, Fransızca, Almanca, İtalyanca, Arapça ve Japonca dahil. Misafirleriniz aynı menüden kendi dillerinde sipariş verir."
+      },
+      "printing": {
+        "q": "Mutfak yazıcımla çalışır mı?",
+        "a": "Evet. Yardımcı uygulama (Windows ve Android) ağ üzerinden ESC/POS termal yazıcıları sürer; siparişler mutfakta tam istediğiniz yerde basılır — ekstra donanım aboneliği yok."
+      },
+      "who": {
+        "q": "Sofra'nın arkasında kim var, gerçekten kullanılıyor mu?",
+        "a": "Sofra Cenevre'de geliştiriliyor ve RUMI Restaurant'ın (rumirestaurant.ch) tüm canlı servisini yürütüyor — siparişler, mutfak panosu, rezervasyonlar ve yazıcılar Haziran 2026'dan beri orada üretimde. Yeni restoranları birebir ağırlıyoruz."
+      },
+      "domain": {
+        "q": "Kendi alan adımı kullanabilir miyim?",
+        "a": "Evet. Her restorana ücretsiz bir sofra alt alan adı verilir; sahip olduğunuz bir alan adını bağlayabilirsiniz — ya da kurulum sırasında sizin için yepyeni bir alan adı kaydederiz."
+      }
+    }
   }
 }
