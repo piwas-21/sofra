@@ -4,12 +4,21 @@ import { useActionState } from "react";
 import { setPasswordAction, type FormState } from "@/lib/actions/auth-actions";
 import { ErrorMessage } from "./StatusMessage";
 
+export type SetPasswordLabels = {
+  newPassword: string;
+  repeatPassword: string;
+  submit: string;
+  saving: string;
+};
+
 export default function SetPasswordForm({
   token,
   purpose,
+  labels,
 }: {
   token: string;
   purpose: "invite" | "reset";
+  labels: SetPasswordLabels;
 }) {
   const [state, action, pending] = useActionState<FormState, FormData>(setPasswordAction, {});
 
@@ -23,8 +32,8 @@ export default function SetPasswordForm({
         required
         minLength={10}
         autoComplete="new-password"
-        placeholder="New password (min. 10 characters)"
-        aria-label="New password"
+        placeholder={labels.newPassword}
+        aria-label={labels.newPassword}
         className="input-primary"
       />
       <input
@@ -33,13 +42,13 @@ export default function SetPasswordForm({
         required
         minLength={10}
         autoComplete="new-password"
-        placeholder="Repeat password"
-        aria-label="Repeat password"
+        placeholder={labels.repeatPassword}
+        aria-label={labels.repeatPassword}
         className="input-primary"
       />
       <div>
         <button type="submit" disabled={pending} className="btn-primary disabled:opacity-60">
-          {pending ? "Saving…" : "Set password"}
+          {pending ? labels.saving : labels.submit}
         </button>
       </div>
       <ErrorMessage>{state.error}</ErrorMessage>

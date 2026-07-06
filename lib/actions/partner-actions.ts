@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { requirePartner } from "@/lib/rbac";
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
-import { sendEmail, escapeHtml, founderInbox, siteUrl } from "@/lib/email";
+import { sendEmail, founderInbox, siteUrl } from "@/lib/email";
+import { craftEmail, detailRows } from "@/lib/email-templates";
 import { clientSchema, noteSchema, partnerStatusSchema } from "@/lib/validation";
 
 export type PartnerActionState = { error?: string; ok?: boolean };
@@ -147,15 +148,19 @@ export async function requestOnboardingAction(
   if (to) {
     await sendEmail({
       to,
-      subject: `Sofra onboarding request: ${client.restaurantName}`,
-      html: `<h2>Onboarding requested</h2>
-<ul>
-  <li><b>Restaurant:</b> ${escapeHtml(client.restaurantName)}</li>
-  <li><b>City:</b> ${escapeHtml(client.city ?? "—")}</li>
-  <li><b>Contact:</b> ${escapeHtml(client.contactName ?? "—")} ${escapeHtml(client.email ?? "")}</li>
-  <li><b>Partner:</b> ${escapeHtml(partner.name)} (${escapeHtml(partner.email)})</li>
-</ul>
-<p><a href="${siteUrl()}/admin/clients">Open admin</a> — provision via the deploy-repo scripts, then mark LIVE.</p>`,
+      subject: `Sofra — Onboarding request: ${client.restaurantName}`,
+      html: craftEmail({
+        kicker: "Partner pipeline",
+        title: "Onboarding requested",
+        bodyHtml: detailRows([
+          ["Restaurant", client.restaurantName],
+          ["City", client.city ?? "—"],
+          ["Contact", `${client.contactName ?? "—"} ${client.email ?? ""}`.trim()],
+          ["Partner", `${partner.name} (${partner.email})`],
+        ]),
+        cta: { label: "Open admin", url: `${siteUrl()}/admin/clients` },
+        footerNote: "Provision via the deploy-repo scripts, then mark LIVE.",
+      }),
     });
   }
 

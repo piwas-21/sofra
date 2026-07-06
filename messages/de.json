@@ -6,7 +6,7 @@
   "header": {
     "features": "Auf dem Herd",
     "pricing": "Die Karte",
-    "waitlist": "Auf die Warteliste",
+    "waitlist": "Jetzt starten",
     "themeToggle": "Dunkelmodus umschalten",
     "localeSwitcher": "Sprache wechseln",
     "live": "Live ansehen",
@@ -19,7 +19,7 @@
     "titleLine2": "Wir kümmern uns um den Rest.",
     "subtitle": "Sofra ist die herzliche Restaurant-Plattform: QR-Menüs, Live-Bestellungen, Reservierungen und Treuepunkte — alles, was Ihr Service und Ihre Küche brauchen, auf einem Tisch.",
     "note": "Eine «Sofra» ist ein für Gäste gedeckter Tisch. Das ist unsere ganze Philosophie.",
-    "ctaPrimary": "Auf die Warteliste",
+    "ctaPrimary": "Jetzt starten",
     "ctaSecondary": "Sehen, was auf dem Herd steht",
     "proof": "Läuft in jedem Service im RUMI Restaurant, Genf — Bestellungen, Küche, Reservierungen und Drucker, live in Produktion."
   },
@@ -139,20 +139,17 @@
   "waitlist": {
     "label": "Platz reservieren",
     "title": "Nehmen Sie Platz am Tisch",
-    "subtitle": "Wir nehmen Restaurants in kleinen Runden auf, ganz persönlich. Hinterlassen Sie Ihre Daten und wir decken für Sie mit ein.",
+    "subtitle": "Keine Warteliste — wir nehmen Restaurants persönlich auf, eines nach dem anderen. Erzählen Sie uns von Ihrem Lokal und wir legen los.",
     "form": {
       "name": "Ihr Name",
       "email": "E-Mail",
       "restaurant": "Name des Restaurants",
       "city": "Stadt",
-      "submit": "Auf die Warteliste",
       "sending": "Wird gesendet…",
-      "success": "Sie stehen auf der Liste! Wir melden uns bald — afiyet olsun.",
       "error": "Etwas ist schiefgelaufen. Schreiben Sie uns stattdessen:",
       "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
       "intentLabel": "Was darf es sein?",
       "intents": {
-        "waitlist": "Auf die Warteliste",
         "demo": "Demo anfragen",
         "call": "Gespräch buchen",
         "quote": "Angebot erhalten"
@@ -160,13 +157,39 @@
       "successRequest": "Angekommen! Wir melden uns innerhalb eines Tages — afiyet olsun."
     }
   },
+  "auth": {
+    "loginTitle": "Partner-Anmeldung",
+    "loginIntro": "Für Sofra-Partner. Noch kein Partner?",
+    "becomeOne": "Werden Sie einer.",
+    "passwordSaved": "Passwort gespeichert — Sie können sich jetzt anmelden.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "signIn": "Anmelden",
+    "signingIn": "Anmeldung…",
+    "forgotLink": "Passwort vergessen?",
+    "forgotTitle": "Passwort vergessen",
+    "forgotIntro": "Geben Sie die E-Mail-Adresse Ihres Kontos ein und wir senden Ihnen einen einmaligen Link zum Zurücksetzen.",
+    "sendReset": "Link senden",
+    "sending": "Wird gesendet…",
+    "resetSent": "Falls zu dieser Adresse ein Partnerkonto existiert, ist ein Link zum Zurücksetzen unterwegs.",
+    "inviteTitle": "Willkommen an Bord",
+    "inviteIntro": "Hallo {name} — legen Sie ein Passwort fest, um Ihr Partner-Dashboard zu öffnen.",
+    "inviteInvalid": "Dieser Einladungslink ist ungültig oder abgelaufen. Antworten Sie auf Ihre Bestätigungs-E-Mail und wir senden Ihnen einen neuen.",
+    "resetTitle": "Neues Passwort",
+    "resetInvalid": "Dieser Link zum Zurücksetzen ist ungültig oder abgelaufen.",
+    "requestNew": "Fordern Sie einen neuen an.",
+    "newPassword": "Neues Passwort (mind. 10 Zeichen)",
+    "repeatPassword": "Passwort wiederholen",
+    "setPassword": "Passwort festlegen",
+    "saving": "Wird gespeichert…"
+  },
   "footer": {
     "tagline": "Eine Sofra ist ein für Gäste gedeckter Tisch.",
     "madeIn": "Gekocht in den Niederlanden, zuerst serviert in Genf",
     "nav": {
       "features": "Auf dem Herd",
       "pricing": "Die Karte",
-      "waitlist": "Warteliste",
+      "waitlist": "Jetzt starten",
       "live": "Live ansehen",
       "partner": "Partner",
       "faq": "FAQ"

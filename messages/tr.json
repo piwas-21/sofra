@@ -6,7 +6,7 @@
   "header": {
     "features": "Mutfakta ne var",
     "pricing": "Menü",
-    "waitlist": "Bekleme listesine katıl",
+    "waitlist": "Hemen başlayın",
     "themeToggle": "Karanlık modu değiştir",
     "localeSwitcher": "Dili değiştir",
     "live": "Canlı örnek",
@@ -19,7 +19,7 @@
     "titleLine2": "Gerisi bizden.",
     "subtitle": "Sofra, sıcacık bir restoran platformu: QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — salonunuzun ve mutfağınızın ihtiyacı olan her şey, tek sofrada.",
     "note": "Sofra, misafirler için kurulan masadır. Bütün felsefemiz bu.",
-    "ctaPrimary": "Bekleme listesine katıl",
+    "ctaPrimary": "Hemen başlayın",
     "ctaSecondary": "Mutfakta ne var, bak",
     "proof": "Cenevre'deki RUMI Restaurant'ın tüm servisi Sofra ile dönüyor — siparişler, mutfak, rezervasyonlar ve yazıcılar, canlı."
   },
@@ -139,20 +139,17 @@
   "waitlist": {
     "label": "Yerinizi ayırtın",
     "title": "Sofrada size de yer var",
-    "subtitle": "Restoranları küçük gruplar hâlinde, birebir ağırlıyoruz. Bilgilerinizi bırakın, size de bir tabak koyalım.",
+    "subtitle": "Bekleme listesi yok — restoranları birebir, teker teker ağırlıyoruz. Mekânınızı anlatın, hemen başlayalım.",
     "form": {
       "name": "Adınız",
       "email": "E-posta",
       "restaurant": "Restoran adı",
       "city": "Şehir",
-      "submit": "Bekleme listesine katıl",
       "sending": "Gönderiliyor…",
-      "success": "Listedesiniz! Yakında yazacağız — afiyet olsun.",
       "error": "Bir şeyler ters gitti. Bize e-posta yazın:",
       "invalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
       "intentLabel": "Ne istersiniz?",
       "intents": {
-        "waitlist": "Bekleme listesine katıl",
         "demo": "Demo isteyin",
         "call": "Görüşme ayarlayın",
         "quote": "Teklif alın"
@@ -160,13 +157,39 @@
       "successRequest": "Aldık! Bir gün içinde dönüş yapacağız — afiyet olsun."
     }
   },
+  "auth": {
+    "loginTitle": "Partner girişi",
+    "loginIntro": "Sofra partnerleri için. Henüz partner değil misiniz?",
+    "becomeOne": "Partner olun.",
+    "passwordSaved": "Şifre kaydedildi — şimdi giriş yapabilirsiniz.",
+    "email": "E-posta",
+    "password": "Şifre",
+    "signIn": "Giriş yap",
+    "signingIn": "Giriş yapılıyor…",
+    "forgotLink": "Şifrenizi mi unuttunuz?",
+    "forgotTitle": "Şifremi unuttum",
+    "forgotIntro": "Hesap e-postanızı girin, tek kullanımlık sıfırlama bağlantısı gönderelim.",
+    "sendReset": "Bağlantıyı gönder",
+    "sending": "Gönderiliyor…",
+    "resetSent": "Bu adrese kayıtlı bir partner hesabı varsa, sıfırlama bağlantısı yolda.",
+    "inviteTitle": "Aramıza hoş geldiniz",
+    "inviteIntro": "Merhaba {name} — partner panelinizi açmak için bir şifre belirleyin.",
+    "inviteInvalid": "Bu davet bağlantısı geçersiz ya da süresi dolmuş. Onay e-postanızı yanıtlayın, yenisini gönderelim.",
+    "resetTitle": "Yeni şifre",
+    "resetInvalid": "Bu sıfırlama bağlantısı geçersiz ya da süresi dolmuş.",
+    "requestNew": "Yenisini isteyin.",
+    "newPassword": "Yeni şifre (en az 10 karakter)",
+    "repeatPassword": "Şifreyi tekrarlayın",
+    "setPassword": "Şifreyi belirle",
+    "saving": "Kaydediliyor…"
+  },
   "footer": {
     "tagline": "Sofra, misafirler için kurulan masadır.",
     "madeIn": "Hollanda'da pişti, ilk servis Cenevre'de",
     "nav": {
       "features": "Mutfakta ne var",
       "pricing": "Menü",
-      "waitlist": "Bekleme listesi",
+      "waitlist": "Hemen başlayın",
       "live": "Canlı örnek",
       "partner": "Partnerler",
       "faq": "SSS"

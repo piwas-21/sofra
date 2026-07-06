@@ -29,9 +29,10 @@ export default async function LandingPage({
         <HowItWorks />
         <ShowcaseSection />
         <MenuBoard />
-        <FaqSection />
         <WaitlistSection />
         <PartnerSection />
+        {/* FAQ last — reference material, not the pitch (owner request 2026-07-06) */}
+        <FaqSection />
       </main>
       <Footer />
     </>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendEmail, escapeHtml, founderInbox, siteUrl } from "@/lib/email";
+import { craftEmail, detailRows } from "@/lib/email-templates";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { applySchema } from "@/lib/validation";
 import { audit } from "@/lib/audit";
@@ -50,17 +51,19 @@ export async function POST(request: Request) {
     await sendEmail({
       to,
       replyTo: data.email,
-      subject: `Sofra partner application: ${data.name}`,
-      html: `<h2>New partner application</h2>
-<ul>
-  <li><b>Name:</b> ${escapeHtml(data.name)}</li>
-  <li><b>Email:</b> ${escapeHtml(data.email)}</li>
-  <li><b>Company:</b> ${escapeHtml(data.company || "—")}</li>
-  <li><b>City:</b> ${escapeHtml(data.city || "—")}</li>
-  <li><b>Locale:</b> ${escapeHtml(data.locale)}</li>
-</ul>
-<p>${escapeHtml(data.message)}</p>
-<p><a href="${siteUrl()}/admin">Review in admin</a></p>`,
+      subject: `Sofra — Partner application: ${data.name}`,
+      html: craftEmail({
+        kicker: "Partner program",
+        title: "New partner application",
+        bodyHtml: `${detailRows([
+          ["Name", data.name],
+          ["Email", data.email],
+          ["Company", data.company || "—"],
+          ["City", data.city || "—"],
+          ["Language", data.locale],
+        ])}<p style="margin:12px 0 0;">${escapeHtml(data.message)}</p>`,
+        cta: { label: "Review in admin", url: `${siteUrl()}/admin` },
+      }),
     });
   }
 

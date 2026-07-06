@@ -331,6 +331,20 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Readability on large screens: the craft layout leaves generous whitespace,
+   so scale the rem base up with the viewport instead of leaving 16px body
+   text floating in it. All Tailwind text-* sizes are rem-based and follow. */
+@media (min-width: 1024px) {
+  html {
+    font-size: 17px;
+  }
+}
+@media (min-width: 1536px) {
+  html {
+    font-size: 18.5px;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

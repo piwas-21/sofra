@@ -6,7 +6,7 @@
   "header": {
     "features": "Au menu",
     "pricing": "La carte",
-    "waitlist": "Rejoindre la liste",
+    "waitlist": "Commencer",
     "themeToggle": "Basculer le mode sombre",
     "localeSwitcher": "Changer de langue",
     "live": "Voir en vrai",
@@ -19,7 +19,7 @@
     "titleLine2": "On s'occupe du reste.",
     "subtitle": "Sofra est la plateforme de restaurant au grand cœur : menus QR, commandes en direct, réservations et fidélité — tout ce dont votre salle et votre cuisine ont besoin, sur une seule table.",
     "note": "Une « sofra », c'est une table dressée pour les invités. Toute notre philosophie tient là.",
-    "ctaPrimary": "Rejoindre la liste d'attente",
+    "ctaPrimary": "Commencer",
     "ctaSecondary": "Voir ce qui mijote",
     "proof": "Fait tourner tous les services du RUMI Restaurant à Genève — commandes, cuisine, réservations et imprimantes, en production."
   },
@@ -139,20 +139,17 @@
   "waitlist": {
     "label": "Réservez votre place",
     "title": "Prenez place à la table",
-    "subtitle": "Nous accueillons les restaurants par petites tablées, personnellement. Laissez vos coordonnées, on vous met un couvert.",
+    "subtitle": "Pas de liste d'attente — nous accueillons les restaurants personnellement, un par un. Parlez-nous de chez vous et on vous installe.",
     "form": {
       "name": "Votre nom",
       "email": "E-mail",
       "restaurant": "Nom du restaurant",
       "city": "Ville",
-      "submit": "Rejoindre la liste",
       "sending": "Envoi…",
-      "success": "Vous êtes sur la liste ! On vous écrit très vite — afiyet olsun.",
       "error": "Une erreur s'est produite. Écrivez-nous plutôt :",
       "invalidEmail": "Merci d'indiquer une adresse e-mail valide.",
       "intentLabel": "Que souhaitez-vous ?",
       "intents": {
-        "waitlist": "Rejoindre la liste d'attente",
         "demo": "Demander une démo",
         "call": "Réserver un appel",
         "quote": "Obtenir un devis"
@@ -160,13 +157,39 @@
       "successRequest": "C'est noté ! Nous revenons vers vous sous 24 h — afiyet olsun."
     }
   },
+  "auth": {
+    "loginTitle": "Espace partenaires",
+    "loginIntro": "Réservé aux partenaires Sofra. Pas encore partenaire ?",
+    "becomeOne": "Devenez-le.",
+    "passwordSaved": "Mot de passe enregistré — vous pouvez vous connecter.",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "signIn": "Se connecter",
+    "signingIn": "Connexion…",
+    "forgotLink": "Mot de passe oublié ?",
+    "forgotTitle": "Mot de passe oublié",
+    "forgotIntro": "Saisissez l'e-mail de votre compte et nous vous enverrons un lien de réinitialisation à usage unique.",
+    "sendReset": "Envoyer le lien",
+    "sending": "Envoi…",
+    "resetSent": "Si cette adresse correspond à un compte partenaire, un lien de réinitialisation est en route.",
+    "inviteTitle": "Bienvenue à bord",
+    "inviteIntro": "Bonjour {name} — définissez un mot de passe pour ouvrir votre tableau de bord partenaire.",
+    "inviteInvalid": "Ce lien d'invitation est invalide ou a expiré. Répondez à votre e-mail d'approbation et nous vous en enverrons un nouveau.",
+    "resetTitle": "Nouveau mot de passe",
+    "resetInvalid": "Ce lien de réinitialisation est invalide ou a expiré.",
+    "requestNew": "Demandez-en un nouveau.",
+    "newPassword": "Nouveau mot de passe (min. 10 caractères)",
+    "repeatPassword": "Répétez le mot de passe",
+    "setPassword": "Définir le mot de passe",
+    "saving": "Enregistrement…"
+  },
   "footer": {
     "tagline": "Une sofra, c'est une table dressée pour les invités.",
     "madeIn": "Mijoté aux Pays-Bas, servi d'abord à Genève",
     "nav": {
       "features": "Au menu",
       "pricing": "La carte",
-      "waitlist": "Liste d'attente",
+      "waitlist": "Commencer",
       "live": "Voir en vrai",
       "partner": "Partenaires",
       "faq": "FAQ"

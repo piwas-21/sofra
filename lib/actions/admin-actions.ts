@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/rbac";
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
 import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
+import { craftEmail } from "@/lib/email-templates";
 import { createToken } from "@/lib/tokens";
 import { commissionSchema } from "@/lib/validation";
 
@@ -51,11 +52,14 @@ export async function approveApplicationAction(
   await sendEmail({
     to: user.email,
     subject: "Welcome to the Sofra partner program",
-    html: `<p>Hi ${escapeHtml(user.name)},</p>
-<p>Your Sofra partner application is approved — welcome aboard.</p>
-<p><a href="${inviteLink}">Set your password</a> to open your partner dashboard.
-The link works once and expires in 24 hours.</p>
-<p>Afiyet olsun,<br/>Sofra</p>`,
+    html: craftEmail({
+      kicker: "Partner program",
+      title: "Welcome aboard 🎉",
+      bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
+<p style="margin:0;">Your Sofra partner application is approved. Set your password to open your partner dashboard — afiyet olsun.</p>`,
+      cta: { label: "Set your password", url: inviteLink },
+      footerNote: "The link works once and expires in 24 hours.",
+    }),
   });
   await audit(admin.id, "application.approved", "PartnerApplication", id, { userId: user.id });
 

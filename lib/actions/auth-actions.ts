@@ -8,6 +8,7 @@ import { signIn, signOut } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
 import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
+import { craftEmail } from "@/lib/email-templates";
 import { createToken, findValidToken } from "@/lib/tokens";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -88,10 +89,14 @@ export async function forgotPasswordAction(_prev: FormState, formData: FormData)
   await sendEmail({
     to: user.email,
     subject: "Sofra — reset your password",
-    html: `<p>Hi ${escapeHtml(user.name)},</p>
-<p>Someone (hopefully you) asked to reset your Sofra partner password.</p>
-<p><a href="${link}">Set a new password</a> — the link works once and expires in 24 hours.</p>
-<p>If this wasn't you, you can ignore this email.</p>`,
+    html: craftEmail({
+      kicker: "Partner area",
+      title: "Reset your password",
+      bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
+<p style="margin:0;">Someone (hopefully you) asked to reset your Sofra partner password. If this wasn't you, you can safely ignore this email.</p>`,
+      cta: { label: "Set a new password", url: link },
+      footerNote: "The link works once and expires in 24 hours.",
+    }),
   });
   await audit(user.id, "password.reset.requested", "User", user.id);
   return generic;
