@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
+import { sendEmail, founderInbox } from "@/lib/email";
+import { craftEmail, detailRows } from "@/lib/email-templates";
 
 /**
- * Waitlist intake. Sends the signup to the founders' inbox via the Resend
- * HTTP API (same provider the RUMI backend uses; Netcup blocks SMTP).
+ * Contact intake (demo / call / quote — the waitlist was retired 2026-07-06:
+ * restaurants are onboarded directly). Sends a per-intent, craft-branded
+ * notification to the founders' inbox via Resend. The route keeps its
+ * /api/waitlist path so older deployed clients keep working.
  *
  * Env (all server-side):
  *   RESEND_API_KEY — required to actually send
  *   WAITLIST_TO    — destination inbox
  *   WAITLIST_FROM  — verified sender (falls back to Resend's onboarding sender)
  */
+const INTENTS: Record<string, { subject: string; kicker: string; title: string }> = {
+  demo: { subject: "Demo request", kicker: "New request", title: "Someone wants a demo" },
+  call: { subject: "Call request", kicker: "New request", title: "Someone wants a call" },
+  quote: { subject: "Quote request", kicker: "New request", title: "Someone wants a quote" },
+};
+
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
   try {
@@ -23,13 +33,7 @@ export async function POST(request: Request) {
   const city = String(body.city ?? "").slice(0, 200).trim();
   const locale = String(body.locale ?? "en").slice(0, 5);
   const honeypot = String(body.company ?? "");
-  const intentLabels: Record<string, string> = {
-    waitlist: "waitlist signup",
-    demo: "demo request",
-    call: "call request",
-    quote: "quote request",
-  };
-  const intent = intentLabels[String(body.intent ?? "")] ? String(body.intent) : "waitlist";
+  const intent = INTENTS[String(body.intent ?? "")] ? String(body.intent) : "demo";
 
   // Bots fill the hidden field; pretend success and drop it.
   if (honeypot) {
@@ -40,43 +44,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.WAITLIST_TO;
-  if (!apiKey || !to) {
-    console.error("waitlist: RESEND_API_KEY / WAITLIST_TO not configured");
+  const to = founderInbox();
+  if (!to) {
+    console.error("contact: WAITLIST_TO not configured");
     return NextResponse.json({ ok: false }, { status: 503 });
   }
 
-  const escape = (s: string) =>
-    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: process.env.WAITLIST_FROM ?? "Sofra Waitlist <onboarding@resend.dev>",
-      to: [to],
-      reply_to: email,
-      subject: `Sofra ${intentLabels[intent]}: ${restaurant}`,
-      html: `<h2>New ${intentLabels[intent]}</h2>
-<ul>
-  <li><b>Request:</b> ${escape(intentLabels[intent])}</li>
-  <li><b>Name:</b> ${escape(name)}</li>
-  <li><b>Email:</b> ${escape(email)}</li>
-  <li><b>Restaurant:</b> ${escape(restaurant)}</li>
-  <li><b>City:</b> ${escape(city)}</li>
-  <li><b>Locale:</b> ${escape(locale)}</li>
-</ul>`,
+  const meta = INTENTS[intent];
+  const { sent } = await sendEmail({
+    to,
+    replyTo: email,
+    subject: `Sofra — ${meta.subject}: ${restaurant}`,
+    html: craftEmail({
+      kicker: meta.kicker,
+      title: meta.title,
+      bodyHtml: detailRows([
+        ["Restaurant", restaurant],
+        ["Name", name],
+        ["Email", email],
+        ["City", city || "—"],
+        ["Language", locale],
+      ]),
+      footerNote: "Reply goes straight to the requester (reply-to is set).",
     }),
   });
 
-  if (!res.ok) {
-    console.error("waitlist: resend failed", res.status, await res.text());
+  if (!sent) {
     return NextResponse.json({ ok: false }, { status: 502 });
   }
-
   return NextResponse.json({ ok: true });
 }

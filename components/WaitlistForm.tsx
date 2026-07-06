@@ -5,7 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 
 const CONTACT_EMAIL = "mahmutkaya.nl@gmail.com"; // founder inbox (owner-approved); move to a sofra-domain alias later
 
-const INTENTS = ["waitlist", "demo", "call", "quote"] as const;
+// No waitlist — restaurants are onboarded directly (owner decision 2026-07-06).
+const INTENTS = ["demo", "call", "quote"] as const;
 type Intent = (typeof INTENTS)[number];
 
 type Status = "idle" | "sending" | "success" | "error" | "invalid";
@@ -14,7 +15,7 @@ export default function WaitlistForm() {
   const t = useTranslations("waitlist.form");
   const locale = useLocale();
   const [status, setStatus] = useState<Status>("idle");
-  const [intent, setIntent] = useState<Intent>("waitlist");
+  const [intent, setIntent] = useState<Intent>("demo");
 
   // ShowcaseSection's demo/call/quote buttons preselect the request type
   // (see IntentLink) — the anchor scroll and the select update together.
@@ -58,7 +59,7 @@ export default function WaitlistForm() {
         role="status"
         className="hand-drawn-border bg-card px-6 py-5 font-hand text-2xl text-craft-olive-text dark:text-craft-olive-dark"
       >
-        {intent === "waitlist" ? t("success") : t("successRequest")}
+        {t("successRequest")}
       </p>
     );
   }

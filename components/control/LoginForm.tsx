@@ -4,7 +4,19 @@ import { useActionState } from "react";
 import { loginAction, type FormState } from "@/lib/actions/auth-actions";
 import { ErrorMessage } from "./StatusMessage";
 
-export default function LoginForm() {
+// Labels come translated from the server page (control plane follows the
+// marketing site's language via the NEXT_LOCALE cookie — lib/control-locale).
+// Action error strings are still en-only: full control-plane i18n is tracked
+// as a follow-up issue.
+export type LoginLabels = {
+  email: string;
+  password: string;
+  signIn: string;
+  signingIn: string;
+  forgot: string;
+};
+
+export default function LoginForm({ labels }: { labels: LoginLabels }) {
   const [state, action, pending] = useActionState<FormState, FormData>(loginAction, {});
 
   return (
@@ -14,8 +26,8 @@ export default function LoginForm() {
         type="email"
         required
         autoComplete="email"
-        placeholder="Email"
-        aria-label="Email"
+        placeholder={labels.email}
+        aria-label={labels.email}
         className="input-primary"
       />
       <input
@@ -23,16 +35,16 @@ export default function LoginForm() {
         type="password"
         required
         autoComplete="current-password"
-        placeholder="Password"
-        aria-label="Password"
+        placeholder={labels.password}
+        aria-label={labels.password}
         className="input-primary"
       />
       <div className="flex flex-wrap items-center gap-4">
         <button type="submit" disabled={pending} className="btn-primary disabled:opacity-60">
-          {pending ? "Signing in…" : "Sign in"}
+          {pending ? labels.signingIn : labels.signIn}
         </button>
         <a href="/forgot" className="font-label text-sm underline text-muted-foreground">
-          Forgot password?
+          {labels.forgot}
         </a>
       </div>
       <ErrorMessage>{state.error}</ErrorMessage>

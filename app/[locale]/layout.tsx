@@ -5,6 +5,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import "../globals.css";
 import { routing } from "@/i18n/routing";
 import { fontClassNames, themeInitScript } from "@/lib/fonts";
+import ThemeSync from "@/components/ThemeSync";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -65,6 +66,7 @@ export default async function LocaleLayout({
       <body className="min-h-screen bg-background text-foreground antialiased font-sans paper-texture">
         {/* Theme init before hydration — see lib/fonts.ts */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <ThemeSync />
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

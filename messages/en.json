@@ -6,7 +6,7 @@
   "header": {
     "features": "What's cooking",
     "pricing": "Menu",
-    "waitlist": "Join the waitlist",
+    "waitlist": "Get started",
     "themeToggle": "Toggle dark mode",
     "localeSwitcher": "Change language",
     "live": "See it live",
@@ -19,7 +19,7 @@
     "titleLine2": "We'll handle the rest.",
     "subtitle": "Sofra is the warm-hearted restaurant platform: QR menus, live orders, reservations and loyalty — everything your front-of-house and kitchen need, on one table.",
     "note": "A «sofra» is a table laid for guests. That's the whole philosophy.",
-    "ctaPrimary": "Join the waitlist",
+    "ctaPrimary": "Get started",
     "ctaSecondary": "See what's cooking",
     "proof": "Running every service at RUMI Restaurant, Geneva — orders, kitchen, reservations and printers, live in production."
   },
@@ -139,20 +139,17 @@
   "waitlist": {
     "label": "Reserve your spot",
     "title": "Get a seat at the table",
-    "subtitle": "We're onboarding a handful of restaurants at a time, personally. Leave your details and we'll set a place for you.",
+    "subtitle": "No waitlist — we onboard restaurants personally, one by one. Tell us about your place and we'll get you started.",
     "form": {
       "name": "Your name",
       "email": "Email",
       "restaurant": "Restaurant name",
       "city": "City",
-      "submit": "Join the waitlist",
       "sending": "Sending…",
-      "success": "You're on the list! We'll be in touch soon — afiyet olsun.",
       "error": "Something went wrong. Please email us instead:",
       "invalidEmail": "Please enter a valid email address.",
       "intentLabel": "What would you like?",
       "intents": {
-        "waitlist": "Join the waitlist",
         "demo": "Request a demo",
         "call": "Book a call",
         "quote": "Get a quote"
@@ -160,13 +157,39 @@
       "successRequest": "Got it! We'll be back to you within a day — afiyet olsun."
     }
   },
+  "auth": {
+    "loginTitle": "Partner sign in",
+    "loginIntro": "For Sofra partners. Not a partner yet?",
+    "becomeOne": "Become one.",
+    "passwordSaved": "Password saved — you can sign in now.",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "forgotLink": "Forgot password?",
+    "forgotTitle": "Forgot password",
+    "forgotIntro": "Enter your account email and we'll send a one-time reset link.",
+    "sendReset": "Send reset link",
+    "sending": "Sending…",
+    "resetSent": "If that address has a partner account, a reset link is on its way.",
+    "inviteTitle": "Welcome aboard",
+    "inviteIntro": "Hi {name} — set a password to open your partner dashboard.",
+    "inviteInvalid": "This invite link is invalid or has expired. Reply to your approval email and we'll send a fresh one.",
+    "resetTitle": "New password",
+    "resetInvalid": "This reset link is invalid or has expired.",
+    "requestNew": "Request a new one.",
+    "newPassword": "New password (min. 10 characters)",
+    "repeatPassword": "Repeat password",
+    "setPassword": "Set password",
+    "saving": "Saving…"
+  },
   "footer": {
     "tagline": "A sofra is a table laid for guests.",
     "madeIn": "Cooked up in the Netherlands, first served in Geneva",
     "nav": {
       "features": "What's cooking",
       "pricing": "Menu",
-      "waitlist": "Waitlist",
+      "waitlist": "Get started",
       "live": "See it live",
       "partner": "Partners",
       "faq": "FAQ"

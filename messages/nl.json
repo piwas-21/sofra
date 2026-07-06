@@ -6,7 +6,7 @@
   "header": {
     "features": "Op het vuur",
     "pricing": "De kaart",
-    "waitlist": "Op de wachtlijst",
+    "waitlist": "Aan de slag",
     "themeToggle": "Donkere modus wisselen",
     "localeSwitcher": "Taal wijzigen",
     "live": "Bekijk het live",
@@ -19,7 +19,7 @@
     "titleLine2": "Wij doen de rest.",
     "subtitle": "Sofra is het warmhartige restaurantplatform: QR-menu's, live bestellingen, reserveringen en spaarpunten — alles wat je bediening en keuken nodig hebben, op één tafel.",
     "note": "Een «sofra» is een tafel, gedekt voor gasten. Dat is onze hele filosofie.",
-    "ctaPrimary": "Op de wachtlijst",
+    "ctaPrimary": "Aan de slag",
     "ctaSecondary": "Kijk wat er op het vuur staat",
     "proof": "Draait elke service bij RUMI Restaurant in Genève — bestellingen, keuken, reserveringen en printers, live in productie."
   },
@@ -139,20 +139,17 @@
   "waitlist": {
     "label": "Reserveer je plek",
     "title": "Schuif aan tafel",
-    "subtitle": "We verwelkomen restaurants in kleine groepjes, persoonlijk. Laat je gegevens achter en we dekken een plekje voor je.",
+    "subtitle": "Geen wachtlijst — we onboarden restaurants persoonlijk, een voor een. Vertel ons over je zaak en we gaan voor je aan de slag.",
     "form": {
       "name": "Je naam",
       "email": "E-mail",
       "restaurant": "Naam van het restaurant",
       "city": "Stad",
-      "submit": "Op de wachtlijst",
       "sending": "Versturen…",
-      "success": "Je staat op de lijst! We laten snel van ons horen — afiyet olsun.",
       "error": "Er ging iets mis. Mail ons dan:",
       "invalidEmail": "Vul een geldig e-mailadres in.",
       "intentLabel": "Wat mag het zijn?",
       "intents": {
-        "waitlist": "Op de wachtlijst",
         "demo": "Vraag een demo aan",
         "call": "Plan een gesprek",
         "quote": "Vraag een offerte"
@@ -160,13 +157,39 @@
       "successRequest": "Genoteerd! We komen binnen een dag bij je terug — afiyet olsun."
     }
   },
+  "auth": {
+    "loginTitle": "Partner-login",
+    "loginIntro": "Voor Sofra-partners. Nog geen partner?",
+    "becomeOne": "Word er een.",
+    "passwordSaved": "Wachtwoord opgeslagen — je kunt nu inloggen.",
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "signIn": "Inloggen",
+    "signingIn": "Inloggen…",
+    "forgotLink": "Wachtwoord vergeten?",
+    "forgotTitle": "Wachtwoord vergeten",
+    "forgotIntro": "Vul het e-mailadres van je account in en we sturen je een eenmalige resetlink.",
+    "sendReset": "Stuur resetlink",
+    "sending": "Versturen…",
+    "resetSent": "Als dat adres een partneraccount heeft, is er een resetlink onderweg.",
+    "inviteTitle": "Welkom aan boord",
+    "inviteIntro": "Hoi {name} — stel een wachtwoord in om je partnerdashboard te openen.",
+    "inviteInvalid": "Deze uitnodigingslink is ongeldig of verlopen. Beantwoord je goedkeuringsmail en we sturen een nieuwe.",
+    "resetTitle": "Nieuw wachtwoord",
+    "resetInvalid": "Deze resetlink is ongeldig of verlopen.",
+    "requestNew": "Vraag een nieuwe aan.",
+    "newPassword": "Nieuw wachtwoord (min. 10 tekens)",
+    "repeatPassword": "Herhaal wachtwoord",
+    "setPassword": "Wachtwoord instellen",
+    "saving": "Opslaan…"
+  },
   "footer": {
     "tagline": "Een sofra is een tafel, gedekt voor gasten.",
     "madeIn": "Gekookt in Nederland, voor het eerst geserveerd in Genève",
     "nav": {
       "features": "Op het vuur",
       "pricing": "De kaart",
-      "waitlist": "Wachtlijst",
+      "waitlist": "Aan de slag",
       "live": "Bekijk het live",
       "partner": "Partners",
       "faq": "FAQ"
