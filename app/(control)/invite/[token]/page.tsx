@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { findValidToken } from "@/lib/tokens";
 import { controlLocale } from "@/lib/control-locale";
@@ -15,9 +16,9 @@ export default async function InvitePage({
 
   return (
     <main className="mx-auto max-w-md px-6 py-24">
-      <a href="/" className="font-hand text-4xl font-bold text-primary">
+      <Link href="/" className="font-hand text-4xl font-bold text-primary">
         Sofra
-      </a>
+      </Link>
       <h1 className="mt-8 font-display font-bold text-5xl">{t("inviteTitle")}</h1>
       {valid ? (
         <>

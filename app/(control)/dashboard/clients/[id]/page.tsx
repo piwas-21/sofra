@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePartner } from "@/lib/rbac";
 import { db } from "@/lib/db";
@@ -25,9 +26,9 @@ export default async function ClientDetailPage({
   return (
     <div className="grid gap-10">
       <div>
-        <a href="/dashboard" className="font-label text-sm text-muted-foreground underline">
+        <Link href="/dashboard" className="font-label text-sm text-muted-foreground underline">
           ← All clients
-        </a>
+        </Link>
         <div className="mt-3 flex flex-wrap items-center gap-4">
           <h1 className="font-display font-bold text-5xl">{client.restaurantName}</h1>
           <ClientStatusBadge status={client.status} />

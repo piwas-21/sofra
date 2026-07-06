@@ -1,0 +1,85 @@
+name: Security Audit (weekly)
+
+# Deep, full-tree security scans on a cron schedule — same rationale as the
+# restaurant-app-{frontend,backend} weekly audits: newly-disclosed CVEs land
+# against the SAME committed lockfile even when no PR has touched it, scan-DB
+# drift is caught, and a full-tree sweep covers code no recent PR exercised.
+#
+# CADENCE: Mondays 06:00 UTC. Also runnable on demand via workflow_dispatch.
+#
+# This is a REPORTING gate: a failure does not block any merge (no PR
+# context). Triage the finding, then bump the dependency (preferred) or add a
+# scoped, justified suppression — exactly as the per-PR gate requires.
+#
+# SECURITY: no PR context, no untrusted-input expressions in run: blocks;
+# third-party actions pinned to immutable commit SHAs (matching ci.yml).
+# Read-only permissions.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  npm_audit:
+    name: npm audit (high+) — newly-disclosed CVEs vs committed lockfile
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit
+      - run: npm audit --audit-level=high
+
+  osv_scanner:
+    name: OSV-Scanner (full lockfile sweep)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: google/osv-scanner-action/osv-scanner-action@6fc714450122bda9d00e4ad5d639ad6a39eedb1f # v2.0.1
+        with:
+          scan-args: |-
+            --lockfile=package-lock.json
+            --format=table
+
+  trivy_fs:
+    name: Trivy filesystem (full-tree misconfig + secrets)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+  gitleaks:
+    name: gitleaks (full-history secret scan)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION=8.21.2
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xzf - -C /tmp gitleaks
+          sudo mv /tmp/gitleaks /usr/local/bin/gitleaks
+      - name: Run gitleaks
+        run: gitleaks detect --verbose --redact --source .
