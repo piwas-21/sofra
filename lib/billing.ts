@@ -32,6 +32,19 @@ export const BILLING_INTERVALS = {
 } as const;
 export type BillingInterval = keyof typeof BILLING_INTERVALS;
 
+/**
+ * A paid first payment arrived but the recurring mandate hasn't flipped valid
+ * yet (observed ~80s lag on staging). The webhook must answer non-2xx so
+ * Mollie redelivers — a 200 here would strand the plan in PENDING forever,
+ * because the paid transition is the LAST webhook Mollie sends on its own.
+ */
+export class MandateNotReadyError extends Error {
+  constructor(mollieCustomerId: string) {
+    super(`no valid mandate yet on ${mollieCustomerId} — Mollie must retry this webhook`);
+    this.name = "MandateNotReadyError";
+  }
+}
+
 function webhookUrl() {
   return `${siteUrl()}/api/webhooks/mollie`;
 }
@@ -178,7 +191,12 @@ async function activatePendingSubscriptions(billingId: string, mollieCustomerId:
     where: { billingId, status: { in: ["PENDING", "ACTIVATING"] }, mollieSubscriptionId: null },
   });
   if (pending.length === 0) return;
-  if (!(await hasValidMandate(mollieCustomerId))) return; // webhook races the mandate — next webhook retries
+  // Fail the delivery (-> webhook 503 -> Mollie retry) instead of skipping:
+  // proven live on staging 2026-07-07 — the paid webhook beat the mandate and
+  // a silent return left the plan PENDING with no further deliveries coming.
+  // Manual recovery if retries exhaust (~26h): re-POST `id=tr_...` to the
+  // webhook endpoint once the mandate shows valid in the Mollie dashboard.
+  if (!(await hasValidMandate(mollieCustomerId))) throw new MandateNotReadyError(mollieCustomerId);
 
   for (const plan of pending) {
     if (plan.status === "PENDING") {
