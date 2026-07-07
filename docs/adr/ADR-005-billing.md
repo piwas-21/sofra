@@ -25,4 +25,14 @@ craft-email notifications on paid/failed. Admin UI under `/admin/billing`.
 Env: `MOLLIE_API_KEY` (test_/live_ selects mode; unset = billing disabled,
 site unaffected). **Deferred to v2:** numbered invoices/PDFs (the domainio
 invoice pattern), dunning/retry flows, tenant-facing receipts, CHF pricing,
-partner-commission automation (ADR-009).
+partner-commission automation (ADR-009), founder alert when a mandate never
+validates and webhook retries exhaust (~26h).
+
+**Status note (2026-07-07, later) — LIVE mode:** interactive checkout E2E
+executed on staging (throwaway plan, iDEAL test checkout, full teardown);
+it caught a mandate race — the paid first-payment webhook can beat the
+mandate flipping valid, and the then-silent skip + 200 stranded the plan
+PENDING forever (Mollie only redelivers on non-2xx, and `paid` is its last
+transition). Fixed in PR #13: `MandateNotReadyError` → webhook 503 →
+Mollie retries. Box key flipped to `live_` the same day; billing is
+operational for real tenants.
