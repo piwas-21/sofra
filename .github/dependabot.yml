@@ -12,14 +12,23 @@ updates:
     open-pull-requests-limit: 5
     groups:
       minor-and-patch:
+        patterns: ["*"]
         update-types: ["minor", "patch"]
     ignore:
+      # Companion packages move with the trio (Gemini on frontend #141):
+      # a @types/react major against an older react breaks tsc.
       # Majors of the framework trio are coordinated upgrades (CLAUDE.md §9 class).
       - dependency-name: next
         update-types: ["version-update:semver-major"]
       - dependency-name: react
         update-types: ["version-update:semver-major"]
       - dependency-name: react-dom
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: eslint-config-next
         update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
@@ -29,3 +38,7 @@ updates:
       time: "06:00"
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 3
+    groups:
+      actions-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
