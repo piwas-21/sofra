@@ -12,3 +12,7 @@ next-env.d.ts
 .DS_Store
 npm-debug.log*
 lib/generated/
+
+# Playwright (DEV-PHASES W1)
+test-results/
+playwright-report/

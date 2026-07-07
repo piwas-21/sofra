@@ -1,0 +1,8 @@
+# Grandfathered over-limit files (CLAUDE.md §4). check-single-file.mjs --all
+# skips these for the length rule; new files must stay under limit.
+# Remove a line once its file is refactored under the limit.
+#
+# lib/billing.ts — Mollie subscription state machine (PENDING→ACTIVATING→ACTIVE,
+#   atomic claim, idempotency, mandate-race 503). 285 LOC; live-billing code,
+#   splitting it is its own risk-managed PR, not this test-infra one.
+lib/billing.ts

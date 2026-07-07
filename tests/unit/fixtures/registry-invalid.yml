@@ -1,0 +1,8 @@
+# Fixture — schema-invalid: `version` must be a number, and the tenant is
+# missing required fields (box, domain, domain_mode, db).
+version: one
+tenants:
+  broken:
+    name: Broken Tenant
+    status: active
+    managed: sofra
