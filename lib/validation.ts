@@ -33,3 +33,17 @@ export const commissionSchema = z.object({
   amount: z.coerce.number().finite().gt(-100_000).lt(100_000),
   note: z.string().trim().min(1).max(500),
 });
+
+// Mollie tenant billing (S9). Slug mirrors the registry grammar enforced by
+// provision-tenant.sh; amount is EUR ("129.00" style), stored as cents.
+export const billingSchema = z.object({
+  tenantSlug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9][a-z0-9-]{1,30}$/, "lowercase slug, 2-31 chars"),
+  name: z.string().trim().min(1).max(200),
+  email: z.string().trim().max(200).email(),
+  description: z.string().trim().min(1).max(200),
+  amount: z.coerce.number().finite().gt(0).lt(100_000),
+  interval: z.enum(["month", "quarter", "year"]),
+});
