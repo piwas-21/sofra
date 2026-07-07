@@ -28,6 +28,9 @@ npm run dev            # http://localhost:3000 → redirects to /en; control pla
 - Waitlist form needs `RESEND_API_KEY` + `WAITLIST_TO`; without them the API
   returns 503 and the form shows a mailto fallback.
 - Control plane needs `DATABASE_URL` + `AUTH_SECRET` (+ `NEXTAUTH_URL` for links in emails).
+- Tenant billing (`/admin/billing`, ADR-005/011) needs `MOLLIE_API_KEY`
+  (test\_/live\_ selects mode); unset ⇒ billing UI disabled + webhook 503s.
+  Mollie webhooks need a publicly reachable `NEXTAUTH_URL` (not localhost).
 - End-to-end check (no browser needed): `node scripts/e2e-local.mjs` — drives the
   full partner journey (20 checks) against the local dev server + DB.
 

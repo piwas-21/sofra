@@ -98,6 +98,7 @@ model Client {
 
   clientNotes ClientNote[]
   commissions CommissionEntry[]
+  billing     TenantBilling?
 
   @@index([partnerId, status])
 }
@@ -121,13 +122,88 @@ model CommissionEntry {
   clientId    String?
   client      Client?  @relation(fields: [clientId], references: [id])
   amountCents Int
-  currency    String   @default("CHF")
+  // Sofra's books are EUR (NL company; flipped from CHF 2026-07-06 — the
+  // stale CHF default is corrected in the mollie_billing migration).
+  currency    String   @default("EUR")
   note        String
   createdAt   DateTime @default(now())
   createdById String
   createdBy   User     @relation("EntryAuthor", fields: [createdById], references: [id])
 
   @@index([partnerId, createdAt])
+}
+
+// --- Mollie subscription billing (S9 — ADR-005, ADR-011 Job A) -------------
+// Sofra bills its tenants: one TenantBilling per tenant (keyed by the
+// registry slug, optionally linked to the partner-CRM Client), holding the
+// Mollie customer. Money is integer cents + explicit currency (EUR).
+// Mollie is the source of truth for payment state — rows here are the local
+// mirror, updated only from API re-fetches (never from raw webhook bodies).
+
+enum SubscriptionStatus {
+  PENDING // plan defined; waiting for the first payment to create the mandate
+  ACTIVATING // claimed by a webhook worker; Mollie call in flight (self-heals)
+  ACTIVE // subscription created at Mollie and charging
+  CANCELED
+  SUSPENDED
+  COMPLETED
+}
+
+model TenantBilling {
+  id               String   @id @default(cuid())
+  // Registry slug (deploy repo tenants/registry.yml) — the billing anchor;
+  // not a FK on purpose (the registry graduates to a table only at >3
+  // tenants, ADR-007).
+  tenantSlug       String   @unique
+  name             String
+  email            String
+  mollieCustomerId String   @unique
+  clientId         String?  @unique
+  client           Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  createdAt        DateTime @default(now())
+
+  subscriptions BillingSubscription[]
+  payments      BillingPayment[]
+}
+
+model BillingSubscription {
+  id                   String             @id @default(cuid())
+  billingId            String
+  billing              TenantBilling      @relation(fields: [billingId], references: [id], onDelete: Cascade)
+  // Set when the subscription is created at Mollie (after the first payment
+  // validates the mandate); null while PENDING.
+  mollieSubscriptionId String?            @unique
+  description          String
+  amountCents          Int
+  currency             String             @default("EUR")
+  interval             String             @default("1 month") // Mollie grammar
+  status               SubscriptionStatus @default(PENDING)
+  startDate            DateTime?
+  canceledAt           DateTime?
+  createdAt            DateTime           @default(now())
+
+  @@index([billingId, createdAt])
+}
+
+model BillingPayment {
+  id                   String        @id @default(cuid())
+  billingId            String
+  billing              TenantBilling @relation(fields: [billingId], references: [id], onDelete: Cascade)
+  molliePaymentId      String        @unique
+  mollieSubscriptionId String?
+  amountCents          Int
+  currency             String        @default("EUR")
+  description          String
+  status               String // Mollie statuses verbatim: open|pending|paid|failed|canceled|expired|authorized
+  sequenceType         String // first | recurring | oneoff
+  method               String?
+  // Hosted-checkout URL — only meaningful while status is open/pending.
+  checkoutUrl          String?
+  paidAt               DateTime?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@index([billingId, createdAt])
 }
 
 // Set-password invites and password resets. Token stored hashed, single-use.

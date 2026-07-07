@@ -5,9 +5,11 @@ export default createMiddleware(routing);
 
 export const config = {
   // Skip api routes, Next internals, files with an extension, and the en-only
-  // control plane (login/invite/reset/forgot/dashboard/admin) — those live
-  // outside [locale] and must not be locale-redirected.
+  // control plane (login/invite/reset/forgot/dashboard/admin/billing) — those
+  // live outside [locale] and must not be locale-redirected. /billing/thanks
+  // is the Mollie checkout redirect target (S9) — a locale redirect there
+  // would break the URL Mollie was given.
   matcher: [
-    "/((?!api|_next|_vercel|login|invite|reset|forgot|dashboard|admin|.*\\..*).*)",
+    "/((?!api|_next|_vercel|login|invite|reset|forgot|dashboard|admin|billing|.*\\..*).*)",
   ],
 };
