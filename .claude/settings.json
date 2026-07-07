@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/mahmutkaya/workspace/rumi-workspace/scripts/review-gate/run-review.sh --mode=stop-hook --repo=sofra --diff-source=unstaged",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/mahmutkaya/workspace/rumi-workspace/scripts/review-gate/run-review.sh --mode=pre-tool-use --repo=sofra --diff-source=branch",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}
