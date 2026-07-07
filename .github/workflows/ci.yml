@@ -1,0 +1,228 @@
+name: CI
+
+# PR/push gates for the Sofra marketing site + control plane. Modeled on
+# restaurant-app-frontend's ci.yml (same security posture: no untrusted-input
+# expressions in run: steps, third-party actions pinned to immutable SHAs —
+# except the non-blocking semgrep job's floating container tag, standard for
+# semgrep ci — read-only GITHUB_TOKEN, concurrency cancellation, per-job
+# timeouts), adapted to this stack:
+#   * typecheck + eslint + next build (build-image.yml only runs post-merge,
+#     so `next build` here is the only pre-merge build gate)
+#   * prisma_drift: committed migrations must apply cleanly to an empty
+#     Postgres AND produce exactly the schema.prisma datamodel — catches
+#     hand-edited schemas without a migration (Prisma 7: no shadow-db flag;
+#     diff runs against the migrated service container)
+#   * secret/dep/fs scans: gitleaks, TruffleHog (PR diff), Trivy fs,
+#     npm audit, OSV-Scanner, semgrep (non-blocking)
+# Deliberately NOT ported from the frontend: njsscan (Express-centric rules;
+# semgrep covers TS/Next SAST here) and the license-compliance job (no
+# LICENSES.allowlist policy in this repo yet — adopt the frontend's
+# allowlist + scoped-exceptions model in a follow-up if wanted; the tree
+# currently carries one LGPL-3.0-or-later transitive dep that needs a
+# policy decision first). SonarCloud runs via automatic analysis (no CI job —
+# do not add one without disabling autoscan).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  install_deps:
+    name: install (cache npm modules)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit
+
+  typecheck:
+    name: tsc --noEmit
+    needs: install_deps
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit
+      # tsc needs the generated Prisma client (lib/generated/prisma).
+      - run: npm run db:generate
+      - run: npm run typecheck
+
+  eslint:
+    name: eslint (--max-warnings=0)
+    needs: install_deps
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit
+      - run: npm run lint
+
+  next_build:
+    name: next build
+    needs: install_deps
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit
+      # `npm run build` = prisma generate && next build. No DATABASE_URL on
+      # purpose: nothing may query the DB at build time (control-plane pages
+      # are dynamic; the Docker image builds the same way).
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://sofrapiwas.com
+
+  prisma_drift:
+    name: prisma (migrations apply + schema drift)
+    needs: install_deps
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          # Ephemeral CI-only database — passwordless trust auth instead of a
+          # hardcoded throwaway password (keeps secret scanners honest).
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: sofra_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres@localhost:5432/sofra_ci
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit
+      - name: prisma migrate deploy (committed migrations apply cleanly)
+        run: npx prisma migrate deploy
+      - name: prisma migrate diff (migrated DB == schema.prisma)
+        # --exit-code: empty diff = 0, drift = 2. A failure here means
+        # schema.prisma changed without `prisma migrate dev` generating the
+        # matching migration.
+        run: npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code
+
+  npm_audit:
+    name: npm audit (high+)
+    needs: install_deps
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit
+      - run: npm audit --audit-level=high
+
+  gitleaks:
+    name: gitleaks (secret scan)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+      # Use the binary directly — gitleaks-action requires a paid license
+      # for organizations; the OSS CLI is free under MIT.
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION=8.21.2
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xzf - -C /tmp gitleaks
+          sudo mv /tmp/gitleaks /usr/local/bin/gitleaks
+      - name: Run gitleaks
+        run: gitleaks detect --verbose --redact --source .
+
+  trufflehog:
+    name: TruffleHog (secret scan, complementary to gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Only run on PRs — TruffleHog's diff-scan needs BASE != HEAD.
+    # Gitleaks already does the full-filesystem secret scan on every push.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+      - uses: trufflesecurity/trufflehog@cb6aeefd6e2498240d0418e63f69684d28337e7b # v3.91.0
+        with:
+          path: ./
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+          extra_args: --only-verified
+
+  trivy_fs:
+    name: Trivy filesystem (misconfig + secrets)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+  semgrep:
+    name: semgrep (SAST)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: semgrep/semgrep
+    # Non-blocking: surfaces findings without failing the pipeline.
+    continue-on-error: true
+    env:
+      SEMGREP_RULES: p/typescript
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - run: semgrep ci
+
+  osv_scanner:
+    name: OSV-Scanner (dependency CVEs)
+    needs: install_deps
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: google/osv-scanner-action/osv-scanner-action@6fc714450122bda9d00e4ad5d639ad6a39eedb1f # v2.0.1
+        with:
+          scan-args: |-
+            --lockfile=package-lock.json
+            --format=table

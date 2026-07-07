@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { logoutAction } from "@/lib/actions/auth-actions";
 
 /** Shared chrome for the partner dashboard and founder admin. */
@@ -17,9 +18,9 @@ export default function ControlShell({
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-sm border-b-2 border-border">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6 min-w-0">
-            <a href="/" className="font-hand text-3xl font-bold text-primary shrink-0">
+            <Link href="/" className="font-hand text-3xl font-bold text-primary shrink-0">
               Sofra
-            </a>
+            </Link>
             <span className="masking-tape font-label text-sm px-3 py-0.5 text-muted-foreground shrink-0">
               {title}
             </span>

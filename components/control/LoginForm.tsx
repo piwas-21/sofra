@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { loginAction, type FormState } from "@/lib/actions/auth-actions";
 import { ErrorMessage } from "./StatusMessage";
@@ -43,9 +44,9 @@ export default function LoginForm({ labels }: { labels: LoginLabels }) {
         <button type="submit" disabled={pending} className="btn-primary disabled:opacity-60">
           {pending ? labels.signingIn : labels.signIn}
         </button>
-        <a href="/forgot" className="font-label text-sm underline text-muted-foreground">
+        <Link href="/forgot" className="font-label text-sm underline text-muted-foreground">
           {labels.forgot}
-        </a>
+        </Link>
       </div>
       <ErrorMessage>{state.error}</ErrorMessage>
     </form>

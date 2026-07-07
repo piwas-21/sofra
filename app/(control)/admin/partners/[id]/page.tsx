@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/rbac";
 import { db } from "@/lib/db";
@@ -27,9 +28,9 @@ export default async function AdminPartnerDetailPage({
   return (
     <div className="grid gap-10">
       <div>
-        <a href="/admin/partners" className="font-label text-sm text-muted-foreground underline">
+        <Link href="/admin/partners" className="font-label text-sm text-muted-foreground underline">
           ← All partners
-        </a>
+        </Link>
         <h1 className="mt-3 font-display font-bold text-5xl">{partner.name}</h1>
         <p className="mt-2 font-label text-muted-foreground">
           {partner.email}

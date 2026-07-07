@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import ThemeToggle from "./ThemeToggle";
 import LocaleSwitcher from "./LocaleSwitcher";
@@ -34,12 +35,12 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
+          <Link
             href="/login"
             className="font-label text-sm text-muted-foreground hover:text-primary transition-colors"
           >
             {t("signIn")}
-          </a>
+          </Link>
           <LocaleSwitcher label={t("localeSwitcher")} />
           <ThemeToggle label={t("themeToggle")} />
         </div>

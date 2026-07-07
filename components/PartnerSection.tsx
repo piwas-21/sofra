@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import SectionLabel from "./SectionLabel";
 import PartnerForm from "./PartnerForm";
@@ -26,9 +27,9 @@ export default function PartnerSection() {
         </div>
         <p className="mt-6 font-label text-sm text-muted-foreground">
           {t("loginHint")}{" "}
-          <a href="/login" className="underline">
+          <Link href="/login" className="underline">
             {t("loginLink")}
-          </a>
+          </Link>
         </p>
       </div>
     </section>
