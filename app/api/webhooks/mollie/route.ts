@@ -6,7 +6,7 @@
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { mollieConfigured, getPayment, MollieError } from "@/lib/mollie";
-import { recordPayment } from "@/lib/billing";
+import { recordPayment, MandateNotReadyError } from "@/lib/billing";
 
 // Payment ids only — subscription charges also arrive as tr_ payment ids.
 const PAYMENT_ID = /^tr_[A-Za-z0-9]{6,32}$/;
@@ -39,6 +39,13 @@ export async function POST(request: Request) {
     if (e instanceof MollieError && e.status === 404) {
       // Forged/unknown id — nothing to do.
       return NextResponse.json({ ok: true });
+    }
+    if (e instanceof MandateNotReadyError) {
+      // Expected race: the paid first payment beat its mandate going valid.
+      // 503 (not 200) — Mollie only redelivers on non-2xx, and this delivery
+      // is the last one it sends on its own.
+      console.warn("mollie webhook: mandate not ready yet, expecting retry", id);
+      return NextResponse.json({ error: "mandate not ready" }, { status: 503 });
     }
     // Transient failure (Mollie/API/DB down): 5xx so Mollie retries later.
     console.error("mollie webhook: processing failed", id, e);
