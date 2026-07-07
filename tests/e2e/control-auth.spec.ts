@@ -4,9 +4,16 @@ import { expect, type Page, test } from "@playwright/test";
 // role-based landing + cross-role denial. Credentials are seeded by
 // scripts/seed-e2e.mjs into a throwaway DB; specs read them from env.
 //
-// The login rate limit is 10/email/15min (in-memory) — this suite logs in
-// each account at most once, well under the cap. Selectors are name-based so
-// they survive the control plane's cookie-driven locale.
+// The login rate limit is 20/IP/15min (in-memory, lib/actions/auth-actions.ts)
+// — this suite logs in a few times total, well under the cap. Selectors are
+// name-based so they survive the control plane's cookie-driven locale.
+//
+// NOTE: next.config's production CSP emits `upgrade-insecure-requests`, and the
+// webServer serves the build over plain http, so `/_next/*` assets are upgraded
+// to https and don't load — the browser exercises the JS-less progressive-
+// enhancement path (which §3 mandates anyway). These assertions rely only on
+// SSR HTML + server redirects, so that's fine; a future assertion that needs
+// client hydration would flake here without an obvious cause.
 
 const admin = {
   email: process.env.E2E_ADMIN_EMAIL ?? "e2e-admin@example.com",

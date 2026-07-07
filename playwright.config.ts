@@ -1,6 +1,6 @@
 // Playwright smoke (DEV-PHASES-PLAN W1): first browser E2E — login→admin,
 // login→partner, partner blocked from /admin. Deliberately tiny: the login
-// rate limit is 10/email/15min in-memory, so the suite keeps total logins low.
+// rate limit is 20/IP/15min in-memory, so the suite keeps total logins low.
 //
 // The webServer runs the production build (`next build` first — WITHOUT
 // DATABASE_URL, repo rule) and inherits this process's env, so the caller
