@@ -1,0 +1,50 @@
+name: retention-cron
+
+# Daily trigger for the storage-limitation sweep (POST /api/cron/retention on the
+# live sofra). The endpoint itself no-ops unless RETENTION_ENABLED=true on the box,
+# so this workflow is safe to merge inert. Runs here (public repo) for free minutes.
+#
+# Setup (one-time, owner): add the shared bearer secret — must equal CRON_SECRET in
+# the box env for the request to authorize:
+#   gh secret set CRON_SECRET -R piwas-21/sofra
+# Until it is set, the job logs a warning and exits cleanly (sends nothing).
+
+on:
+  schedule:
+    - cron: "17 3 * * *" # ~03:17 UTC daily (off-peak; GitHub cron is best-effort)
+  workflow_dispatch: {} # manual run for testing
+
+permissions:
+  contents: read
+
+concurrency:
+  group: retention-cron
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    name: trigger retention sweep
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: POST /api/cron/retention
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -uo pipefail
+          if [ -z "${CRON_SECRET}" ]; then
+            echo "::warning::CRON_SECRET not set — skipping (endpoint would 401)."
+            exit 0
+          fi
+          resp=$(curl -sS --max-time 60 --retry 2 --retry-delay 10 --retry-all-errors \
+            -X POST "https://sofrapiwas.com/api/cron/retention" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -w $'\n%{http_code}') || { echo "::error::request failed"; exit 1; }
+          code=$(printf '%s' "$resp" | tail -n1)
+          body=$(printf '%s' "$resp" | sed '$d')
+          echo "HTTP $code"
+          echo "$body"
+          if [ "$code" != "200" ]; then
+            echo "::error::retention endpoint returned $code"
+            exit 1
+          fi
