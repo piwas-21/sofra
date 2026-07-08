@@ -1,0 +1,23 @@
+# Fixture — mirrors the deploy repo's tenants/registry.yml shape (ADR-007).
+version: 1
+tenants:
+  rumi:
+    name: Rumi Restaurant
+    status: live
+    managed: legacy
+    box: prod
+    domain: rumirestaurant.ch
+    domain_mode: byo
+    db: rumi
+    currency: CHF
+    languages: [en, fr, de, nl, tr, ar, ru, zh, es, it]
+    modules: [core]
+    city: Geneva
+  demo:
+    name: Demo Diner
+    status: active
+    managed: sofra
+    box: staging
+    domain: demo.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_demo

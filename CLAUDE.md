@@ -35,7 +35,7 @@
 
 ## §4 — File length limits (workspace defaults)
 
-Page 200 · component 250 · server action / lib file 200 · type file 150 LOC. No checker script here yet (W1 owes it) — self-enforce; the review gate warns.
+Page 200 · component 250 · server action / lib file 200 · type file 150 LOC. Enforced by `scripts/check-single-file.mjs`: a PostToolUse hook warns in-loop after each edit, and `--all` mode fails CI (`file_length` job) on any over-limit file not in `scripts/file-length-baseline.txt`. Grandfathered files go in that baseline (currently `lib/billing.ts`); remove a line once refactored under limit. The checker also warns on emails/phones inside `console.*` (§5.8 PII rule).
 
 ## §5 — Hard rules
 
@@ -56,9 +56,9 @@ Output before writing code: (1) which `require*()` guard covers each new surface
 
 ## §7 — Quality gates
 
-- **CI** (`.github/workflows/ci.yml`, PR #11): typecheck · eslint · next build · prisma migrations-apply + drift check · gitleaks · TruffleHog · Trivy fs · npm audit · OSV · semgrep; weekly `security-audit.yml`. SonarCloud autoscan (no CI job — don't add one).
-- **Review gate ACTIVE in this repo** (since 2026-07-07): Stop + PreToolUse hooks (`.claude/settings.json`) + git pre-push → workspace `scripts/review-gate/` with the `sofra.md` overlay. No `--no-verify`, no bypasses.
-- **No automated tests yet** — DEV-PHASES-PLAN W1 owes Vitest + a Playwright login smoke. Until then `scripts/e2e-local.mjs` (needs a **clean** local DB — leftover LIVE client collides on `tenantSlug`) + manual verification with the QA test accounts.
+- **CI** (`.github/workflows/ci.yml`): typecheck · eslint · next build · prisma migrations-apply + drift check · **vitest unit** · **i18n parity (6 locales)** · **file-length** · **playwright login smoke** · gitleaks · TruffleHog · Trivy fs · npm audit · OSV · semgrep; weekly `security-audit.yml`. SonarCloud autoscan (no CI job — don't add one).
+- **Review gate ACTIVE in this repo** (since 2026-07-07): Stop + PreToolUse + PostToolUse (file-length checker) hooks (`.claude/settings.json`) + git pre-push → workspace `scripts/review-gate/` with the `sofra.md` overlay. No `--no-verify`, no bypasses.
+- **Tests** (DEV-PHASES-PLAN W1): `npm run test` = Vitest unit suite over the pure `lib/` modules (format, mollie amount, validation schemas, rate-limit, tenant-registry — no DB/network; Mollie is never called). `npm run test:e2e` = Playwright login smoke (admin→/admin, partner→/dashboard, partner-blocked-from-/admin) against a seeded throwaway DB (`scripts/seed-e2e.mjs`). `scripts/e2e-local.mjs` (the no-browser progressive-enhancement walk of the partner program; needs a **clean** local DB — leftover LIVE client collides on `tenantSlug`) + the QA test accounts remain for manual/full-flow checks.
 
 ## §8 — Git workflow
 
