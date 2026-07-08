@@ -16,3 +16,6 @@ lib/generated/
 # Playwright (DEV-PHASES W1)
 test-results/
 playwright-report/
+
+# Vitest coverage (DEV-PHASES W2)
+coverage/

@@ -34,6 +34,18 @@ describe("rateLimit (in-memory fixed window)", () => {
     expect(rateLimit("iso-a", 1, 1000)).toBe(false);
     expect(rateLimit("iso-b", 1, 1000)).toBe(true); // b unaffected by a
   });
+
+  it("prunes expired buckets once the map exceeds its cap (unbounded-growth guard)", () => {
+    // A live key in a long window — must survive the prune.
+    const live = "prune-live";
+    expect(rateLimit(live, 5, 100_000)).toBe(true);
+    // Flood past the 10k cap with short-window keys, then expire them.
+    for (let i = 0; i < 10_050; i++) rateLimit(`flood-${i}`, 5, 1000);
+    vi.advanceTimersByTime(2000); // flood entries expired; `live` (100s window) still valid
+    // A second call on the live key trips `buckets.size > 10_000`, sweeping the
+    // expired flood; the call itself still returns true (count 2 <= max 5).
+    expect(rateLimit(live, 5, 100_000)).toBe(true);
+  });
 });
 
 describe("clientIp (X-Forwarded-For parsing)", () => {
