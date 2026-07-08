@@ -19,9 +19,11 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(join(dirname(fileURLToPath(import.meta.url)), ".."));
 const BASELINE = join(ROOT, "scripts", "file-length-baseline.txt");
 
-// Emails / phone-shaped literals inside a console.* call = likely PII leak.
-const PII_CONSOLE =
-  /console\.(log|error|warn|info)\([^)]*(@[\w.-]+\.\w{2,}|\+?\d[\d\s().-]{7,}\d)/;
+// A console.* call + an email/phone-shaped literal on the same line = likely
+// PII leak. Checked per-line (below) rather than with one greedy regex so an
+// inner `)` in the console args doesn't defeat the match.
+const CONSOLE_CALL = /console\.(log|error|warn|info)\(/;
+const PII_SHAPE = /@[\w.-]+\.\w{2,}|\+?\d[\d\s().-]{7,}\d/;
 
 function limitFor(rel) {
   // rel is repo-relative (no leading slash), e.g. "lib/billing.ts",
@@ -33,15 +35,15 @@ function limitFor(rel) {
   return [0, ""];
 }
 
-function loadBaseline() {
-  if (!existsSync(BASELINE)) return new Set();
-  return new Set(
-    readFileSync(BASELINE, "utf8")
-      .split("\n")
-      .map((l) => l.trim())
-      .filter((l) => l && !l.startsWith("#")),
-  );
-}
+// Read the baseline once at module load (not per file checked).
+const baseline = existsSync(BASELINE)
+  ? new Set(
+      readFileSync(BASELINE, "utf8")
+        .split("\n")
+        .map((l) => l.trim())
+        .filter((l) => l && !l.startsWith("#")),
+    )
+  : new Set();
 
 function checkFile(abs, { blocking } = {}) {
   const rel = relative(ROOT, abs).split(sep).join("/");
@@ -57,11 +59,11 @@ function checkFile(abs, { blocking } = {}) {
   const [lim, kind] = limitFor(rel);
   let violated = false;
 
-  if (lim && loc > lim && !loadBaseline().has(rel)) {
+  if (lim && loc > lim && !baseline.has(rel)) {
     process.stderr.write(`${rel}: file-length: ${kind} ~${loc} LOC (limit ${lim}) — extract per CLAUDE.md §4\n`);
     if (blocking) violated = true;
   }
-  if (PII_CONSOLE.test(src)) {
+  if (src.split("\n").some((line) => CONSOLE_CALL.test(line) && PII_SHAPE.test(line))) {
     // Always a warning, never fails CI (heuristic — may be a false positive).
     process.stderr.write(`${rel}: pii-in-log: console.* appears to log an email/phone — log ids, not PII (CLAUDE.md §5)\n`);
   }

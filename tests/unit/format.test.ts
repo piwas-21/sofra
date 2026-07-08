@@ -27,15 +27,18 @@ describe("eur (integer cents → nl-NL EUR string)", () => {
 });
 
 describe("shortDate (en-GB dd MMM yyyy)", () => {
+  // shortDate formats in the runner's LOCAL timezone (Intl with no timeZone),
+  // so build the inputs from local Y/M/D components — a UTC instant could land
+  // on a different calendar day in far-east timezones and flake the assertion.
   it("formats a mid-year date", () => {
-    expect(shortDate(new Date("2026-07-05T12:00:00Z"))).toBe("05 Jul 2026");
+    expect(shortDate(new Date(2026, 6, 5))).toBe("05 Jul 2026");
   });
 
   it("zero-pads single-digit days", () => {
-    expect(shortDate(new Date("2026-01-01T12:00:00Z"))).toBe("01 Jan 2026");
+    expect(shortDate(new Date(2026, 0, 1))).toBe("01 Jan 2026");
   });
 
   it("formats an end-of-year date", () => {
-    expect(shortDate(new Date("2025-12-31T12:00:00Z"))).toBe("31 Dec 2025");
+    expect(shortDate(new Date(2025, 11, 31))).toBe("31 Dec 2025");
   });
 });
