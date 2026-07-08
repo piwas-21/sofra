@@ -241,7 +241,10 @@ jobs:
       - run: npm ci --prefer-offline --no-audit
       # Some tested lib modules import types from the generated Prisma client.
       - run: npm run db:generate
-      - run: npm run test
+      # --coverage enforces the vitest.config.ts coverage floor (DEV-PHASES W2
+      # D9): the pure lib/ modules must stay ≥95% lines/statements/functions,
+      # ≥90% branches, or the job fails. Raise the floor as coverage grows.
+      - run: npm run test:coverage
 
   i18n_parity:
     name: i18n parity (6 locales)
