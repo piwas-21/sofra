@@ -314,7 +314,14 @@ jobs:
       - name: Seed ADMIN + PARTNER
         run: node scripts/seed-e2e.mjs
       - name: Install Playwright chromium
-        run: npx playwright install --with-deps chromium
+        # Drop the Microsoft apt sources first: `--with-deps` runs `apt-get
+        # update`, which intermittently fails on packages.microsoft.com serving
+        # a malformed InRelease ("NOSPLIT") — unrelated to our deps. The
+        # ubuntu-latest image already carries chromium's runtime libs, so a
+        # deps failure is non-fatal; install the browser binary regardless.
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft*.list /etc/apt/sources.list.d/*azure*.list 2>/dev/null || true
+          npx playwright install --with-deps chromium || npx playwright install chromium
       # Build WITHOUT DATABASE_URL in scope (repo rule: nothing queries the DB
       # at build time). Playwright's webServer (`npm run start`) then serves it
       # with the DB + auth env from the job.
