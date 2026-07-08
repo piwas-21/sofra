@@ -77,12 +77,11 @@ describe("retentionCutoffs (date math)", () => {
     expect(c.auditLogBefore.toISOString()).toBe("2025-01-08T12:00:00.000Z"); // −18 months
   });
 
-  it("never over-subtracts on a month-end rollover (setUTCMonth)", () => {
+  it("clamps a month-end rollover to the last day of the intended month", () => {
     const now = new Date("2026-03-31T00:00:00.000Z");
     const c = retentionCutoffs(now, { ...cfg, auditLogMonths: 1 });
-    // Feb has no 31st → JS normalizes forward; the only guarantees we rely on are
-    // that the cutoff is in the past and stays within a sane ~2-month window.
-    expect(c.auditLogBefore.getTime()).toBeLessThan(now.getTime());
-    expect(c.auditLogBefore.getTime()).toBeGreaterThan(now.getTime() - 62 * 86_400_000);
+    // Mar 31 − 1mo would overflow to Mar 3; the clamp pins it to Feb 28 (2026
+    // is not a leap year) so nothing younger than the window is purged.
+    expect(c.auditLogBefore.toISOString()).toBe("2026-02-28T00:00:00.000Z");
   });
 });

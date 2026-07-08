@@ -36,7 +36,14 @@ export function retentionCutoffs(now: Date, config: RetentionConfig): RetentionC
   const minusDays = (days: number) => new Date(now.getTime() - days * 86_400_000);
   const minusMonths = (months: number) => {
     const d = new Date(now.getTime());
-    d.setUTCMonth(d.getUTCMonth() - months); // setUTCMonth handles month/year rollover
+    const expectedMonth = (((d.getUTCMonth() - months) % 12) + 12) % 12;
+    d.setUTCMonth(d.getUTCMonth() - months);
+    // Month-end guard: e.g. Mar 31 − 1mo overflows to "Feb 31" → Mar 3, which would
+    // shift the cutoff FORWARD and purge records younger than the window. If the
+    // month overflowed, clamp back to the last day of the intended month.
+    if (d.getUTCMonth() !== expectedMonth) {
+      d.setUTCDate(0);
+    }
     return d;
   };
   return {
