@@ -27,8 +27,16 @@ export function bucketCount(): number {
   return buckets.size;
 }
 
+// Caddy APPENDS the connecting client's IP as the LAST X-Forwarded-For hop, so
+// the trustworthy address is the rightmost token. The leftmost is client-
+// supplied and spoofable — reading it (as the old code did) let an attacker
+// rotate the first hop per request to bypass every IP-keyed rate limit (#30).
+// Single known proxy today; if a second trusted proxy is ever fronted, switch to
+// Caddy `trusted_proxies` + rightmost-untrusted instead of a fixed last-hop.
+export function clientIpFromXff(xff: string | null | undefined): string {
+  return xff?.split(",").pop()?.trim() || "unknown";
+}
+
 export function clientIp(request: Request): string {
-  // Caddy sets X-Forwarded-For; take the first (client) hop.
-  const xff = request.headers.get("x-forwarded-for");
-  return xff?.split(",")[0]?.trim() || "unknown";
+  return clientIpFromXff(request.headers.get("x-forwarded-for"));
 }

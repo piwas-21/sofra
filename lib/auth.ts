@@ -7,7 +7,7 @@ import { compare } from "bcryptjs";
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
-import { rateLimit } from "@/lib/rate-limit";
+import { clientIpFromXff, rateLimit } from "@/lib/rate-limit";
 
 // Compared against when the user doesn't exist / isn't ACTIVE, so the
 // failure path costs one bcrypt round-trip either way (no timing-based
@@ -31,7 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // Keyed by IP and by account so one IP can't spray many accounts
         // and one account can't be brute-forced from many IPs cheaply.
         const h = await headers();
-        const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+        const ip = clientIpFromXff(h.get("x-forwarded-for"));
         const windowMs = 15 * 60 * 1000;
         if (!rateLimit(`login:ip:${ip}`, 20, windowMs) || !rateLimit(`login:email:${email}`, 10, windowMs)) {
           await audit(null, "login.rate_limited", "User", null, { email });
