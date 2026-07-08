@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { bucketCount, clientIp, rateLimit } from "@/lib/rate-limit";
 
 // The limiter keeps a module-level Map keyed by the caller-supplied key.
 // Tests isolate themselves by using a unique key per case (plus fake timers
@@ -35,16 +35,21 @@ describe("rateLimit (in-memory fixed window)", () => {
     expect(rateLimit("iso-b", 1, 1000)).toBe(true); // b unaffected by a
   });
 
-  it("prunes expired buckets once the map exceeds its cap (unbounded-growth guard)", () => {
-    // A live key in a long window — must survive the prune.
-    const live = "prune-live";
-    expect(rateLimit(live, 5, 100_000)).toBe(true);
-    // Flood past the 10k cap with short-window keys, then expire them.
-    for (let i = 0; i < 10_050; i++) rateLimit(`flood-${i}`, 5, 1000);
-    vi.advanceTimersByTime(2000); // flood entries expired; `live` (100s window) still valid
-    // A second call on the live key trips `buckets.size > 10_000`, sweeping the
-    // expired flood; the call itself still returns true (count 2 <= max 5).
-    expect(rateLimit(live, 5, 100_000)).toBe(true);
+  it("prunes expired buckets under a unique-key spray so the map stays bounded", () => {
+    // Spray >10k unique keys in a short window — each one takes the new-key
+    // fast path. This is the actual DoS vector (random IPs), so the prune must
+    // NOT be gated behind the existing-key branch.
+    for (let i = 0; i < 10_050; i++) rateLimit(`spray-${i}`, 5, 1000);
+    const flooded = bucketCount();
+    expect(flooded).toBeGreaterThan(10_000);
+
+    // Let the spray age out, then make one more call to a brand-new key. The
+    // prune has to fire on THIS call (new-key path) to sweep the expired spray;
+    // if it only ran on the existing-key path (the bug), the map would stay
+    // flooded. Regression guard: fails on the pre-fix code, passes on the fix.
+    vi.advanceTimersByTime(2000);
+    rateLimit("after-spray", 5, 1000);
+    expect(bucketCount()).toBeLessThan(flooded - 10_000);
   });
 });
 

@@ -25,13 +25,19 @@ describe("escapeHtml", () => {
 });
 
 describe("siteUrl (env fallback chain)", () => {
-  const saved = { ...process.env };
+  // Per-key save/restore (matches tenant-registry/mollie tests) — never
+  // reassign process.env wholesale (Node's env object has native getters).
+  const savedAuth = process.env.NEXTAUTH_URL;
+  const savedSite = process.env.NEXT_PUBLIC_SITE_URL;
   beforeEach(() => {
     delete process.env.NEXTAUTH_URL;
     delete process.env.NEXT_PUBLIC_SITE_URL;
   });
   afterEach(() => {
-    process.env = { ...saved };
+    if (savedAuth === undefined) delete process.env.NEXTAUTH_URL;
+    else process.env.NEXTAUTH_URL = savedAuth;
+    if (savedSite === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+    else process.env.NEXT_PUBLIC_SITE_URL = savedSite;
   });
 
   it("prefers NEXTAUTH_URL", () => {
@@ -51,9 +57,10 @@ describe("siteUrl (env fallback chain)", () => {
 });
 
 describe("founderInbox", () => {
-  const saved = { ...process.env };
+  const savedTo = process.env.WAITLIST_TO;
   afterEach(() => {
-    process.env = { ...saved };
+    if (savedTo === undefined) delete process.env.WAITLIST_TO;
+    else process.env.WAITLIST_TO = savedTo;
   });
 
   it("returns WAITLIST_TO when set", () => {
