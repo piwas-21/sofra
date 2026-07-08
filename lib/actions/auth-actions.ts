@@ -10,13 +10,13 @@ import { audit } from "@/lib/audit";
 import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
 import { craftEmail } from "@/lib/email-templates";
 import { createToken, findValidToken } from "@/lib/tokens";
-import { rateLimit } from "@/lib/rate-limit";
+import { clientIpFromXff, rateLimit } from "@/lib/rate-limit";
 
 export type FormState = { error?: string; ok?: boolean };
 
 async function limited(scope: string, max: number): Promise<boolean> {
   const h = await headers();
-  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const ip = clientIpFromXff(h.get("x-forwarded-for"));
   return !rateLimit(`${scope}:${ip}`, max, 15 * 60 * 1000);
 }
 

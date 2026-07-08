@@ -56,12 +56,22 @@ describe("rateLimit (in-memory fixed window)", () => {
 describe("clientIp (X-Forwarded-For parsing)", () => {
   const req = (headers: Record<string, string>) => new Request("https://x.test", { headers });
 
-  it("takes the first (client) hop from a multi-hop XFF", () => {
-    expect(clientIp(req({ "x-forwarded-for": "203.0.113.9, 10.0.0.1, 10.0.0.2" }))).toBe("203.0.113.9");
+  it("takes the LAST (Caddy-appended, trustworthy) hop from a multi-hop XFF", () => {
+    expect(clientIp(req({ "x-forwarded-for": "203.0.113.9, 10.0.0.1, 10.0.0.2" }))).toBe("10.0.0.2");
   });
 
-  it("trims whitespace around the first hop", () => {
-    expect(clientIp(req({ "x-forwarded-for": "  198.51.100.4 ,10.0.0.1" }))).toBe("198.51.100.4");
+  it("ignores a client-spoofed leading hop and uses the real appended IP (#30)", () => {
+    // Attacker sends `X-Forwarded-For: 1.2.3.4`; Caddy appends the real client
+    // IP on the right. Keying on the last hop makes the spoof a no-op.
+    expect(clientIp(req({ "x-forwarded-for": "1.2.3.4, 203.0.113.9" }))).toBe("203.0.113.9");
+  });
+
+  it("trims whitespace around the last hop", () => {
+    expect(clientIp(req({ "x-forwarded-for": "10.0.0.1,  198.51.100.4  " }))).toBe("198.51.100.4");
+  });
+
+  it("returns the sole hop for a single-value header", () => {
+    expect(clientIp(req({ "x-forwarded-for": "203.0.113.9" }))).toBe("203.0.113.9");
   });
 
   it("falls back to 'unknown' when the header is absent", () => {
