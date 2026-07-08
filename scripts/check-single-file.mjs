@@ -52,7 +52,9 @@ function checkFile(abs, { blocking } = {}) {
   let src;
   try {
     src = readFileSync(abs, "utf8");
-  } catch {
+  } catch (e) {
+    // Surface the skip (don't silently miss a file's violations in --all CI mode).
+    process.stderr.write(`${rel}: skipped — unreadable (${e.code ?? e.message})\n`);
     return false;
   }
   const loc = src.split("\n").length;
