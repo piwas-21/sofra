@@ -1,12 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { bucketCount, clientIp, rateLimit } from "@/lib/rate-limit";
+import { __resetForTests, bucketCount, clientIp, rateLimit } from "@/lib/rate-limit";
 
-// The limiter keeps a module-level Map keyed by the caller-supplied key.
-// Tests isolate themselves by using a unique key per case (plus fake timers
-// for the window-expiry case) rather than resetting module state.
+// The limiter keeps module-level state: a Map keyed by the caller-supplied key
+// AND a prune-throttle clock (#31). Unique per-test keys isolate the map, but the
+// throttle clock is shared state keys can't isolate — so each case starts from a
+// clean reset (plus fake timers) for deterministic, order-independent runs.
 
 describe("rateLimit (in-memory fixed window)", () => {
   beforeEach(() => {
+    __resetForTests();
     vi.useFakeTimers();
   });
   afterEach(() => {
@@ -50,6 +52,46 @@ describe("rateLimit (in-memory fixed window)", () => {
     vi.advanceTimersByTime(2000);
     rateLimit("after-spray", 5, 1000);
     expect(bucketCount()).toBeLessThan(flooded - 10_000);
+  });
+
+  it("throttles the O(n) prune to at most once per interval (#31)", () => {
+    // Fill past the soft cap with a SHORT window so entries expire well within
+    // the 1s prune interval. Crossing the soft cap runs (and clocks) the first
+    // prune, which evicts nothing here (all entries are still fresh).
+    for (let i = 0; i < 10_050; i++) rateLimit(`thr-${i}`, 5, 100);
+    const flooded = bucketCount();
+    expect(flooded).toBeGreaterThan(10_000);
+
+    // Entries are now expired (200ms > 100ms window) but we're still INSIDE the
+    // prune interval (200ms < 1000ms since the clock was set) → prune is
+    // throttled, so the expired spray is NOT swept.
+    vi.advanceTimersByTime(200);
+    rateLimit("thr-probe-a", 5, 100);
+    expect(bucketCount()).toBeGreaterThan(flooded - 10_000);
+
+    // Cross the interval → the next call is finally allowed to run the sweep.
+    vi.advanceTimersByTime(1000);
+    rateLimit("thr-probe-b", 5, 100);
+    expect(bucketCount()).toBeLessThan(flooded - 10_000);
+  });
+
+  it("caps the map at the hard ceiling under a fresh spray and fails closed (#31)", () => {
+    // A key tracked BEFORE the ceiling is reached — must survive it.
+    expect(rateLimit("hc-existing", 5, 1000)).toBe(true);
+
+    // Spray fresh unique keys within one frozen tick: nothing ever expires, so
+    // pruning can evict nothing and only the hard ceiling can bound the map.
+    let rejected = 0;
+    for (let i = 0; i < 25_000; i++) {
+      if (!rateLimit(`hc-${i}`, 5, 1000)) rejected++;
+    }
+
+    // Memory bounded: the map never grows past the hard ceiling.
+    expect(bucketCount()).toBeLessThanOrEqual(20_000);
+    // Fail closed: once the ceiling was hit, further NEW keys were refused.
+    expect(rejected).toBeGreaterThan(4_000);
+    // The pre-ceiling key is unaffected (not evicted) — still counting under max.
+    expect(rateLimit("hc-existing", 5, 1000)).toBe(true);
   });
 });
 
