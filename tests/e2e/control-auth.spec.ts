@@ -15,14 +15,15 @@ import { expect, type Page, test } from "@playwright/test";
 // SSR HTML + server redirects, so that's fine; a future assertion that needs
 // client hydration would flake here without an obvious cause.
 
-const admin = {
-  email: process.env.E2E_ADMIN_EMAIL ?? "e2e-admin@example.com",
-  password: process.env.E2E_ADMIN_PASSWORD ?? "changeme-admin-123",
-};
-const partner = {
-  email: process.env.E2E_PARTNER_EMAIL ?? "e2e-partner@example.com",
-  password: process.env.E2E_PARTNER_PASSWORD ?? "changeme-partner-123",
-};
+// Credentials come only from the environment — the same throwaway values
+// scripts/seed-e2e.mjs seeds (CI generates them per-run). No literals in source.
+function required(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`${name} must be set to run the smoke (see scripts/seed-e2e.mjs + the e2e_smoke CI job)`);
+  return v;
+}
+const admin = { email: required("E2E_ADMIN_EMAIL"), password: required("E2E_ADMIN_PASSWORD") };
+const partner = { email: required("E2E_PARTNER_EMAIL"), password: required("E2E_PARTNER_PASSWORD") };
 
 async function login(page: Page, creds: { email: string; password: string }) {
   await page.goto("/login");
