@@ -23,7 +23,14 @@ export function rateLimit(key: string, max: number, windowMs: number): boolean {
   // sustained spray. It lives here, not in the `!bucket` branch, because a spray
   // of random keys returns early there — gating the prune on that branch would
   // skip it exactly under the attack it defends against.
-  if (buckets.size > PRUNE_SOFT_CAP && now - lastPruneAt >= PRUNE_INTERVAL_MS) {
+  // `lastPruneAt === 0` (never pruned yet, or a test clock pinned at epoch 0) and
+  // `now < lastPruneAt` (clock stepped backwards, e.g. an NTP correction) both force
+  // a prune rather than strand the sweep — otherwise a backward jump would disable
+  // pruning until the clock caught back up to lastPruneAt.
+  if (
+    buckets.size > PRUNE_SOFT_CAP &&
+    (lastPruneAt === 0 || now < lastPruneAt || now - lastPruneAt >= PRUNE_INTERVAL_MS)
+  ) {
     lastPruneAt = now;
     for (const [k, v] of buckets) if (v.resetAt <= now) buckets.delete(k);
   }
