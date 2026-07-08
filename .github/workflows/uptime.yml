@@ -1,0 +1,92 @@
+name: uptime
+
+# External uptime probe for every Sofra/RUMI public web property. Alerts a Telegram
+# chat on failure. Lives in this (public) repo so scheduled runs use free Actions
+# minutes, and because sofra deploys manually merging it triggers no redeploy.
+#
+# Setup (one-time, owner): add two repo secrets — the alert stays silent until both exist:
+#   gh secret set TELEGRAM_BOT_TOKEN -R piwas-21/sofra   # the bot's API token
+#   gh secret set TELEGRAM_CHAT_ID  -R piwas-21/sofra    # the chat/channel to notify
+#
+# Caveats (GitHub-cron uptime, by design): schedule is best-effort — runs can be
+# delayed or skipped under GitHub load, so this is a coarse safety net, not
+# sub-minute monitoring; a failing site re-alerts every run until it recovers (no
+# state dedup). An external service (UptimeRobot/healthchecks.io free) is more
+# precise if that tradeoff bites — this was chosen to avoid another account.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # every ~5 minutes (best-effort)
+  workflow_dispatch: {} # manual run for testing
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    name: probe endpoints
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe and alert on failure
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -uo pipefail
+
+          # "url|label" — every public property. Add tenants here as they go live.
+          targets=(
+            "https://www.rumirestaurant.ch|RUMI prod (tenant 1)"
+            "https://sofrapiwas.com|Sofra site + control plane"
+            "https://staging.fooderist.com|Sofra staging"
+          )
+
+          down=()
+          for entry in "${targets[@]}"; do
+            url="${entry%%|*}"; label="${entry##*|}"
+            # 2 retries w/ backoff ride out a transient blip; any 2xx/3xx is healthy.
+            # curl's %{http_code} is "000" when no response arrives; on a non-zero
+            # exit we reset (not append) to keep the code a clean 3 digits.
+            code=$(curl -sS -o /dev/null -w '%{http_code}' \
+              --max-time 20 --retry 2 --retry-delay 5 --retry-all-errors "$url" 2>/dev/null) || code=000
+            [ -z "$code" ] && code=000
+            if [ "$code" -ge 200 ] && [ "$code" -lt 400 ]; then
+              echo "OK   $label -> $code  ($url)"
+            else
+              echo "DOWN $label -> $code  ($url)"
+              down+=("$label — HTTP $code")
+            fi
+          done
+
+          {
+            echo "### Uptime probe"
+            if [ ${#down[@]} -eq 0 ]; then echo "All properties healthy ✅"; else
+              echo "Down:"; for d in "${down[@]}"; do echo "- $d"; done
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ${#down[@]} -eq 0 ]; then
+            echo "All properties healthy."
+            exit 0
+          fi
+
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          msg=$'\xF0\x9F\x94\xB4 Uptime alert — property down:\n'
+          for d in "${down[@]}"; do msg+="• ${d}"$'\n'; done
+          msg+=$'\n'"${run_url}"
+
+          if [ -z "${TELEGRAM_BOT_TOKEN}" ] || [ -z "${TELEGRAM_CHAT_ID}" ]; then
+            echo "::warning::Property down but TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID not set — no alert sent."
+          else
+            curl -sS --max-time 20 \
+              -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=${msg}" \
+              -o /dev/null -w 'telegram sendMessage: %{http_code}\n' \
+              || echo "::warning::Telegram send failed"
+          fi
