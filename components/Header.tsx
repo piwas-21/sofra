@@ -7,7 +7,7 @@ export default function Header() {
   const t = useTranslations("header");
 
   return (
-    <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-sm border-b-2 border-border">
+    <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xs border-b-2 border-border">
       <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
         <a href="#top" className="font-hand text-3xl font-bold text-primary">
           Sofra

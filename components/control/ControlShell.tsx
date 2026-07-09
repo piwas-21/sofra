@@ -15,7 +15,7 @@ export default function ControlShell({
 }) {
   return (
     <>
-      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-sm border-b-2 border-border">
+      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xs border-b-2 border-border">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6 min-w-0">
             <Link href="/" className="font-hand text-3xl font-bold text-primary shrink-0">

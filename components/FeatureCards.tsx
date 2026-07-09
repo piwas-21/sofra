@@ -12,10 +12,10 @@ import {
 const items = [
   { key: "qr", Icon: QrIcon, tilt: "-rotate-1" },
   { key: "live", Icon: BoardIcon, tilt: "rotate-1" },
-  { key: "reservations", Icon: CalendarIcon, tilt: "-rotate-[0.6deg]" },
+  { key: "reservations", Icon: CalendarIcon, tilt: "rotate-[-0.6deg]" },
   { key: "loyalty", Icon: HeartIcon, tilt: "rotate-[0.8deg]" },
   { key: "printing", Icon: PrinterIcon, tilt: "rotate-[0.5deg]" },
-  { key: "languages", Icon: GlobeIcon, tilt: "-rotate-[0.9deg]" },
+  { key: "languages", Icon: GlobeIcon, tilt: "rotate-[-0.9deg]" },
 ] as const;
 
 export default function FeatureCards() {
