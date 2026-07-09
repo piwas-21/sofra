@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       {/* Watercolour wash — top right, asymmetric */}
-      <WatercolourBlob className="pointer-events-none absolute -top-24 -right-32 w-[34rem] md:w-[44rem] craft-glow animate-float" />
+      <WatercolourBlob className="pointer-events-none absolute -top-24 -right-32 w-136 md:w-176 craft-glow animate-float" />
 
       <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-24 md:pt-28 md:pb-32">
         <span className="stamp inline-block font-mono text-xs text-primary px-3 py-1.5 mb-8 animate-fade-in">

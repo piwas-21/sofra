@@ -64,7 +64,7 @@ export default function LocaleSwitcher({ label }: { label: string }) {
         <ul
           role="listbox"
           aria-label={label}
-          className="absolute end-0 mt-2 min-w-44 hand-drawn-border bg-card p-1.5 shadow-lg z-50"
+          className="absolute inset-e-0 mt-2 min-w-44 hand-drawn-border bg-card p-1.5 shadow-lg z-50"
         >
           {routing.locales.map((l) => (
             <li key={l}>
