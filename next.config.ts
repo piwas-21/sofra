@@ -1,7 +1,23 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const withNextIntl = createNextIntlPlugin();
+
+// The browser Sentry SDK POSTs events to its ingest host; derive that origin
+// from the public DSN so the CSP `connect-src` can allow exactly it — and only
+// when Sentry is configured, keeping the CSP tight when it is off. Runs at build
+// time (next.config), same moment NEXT_PUBLIC_SENTRY_DSN is baked into the bundle.
+function sentryIngestOrigin(): string | null {
+  const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
+  if (!dsn) return null;
+  try {
+    return new URL(dsn).origin;
+  } catch {
+    return null;
+  }
+}
+const sentryConnectSrc = sentryIngestOrigin();
 
 // Security headers (DEV-PHASES-PLAN W0 — closes the "live SaaS without headers"
 // hole; approach mirrors the RUMI frontend's next.config.ts, tightened to what
@@ -24,7 +40,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  `connect-src 'self'${sentryConnectSrc ? ` ${sentryConnectSrc}` : ""}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -60,4 +76,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+// Sentry wraps the config last: it wires the client SDK into the bundle and the
+// server SDK via instrumentation.ts. Source-map upload is disabled (no auth
+// token wired), so the build stays green offline and in CI; add org/project/
+// authToken later to get readable stack traces. `enabled` on each Sentry.init
+// keeps the whole thing inert until a DSN is set.
+export default withSentryConfig(withNextIntl(nextConfig), {
+  silent: !process.env.CI,
+  sourcemaps: { disable: true },
+});
