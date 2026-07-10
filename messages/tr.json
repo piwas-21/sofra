@@ -199,7 +199,10 @@
       "waitlist": "Hemen başlayın",
       "live": "Canlı örnek",
       "partner": "Partnerler",
-      "faq": "SSS"
+      "faq": "SSS",
+      "caseStudy": "Vaka çalışması",
+      "compare": "Sofra vs GloriaFood",
+      "changelog": "Neler yeni"
     },
     "copyright": "© {year} Sofra. Tüm hakları saklıdır."
   },
@@ -235,6 +238,215 @@
       "domain": {
         "q": "Kendi alan adımı kullanabilir miyim?",
         "a": "Evet. Her restorana ücretsiz bir sofra alt alan adı verilir; sahip olduğunuz bir alan adını bağlayabilirsiniz — ya da kurulum sırasında sizin için yepyeni bir alan adı kaydederiz."
+      }
+    }
+  },
+  "caseStudy": {
+    "meta": {
+      "title": "Vaka çalışması: RUMI Restaurant, Cenevre — Sofra üzerinde",
+      "description": "Cenevre'deki RUMI Restaurant çevrim içi siparişlerini, masa rezervasyonlarını ve mutfak fişi yazdırmayı Sofra üzerinde yürütüyor — on misafir dilinde, AB altyapısında, Haziran 2026'dan beri canlı."
+    },
+    "label": "Vaka çalışması",
+    "title": "RUMI Restaurant, Cenevre",
+    "subtitle": "Sofra'nın ilk restoranı — ve her özelliğin yayına çıkmadan önce piştiği salon.",
+    "facts": {
+      "location": {
+        "label": "Konum",
+        "value": "Cenevre, İsviçre"
+      },
+      "since": {
+        "label": "Şu tarihten beri canlı"
+      },
+      "languages": {
+        "label": "Misafir dilleri",
+        "value": "10"
+      },
+      "hosting": {
+        "label": "Altyapı",
+        "value": "AB, Sofra yönetiminde"
+      }
+    },
+    "runs": {
+      "title": "RUMI, Sofra'da neleri çalıştırıyor",
+      "intro": "Ne pilot ne de kısmi kullanım — restoranın günlük servisi platform üzerinde dönüyor:",
+      "items": {
+        "ordering": {
+          "title": "QR menü & çevrim içi sipariş",
+          "text": "Misafirler masada okutuyor ya da internetten sipariş veriyor — fotoğraflar, alerjenler, özelleştirmeler."
+        },
+        "boards": {
+          "title": "Canlı sipariş panoları",
+          "text": "Mutfak, kasa ve garsonlar siparişleri kendi canlı ekranlarından izliyor."
+        },
+        "reservations": {
+          "title": "Masa rezervasyonları",
+          "text": "Masa planı ve çalışma saatleriyle çevrim içi rezervasyon; ekip tek dokunuşla onaylıyor."
+        },
+        "loyalty": {
+          "title": "Sadakat puanları",
+          "text": "Sadakat puanları ve gruplara göre indirim kuralları müdavimleri geri getiriyor."
+        },
+        "printing": {
+          "title": "Mutfak fişi yazdırma",
+          "text": "Siparişler ağa bağlı termal yazıcılardan çıkıyor — tam da gereken istasyonlarda."
+        }
+      }
+    },
+    "languagesSection": {
+      "title": "Bir sofrada on dil",
+      "body": "Cenevre uluslararası bir şehir ve RUMI'nin menüsü buna hazır: misafirler İngilizce, Fransızca, Almanca, Hollandaca, İtalyanca, İspanyolca, Türkçe, Arapça, Rusça veya Çince menüye bakıp sipariş veriyor — aynı menü, aynı mutfak."
+    },
+    "infra": {
+      "title": "Arkasındaki altyapı",
+      "body": "RUMI, AB'de barındırılan ve Sofra'nın işlettiği bir altyapıda çalışıyor — {date} tarihinden beri canlı, günün her saati izleniyor, her gece yedekleniyor. Restoran servisini yapıyor; biz sahne arkasında tabakları döndürüyoruz."
+    },
+    "numbers": {
+      "title": "Peki rakamlar nerede?",
+      "body": "Yalnızca arkasında durabileceğimiz rakamları yayımlıyoruz. RUMI'nin ayrıntılı servis istatistikleri, düzgünce paylaşabildiğimizde burada olacak — o zamana dek canlı menüyü açın ve ürünü en dürüst yoldan değerlendirin."
+    },
+    "visit": "rumirestaurant.ch'yi ziyaret edin",
+    "ctaTitle": "Aynısını kendi mekânınızda ister misiniz?",
+    "ctaBody": "Restoran, kafe ya da paket servis — mekânınızı anlatın, bir gün içinde dönüş yapalım.",
+    "ctaButton": "Hemen başlayın"
+  },
+  "compare": {
+    "meta": {
+      "title": "Sofra vs GloriaFood (2026): dürüst bir karşılaştırma",
+      "description": "GloriaFood, ücretli ek modülleri olan ücretsiz bir çevrim içi sipariş sistemi; Sofra ise Hollanda çıkışlı, tam hizmet bir restoran platformu. Adil, tarihli ve kaynaklı bir karşılaştırma."
+    },
+    "label": "Yan yana",
+    "title": "Sofra vs GloriaFood",
+    "subtitle": "Bir restoranı internete taşımanın iki dürüst yolu — kaynaklarla ve tarihiyle, adilce karşılaştırıldı.",
+    "updated": "Son kontrol: {date}",
+    "intro1": "GloriaFood — Oracle bünyesinde — en bilinen çevrim içi sipariş sistemlerinden biri: ürünün çekirdeği ücretsiz, büyüdükçe ücretli modüller ekleniyor. Sofra ise daha genç, tam hizmet bir platform: Hollanda'da geliştirildi, Cenevre'de her gün serviste sınanıyor — sipariş, rezervasyon, sadakat ve mutfak yazdırma tek sistemde, sizin için birebir kuruluyor.",
+    "intro2": "İkisi de dürüst seçenekler. Hangisinin uyduğu, ne kadarını kendiniz yapmak istediğinize bağlı — aşağıdaki tablo yalnızca GloriaFood'un kendi sayfalarında doğruladığımız bilgilere dayanıyor.",
+    "table": {
+      "caption": "Sofra ve GloriaFood, özellik özellik",
+      "feature": "Bir bakışta",
+      "sofra": "Sofra",
+      "gloriafood": "GloriaFood",
+      "rows": {
+        "pricing": {
+          "label": "Fiyat modeli",
+          "sofra": "Erken erişim: kurucu restoranlara ikramımız; normal fiyatlar geldiğinde ömür boyu indirim. Sonrası: isteğe bağlı modüllerle basit, sabit aylık fiyat.",
+          "gf": "Ücretsiz çekirdek: aylık ücret yok, sipariş başına komisyon yok. Ücretli modüller: çevrim içi ödeme 29 ABD$/ay, gelişmiş promosyon 19 ABD$/ay, kasa (POS) şube başına 49 ABD$/ay (iki yıl taahhüt)."
+        },
+        "ordering": {
+          "label": "QR & çevrim içi sipariş",
+          "sofra": "Dahil — masada QR menü ve çevrim içi sipariş; fotoğraflar, alerjenler, özelleştirmeler. Uygulama indirmek yok.",
+          "gf": "Ücretsiz dahil — web siteniz ve Facebook sayfanız için sipariş bileşeni, artı mekânda QR ile sipariş."
+        },
+        "reservations": {
+          "label": "Masa rezervasyonu",
+          "sofra": "Dahil — çevrim içi rezervasyon, masa planı, çalışma saatleri, tek dokunuşla onay.",
+          "gf": "Rezervasyon bileşeni dahil; kapora almak, kabul edilen rezervasyonlarda misafir başına 0,50 ABD$."
+        },
+        "loyalty": {
+          "label": "Sadakat & promosyon",
+          "sofra": "Dahil — sadakat puanları ve müşteri gruplarına göre indirim kuralları.",
+          "gf": "Ücretsiz planda promosyon ve kuponlar; gelişmiş promosyon-pazarlama modülü 19 ABD$/ay."
+        },
+        "printing": {
+          "label": "Mutfak yazdırma",
+          "sofra": "Yardımcı uygulama (Windows ve Android) ağa bağlı ESC/POS termal yazıcıları sürer — istasyon başına fiş, ek abonelik yok.",
+          "gf": "Ücretsiz sipariş alma uygulamaları (Android ve iOS) termal yazıcıya bağlanır ve kabul edilen siparişleri otomatik yazdırır."
+        },
+        "languages": {
+          "label": "Diller",
+          "sofra": "Misafirler aynı menüde 10 dilde gezinir ve sipariş verir.",
+          "gf": "Ürün arayüzü, topluluklarının çevirdiği on iki kadar dilde — ayrıntılar çeviri sayfalarında."
+        },
+        "hosting": {
+          "label": "Barındırma & alan adları",
+          "sofra": "AB'de, Sofra'nın yönettiği altyapıda çalışır; her restoran kendi alan adını alır — sizinkini ya da sizin için kaydettiğimiz yeni bir tanesini.",
+          "gf": "Oracle'ın işlettiği bulut hizmeti (GloriaFood bir Oracle ürünüdür)."
+        },
+        "setup": {
+          "label": "Kurulum & destek",
+          "sofra": "Birebir kurulum — menünüzü, QR kodlarınızı, yazıcılarınızı ve ekip ekranlarınızı sizinle birlikte kurar, bir mesaj uzağınızda kalırız.",
+          "gf": "Kendin kur — sistemi yönetim panelleri ve dokümantasyonla kendiniz kurarsınız."
+        },
+        "payments": {
+          "label": "Çevrim içi ödeme",
+          "sofra": "Yol haritasında isteğe bağlı modül olarak — kartların yanında TWINT ve iDEAL gibi yerel yöntemler planlı. Bugün her zamanki gibi kasada tahsil edersiniz.",
+          "gf": "Ücretli modül olarak mevcut — çevrim içi/kartla ödeme 29 ABD$/ay."
+        }
+      }
+    },
+    "disclaimer": "Yukarıdaki GloriaFood bilgileri Temmuz 2026'da herkese açık sayfalarından doğrulandı ve değişebilir — güncel durum için her zaman fiyat sayfalarına bakın. GloriaFood bir Oracle ürünüdür; tüm ad ve markalar sahiplerine aittir. Belirtilen fiyatlar onların fiyatlarıdır; ABD doları cinsinden ve vergiler hariçtir.",
+    "qa": {
+      "free": {
+        "q": "GloriaFood gerçekten ücretsiz mi?",
+        "a": "Çekirdeği evet. Fiyat sayfalarına göre temel sipariş sisteminde sipariş başına komisyon ve aylık ücret yok; çevrim içi ödeme (29 ABD$/ay), gelişmiş promosyon (19 ABD$/ay), kasa (şube başına 49 ABD$/ay, iki yıl taahhüt), satışa dönük web sitesi ve markanıza özel uygulamalar ücretli ekstralar. Birçok küçük restoran için ücretsiz plan gerçekten yeterli."
+      },
+      "cost": {
+        "q": "Sofra ne kadar?",
+        "a": "Erken erişim boyunca kurucu restoranlar hiçbir şey ödemiyor — kurulum ve destek ikramımız; normal fiyatlar geldiğinde ömür boyu indirimleri baki. Normal planlar, isteğe bağlı modüllerle basit ve sabit bir aylık fiyat olacak."
+      },
+      "pick": {
+        "q": "Hangisini seçmeliyim?",
+        "a": "Asıl istediğiniz, hâlihazırdaki sitenize bugün ücretsiz bir sipariş bileşeni eklemekse ve kurulumu kendiniz yapmaktan çekinmiyorsanız, GloriaFood sağlam ve kendini kanıtlamış bir seçim. Sipariş, rezervasyon, sadakat ve mutfak yazdırmayı tek sistemde — sizinle birlikte kurulmuş, misafirlerinizin dillerinde, AB altyapısında — istiyorsanız, Sofra tam da bunun için var."
+      }
+    },
+    "fitGf": {
+      "title": "GloriaFood ne zaman iyi bir seçim",
+      "items": {
+        "widget": "Mevcut sitenize bugün ücretsiz bir sipariş bileşeni istiyorsunuz.",
+        "self": "Sistemi kendiniz kurup kendiniz işletmek size uyuyor.",
+        "freeTier": "Ücretsiz plan ihtiyacınızı zaten karşılıyor — fazlasını ödemeye gerek yok."
+      }
+    },
+    "fitSofra": {
+      "title": "Sofra ne zaman daha iyi oturur",
+      "items": {
+        "one": "Sipariş, rezervasyon, sadakat ve mutfak yazdırmayı ayrı modüller değil, tek sistem olarak istiyorsunuz.",
+        "languages": "Misafirleriniz birden çok dil konuşuyor — Sofra aynı menüde on dil servis ediyor.",
+        "hands": "Her şeyi tek başına yapmaktansa, sofrayı sizinle birlikte kuran — ve bir mesaj uzağınızda kalan — birini tercih ediyorsunuz.",
+        "domain": "Restoranınızı kendi alan adında, kendi para biriminizde, AB'de barındırılmış istiyorsunuz."
+      }
+    },
+    "sources": {
+      "title": "Kaynaklar",
+      "note": "Bu sayfadaki her GloriaFood bilgisi {date} tarihinde herkese açık sayfalarından doğrulandı:",
+      "items": {
+        "pricing": "GloriaFood fiyat sayfası",
+        "app": "GloriaFood sipariş alma uygulaması",
+        "translation": "GloriaFood arayüz dilleri"
+      }
+    },
+    "ctaTitle": "Farkı tadın",
+    "ctaBody": "Karşılaştırmanın en hızlı yolu, Sofra'yı gerçek bir restoranda çalışırken görmek — ya da kendi masalarınızda.",
+    "ctaButton": "Hemen başlayın",
+    "ctaCase": "RUMI vaka çalışmasını okuyun"
+  },
+  "changelog": {
+    "meta": {
+      "title": "Sofra'da neler yeni — değişiklik günlüğü",
+      "description": "Sofra'daki yeniliklere dair tarihli notlar: özellikler, diller, faturalama, güvenlik ve güvenilirlik. Kısa ve dürüst — burada yazıyorsa, yayında."
+    },
+    "label": "Mutfaktan taze",
+    "title": "Neler yeni",
+    "subtitle": "Mutfağımızdan yeni çıkanlara dair kısa, tarihli notlar. Burada yazıyorsa, yayında.",
+    "entries": {
+      "currency": {
+        "title": "Para biriminiz, uçtan uca",
+        "body": "Sofra'daki her restoran artık kendi para birimiyle çalışıyor — menü, siparişler, fişler ve makbuzlar aynı dili konuşuyor. Ayrıca restorana özel görünümlerin temelini attık: klasik ve zanaatkâr olmak üzere iki şablon yolda."
+      },
+      "hardening": {
+        "title": "Güvenlik ve güvenilirlik haftası",
+        "body": "Günün her saati çalışan erişilebilirlik izleme, her sürümde hata takibi ve performans kontrolleri; sitenin tamamında sıkı güvenlik başlıkları ve sıkılaştırılmış içerik güvenliği politikası."
+      },
+      "billing": {
+        "title": "Abonelikler, en sıkıcı haliyle",
+        "body": "Faturalama yayında: restoranlar Mollie üzerinden işleyen basit, yinelenen abonelikle ödüyor. Tezgâhın arkasında ise yönetim panelindeki yeni restoran kaydı her kurulumu tek yerde tutuyor."
+      },
+      "languages": {
+        "title": "Sitede altı dil, sofrada on",
+        "body": "sofrapiwas.com artık İngilizce, Fransızca, Almanca, Hollandaca, Türkçe ve Arapça konuşuyor — sağdan sola yazım dâhil. Sofra restoranlarının misafirleri on dilde sipariş veriyor; yeni restoranlar otomatik kuruluyor, her biri kendi alan adıyla."
+      },
+      "launch": {
+        "title": "Sofra kapılarını açıyor",
+        "body": "sofrapiwas.com yayında — partner programı da öyle: ajanslar ve bağımsız çalışanlar başvuruyor, tek tek onaylanıyor ve her restoranı ilk telefondan canlı servise kadar takip ediyor; komisyonlar şeffaf biçimde izleniyor."
       }
     }
   },
