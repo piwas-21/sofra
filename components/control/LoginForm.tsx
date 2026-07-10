@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { loginAction, type FormState } from "@/lib/actions/auth-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 
 // Labels come translated from the server page (control plane follows the
 // marketing site's language via the NEXT_LOCALE cookie — lib/control-locale).
-// Action error strings are still en-only: full control-plane i18n is tracked
-// as a follow-up issue.
+// Action errors arrive as auth.errors message keys and are translated by
+// <ActionError /> (sofra #9).
 export type LoginLabels = {
   email: string;
   password: string;
@@ -48,7 +48,7 @@ export default function LoginForm({ labels }: { labels: LoginLabels }) {
           {labels.forgot}
         </Link>
       </div>
-      <ErrorMessage>{state.error}</ErrorMessage>
+      <ActionError code={state.error} namespace="auth.errors" />
     </form>
   );
 }

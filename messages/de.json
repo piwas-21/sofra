@@ -181,7 +181,14 @@
     "newPassword": "Neues Passwort (mind. 10 Zeichen)",
     "repeatPassword": "Passwort wiederholen",
     "setPassword": "Passwort festlegen",
-    "saving": "Wird gespeichert…"
+    "saving": "Wird gespeichert…",
+    "errors": {
+      "tooManyAttempts": "Zu viele Versuche. Versuchen Sie es später erneut.",
+      "wrongCredentials": "Falsche E-Mail oder falsches Passwort.",
+      "passwordTooShort": "Das Passwort muss mindestens 10 Zeichen lang sein.",
+      "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+      "linkInvalid": "Dieser Link ist ungültig oder abgelaufen. Fordern Sie einen neuen an."
+    }
   },
   "footer": {
     "tagline": "Eine Sofra ist ein für Gäste gedeckter Tisch.",
@@ -229,6 +236,240 @@
         "q": "Kann ich meinen eigenen Domainnamen verwenden?",
         "a": "Ja. Jedes Restaurant erhält eine kostenlose Sofra-Subdomain, und Sie können eine Domain verbinden, die Sie bereits besitzen — oder wir registrieren bei der Einrichtung eine ganz neue für Sie."
       }
+    }
+  },
+  "control": {
+    "shell": {
+      "signOut": "Abmelden",
+      "partner": "Partner",
+      "admin": "Admin",
+      "nav": {
+        "clients": "Kunden",
+        "ledger": "Provisionsbuch",
+        "applications": "Bewerbungen",
+        "partners": "Partner",
+        "tenants": "Tenants",
+        "billing": "Abrechnung",
+        "audit": "Audit"
+      }
+    },
+    "status": {
+      "lead": "Lead",
+      "contacted": "Kontaktiert",
+      "demoScheduled": "Demo geplant",
+      "agreed": "Vereinbart",
+      "onboarding": "Onboarding",
+      "live": "Live",
+      "churned": "Abgesprungen"
+    },
+    "dashboard": {
+      "title": "Ihre Kunden",
+      "intro": "Jedes Restaurant, das Sie an den Tisch bringen — vom ersten Anruf bis zum Live-Betrieb.",
+      "addClient": "Kunden hinzufügen",
+      "empty": "Noch keine Kunden — fügen Sie oben das erste Restaurant hinzu.",
+      "updated": "aktualisiert am {date}"
+    },
+    "client": {
+      "back": "← Alle Kunden",
+      "pipeline": "Pipeline",
+      "details": "Details",
+      "notes": "Notizen",
+      "noNotes": "Noch keine Notizen."
+    },
+    "clientForm": {
+      "restaurantName": "Name des Restaurants / Cafés",
+      "restaurantNameAria": "Restaurantname",
+      "contactName": "Ansprechperson",
+      "email": "Kontakt-E-Mail",
+      "phone": "Telefon",
+      "city": "Stadt",
+      "saving": "Wird gespeichert…",
+      "save": "Änderungen speichern",
+      "add": "Kunden hinzufügen",
+      "saved": "Gespeichert."
+    },
+    "pipeline": {
+      "statusAria": "Pipeline-Status",
+      "updating": "Wird aktualisiert…",
+      "update": "Status aktualisieren",
+      "onboardingRequested": "Onboarding angefragt — Sofra kümmert sich darum. Sie sehen hier, sobald der Kunde live geht.",
+      "managedBySofra": "Der Status dieses Kunden wird jetzt von Sofra verwaltet.",
+      "moveToAgreed": "Setzen Sie den Kunden zuerst auf „Vereinbart“",
+      "sending": "Wird gesendet…",
+      "requestOnboarding": "Onboarding anfragen 🍽",
+      "sofraSetsUp": "Sofra richtet das Restaurant ein und schaltet es live."
+    },
+    "noteForm": {
+      "placeholder": "Notiz hinzufügen — Gesprächsergebnis, nächster Schritt, Ansprechpartner…",
+      "aria": "Neue Notiz",
+      "saving": "Wird gespeichert…",
+      "add": "Notiz hinzufügen"
+    },
+    "ledger": {
+      "title": "Provisionsbuch",
+      "intro": "Geführt von Sofra; Auszahlungen werden vorerst außerhalb der App abgewickelt.",
+      "balance": "Aktueller Saldo",
+      "date": "Datum",
+      "note": "Notiz",
+      "client": "Kunde",
+      "amount": "Betrag",
+      "empty": "Noch nichts verbucht — Ihre erste Provision erscheint hier."
+    },
+    "copy": {
+      "aria": "Link",
+      "copy": "Kopieren",
+      "copied": "Kopiert!"
+    },
+    "thanks": {
+      "title": "Vielen Dank!",
+      "body": "Ihre Zahlung wird verarbeitet. Sobald sie bestätigt ist, startet Ihr Sofra-Abonnement automatisch — wir melden uns in Kürze.",
+      "questions": "Fragen? Antworten Sie einfach auf eine beliebige Sofra-E-Mail."
+    },
+    "admin": {
+      "applications": {
+        "title": "Partner-Bewerbungen",
+        "queueEmpty": "Die Warteschlange ist leer.",
+        "waiting": "{count} warten auf eine Entscheidung.",
+        "recentlyDecided": "Zuletzt entschieden",
+        "statusApproved": "Angenommen",
+        "statusRejected": "Abgelehnt",
+        "approvedNote": "Angenommen — Einladung per E-Mail verschickt. Ersatzlink (24 h, einmalig):",
+        "rejectedNote": "Abgelehnt.",
+        "approving": "Wird angenommen…",
+        "approve": "Annehmen",
+        "rejecting": "Wird abgelehnt…",
+        "reject": "Ablehnen"
+      },
+      "audit": {
+        "title": "Audit-Log",
+        "intro": "Die letzten 200 Ereignisse, neueste zuerst.",
+        "when": "Wann",
+        "actor": "Akteur",
+        "action": "Aktion",
+        "entity": "Entität",
+        "meta": "Meta"
+      },
+      "billing": {
+        "title": "Abrechnung",
+        "intro": "Sofra → Tenant-Abonnements über Mollie (ADR-011, Teil A). Erstellen Sie ein Abrechnungskonto und senden Sie dem Tenant den Link zur ersten Zahlung; das Abonnement startet von selbst, sobald das Mandat aktiv ist.",
+        "mollieMissing": "MOLLIE_API_KEY ist in dieser Umgebung nicht gesetzt — das Anlegen von Abrechnungskonten ist deaktiviert.",
+        "newAccount": "Neues Abrechnungskonto",
+        "tenantsHeading": "Tenants ({count})",
+        "since": "seit {date}",
+        "active": "aktiv",
+        "awaitingFirstPayment": "{count} Plan/Pläne warten auf die erste Zahlung",
+        "lastPayment": "letzte Zahlung: {status} ({amount})",
+        "empty": "Noch keine Abrechnungskonten."
+      },
+      "billingForm": {
+        "slug": "Tenant-Slug (Registry-Schlüssel, z. B. demo)",
+        "slugAria": "Tenant-Slug",
+        "name": "Abrechnungsname (Restaurant / Firma)",
+        "nameAria": "Abrechnungsname",
+        "email": "Abrechnungs-E-Mail",
+        "description": "Planbeschreibung (z. B. „Sofra Core — monatlich“)",
+        "descriptionAria": "Planbeschreibung",
+        "amount": "Betrag pro Periode (EUR)",
+        "amountAria": "Betrag pro Periode in EUR",
+        "intervalAria": "Abrechnungsintervall",
+        "creating": "Wird erstellt…",
+        "create": "Erstellen + Checkout-Link erhalten",
+        "created": "Erstellt. Senden Sie dem Tenant diesen Link zur ersten Zahlung (auch auf der Detailseite):",
+        "noCheckout": "Kein Checkout-Link zurückgegeben — prüfen Sie die Detailseite."
+      },
+      "intervals": {
+        "month": "Monatlich",
+        "quarter": "Vierteljährlich",
+        "year": "Jährlich"
+      },
+      "billingDetail": {
+        "back": "← Gesamte Abrechnung",
+        "customer": "Mollie-Kunde {id}",
+        "crm": "CRM: {restaurant} (Partner {partner})",
+        "checkoutTitle": "Checkout-Link für die erste Zahlung",
+        "checkoutIntro": "Senden Sie ihn dem Tenant — die Zahlung erstellt das wiederkehrende Mandat und startet den Plan automatisch.",
+        "subscriptions": "Abonnements",
+        "chargesFrom": "Abbuchungen ab {date}",
+        "canceledOn": "gekündigt am {date}",
+        "noSubscriptions": "Keine Abonnements.",
+        "payments": "Zahlungen",
+        "noPayments": "Noch keine Zahlungen.",
+        "cancelConfirm": "Dieses Abonnement kündigen? Mollie stoppt die Abbuchungen sofort.",
+        "cancelling": "Wird gekündigt…",
+        "cancel": "Kündigen"
+      },
+      "clients": {
+        "title": "Alle Kunden",
+        "onboardingQueue": "Warten auf Onboarding ({count})",
+        "onboardingHint": "Über die Skripte des Deploy-Repos provisionieren (ADR-003), dann den Tenant-Slug setzen und LIVE markieren.",
+        "everythingElse": "Alles Übrige",
+        "empty": "Nichts hier.",
+        "partnerUpdated": "Partner: {name} · aktualisiert am {date}",
+        "slugAria": "Tenant-Slug",
+        "markLive": "LIVE markieren",
+        "markChurned": "Als abgesprungen markieren"
+      },
+      "partners": {
+        "title": "Partner",
+        "empty": "Noch keine Partner — nehmen Sie zuerst eine Bewerbung an.",
+        "clientCount": "{count, plural, one {# Kunde} other {# Kunden}}"
+      },
+      "partnerDetail": {
+        "back": "← Alle Partner",
+        "joined": "dabei seit {date}",
+        "clients": "Kunden",
+        "noClients": "Noch keine Kunden.",
+        "ledger": "Provisionsbuch",
+        "empty": "Noch nichts verbucht."
+      },
+      "commissionForm": {
+        "amount": "Betrag (EUR, negativ = Auszahlung)",
+        "amountAria": "Betrag in EUR",
+        "clientAria": "Zugehöriger Kunde",
+        "noClient": "Kein bestimmter Kunde",
+        "note": "Notiz (z. B. „RUMI-Onboarding-Bonus“, „Auszahlung März“)",
+        "noteAria": "Notiz",
+        "recording": "Wird verbucht…",
+        "record": "Eintrag verbuchen",
+        "recorded": "Verbucht."
+      },
+      "tenants": {
+        "title": "Tenants",
+        "intro": "Schreibgeschützte Ansicht des Tenant-Registrys aus dem Deploy-Repo (ADR-007). Lifecycle-Änderungen laufen über git + die Provisionierungs-Skripte (ADR-003), nicht über diese Seite.",
+        "unavailable": "Tenant-Registry nicht verfügbar: {error}",
+        "registered": "Registriert ({count})",
+        "empty": "Das Registry ist leer.",
+        "noBilling": "kein Abrechnungskonto",
+        "awaitingActivation": "{count} Plan/Pläne warten auf Aktivierung",
+        "noActivePlan": "kein aktiver Plan",
+        "legacy": "(Legacy — die Skripte lehnen ihn ab)",
+        "box": "Box {box}",
+        "db": "DB {db}",
+        "langCount": "{count} Sprachen",
+        "modules": "Module: {list}"
+      }
+    },
+    "errors": {
+      "invalidClient": "Der Restaurantname ist erforderlich (die E-Mail muss gültig sein).",
+      "clientNotFound": "Kunde nicht gefunden.",
+      "statusManaged": "Der Status dieses Kunden wird jetzt von Sofra verwaltet.",
+      "invalidStatus": "Ungültiger Status.",
+      "invalidNote": "Die Notiz darf nicht leer sein (max. 2000 Zeichen).",
+      "notAgreed": "Setzen Sie den Kunden zuerst auf „Vereinbart“.",
+      "applicationDecided": "Bewerbung nicht gefunden oder bereits entschieden.",
+      "userExists": "Ein Benutzer mit dieser E-Mail existiert bereits.",
+      "invalidSlug": "Tenant-Slug: Kleinbuchstaben, Ziffern, Bindestriche.",
+      "slugTaken": "Dieser Tenant-Slug ist bereits vergeben.",
+      "invalidCommission": "Prüfen Sie Betrag und Notiz.",
+      "partnerNotFound": "Partner nicht gefunden.",
+      "clientNotOwned": "Dieser Kunde gehört nicht zu diesem Partner.",
+      "mollieNotConfigured": "Mollie ist nicht konfiguriert (MOLLIE_API_KEY fehlt in dieser Umgebung).",
+      "invalidInput": "Ungültige Eingabe.",
+      "billingExists": "Für diesen Tenant existiert bereits ein Abrechnungskonto.",
+      "billingCreateFailed": "Das Anlegen des Abrechnungskontos ist fehlgeschlagen — siehe Server-Logs.",
+      "subscriptionNotFound": "Abonnement nicht gefunden.",
+      "activationInFlight": "Aktivierung läuft — versuchen Sie es erneut, sobald der Plan stabil ist.",
+      "cancelFailed": "Die Kündigung ist fehlgeschlagen — siehe Server-Logs."
     }
   }
 }

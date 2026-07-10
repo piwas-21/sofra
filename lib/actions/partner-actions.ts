@@ -9,6 +9,8 @@ import { sendEmail, founderInbox, siteUrl } from "@/lib/email";
 import { craftEmail, detailRows } from "@/lib/email-templates";
 import { clientSchema, noteSchema, partnerStatusSchema } from "@/lib/validation";
 
+/** `error` is a message key in the `control.errors` namespace, translated at
+ *  render by <ActionError /> (control-plane i18n, sofra #9). */
 export type PartnerActionState = { error?: string; ok?: boolean };
 
 /** Loads a client iff it belongs to the calling partner — the ONLY way
@@ -30,7 +32,7 @@ export async function createClientAction(
     phone: formData.get("phone") ?? "",
     city: formData.get("city") ?? "",
   });
-  if (!parsed.success) return { error: "Restaurant name is required (email must be valid)." };
+  if (!parsed.success) return { error: "invalidClient" };
   const data = parsed.data;
 
   const client = await db.client.create({
@@ -56,7 +58,7 @@ export async function updateClientAction(
   const partner = await requirePartner();
   const id = String(formData.get("id") ?? "");
   const client = await ownClient(partner.id, id);
-  if (!client) return { error: "Client not found." };
+  if (!client) return { error: "clientNotFound" };
 
   const parsed = clientSchema.safeParse({
     restaurantName: formData.get("restaurantName"),
@@ -65,7 +67,7 @@ export async function updateClientAction(
     phone: formData.get("phone") ?? "",
     city: formData.get("city") ?? "",
   });
-  if (!parsed.success) return { error: "Restaurant name is required (email must be valid)." };
+  if (!parsed.success) return { error: "invalidClient" };
   const data = parsed.data;
 
   await db.client.update({
@@ -90,15 +92,15 @@ export async function setClientStatusAction(
   const partner = await requirePartner();
   const id = String(formData.get("id") ?? "");
   const client = await ownClient(partner.id, id);
-  if (!client) return { error: "Client not found." };
+  if (!client) return { error: "clientNotFound" };
   // Pipeline is partner-editable only until onboarding is requested;
   // ONBOARDING/LIVE/CHURNED are controlled by the founder.
   if (["ONBOARDING", "LIVE", "CHURNED"].includes(client.status)) {
-    return { error: "This client's status is managed by Sofra now." };
+    return { error: "statusManaged" };
   }
 
   const parsed = partnerStatusSchema.safeParse(formData.get("status"));
-  if (!parsed.success) return { error: "Invalid status." };
+  if (!parsed.success) return { error: "invalidStatus" };
 
   await db.client.update({ where: { id: client.id }, data: { status: parsed.data } });
   await audit(partner.id, "client.status", "Client", id, { status: parsed.data });
@@ -115,10 +117,10 @@ export async function addNoteAction(
   const partner = await requirePartner();
   const id = String(formData.get("id") ?? "");
   const client = await ownClient(partner.id, id);
-  if (!client) return { error: "Client not found." };
+  if (!client) return { error: "clientNotFound" };
 
   const parsed = noteSchema.safeParse({ body: formData.get("body") });
-  if (!parsed.success) return { error: "Note can't be empty (max 2000 chars)." };
+  if (!parsed.success) return { error: "invalidNote" };
 
   await db.clientNote.create({
     data: { clientId: client.id, authorId: partner.id, body: parsed.data.body },
@@ -136,9 +138,9 @@ export async function requestOnboardingAction(
   const partner = await requirePartner();
   const id = String(formData.get("id") ?? "");
   const client = await ownClient(partner.id, id);
-  if (!client) return { error: "Client not found." };
+  if (!client) return { error: "clientNotFound" };
   if (client.status !== "AGREED") {
-    return { error: "Move the client to “Agreed” first." };
+    return { error: "notAgreed" };
   }
 
   await db.client.update({ where: { id: client.id }, data: { status: "ONBOARDING" } });

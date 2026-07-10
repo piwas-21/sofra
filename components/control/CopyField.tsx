@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 /** Read-only value with a copy button — for handing links to tenants. */
 export default function CopyField({ value }: { value: string }) {
+  const t = useTranslations("control.copy");
   const [copied, setCopied] = useState(false);
 
   return (
@@ -11,7 +13,7 @@ export default function CopyField({ value }: { value: string }) {
       <input
         readOnly
         value={value}
-        aria-label="Link"
+        aria-label={t("aria")}
         className="input-primary flex-1 min-w-[16rem] font-mono text-sm"
         onFocus={(e) => e.currentTarget.select()}
       />
@@ -29,7 +31,7 @@ export default function CopyField({ value }: { value: string }) {
           }
         }}
       >
-        {copied ? "Copied!" : "Copy"}
+        {copied ? t("copied") : t("copy")}
       </button>
     </div>
   );

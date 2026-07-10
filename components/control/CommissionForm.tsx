@@ -1,8 +1,9 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { addCommissionAction, type AdminActionState } from "@/lib/actions/admin-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 
 export default function CommissionForm({
   partnerId,
@@ -11,6 +12,7 @@ export default function CommissionForm({
   partnerId: string;
   clients: { id: string; restaurantName: string }[];
 }) {
+  const t = useTranslations("control.admin.commissionForm");
   const [state, action, pending] = useActionState<AdminActionState, FormData>(
     addCommissionAction,
     {},
@@ -24,12 +26,12 @@ export default function CommissionForm({
         type="number"
         step="0.01"
         required
-        placeholder="Amount (EUR, negative = payout)"
-        aria-label="Amount in EUR"
+        placeholder={t("amount")}
+        aria-label={t("amountAria")}
         className="input-primary"
       />
-      <select name="clientId" aria-label="Related client" className="input-primary" defaultValue="">
-        <option value="">No specific client</option>
+      <select name="clientId" aria-label={t("clientAria")} className="input-primary" defaultValue="">
+        <option value="">{t("noClient")}</option>
         {clients.map((c) => (
           <option key={c.id} value={c.id}>
             {c.restaurantName}
@@ -40,18 +42,20 @@ export default function CommissionForm({
         name="note"
         required
         maxLength={500}
-        placeholder="Note (e.g. 'RUMI onboarding bonus', 'March payout')"
-        aria-label="Note"
+        placeholder={t("note")}
+        aria-label={t("noteAria")}
         className="input-primary sm:col-span-2"
       />
       <div className="sm:col-span-2 flex items-center gap-4">
         <button type="submit" disabled={pending} className="btn-primary disabled:opacity-60">
-          {pending ? "Recording…" : "Record entry"}
+          {pending ? t("recording") : t("record")}
         </button>
         {state.ok && (
-          <span className="font-label text-craft-success-text dark:text-craft-success">Recorded.</span>
+          <span className="font-label text-craft-success-text dark:text-craft-success">
+            {t("recorded")}
+          </span>
         )}
-        <ErrorMessage>{state.error}</ErrorMessage>
+        <ActionError code={state.error} />
       </div>
     </form>
   );

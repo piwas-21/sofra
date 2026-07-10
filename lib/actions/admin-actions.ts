@@ -9,6 +9,8 @@ import { craftEmail } from "@/lib/email-templates";
 import { createToken } from "@/lib/tokens";
 import { commissionSchema } from "@/lib/validation";
 
+/** `error` is a message key in the `control.errors` namespace, translated at
+ *  render by <ActionError /> (control-plane i18n, sofra #9). */
 export type AdminActionState = { error?: string; ok?: boolean; inviteLink?: string };
 
 /**
@@ -25,10 +27,10 @@ export async function approveApplicationAction(
 
   const application = await db.partnerApplication.findUnique({ where: { id } });
   if (!application || application.status !== "PENDING") {
-    return { error: "Application not found or already decided." };
+    return { error: "applicationDecided" };
   }
   if (await db.user.findUnique({ where: { email: application.email } })) {
-    return { error: "A user with this email already exists." };
+    return { error: "userExists" };
   }
 
   const user = await db.user.create({
@@ -76,7 +78,7 @@ export async function rejectApplicationAction(
 
   const application = await db.partnerApplication.findUnique({ where: { id } });
   if (!application || application.status !== "PENDING") {
-    return { error: "Application not found or already decided." };
+    return { error: "applicationDecided" };
   }
   await db.partnerApplication.update({
     where: { id },
@@ -98,14 +100,14 @@ export async function setClientLiveAction(
   const tenantSlug = String(formData.get("tenantSlug") ?? "").trim().toLowerCase();
 
   if (!/^[a-z0-9][a-z0-9-]{1,60}$/.test(tenantSlug)) {
-    return { error: "Tenant slug: lowercase letters, digits, dashes." };
+    return { error: "invalidSlug" };
   }
   const client = await db.client.findUnique({ where: { id } });
-  if (!client) return { error: "Client not found." };
+  if (!client) return { error: "clientNotFound" };
 
   const taken = await db.client.findUnique({ where: { tenantSlug } });
   if (taken && taken.id !== id) {
-    return { error: `Tenant slug "${tenantSlug}" is already in use.` };
+    return { error: "slugTaken" };
   }
   await db.client.update({ where: { id }, data: { tenantSlug, status: "LIVE" } });
   await audit(admin.id, "client.live", "Client", id, { tenantSlug });
@@ -121,7 +123,7 @@ export async function markClientChurnedAction(
   const admin = await requireAdmin();
   const id = String(formData.get("id") ?? "");
   const client = await db.client.findUnique({ where: { id } });
-  if (!client) return { error: "Client not found." };
+  if (!client) return { error: "clientNotFound" };
 
   await db.client.update({ where: { id }, data: { status: "CHURNED" } });
   await audit(admin.id, "client.churned", "Client", id);
@@ -143,15 +145,15 @@ export async function addCommissionAction(
     amount: formData.get("amount"),
     note: formData.get("note"),
   });
-  if (!parsed.success) return { error: "Check the amount and note." };
+  if (!parsed.success) return { error: "invalidCommission" };
   const data = parsed.data;
 
   const partner = await db.user.findUnique({ where: { id: data.partnerId } });
-  if (!partner || partner.role !== "PARTNER") return { error: "Partner not found." };
+  if (!partner || partner.role !== "PARTNER") return { error: "partnerNotFound" };
   if (data.clientId) {
     const client = await db.client.findUnique({ where: { id: data.clientId } });
     if (!client || client.partnerId !== partner.id) {
-      return { error: "Client doesn't belong to this partner." };
+      return { error: "clientNotOwned" };
     }
   }
 

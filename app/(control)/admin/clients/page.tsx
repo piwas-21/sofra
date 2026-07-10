@@ -1,4 +1,6 @@
+import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/rbac";
+import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { shortDate } from "@/lib/format";
 import ClientStatusBadge from "@/components/control/ClientStatusBadge";
@@ -6,6 +8,8 @@ import SetLiveForm from "@/components/control/SetLiveForm";
 
 export default async function AdminClientsPage() {
   await requireAdmin();
+  const locale = await controlLocale();
+  const t = await getTranslations({ locale, namespace: "control.admin.clients" });
   const clients = await db.client.findMany({
     orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
     include: { partner: true },
@@ -19,8 +23,8 @@ export default async function AdminClientsPage() {
         <span>
           <span className="font-hand text-2xl font-bold block">{c.restaurantName}</span>
           <span className="font-label text-sm text-muted-foreground">
-            {[c.city, c.contactName, c.email].filter(Boolean).join(" · ") || "—"} · partner:{" "}
-            {c.partner.name} · updated {shortDate(c.updatedAt)}
+            {[c.city, c.contactName, c.email].filter(Boolean).join(" · ") || "—"} ·{" "}
+            {t("partnerUpdated", { name: c.partner.name, date: shortDate(c.updatedAt) })}
           </span>
         </span>
         <ClientStatusBadge status={c.status} />
@@ -33,16 +37,14 @@ export default async function AdminClientsPage() {
 
   return (
     <div className="grid gap-10">
-      <h1 className="font-display font-bold text-5xl">All clients</h1>
+      <h1 className="font-display font-bold text-5xl">{t("title")}</h1>
 
       {onboarding.length > 0 && (
         <section>
           <h2 className="font-hand text-3xl font-bold text-primary">
-            Waiting for onboarding ({onboarding.length})
+            {t("onboardingQueue", { count: onboarding.length })}
           </h2>
-          <p className="mt-1 font-label text-sm text-muted-foreground">
-            Provision via the deploy-repo scripts (ADR-003), then set the tenant slug and mark LIVE.
-          </p>
+          <p className="mt-1 font-label text-sm text-muted-foreground">{t("onboardingHint")}</p>
           <ul className="mt-4 grid gap-4">
             {onboarding.map((c) => (
               <Row key={c.id} c={c} />
@@ -52,12 +54,16 @@ export default async function AdminClientsPage() {
       )}
 
       <section>
-        <h2 className="font-hand text-3xl font-bold text-muted-foreground">Everything else</h2>
+        <h2 className="font-hand text-3xl font-bold text-muted-foreground">
+          {t("everythingElse")}
+        </h2>
         <ul className="mt-4 grid gap-4">
           {rest.map((c) => (
             <Row key={c.id} c={c} />
           ))}
-          {rest.length === 0 && <li className="font-label text-muted-foreground">Nothing here.</li>}
+          {rest.length === 0 && (
+            <li className="font-label text-muted-foreground">{t("empty")}</li>
+          )}
         </ul>
       </section>
     </div>

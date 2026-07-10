@@ -11,6 +11,9 @@ import { billingSchema } from "@/lib/validation";
 import { createTenantBilling, type BillingInterval } from "@/lib/billing";
 import { mollieConfigured, cancelSubscription, MollieError } from "@/lib/mollie";
 
+/** `error` is a message key in `control.errors` (translated at render by
+ *  <ActionError />); Zod issue messages and Mollie API errors pass through
+ *  raw and render verbatim. */
 export type BillingActionState = {
   error?: string;
   ok?: boolean;
@@ -23,7 +26,7 @@ export async function createBillingAction(
 ): Promise<BillingActionState> {
   const admin = await requireAdmin();
   if (!mollieConfigured()) {
-    return { error: "Mollie is not configured (MOLLIE_API_KEY missing on this environment)." };
+    return { error: "mollieNotConfigured" };
   }
 
   const parsed = billingSchema.safeParse({
@@ -35,12 +38,12 @@ export async function createBillingAction(
     interval: formData.get("interval"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: parsed.error.issues[0]?.message ?? "invalidInput" };
   }
   const input = parsed.data;
 
   if (await db.tenantBilling.findUnique({ where: { tenantSlug: input.tenantSlug } })) {
-    return { error: `Billing for tenant '${input.tenantSlug}' already exists.` };
+    return { error: "billingExists" };
   }
 
   try {
@@ -58,7 +61,7 @@ export async function createBillingAction(
   } catch (e) {
     if (e instanceof MollieError) return { error: e.message };
     console.error("createBillingAction failed", e);
-    return { error: "Creating the billing account failed — see server logs." };
+    return { error: "billingCreateFailed" };
   }
 }
 
@@ -73,12 +76,12 @@ export async function cancelSubscriptionAction(
     where: { id },
     include: { billing: true },
   });
-  if (!sub) return { error: "Subscription not found." };
+  if (!sub) return { error: "subscriptionNotFound" };
   if (sub.status === "ACTIVATING") {
     // A Mollie subscription may exist mid-flight — cancelling locally now
     // could orphan a charging subscription. The state self-heals via the
     // webhook; cancel once it settles.
-    return { error: "Activation in flight — retry once the plan settles." };
+    return { error: "activationInFlight" };
   }
 
   try {
@@ -100,6 +103,6 @@ export async function cancelSubscriptionAction(
   } catch (e) {
     if (e instanceof MollieError) return { error: e.message };
     console.error("cancelSubscriptionAction failed", e);
-    return { error: "Cancelling failed — see server logs." };
+    return { error: "cancelFailed" };
   }
 }

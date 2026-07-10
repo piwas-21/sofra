@@ -1,14 +1,16 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import {
   approveApplicationAction,
   rejectApplicationAction,
   type AdminActionState,
 } from "@/lib/actions/admin-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 
 export default function ApplicationActions({ id }: { id: string }) {
+  const t = useTranslations("control.admin.applications");
   const [approveState, approve, approving] = useActionState<AdminActionState, FormData>(
     approveApplicationAction,
     {},
@@ -22,7 +24,7 @@ export default function ApplicationActions({ id }: { id: string }) {
     return (
       <div className="grid gap-2">
         <p className="font-label text-craft-success-text dark:text-craft-success">
-          Approved — invite emailed. Backup link (24h, single use):
+          {t("approvedNote")}
         </p>
         <code className="font-mono text-xs break-all bg-muted/60 rounded-craft p-2">
           {approveState.inviteLink}
@@ -31,7 +33,7 @@ export default function ApplicationActions({ id }: { id: string }) {
     );
   }
   if (rejectState.ok) {
-    return <p className="font-label text-muted-foreground">Rejected.</p>;
+    return <p className="font-label text-muted-foreground">{t("rejectedNote")}</p>;
   }
 
   return (
@@ -39,7 +41,7 @@ export default function ApplicationActions({ id }: { id: string }) {
       <form action={approve}>
         <input type="hidden" name="id" value={id} />
         <button type="submit" disabled={approving || rejecting} className="btn-primary disabled:opacity-60">
-          {approving ? "Approving…" : "Approve"}
+          {approving ? t("approving") : t("approve")}
         </button>
       </form>
       <form action={reject}>
@@ -49,10 +51,10 @@ export default function ApplicationActions({ id }: { id: string }) {
           disabled={approving || rejecting}
           className="btn-artisanal rounded-craft border-2 border-destructive text-destructive px-4 py-2 font-label disabled:opacity-60"
         >
-          {rejecting ? "Rejecting…" : "Reject"}
+          {rejecting ? t("rejecting") : t("reject")}
         </button>
       </form>
-      <ErrorMessage>{approveState.error ?? rejectState.error}</ErrorMessage>
+      <ActionError code={approveState.error ?? rejectState.error} />
     </div>
   );
 }

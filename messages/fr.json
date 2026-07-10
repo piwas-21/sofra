@@ -181,7 +181,14 @@
     "newPassword": "Nouveau mot de passe (min. 10 caractères)",
     "repeatPassword": "Répétez le mot de passe",
     "setPassword": "Définir le mot de passe",
-    "saving": "Enregistrement…"
+    "saving": "Enregistrement…",
+    "errors": {
+      "tooManyAttempts": "Trop de tentatives. Réessayez plus tard.",
+      "wrongCredentials": "E-mail ou mot de passe incorrect.",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 10 caractères.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "linkInvalid": "Ce lien est invalide ou a expiré. Demandez-en un nouveau."
+    }
   },
   "footer": {
     "tagline": "Une sofra, c'est une table dressée pour les invités.",
@@ -229,6 +236,240 @@
         "q": "Puis-je utiliser mon propre nom de domaine ?",
         "a": "Oui. Chaque restaurant reçoit un sous-domaine sofra gratuit, et vous pouvez connecter un domaine que vous possédez déjà — ou nous enregistrons un tout nouveau domaine pour vous lors de l'installation."
       }
+    }
+  },
+  "control": {
+    "shell": {
+      "signOut": "Se déconnecter",
+      "partner": "Partenaire",
+      "admin": "Admin",
+      "nav": {
+        "clients": "Clients",
+        "ledger": "Registre",
+        "applications": "Candidatures",
+        "partners": "Partenaires",
+        "tenants": "Tenants",
+        "billing": "Facturation",
+        "audit": "Audit"
+      }
+    },
+    "status": {
+      "lead": "Prospect",
+      "contacted": "Contacté",
+      "demoScheduled": "Démo planifiée",
+      "agreed": "Accord conclu",
+      "onboarding": "Intégration",
+      "live": "En production",
+      "churned": "Perdu"
+    },
+    "dashboard": {
+      "title": "Vos clients",
+      "intro": "Chaque restaurant que vous amenez à table, du premier appel au service en salle.",
+      "addClient": "Ajouter un client",
+      "empty": "Pas encore de clients — ajoutez le premier restaurant ci-dessus.",
+      "updated": "mis à jour le {date}"
+    },
+    "client": {
+      "back": "← Tous les clients",
+      "pipeline": "Pipeline",
+      "details": "Détails",
+      "notes": "Notes",
+      "noNotes": "Pas encore de notes."
+    },
+    "clientForm": {
+      "restaurantName": "Nom du restaurant / café",
+      "restaurantNameAria": "Nom du restaurant",
+      "contactName": "Personne de contact",
+      "email": "E-mail de contact",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "saving": "Enregistrement…",
+      "save": "Enregistrer les modifications",
+      "add": "Ajouter le client",
+      "saved": "Enregistré."
+    },
+    "pipeline": {
+      "statusAria": "Statut du pipeline",
+      "updating": "Mise à jour…",
+      "update": "Mettre à jour le statut",
+      "onboardingRequested": "Intégration demandée — Sofra s'en occupe. Vous verrez ici ce client passer en production.",
+      "managedBySofra": "Le statut de ce client est désormais géré par Sofra.",
+      "moveToAgreed": "Passez d'abord le client à « Accord conclu »",
+      "sending": "Envoi…",
+      "requestOnboarding": "Demander l'intégration 🍽",
+      "sofraSetsUp": "Sofra installe le restaurant et le met en production."
+    },
+    "noteForm": {
+      "placeholder": "Ajouter une note — résultat de l'appel, prochaine étape, qui demander…",
+      "aria": "Nouvelle note",
+      "saving": "Enregistrement…",
+      "add": "Ajouter la note"
+    },
+    "ledger": {
+      "title": "Registre des commissions",
+      "intro": "Tenu par Sofra ; pour l'instant, les versements sont réglés en dehors de l'application.",
+      "balance": "Solde actuel",
+      "date": "Date",
+      "note": "Note",
+      "client": "Client",
+      "amount": "Montant",
+      "empty": "Rien d'enregistré pour l'instant — votre première commission apparaîtra ici."
+    },
+    "copy": {
+      "aria": "Lien",
+      "copy": "Copier",
+      "copied": "Copié !"
+    },
+    "thanks": {
+      "title": "Merci !",
+      "body": "Votre paiement est en cours de traitement. Une fois confirmé, votre abonnement Sofra démarre automatiquement — nous vous contactons très vite.",
+      "questions": "Des questions ? Répondez simplement à n'importe quel e-mail de Sofra."
+    },
+    "admin": {
+      "applications": {
+        "title": "Candidatures de partenaires",
+        "queueEmpty": "La file est vide.",
+        "waiting": "{count} en attente de décision.",
+        "recentlyDecided": "Décisions récentes",
+        "statusApproved": "Approuvée",
+        "statusRejected": "Refusée",
+        "approvedNote": "Approuvée — invitation envoyée par e-mail. Lien de secours (24 h, usage unique) :",
+        "rejectedNote": "Refusée.",
+        "approving": "Approbation…",
+        "approve": "Approuver",
+        "rejecting": "Refus…",
+        "reject": "Refuser"
+      },
+      "audit": {
+        "title": "Journal d'audit",
+        "intro": "Les 200 derniers événements, du plus récent au plus ancien.",
+        "when": "Quand",
+        "actor": "Acteur",
+        "action": "Action",
+        "entity": "Entité",
+        "meta": "Méta"
+      },
+      "billing": {
+        "title": "Facturation",
+        "intro": "Abonnements Sofra → tenant via Mollie (ADR-011, volet A). Créez un compte de facturation, envoyez au tenant le lien du premier paiement ; l'abonnement démarre de lui-même dès que le mandat est actif.",
+        "mollieMissing": "MOLLIE_API_KEY n'est pas défini sur cet environnement — la création de comptes de facturation est désactivée.",
+        "newAccount": "Nouveau compte de facturation",
+        "tenantsHeading": "Tenants ({count})",
+        "since": "depuis le {date}",
+        "active": "actif",
+        "awaitingFirstPayment": "{count} plan(s) en attente du premier paiement",
+        "lastPayment": "dernier paiement : {status} ({amount})",
+        "empty": "Pas encore de comptes de facturation."
+      },
+      "billingForm": {
+        "slug": "Slug du tenant (clé du registre, ex. demo)",
+        "slugAria": "Slug du tenant",
+        "name": "Nom de facturation (restaurant / société)",
+        "nameAria": "Nom de facturation",
+        "email": "E-mail de facturation",
+        "description": "Description du plan (ex. « Sofra Core — mensuel »)",
+        "descriptionAria": "Description du plan",
+        "amount": "Montant par période (EUR)",
+        "amountAria": "Montant par période en EUR",
+        "intervalAria": "Intervalle de facturation",
+        "creating": "Création…",
+        "create": "Créer + obtenir le lien de paiement",
+        "created": "Créé. Envoyez au tenant ce lien de premier paiement (aussi sur la page de détail) :",
+        "noCheckout": "Aucun lien de paiement renvoyé — consultez la page de détail."
+      },
+      "intervals": {
+        "month": "Mensuel",
+        "quarter": "Trimestriel",
+        "year": "Annuel"
+      },
+      "billingDetail": {
+        "back": "← Toute la facturation",
+        "customer": "Client Mollie {id}",
+        "crm": "CRM : {restaurant} (partenaire {partner})",
+        "checkoutTitle": "Lien du premier paiement",
+        "checkoutIntro": "Envoyez-le au tenant — le paiement crée le mandat récurrent et démarre le plan automatiquement.",
+        "subscriptions": "Abonnements",
+        "chargesFrom": "prélèvements à partir du {date}",
+        "canceledOn": "annulé le {date}",
+        "noSubscriptions": "Aucun abonnement.",
+        "payments": "Paiements",
+        "noPayments": "Pas encore de paiements.",
+        "cancelConfirm": "Annuler cet abonnement ? Mollie arrête immédiatement les prélèvements.",
+        "cancelling": "Annulation…",
+        "cancel": "Annuler"
+      },
+      "clients": {
+        "title": "Tous les clients",
+        "onboardingQueue": "En attente d'intégration ({count})",
+        "onboardingHint": "Provisionnez via les scripts du dépôt deploy (ADR-003), puis renseignez le slug du tenant et marquez LIVE.",
+        "everythingElse": "Tout le reste",
+        "empty": "Rien ici.",
+        "partnerUpdated": "partenaire : {name} · mis à jour le {date}",
+        "slugAria": "Slug du tenant",
+        "markLive": "Marquer LIVE",
+        "markChurned": "Marquer perdu"
+      },
+      "partners": {
+        "title": "Partenaires",
+        "empty": "Pas encore de partenaires — approuvez d'abord une candidature.",
+        "clientCount": "{count, plural, one {# client} other {# clients}}"
+      },
+      "partnerDetail": {
+        "back": "← Tous les partenaires",
+        "joined": "inscrit le {date}",
+        "clients": "Clients",
+        "noClients": "Pas encore de clients.",
+        "ledger": "Registre des commissions",
+        "empty": "Rien d'enregistré pour l'instant."
+      },
+      "commissionForm": {
+        "amount": "Montant (EUR, négatif = versement)",
+        "amountAria": "Montant en EUR",
+        "clientAria": "Client concerné",
+        "noClient": "Aucun client précis",
+        "note": "Note (ex. « bonus d'intégration RUMI », « versement de mars »)",
+        "noteAria": "Note",
+        "recording": "Enregistrement…",
+        "record": "Enregistrer l'écriture",
+        "recorded": "Enregistré."
+      },
+      "tenants": {
+        "title": "Tenants",
+        "intro": "Vue en lecture seule du registre des tenants du dépôt deploy (ADR-007). Les changements de cycle de vie passent par git + les scripts de provisionnement (ADR-003), pas par cette page.",
+        "unavailable": "Registre des tenants indisponible : {error}",
+        "registered": "Enregistrés ({count})",
+        "empty": "Le registre est vide.",
+        "noBilling": "pas de compte de facturation",
+        "awaitingActivation": "{count} plan(s) en attente d'activation",
+        "noActivePlan": "aucun plan actif",
+        "legacy": "(legacy — les scripts le refusent)",
+        "box": "box {box}",
+        "db": "bdd {db}",
+        "langCount": "{count} langues",
+        "modules": "modules : {list}"
+      }
+    },
+    "errors": {
+      "invalidClient": "Le nom du restaurant est requis (l'e-mail doit être valide).",
+      "clientNotFound": "Client introuvable.",
+      "statusManaged": "Le statut de ce client est désormais géré par Sofra.",
+      "invalidStatus": "Statut invalide.",
+      "invalidNote": "La note ne peut pas être vide (2000 caractères max).",
+      "notAgreed": "Passez d'abord le client à « Accord conclu ».",
+      "applicationDecided": "Candidature introuvable ou déjà tranchée.",
+      "userExists": "Un utilisateur avec cet e-mail existe déjà.",
+      "invalidSlug": "Slug du tenant : lettres minuscules, chiffres, tirets.",
+      "slugTaken": "Ce slug de tenant est déjà utilisé.",
+      "invalidCommission": "Vérifiez le montant et la note.",
+      "partnerNotFound": "Partenaire introuvable.",
+      "clientNotOwned": "Ce client n'appartient pas à ce partenaire.",
+      "mollieNotConfigured": "Mollie n'est pas configuré (MOLLIE_API_KEY manquant sur cet environnement).",
+      "invalidInput": "Saisie invalide.",
+      "billingExists": "Un compte de facturation existe déjà pour ce tenant.",
+      "billingCreateFailed": "La création du compte de facturation a échoué — voir les journaux du serveur.",
+      "subscriptionNotFound": "Abonnement introuvable.",
+      "activationInFlight": "Activation en cours — réessayez une fois le plan stabilisé.",
+      "cancelFailed": "L'annulation a échoué — voir les journaux du serveur."
     }
   }
 }

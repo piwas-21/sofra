@@ -4,8 +4,8 @@
 // next-intl resolves keys per-locale, so a drift silently renders a raw key
 // (or a wrong-language string) to a user. Exit 1 on any mismatch.
 //
-// Marketing locales (messages/*.json) move in lockstep; the (control) plane
-// is en-only by design and is not localized here.
+// All locales (messages/*.json) move in lockstep — marketing namespaces plus
+// the control-plane ones (`control.*`, `auth.*`; sofra #9).
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";

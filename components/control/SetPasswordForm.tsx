@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { setPasswordAction, type FormState } from "@/lib/actions/auth-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 
 export type SetPasswordLabels = {
   newPassword: string;
@@ -51,7 +51,7 @@ export default function SetPasswordForm({
           {pending ? labels.saving : labels.submit}
         </button>
       </div>
-      <ErrorMessage>{state.error}</ErrorMessage>
+      <ActionError code={state.error} namespace="auth.errors" />
     </form>
   );
 }

@@ -181,7 +181,14 @@
     "newPassword": "Yeni şifre (en az 10 karakter)",
     "repeatPassword": "Şifreyi tekrarlayın",
     "setPassword": "Şifreyi belirle",
-    "saving": "Kaydediliyor…"
+    "saving": "Kaydediliyor…",
+    "errors": {
+      "tooManyAttempts": "Çok fazla deneme yapıldı. Daha sonra tekrar deneyin.",
+      "wrongCredentials": "E-posta veya şifre hatalı.",
+      "passwordTooShort": "Şifre en az 10 karakter olmalı.",
+      "passwordMismatch": "Şifreler eşleşmiyor.",
+      "linkInvalid": "Bu bağlantı geçersiz ya da süresi dolmuş. Yenisini isteyin."
+    }
   },
   "footer": {
     "tagline": "Sofra, misafirler için kurulan masadır.",
@@ -229,6 +236,240 @@
         "q": "Kendi alan adımı kullanabilir miyim?",
         "a": "Evet. Her restorana ücretsiz bir sofra alt alan adı verilir; sahip olduğunuz bir alan adını bağlayabilirsiniz — ya da kurulum sırasında sizin için yepyeni bir alan adı kaydederiz."
       }
+    }
+  },
+  "control": {
+    "shell": {
+      "signOut": "Çıkış yap",
+      "partner": "Partner",
+      "admin": "Yönetici",
+      "nav": {
+        "clients": "Müşteriler",
+        "ledger": "Defter",
+        "applications": "Başvurular",
+        "partners": "Partnerler",
+        "tenants": "Tenant'lar",
+        "billing": "Faturalama",
+        "audit": "Denetim"
+      }
+    },
+    "status": {
+      "lead": "Aday",
+      "contacted": "Görüşüldü",
+      "demoScheduled": "Demo planlandı",
+      "agreed": "Anlaşıldı",
+      "onboarding": "Kurulumda",
+      "live": "Yayında",
+      "churned": "Ayrıldı"
+    },
+    "dashboard": {
+      "title": "Müşterileriniz",
+      "intro": "Sofraya getirdiğiniz her restoran — ilk aramadan canlı servise kadar.",
+      "addClient": "Müşteri ekle",
+      "empty": "Henüz müşteri yok — ilk restoranı yukarıdan ekleyin.",
+      "updated": "güncelleme: {date}"
+    },
+    "client": {
+      "back": "← Tüm müşteriler",
+      "pipeline": "Süreç",
+      "details": "Bilgiler",
+      "notes": "Notlar",
+      "noNotes": "Henüz not yok."
+    },
+    "clientForm": {
+      "restaurantName": "Restoran / kafe adı",
+      "restaurantNameAria": "Restoran adı",
+      "contactName": "İlgili kişi",
+      "email": "İletişim e-postası",
+      "phone": "Telefon",
+      "city": "Şehir",
+      "saving": "Kaydediliyor…",
+      "save": "Değişiklikleri kaydet",
+      "add": "Müşteri ekle",
+      "saved": "Kaydedildi."
+    },
+    "pipeline": {
+      "statusAria": "Süreç durumu",
+      "updating": "Güncelleniyor…",
+      "update": "Durumu güncelle",
+      "onboardingRequested": "Kurulum talep edildi — Sofra ilgileniyor. Müşterinin yayına geçtiğini burada göreceksiniz.",
+      "managedBySofra": "Bu müşterinin durumu artık Sofra tarafından yönetiliyor.",
+      "moveToAgreed": "Önce müşteriyi ‘Anlaşıldı’ durumuna alın",
+      "sending": "Gönderiliyor…",
+      "requestOnboarding": "Kurulum talep et 🍽",
+      "sofraSetsUp": "Sofra restoranı kurar ve yayına alır."
+    },
+    "noteForm": {
+      "placeholder": "Not ekleyin — görüşme sonucu, sonraki adım, kiminle konuşulacağı…",
+      "aria": "Yeni not",
+      "saving": "Kaydediliyor…",
+      "add": "Not ekle"
+    },
+    "ledger": {
+      "title": "Komisyon defteri",
+      "intro": "Sofra tarafından kaydedilir; ödemeler şimdilik uygulama dışında yapılır.",
+      "balance": "Güncel bakiye",
+      "date": "Tarih",
+      "note": "Not",
+      "client": "Müşteri",
+      "amount": "Tutar",
+      "empty": "Henüz kayıt yok — ilk komisyonunuz burada görünecek."
+    },
+    "copy": {
+      "aria": "Bağlantı",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı!"
+    },
+    "thanks": {
+      "title": "Teşekkürler!",
+      "body": "Ödemeniz işleniyor. Onaylandığında Sofra aboneliğiniz otomatik olarak başlar — kısa süre içinde sizinle iletişime geçeceğiz.",
+      "questions": "Sorunuz mu var? Herhangi bir Sofra e-postasını yanıtlamanız yeterli."
+    },
+    "admin": {
+      "applications": {
+        "title": "Partner başvuruları",
+        "queueEmpty": "Kuyruk boş.",
+        "waiting": "{count} başvuru karar bekliyor.",
+        "recentlyDecided": "Son kararlar",
+        "statusApproved": "Onaylandı",
+        "statusRejected": "Reddedildi",
+        "approvedNote": "Onaylandı — davet e-postayla gönderildi. Yedek bağlantı (24 saat, tek kullanımlık):",
+        "rejectedNote": "Reddedildi.",
+        "approving": "Onaylanıyor…",
+        "approve": "Onayla",
+        "rejecting": "Reddediliyor…",
+        "reject": "Reddet"
+      },
+      "audit": {
+        "title": "Denetim kaydı",
+        "intro": "Son 200 olay, en yeniden başlayarak.",
+        "when": "Ne zaman",
+        "actor": "Kim",
+        "action": "İşlem",
+        "entity": "Varlık",
+        "meta": "Meta"
+      },
+      "billing": {
+        "title": "Faturalama",
+        "intro": "Mollie üzerinden Sofra → tenant abonelikleri (ADR-011, A işi). Bir faturalama hesabı oluşturun, tenant'a ilk ödeme bağlantısını gönderin; ödeme talimatı (mandate) aktifleşince abonelik kendiliğinden başlar.",
+        "mollieMissing": "Bu ortamda MOLLIE_API_KEY tanımlı değil — faturalama hesabı oluşturma devre dışı.",
+        "newAccount": "Yeni faturalama hesabı",
+        "tenantsHeading": "Tenant'lar ({count})",
+        "since": "başlangıç: {date}",
+        "active": "aktif",
+        "awaitingFirstPayment": "{count} plan ilk ödemeyi bekliyor",
+        "lastPayment": "son ödeme: {status} ({amount})",
+        "empty": "Henüz faturalama hesabı yok."
+      },
+      "billingForm": {
+        "slug": "Tenant slug'ı (registry anahtarı, örn. demo)",
+        "slugAria": "Tenant slug'ı",
+        "name": "Fatura adı (restoran / şirket)",
+        "nameAria": "Fatura adı",
+        "email": "Fatura e-postası",
+        "description": "Plan açıklaması (örn. ‘Sofra Core — aylık’)",
+        "descriptionAria": "Plan açıklaması",
+        "amount": "Dönem başına tutar (EUR)",
+        "amountAria": "EUR cinsinden dönem tutarı",
+        "intervalAria": "Faturalama aralığı",
+        "creating": "Oluşturuluyor…",
+        "create": "Oluştur + ödeme bağlantısını al",
+        "created": "Oluşturuldu. Bu ilk ödeme bağlantısını tenant'a gönderin (detay sayfasında da var):",
+        "noCheckout": "Ödeme bağlantısı dönmedi — detay sayfasına bakın."
+      },
+      "intervals": {
+        "month": "Aylık",
+        "quarter": "Üç aylık",
+        "year": "Yıllık"
+      },
+      "billingDetail": {
+        "back": "← Tüm faturalama",
+        "customer": "Mollie müşterisi {id}",
+        "crm": "CRM: {restaurant} (partner: {partner})",
+        "checkoutTitle": "İlk ödeme bağlantısı",
+        "checkoutIntro": "Bunu tenant'a gönderin — ödeme yapıldığında yinelenen ödeme talimatı oluşur ve plan otomatik başlar.",
+        "subscriptions": "Abonelikler",
+        "chargesFrom": "tahsilat başlangıcı: {date}",
+        "canceledOn": "iptal: {date}",
+        "noSubscriptions": "Abonelik yok.",
+        "payments": "Ödemeler",
+        "noPayments": "Henüz ödeme yok.",
+        "cancelConfirm": "Bu abonelik iptal edilsin mi? Mollie tahsilatı hemen durdurur.",
+        "cancelling": "İptal ediliyor…",
+        "cancel": "İptal et"
+      },
+      "clients": {
+        "title": "Tüm müşteriler",
+        "onboardingQueue": "Kurulum bekleyenler ({count})",
+        "onboardingHint": "Deploy repo'sundaki betiklerle provizyon yapın (ADR-003), sonra tenant slug'ını girip LIVE olarak işaretleyin.",
+        "everythingElse": "Diğer her şey",
+        "empty": "Burada bir şey yok.",
+        "partnerUpdated": "partner: {name} · güncelleme: {date}",
+        "slugAria": "Tenant slug'ı",
+        "markLive": "LIVE işaretle",
+        "markChurned": "Ayrıldı olarak işaretle"
+      },
+      "partners": {
+        "title": "Partnerler",
+        "empty": "Henüz partner yok — önce bir başvuruyu onaylayın.",
+        "clientCount": "{count, plural, one {# müşteri} other {# müşteri}}"
+      },
+      "partnerDetail": {
+        "back": "← Tüm partnerler",
+        "joined": "katılım: {date}",
+        "clients": "Müşteriler",
+        "noClients": "Henüz müşteri yok.",
+        "ledger": "Komisyon defteri",
+        "empty": "Henüz kayıt yok."
+      },
+      "commissionForm": {
+        "amount": "Tutar (EUR, negatif = ödeme)",
+        "amountAria": "EUR cinsinden tutar",
+        "clientAria": "İlgili müşteri",
+        "noClient": "Belirli bir müşteri yok",
+        "note": "Not (örn. ‘RUMI kurulum primi’, ‘Mart ödemesi’)",
+        "noteAria": "Not",
+        "recording": "Kaydediliyor…",
+        "record": "Kayıt ekle",
+        "recorded": "Kaydedildi."
+      },
+      "tenants": {
+        "title": "Tenant'lar",
+        "intro": "Deploy repo'sundaki tenant kayıt dosyasının salt okunur görünümü (ADR-007). Yaşam döngüsü değişiklikleri bu sayfadan değil, git + provizyon betikleri (ADR-003) üzerinden yapılır.",
+        "unavailable": "Tenant kaydına ulaşılamıyor: {error}",
+        "registered": "Kayıtlı ({count})",
+        "empty": "Kayıt dosyası boş.",
+        "noBilling": "faturalama hesabı yok",
+        "awaitingActivation": "{count} plan aktivasyon bekliyor",
+        "noActivePlan": "aktif plan yok",
+        "legacy": "(legacy — betikler bunu reddeder)",
+        "box": "{box} sunucusu",
+        "db": "vt: {db}",
+        "langCount": "{count} dil",
+        "modules": "modüller: {list}"
+      }
+    },
+    "errors": {
+      "invalidClient": "Restoran adı zorunludur (e-posta geçerli olmalı).",
+      "clientNotFound": "Müşteri bulunamadı.",
+      "statusManaged": "Bu müşterinin durumu artık Sofra tarafından yönetiliyor.",
+      "invalidStatus": "Geçersiz durum.",
+      "invalidNote": "Not boş olamaz (en fazla 2000 karakter).",
+      "notAgreed": "Önce müşteriyi ‘Anlaşıldı’ durumuna alın.",
+      "applicationDecided": "Başvuru bulunamadı ya da zaten karara bağlandı.",
+      "userExists": "Bu e-postayla kayıtlı bir kullanıcı zaten var.",
+      "invalidSlug": "Tenant slug'ı: küçük harf, rakam ve tire.",
+      "slugTaken": "Bu tenant slug'ı zaten kullanımda.",
+      "invalidCommission": "Tutarı ve notu kontrol edin.",
+      "partnerNotFound": "Partner bulunamadı.",
+      "clientNotOwned": "Bu müşteri bu partnere ait değil.",
+      "mollieNotConfigured": "Mollie yapılandırılmamış (bu ortamda MOLLIE_API_KEY eksik).",
+      "invalidInput": "Geçersiz girdi.",
+      "billingExists": "Bu tenant için zaten bir faturalama hesabı var.",
+      "billingCreateFailed": "Faturalama hesabı oluşturulamadı — sunucu kayıtlarına bakın.",
+      "subscriptionNotFound": "Abonelik bulunamadı.",
+      "activationInFlight": "Aktivasyon sürüyor — plan oturunca yeniden deneyin.",
+      "cancelFailed": "İptal başarısız oldu — sunucu kayıtlarına bakın."
     }
   }
 }

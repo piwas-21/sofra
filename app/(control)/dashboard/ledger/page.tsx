@@ -1,9 +1,13 @@
+import { getTranslations } from "next-intl/server";
 import { requirePartner } from "@/lib/rbac";
+import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
 
 export default async function LedgerPage() {
   const partner = await requirePartner();
+  const locale = await controlLocale();
+  const t = await getTranslations({ locale, namespace: "control.ledger" });
   const entries = await db.commissionEntry.findMany({
     where: { partnerId: partner.id },
     orderBy: { createdAt: "desc" },
@@ -14,14 +18,12 @@ export default async function LedgerPage() {
   return (
     <div className="grid gap-8">
       <div>
-        <h1 className="font-display font-bold text-5xl">Commission ledger</h1>
-        <p className="mt-2 text-muted-foreground">
-          Recorded by Sofra; payouts are settled outside the app for now.
-        </p>
+        <h1 className="font-display font-bold text-5xl">{t("title")}</h1>
+        <p className="mt-2 text-muted-foreground">{t("intro")}</p>
       </div>
 
       <div className="hand-drawn-border bg-card p-6 max-w-sm">
-        <p className="font-label text-sm text-muted-foreground">Current balance</p>
+        <p className="font-label text-sm text-muted-foreground">{t("balance")}</p>
         <p className="mt-1 font-display font-bold text-5xl text-primary">{eur(balanceCents)}</p>
       </div>
 
@@ -29,10 +31,10 @@ export default async function LedgerPage() {
         <table className="w-full text-left">
           <thead>
             <tr className="font-label text-sm text-muted-foreground border-b-2 border-border">
-              <th className="py-2 pr-4">Date</th>
-              <th className="py-2 pr-4">Note</th>
-              <th className="py-2 pr-4">Client</th>
-              <th className="py-2 text-right">Amount</th>
+              <th className="py-2 pr-4">{t("date")}</th>
+              <th className="py-2 pr-4">{t("note")}</th>
+              <th className="py-2 pr-4">{t("client")}</th>
+              <th className="py-2 text-right">{t("amount")}</th>
             </tr>
           </thead>
           <tbody>
@@ -57,7 +59,7 @@ export default async function LedgerPage() {
             {entries.length === 0 && (
               <tr>
                 <td colSpan={4} className="py-6 font-hand text-2xl text-muted-foreground">
-                  Nothing recorded yet — your first commission will appear here.
+                  {t("empty")}
                 </td>
               </tr>
             )}

@@ -2,7 +2,8 @@
 
 import { useActionState } from "react";
 import { forgotPasswordAction, type FormState } from "@/lib/actions/auth-actions";
-import { ErrorMessage, SuccessMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
+import { SuccessMessage } from "./StatusMessage";
 
 export type ForgotLabels = {
   email: string;
@@ -34,7 +35,7 @@ export default function ForgotPasswordForm({ labels }: { labels: ForgotLabels })
           {pending ? labels.sending : labels.send}
         </button>
       </div>
-      <ErrorMessage>{state.error}</ErrorMessage>
+      <ActionError code={state.error} namespace="auth.errors" />
     </form>
   );
 }

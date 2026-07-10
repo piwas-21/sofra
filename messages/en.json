@@ -181,7 +181,14 @@
     "newPassword": "New password (min. 10 characters)",
     "repeatPassword": "Repeat password",
     "setPassword": "Set password",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "errors": {
+      "tooManyAttempts": "Too many attempts. Try again later.",
+      "wrongCredentials": "Wrong email or password.",
+      "passwordTooShort": "Password must be at least 10 characters.",
+      "passwordMismatch": "Passwords don't match.",
+      "linkInvalid": "This link is invalid or has expired. Ask for a new one."
+    }
   },
   "footer": {
     "tagline": "A sofra is a table laid for guests.",
@@ -229,6 +236,240 @@
         "q": "Can I use my own domain name?",
         "a": "Yes. Every restaurant gets a free sofra subdomain, and you can connect a domain you already own — or we register a brand-new one for you during setup."
       }
+    }
+  },
+  "control": {
+    "shell": {
+      "signOut": "Sign out",
+      "partner": "Partner",
+      "admin": "Admin",
+      "nav": {
+        "clients": "Clients",
+        "ledger": "Ledger",
+        "applications": "Applications",
+        "partners": "Partners",
+        "tenants": "Tenants",
+        "billing": "Billing",
+        "audit": "Audit"
+      }
+    },
+    "status": {
+      "lead": "Lead",
+      "contacted": "Contacted",
+      "demoScheduled": "Demo scheduled",
+      "agreed": "Agreed",
+      "onboarding": "Onboarding",
+      "live": "Live",
+      "churned": "Churned"
+    },
+    "dashboard": {
+      "title": "Your clients",
+      "intro": "Every restaurant you bring to the table, from first call to live service.",
+      "addClient": "Add a client",
+      "empty": "No clients yet — add the first restaurant above.",
+      "updated": "updated {date}"
+    },
+    "client": {
+      "back": "← All clients",
+      "pipeline": "Pipeline",
+      "details": "Details",
+      "notes": "Notes",
+      "noNotes": "No notes yet."
+    },
+    "clientForm": {
+      "restaurantName": "Restaurant / café name",
+      "restaurantNameAria": "Restaurant name",
+      "contactName": "Contact person",
+      "email": "Contact email",
+      "phone": "Phone",
+      "city": "City",
+      "saving": "Saving…",
+      "save": "Save changes",
+      "add": "Add client",
+      "saved": "Saved."
+    },
+    "pipeline": {
+      "statusAria": "Pipeline status",
+      "updating": "Updating…",
+      "update": "Update status",
+      "onboardingRequested": "Onboarding requested — Sofra is on it. You'll see this go Live here.",
+      "managedBySofra": "This client's status is managed by Sofra now.",
+      "moveToAgreed": "Move the client to Agreed first",
+      "sending": "Sending…",
+      "requestOnboarding": "Request onboarding 🍽",
+      "sofraSetsUp": "Sofra sets up the restaurant and flips it Live."
+    },
+    "noteForm": {
+      "placeholder": "Add a note — call outcome, next step, who to ask for…",
+      "aria": "New note",
+      "saving": "Saving…",
+      "add": "Add note"
+    },
+    "ledger": {
+      "title": "Commission ledger",
+      "intro": "Recorded by Sofra; payouts are settled outside the app for now.",
+      "balance": "Current balance",
+      "date": "Date",
+      "note": "Note",
+      "client": "Client",
+      "amount": "Amount",
+      "empty": "Nothing recorded yet — your first commission will appear here."
+    },
+    "copy": {
+      "aria": "Link",
+      "copy": "Copy",
+      "copied": "Copied!"
+    },
+    "thanks": {
+      "title": "Thank you!",
+      "body": "Your payment is being processed. Once it's confirmed, your Sofra subscription starts automatically — we'll be in touch shortly.",
+      "questions": "Questions? Just reply to any Sofra email."
+    },
+    "admin": {
+      "applications": {
+        "title": "Partner applications",
+        "queueEmpty": "Queue is empty.",
+        "waiting": "{count} waiting for a decision.",
+        "recentlyDecided": "Recently decided",
+        "statusApproved": "Approved",
+        "statusRejected": "Rejected",
+        "approvedNote": "Approved — invite emailed. Backup link (24h, single use):",
+        "rejectedNote": "Rejected.",
+        "approving": "Approving…",
+        "approve": "Approve",
+        "rejecting": "Rejecting…",
+        "reject": "Reject"
+      },
+      "audit": {
+        "title": "Audit log",
+        "intro": "Last 200 events, newest first.",
+        "when": "When",
+        "actor": "Actor",
+        "action": "Action",
+        "entity": "Entity",
+        "meta": "Meta"
+      },
+      "billing": {
+        "title": "Billing",
+        "intro": "Sofra → tenant subscriptions via Mollie (ADR-011 Job A). Create a billing account, send the tenant the first-payment link; the subscription starts itself once the mandate lands.",
+        "mollieMissing": "MOLLIE_API_KEY is not set on this environment — creating billing accounts is disabled.",
+        "newAccount": "New billing account",
+        "tenantsHeading": "Tenants ({count})",
+        "since": "since {date}",
+        "active": "active",
+        "awaitingFirstPayment": "{count} plan(s) awaiting first payment",
+        "lastPayment": "last payment: {status} ({amount})",
+        "empty": "No billing accounts yet."
+      },
+      "billingForm": {
+        "slug": "Tenant slug (registry key, e.g. demo)",
+        "slugAria": "Tenant slug",
+        "name": "Billing name (restaurant / company)",
+        "nameAria": "Billing name",
+        "email": "Billing email",
+        "description": "Plan description (e.g. 'Sofra Core — monthly')",
+        "descriptionAria": "Plan description",
+        "amount": "Amount per period (EUR)",
+        "amountAria": "Amount per period in EUR",
+        "intervalAria": "Billing interval",
+        "creating": "Creating…",
+        "create": "Create + get checkout link",
+        "created": "Created. Send the tenant this first-payment link (also on the detail page):",
+        "noCheckout": "No checkout link returned — check the detail page."
+      },
+      "intervals": {
+        "month": "Monthly",
+        "quarter": "Quarterly",
+        "year": "Yearly"
+      },
+      "billingDetail": {
+        "back": "← All billing",
+        "customer": "Mollie customer {id}",
+        "crm": "CRM: {restaurant} (partner {partner})",
+        "checkoutTitle": "First-payment checkout link",
+        "checkoutIntro": "Send this to the tenant — paying it creates the recurring mandate and auto-starts the plan.",
+        "subscriptions": "Subscriptions",
+        "chargesFrom": "charges from {date}",
+        "canceledOn": "canceled {date}",
+        "noSubscriptions": "No subscriptions.",
+        "payments": "Payments",
+        "noPayments": "No payments yet.",
+        "cancelConfirm": "Cancel this subscription? Mollie stops charging immediately.",
+        "cancelling": "Cancelling…",
+        "cancel": "Cancel"
+      },
+      "clients": {
+        "title": "All clients",
+        "onboardingQueue": "Waiting for onboarding ({count})",
+        "onboardingHint": "Provision via the deploy-repo scripts (ADR-003), then set the tenant slug and mark LIVE.",
+        "everythingElse": "Everything else",
+        "empty": "Nothing here.",
+        "partnerUpdated": "partner: {name} · updated {date}",
+        "slugAria": "Tenant slug",
+        "markLive": "Mark LIVE",
+        "markChurned": "Mark churned"
+      },
+      "partners": {
+        "title": "Partners",
+        "empty": "No partners yet — approve an application first.",
+        "clientCount": "{count, plural, one {# client} other {# clients}}"
+      },
+      "partnerDetail": {
+        "back": "← All partners",
+        "joined": "joined {date}",
+        "clients": "Clients",
+        "noClients": "No clients yet.",
+        "ledger": "Commission ledger",
+        "empty": "Nothing recorded yet."
+      },
+      "commissionForm": {
+        "amount": "Amount (EUR, negative = payout)",
+        "amountAria": "Amount in EUR",
+        "clientAria": "Related client",
+        "noClient": "No specific client",
+        "note": "Note (e.g. 'RUMI onboarding bonus', 'March payout')",
+        "noteAria": "Note",
+        "recording": "Recording…",
+        "record": "Record entry",
+        "recorded": "Recorded."
+      },
+      "tenants": {
+        "title": "Tenants",
+        "intro": "Read-only view of the deploy repo's tenant registry (ADR-007). Lifecycle changes go through git + the provision scripts (ADR-003), not this page.",
+        "unavailable": "Tenant registry unavailable: {error}",
+        "registered": "Registered ({count})",
+        "empty": "Registry is empty.",
+        "noBilling": "no billing account",
+        "awaitingActivation": "{count} plan(s) awaiting activation",
+        "noActivePlan": "no active plan",
+        "legacy": "(legacy — scripts refuse it)",
+        "box": "{box} box",
+        "db": "db {db}",
+        "langCount": "{count} lang",
+        "modules": "modules: {list}"
+      }
+    },
+    "errors": {
+      "invalidClient": "Restaurant name is required (email must be valid).",
+      "clientNotFound": "Client not found.",
+      "statusManaged": "This client's status is managed by Sofra now.",
+      "invalidStatus": "Invalid status.",
+      "invalidNote": "Note can't be empty (max 2000 chars).",
+      "notAgreed": "Move the client to “Agreed” first.",
+      "applicationDecided": "Application not found or already decided.",
+      "userExists": "A user with this email already exists.",
+      "invalidSlug": "Tenant slug: lowercase letters, digits, dashes.",
+      "slugTaken": "That tenant slug is already in use.",
+      "invalidCommission": "Check the amount and note.",
+      "partnerNotFound": "Partner not found.",
+      "clientNotOwned": "Client doesn't belong to this partner.",
+      "mollieNotConfigured": "Mollie is not configured (MOLLIE_API_KEY missing on this environment).",
+      "invalidInput": "Invalid input.",
+      "billingExists": "A billing account for that tenant already exists.",
+      "billingCreateFailed": "Creating the billing account failed — see server logs.",
+      "subscriptionNotFound": "Subscription not found.",
+      "activationInFlight": "Activation in flight — retry once the plan settles.",
+      "cancelFailed": "Cancelling failed — see server logs."
     }
   }
 }

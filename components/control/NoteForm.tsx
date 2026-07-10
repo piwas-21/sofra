@@ -1,8 +1,9 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { addNoteAction, type PartnerActionState } from "@/lib/actions/partner-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 
 /**
  * Bound directly to the server action so the form also works without JS
@@ -10,6 +11,7 @@ import { ErrorMessage } from "./StatusMessage";
  * count, so a successful add re-mounts it with an empty textarea.
  */
 export default function NoteForm({ clientId }: { clientId: string }) {
+  const t = useTranslations("control.noteForm");
   const [state, action, pending] = useActionState<PartnerActionState, FormData>(addNoteAction, {});
 
   return (
@@ -20,15 +22,15 @@ export default function NoteForm({ clientId }: { clientId: string }) {
         required
         rows={3}
         maxLength={2000}
-        placeholder="Add a note — call outcome, next step, who to ask for…"
-        aria-label="New note"
+        placeholder={t("placeholder")}
+        aria-label={t("aria")}
         className="input-primary resize-y"
       />
       <div className="flex items-center gap-4">
         <button type="submit" disabled={pending} className="btn-secondary disabled:opacity-60">
-          {pending ? "Saving…" : "Add note"}
+          {pending ? t("saving") : t("add")}
         </button>
-        <ErrorMessage>{state.error}</ErrorMessage>
+        <ActionError code={state.error} />
       </div>
     </form>
   );

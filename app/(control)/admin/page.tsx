@@ -1,10 +1,14 @@
+import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/rbac";
+import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { shortDate } from "@/lib/format";
 import ApplicationActions from "@/components/control/ApplicationActions";
 
 export default async function AdminApplicationsPage() {
   await requireAdmin();
+  const locale = await controlLocale();
+  const t = await getTranslations({ locale, namespace: "control.admin.applications" });
   const [pending, decided] = await Promise.all([
     db.partnerApplication.findMany({
       where: { status: "PENDING" },
@@ -20,9 +24,9 @@ export default async function AdminApplicationsPage() {
   return (
     <div className="grid gap-10">
       <div>
-        <h1 className="font-display font-bold text-5xl">Partner applications</h1>
+        <h1 className="font-display font-bold text-5xl">{t("title")}</h1>
         <p className="mt-2 text-muted-foreground">
-          {pending.length === 0 ? "Queue is empty." : `${pending.length} waiting for a decision.`}
+          {pending.length === 0 ? t("queueEmpty") : t("waiting", { count: pending.length })}
         </p>
       </div>
 
@@ -48,12 +52,14 @@ export default async function AdminApplicationsPage() {
 
       {decided.length > 0 && (
         <section>
-          <h2 className="font-hand text-3xl font-bold text-muted-foreground">Recently decided</h2>
+          <h2 className="font-hand text-3xl font-bold text-muted-foreground">
+            {t("recentlyDecided")}
+          </h2>
           <ul className="mt-4 grid gap-2">
             {decided.map((a) => (
               <li key={a.id} className="flex flex-wrap gap-3 font-label text-sm text-muted-foreground">
                 <span className={a.status === "APPROVED" ? "text-craft-success-text dark:text-craft-success" : "text-destructive"}>
-                  {a.status}
+                  {a.status === "APPROVED" ? t("statusApproved") : t("statusRejected")}
                 </span>
                 <span>{a.name}</span>
                 <span>{a.email}</span>

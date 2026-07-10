@@ -8,7 +8,7 @@
 ## §1 — Identity
 
 - **Stack**: Next.js 15 (App Router) · React 19 · TypeScript · **Tailwind** ("craft" design system) · next-intl (site: en/fr/de/nl/tr/ar, `ar` = RTL) · Auth.js v5 beta (Credentials + JWT) · Prisma 7 + `@prisma/adapter-pg` · Mollie (subscriptions)
-- **Two surfaces, one app**: `app/[locale]/` = localized public marketing site; `app/(control)/` = **English-only** control plane (admin `/admin`, partner `/dashboard`) with its own root layout.
+- **Two surfaces, one app**: `app/[locale]/` = localized public marketing site; `app/(control)/` = control plane (admin `/admin`, partner `/dashboard`) with its own root layout — localized via the NEXT_LOCALE cookie (`lib/control-locale.ts`), no locale prefix in its URLs.
 - **Deliberately NOT bound by the frontend repo's rules**: Tailwind (not CSS Modules), `.dark` class dark mode (not `html[data-theme]`), craft tokens (not RUMI tokens). Do not import frontend conventions here.
 - **Hosting**: runs on the **staging Netcup box** (`159.195.34.105`) behind Caddy, image `ghcr.io/piwas-21/sofra`; Postgres = shared `postgres` container, DB/role `sofra`. Infra source of truth: `deploy/` repo (`DEPLOYMENT.md` §Sofra control plane).
 - **Workspace context**: one of five repos under the `rumi-workspace` meta-repo — master plan `docs/plans/SOFRA-SAAS-PLAN.md`, roadmap Track S.
@@ -44,7 +44,7 @@ Page 200 · component 250 · server action / lib file 200 · type file 150 LOC. 
 3. **Never trust webhook bodies** — fetch-and-verify only (§3).
 4. **Dark mode = `.dark` class** (Tailwind `darkMode: "class"`). `html[data-theme]` belongs to the tenant frontend, not here.
 5. **Craft tokens only**: colors/fonts come from `tailwind.config.ts` (`craft.*`, HSL vars in `app/globals.css`) — no ad-hoc hex in components.
-6. **Marketing strings are localized** (next-intl message files ×6, keep key parity; `ar` is RTL — check mirrored layouts). The `(control)` plane is **en-only by design** — do not localize it (that's tracked as sofra #9, a deliberate later).
+6. **All user-visible strings are localized** (next-intl message files ×6, keep key parity; `ar` is RTL on the marketing site — check mirrored layouts). The `(control)` plane follows the NEXT_LOCALE cookie (sofra #9): pages use `controlLocale()` + `getTranslations({locale})`, client components use `useTranslations` under the root-layout provider, and server actions return `control.errors`/`auth.errors` message keys rendered by `<ActionError />`. The control plane stays **structurally LTR** even under `ar` (strings translated; RTL layout is a separate effort).
 7. **Money in EUR integer cents**; ledger currency is EUR (NL company).
 8. **No PII in logs** — no partner/client emails, names, phones, or Mollie customer ids in console output.
 9. **Env at the edges**: secrets only via env (`AUTH_SECRET`, `DATABASE_URL`, `MOLLIE_API_KEY`, `RESEND_API_KEY`); never committed, never logged. `$` values in box `.env` must be `$$`-escaped (compose interpolation).
