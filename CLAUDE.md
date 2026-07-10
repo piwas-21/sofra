@@ -62,7 +62,7 @@ Output before writing code: (1) which `require*()` guard covers each new surface
 
 ## §8 — Git workflow
 
-- Branch off `main`, PR to `main` (`feature/` `fix/` `chore/` `docs/`). Commits: `type(scope): description`.
+- **GitFlow:** `develop` = default + integration branch — branch off it and open every `feature/`·`fix/`·`chore/`·`docs/` PR **to `develop`**; merge only when CI is green + comments resolved. **`main` = releases only**, via a `develop`→`main` release PR. Both branches are protected by the no-bypass `main-develop` ruleset (blocks direct push; open a PR). Commits: `type(scope): description`.
 - **Merge ≠ deploy.** A merge builds the image; rollout is manual on the staging box: `docker compose -f docker-compose.prod.yml pull sofra && up -d sofra` (in `/opt/rumi/deploy`, via `deploy/.ssh/staging.sh`). **Schema changes: run the migrate one-off BEFORE rolling the app.**
 - PR body uses `.github/pull_request_template.md` — including the NFR triage section (DEV-PHASES-PLAN P1).
 
