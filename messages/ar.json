@@ -446,7 +446,8 @@
         "box": "الخادم {box}",
         "db": "قاعدة البيانات {db}",
         "langCount": "{count} لغات",
-        "modules": "الوحدات: {list}"
+        "modules": "الوحدات: {list}",
+        "template": "القالب: {template}"
       }
     },
     "errors": {

@@ -446,7 +446,8 @@
         "box": "{box} sunucusu",
         "db": "vt: {db}",
         "langCount": "{count} dil",
-        "modules": "modüller: {list}"
+        "modules": "modüller: {list}",
+        "template": "şablon: {template}"
       }
     },
     "errors": {

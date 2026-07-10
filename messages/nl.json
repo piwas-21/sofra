@@ -446,7 +446,8 @@
         "box": "box {box}",
         "db": "db {db}",
         "langCount": "{count} talen",
-        "modules": "modules: {list}"
+        "modules": "modules: {list}",
+        "template": "sjabloon: {template}"
       }
     },
     "errors": {
