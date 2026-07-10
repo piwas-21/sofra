@@ -1,12 +1,13 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import {
   setClientLiveAction,
   markClientChurnedAction,
   type AdminActionState,
 } from "@/lib/actions/admin-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 
 export default function SetLiveForm({
   clientId,
@@ -17,6 +18,7 @@ export default function SetLiveForm({
   status: string;
   tenantSlug: string | null;
 }) {
+  const t = useTranslations("control.admin.clients");
   const [liveState, liveAction, livePending] = useActionState<AdminActionState, FormData>(
     setClientLiveAction,
     {},
@@ -37,10 +39,10 @@ export default function SetLiveForm({
             disabled={churnPending}
             className="font-label text-sm text-destructive underline disabled:opacity-60"
           >
-            {churnPending ? "…" : "Mark churned"}
+            {churnPending ? "…" : t("markChurned")}
           </button>
         </form>
-        <ErrorMessage>{churnState.error}</ErrorMessage>
+        <ActionError code={churnState.error} />
       </div>
     );
   }
@@ -52,14 +54,14 @@ export default function SetLiveForm({
         name="tenantSlug"
         defaultValue={tenantSlug ?? ""}
         placeholder="tenant-slug"
-        aria-label="Tenant slug"
+        aria-label={t("slugAria")}
         pattern="[a-z0-9][a-z0-9-]{1,60}"
         className="input-primary max-w-40 text-sm py-1.5"
       />
       <button type="submit" disabled={livePending} className="btn-secondary text-sm py-1.5 disabled:opacity-60">
-        {livePending ? "…" : "Mark LIVE"}
+        {livePending ? "…" : t("markLive")}
       </button>
-      <ErrorMessage>{liveState.error}</ErrorMessage>
+      <ActionError code={liveState.error} />
     </form>
   );
 }

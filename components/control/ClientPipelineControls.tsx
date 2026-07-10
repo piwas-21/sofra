@@ -1,18 +1,19 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import {
   setClientStatusAction,
   requestOnboardingAction,
   type PartnerActionState,
 } from "@/lib/actions/partner-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 
 const PARTNER_STATUSES = [
-  ["LEAD", "Lead"],
-  ["CONTACTED", "Contacted"],
-  ["DEMO_SCHEDULED", "Demo scheduled"],
-  ["AGREED", "Agreed"],
+  ["LEAD", "lead"],
+  ["CONTACTED", "contacted"],
+  ["DEMO_SCHEDULED", "demoScheduled"],
+  ["AGREED", "agreed"],
 ] as const;
 
 /** Status stepper + "request onboarding", shown while the partner still owns
@@ -24,6 +25,8 @@ export default function ClientPipelineControls({
   clientId: string;
   status: string;
 }) {
+  const t = useTranslations("control.pipeline");
+  const tStatus = useTranslations("control.status");
   const [statusState, statusAction, statusPending] = useActionState<PartnerActionState, FormData>(
     setClientStatusAction,
     {},
@@ -37,9 +40,7 @@ export default function ClientPipelineControls({
   if (locked) {
     return (
       <p className="font-label text-muted-foreground">
-        {status === "ONBOARDING"
-          ? "Onboarding requested — Sofra is on it. You'll see this go Live here."
-          : "This client's status is managed by Sofra now."}
+        {status === "ONBOARDING" ? t("onboardingRequested") : t("managedBySofra")}
       </p>
     );
   }
@@ -51,19 +52,19 @@ export default function ClientPipelineControls({
         <select
           name="status"
           defaultValue={status}
-          aria-label="Pipeline status"
+          aria-label={t("statusAria")}
           className="input-primary max-w-60"
         >
-          {PARTNER_STATUSES.map(([value, label]) => (
+          {PARTNER_STATUSES.map(([value, key]) => (
             <option key={value} value={value}>
-              {label}
+              {tStatus(key)}
             </option>
           ))}
         </select>
         <button type="submit" disabled={statusPending} className="btn-secondary disabled:opacity-60">
-          {statusPending ? "Updating…" : "Update status"}
+          {statusPending ? t("updating") : t("update")}
         </button>
-        <ErrorMessage>{statusState.error}</ErrorMessage>
+        <ActionError code={statusState.error} />
       </form>
 
       <form action={onboardAction} className="flex flex-wrap items-center gap-3">
@@ -72,14 +73,12 @@ export default function ClientPipelineControls({
           type="submit"
           disabled={onboardPending || status !== "AGREED"}
           className="btn-primary disabled:opacity-60"
-          title={status !== "AGREED" ? "Move the client to Agreed first" : undefined}
+          title={status !== "AGREED" ? t("moveToAgreed") : undefined}
         >
-          {onboardPending ? "Sending…" : "Request onboarding 🍽"}
+          {onboardPending ? t("sending") : t("requestOnboarding")}
         </button>
-        <span className="font-label text-sm text-muted-foreground">
-          Sofra sets up the restaurant and flips it Live.
-        </span>
-        <ErrorMessage>{onboardState.error}</ErrorMessage>
+        <span className="font-label text-sm text-muted-foreground">{t("sofraSetsUp")}</span>
+        <ActionError code={onboardState.error} />
       </form>
     </div>
   );

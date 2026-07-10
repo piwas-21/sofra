@@ -1,8 +1,12 @@
+import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/rbac";
+import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 
 export default async function AdminAuditPage() {
   await requireAdmin();
+  const locale = await controlLocale();
+  const t = await getTranslations({ locale, namespace: "control.admin.audit" });
   const entries = await db.auditLog.findMany({
     orderBy: { createdAt: "desc" },
     take: 200,
@@ -12,18 +16,18 @@ export default async function AdminAuditPage() {
   return (
     <div className="grid gap-8">
       <div>
-        <h1 className="font-display font-bold text-5xl">Audit log</h1>
-        <p className="mt-2 text-muted-foreground">Last 200 events, newest first.</p>
+        <h1 className="font-display font-bold text-5xl">{t("title")}</h1>
+        <p className="mt-2 text-muted-foreground">{t("intro")}</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left font-mono text-xs">
           <thead>
             <tr className="font-label text-sm text-muted-foreground border-b-2 border-border">
-              <th className="py-2 pr-4">When</th>
-              <th className="py-2 pr-4">Actor</th>
-              <th className="py-2 pr-4">Action</th>
-              <th className="py-2 pr-4">Entity</th>
-              <th className="py-2">Meta</th>
+              <th className="py-2 pr-4">{t("when")}</th>
+              <th className="py-2 pr-4">{t("actor")}</th>
+              <th className="py-2 pr-4">{t("action")}</th>
+              <th className="py-2 pr-4">{t("entity")}</th>
+              <th className="py-2">{t("meta")}</th>
             </tr>
           </thead>
           <tbody>

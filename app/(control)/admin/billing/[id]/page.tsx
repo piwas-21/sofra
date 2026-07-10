@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/rbac";
+import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
 import { BILLING_INTERVALS } from "@/lib/billing";
 import CancelSubscriptionButton from "@/components/control/CancelSubscriptionButton";
 import CopyField from "@/components/control/CopyField";
 
-const intervalLabel = (mollie: string) =>
-  Object.values(BILLING_INTERVALS).find((i) => i.mollie === mollie)?.label ?? mollie;
+// Mollie interval string → control.admin.intervals key (display only).
+const intervalKey = (mollie: string) =>
+  Object.entries(BILLING_INTERVALS).find(([, i]) => i.mollie === mollie)?.[0];
 
 export default async function AdminBillingDetailPage({
   params,
@@ -16,6 +19,12 @@ export default async function AdminBillingDetailPage({
   params: Promise<{ id: string }>;
 }) {
   await requireAdmin();
+  const locale = await controlLocale();
+  const t = await getTranslations({ locale, namespace: "control.admin" });
+  const intervalLabel = (mollie: string) => {
+    const key = intervalKey(mollie);
+    return key ? t(`intervals.${key}`) : mollie;
+  };
   const { id } = await params;
   const billing = await db.tenantBilling.findUnique({
     where: { id },
@@ -35,23 +44,26 @@ export default async function AdminBillingDetailPage({
     <div className="grid gap-10">
       <div>
         <Link href="/admin/billing" className="font-label text-sm text-muted-foreground underline">
-          ← All billing
+          {t("billingDetail.back")}
         </Link>
         <h1 className="mt-3 font-display font-bold text-5xl">{billing.tenantSlug}</h1>
         <p className="mt-2 font-label text-muted-foreground">
-          {billing.name} · {billing.email} · Mollie customer {billing.mollieCustomerId}
+          {billing.name} · {billing.email} ·{" "}
+          {t("billingDetail.customer", { id: billing.mollieCustomerId })}
           {billing.client
-            ? ` · CRM: ${billing.client.restaurantName} (partner ${billing.client.partner.name})`
+            ? ` · ${t("billingDetail.crm", {
+                restaurant: billing.client.restaurantName,
+                partner: billing.client.partner.name,
+              })}`
             : ""}
         </p>
       </div>
 
       {openCheckout && (
         <section className="hand-drawn-border bg-card p-5">
-          <h2 className="font-hand text-2xl font-bold">First-payment checkout link</h2>
+          <h2 className="font-hand text-2xl font-bold">{t("billingDetail.checkoutTitle")}</h2>
           <p className="mt-1 font-label text-sm text-muted-foreground">
-            Send this to the tenant — paying it creates the recurring mandate and auto-starts the
-            plan.
+            {t("billingDetail.checkoutIntro")}
           </p>
           <div className="mt-3">
             <CopyField value={openCheckout.checkoutUrl!} />
@@ -60,7 +72,7 @@ export default async function AdminBillingDetailPage({
       )}
 
       <section>
-        <h2 className="font-hand text-3xl font-bold">Subscriptions</h2>
+        <h2 className="font-hand text-3xl font-bold">{t("billingDetail.subscriptions")}</h2>
         <ul className="mt-4 grid gap-3">
           {billing.subscriptions.map((s) => (
             <li
@@ -71,8 +83,12 @@ export default async function AdminBillingDetailPage({
                 <span className="font-label font-bold block">{s.description}</span>
                 <span className="font-label text-sm text-muted-foreground">
                   {eur(s.amountCents)} · {intervalLabel(s.interval)} · {s.status.toLowerCase()}
-                  {s.startDate ? ` · charges from ${shortDate(s.startDate)}` : ""}
-                  {s.canceledAt ? ` · canceled ${shortDate(s.canceledAt)}` : ""}
+                  {s.startDate
+                    ? ` · ${t("billingDetail.chargesFrom", { date: shortDate(s.startDate) })}`
+                    : ""}
+                  {s.canceledAt
+                    ? ` · ${t("billingDetail.canceledOn", { date: shortDate(s.canceledAt) })}`
+                    : ""}
                 </span>
               </span>
               {(s.status === "ACTIVE" || s.status === "PENDING") && (
@@ -81,13 +97,15 @@ export default async function AdminBillingDetailPage({
             </li>
           ))}
           {billing.subscriptions.length === 0 && (
-            <li className="font-label text-muted-foreground">No subscriptions.</li>
+            <li className="font-label text-muted-foreground">
+              {t("billingDetail.noSubscriptions")}
+            </li>
           )}
         </ul>
       </section>
 
       <section>
-        <h2 className="font-hand text-3xl font-bold">Payments</h2>
+        <h2 className="font-hand text-3xl font-bold">{t("billingDetail.payments")}</h2>
         <ul className="mt-4 grid gap-2">
           {billing.payments.map((p) => (
             <li
@@ -105,7 +123,7 @@ export default async function AdminBillingDetailPage({
             </li>
           ))}
           {billing.payments.length === 0 && (
-            <li className="font-label text-muted-foreground">No payments yet.</li>
+            <li className="font-label text-muted-foreground">{t("billingDetail.noPayments")}</li>
           )}
         </ul>
       </section>

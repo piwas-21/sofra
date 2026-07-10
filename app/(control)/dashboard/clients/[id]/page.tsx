@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { requirePartner } from "@/lib/rbac";
+import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { shortDate } from "@/lib/format";
 import ClientForm from "@/components/control/ClientForm";
@@ -14,6 +16,8 @@ export default async function ClientDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const partner = await requirePartner();
+  const locale = await controlLocale();
+  const t = await getTranslations({ locale, namespace: "control.client" });
   const { id } = await params;
   const client = await db.client.findFirst({
     where: { id, partnerId: partner.id },
@@ -27,7 +31,7 @@ export default async function ClientDetailPage({
     <div className="grid gap-10">
       <div>
         <Link href="/dashboard" className="font-label text-sm text-muted-foreground underline">
-          ← All clients
+          {t("back")}
         </Link>
         <div className="mt-3 flex flex-wrap items-center gap-4">
           <h1 className="font-display font-bold text-5xl">{client.restaurantName}</h1>
@@ -41,21 +45,21 @@ export default async function ClientDetailPage({
       </div>
 
       <section className="hand-drawn-border bg-card p-6">
-        <h2 className="font-hand text-3xl font-bold">Pipeline</h2>
+        <h2 className="font-hand text-3xl font-bold">{t("pipeline")}</h2>
         <div className="mt-4">
           <ClientPipelineControls clientId={client.id} status={client.status} />
         </div>
       </section>
 
       <section className="hand-drawn-border bg-card p-6">
-        <h2 className="font-hand text-3xl font-bold">Details</h2>
+        <h2 className="font-hand text-3xl font-bold">{t("details")}</h2>
         <div className="mt-4">
           <ClientForm client={client} />
         </div>
       </section>
 
       <section className="ruled-lines hand-drawn-border bg-muted/40 p-6">
-        <h2 className="font-hand text-3xl font-bold">Notes</h2>
+        <h2 className="font-hand text-3xl font-bold">{t("notes")}</h2>
         <div className="mt-4">
           {/* Keyed by note count: a successful add re-mounts the form empty */}
           <NoteForm key={client.clientNotes.length} clientId={client.id} />
@@ -70,7 +74,7 @@ export default async function ClientDetailPage({
             </li>
           ))}
           {client.clientNotes.length === 0 && (
-            <li className="font-label text-muted-foreground">No notes yet.</li>
+            <li className="font-label text-muted-foreground">{t("noNotes")}</li>
           )}
         </ul>
       </section>

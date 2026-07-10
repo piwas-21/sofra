@@ -12,6 +12,8 @@ import { craftEmail } from "@/lib/email-templates";
 import { createToken, findValidToken } from "@/lib/tokens";
 import { clientIpFromXff, rateLimit } from "@/lib/rate-limit";
 
+/** `error` is a message key in the `auth.errors` namespace, translated at
+ *  render by <ActionError /> (control-plane i18n, sofra #9). */
 export type FormState = { error?: string; ok?: boolean };
 
 async function limited(scope: string, max: number): Promise<boolean> {
@@ -21,7 +23,7 @@ async function limited(scope: string, max: number): Promise<boolean> {
 }
 
 export async function loginAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  if (await limited("login", 20)) return { error: "Too many attempts. Try again later." };
+  if (await limited("login", 20)) return { error: "tooManyAttempts" };
   try {
     await signIn("credentials", {
       email: String(formData.get("email") ?? ""),
@@ -31,7 +33,7 @@ export async function loginAction(_prev: FormState, formData: FormData): Promise
     return { ok: true };
   } catch (e) {
     if (e instanceof AuthError) {
-      return { error: "Wrong email or password." };
+      return { error: "wrongCredentials" };
     }
     throw e; // NEXT_REDIRECT on success
   }
@@ -43,20 +45,20 @@ export async function logoutAction(): Promise<void> {
 
 /** Shared by invite (first password) and reset flows. */
 export async function setPasswordAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  if (await limited("set-password", 10)) return { error: "Too many attempts. Try again later." };
+  if (await limited("set-password", 10)) return { error: "tooManyAttempts" };
 
   const raw = String(formData.get("token") ?? "");
   const purpose = formData.get("purpose") === "reset" ? "reset" : "invite";
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
 
-  if (password.length < 10) return { error: "Password must be at least 10 characters." };
-  if (password !== confirm) return { error: "Passwords don't match." };
+  if (password.length < 10) return { error: "passwordTooShort" };
+  if (password !== confirm) return { error: "passwordMismatch" };
 
   const token = await findValidToken(raw, purpose);
   // A DISABLED account must not reactivate itself through a leftover token.
   if (!token || token.user.status === "DISABLED") {
-    return { error: "This link is invalid or has expired. Ask for a new one." };
+    return { error: "linkInvalid" };
   }
 
   const passwordHash = await hash(password, 12);
@@ -74,7 +76,7 @@ export async function setPasswordAction(_prev: FormState, formData: FormData): P
 }
 
 export async function forgotPasswordAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  if (await limited("forgot", 5)) return { error: "Too many attempts. Try again later." };
+  if (await limited("forgot", 5)) return { error: "tooManyAttempts" };
 
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   // Always report success — no user enumeration via this form.

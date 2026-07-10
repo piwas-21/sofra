@@ -181,7 +181,14 @@
     "newPassword": "Nieuw wachtwoord (min. 10 tekens)",
     "repeatPassword": "Herhaal wachtwoord",
     "setPassword": "Wachtwoord instellen",
-    "saving": "Opslaan…"
+    "saving": "Opslaan…",
+    "errors": {
+      "tooManyAttempts": "Te veel pogingen. Probeer het later opnieuw.",
+      "wrongCredentials": "Onjuist e-mailadres of wachtwoord.",
+      "passwordTooShort": "Het wachtwoord moet minstens 10 tekens lang zijn.",
+      "passwordMismatch": "De wachtwoorden komen niet overeen.",
+      "linkInvalid": "Deze link is ongeldig of verlopen. Vraag een nieuwe aan."
+    }
   },
   "footer": {
     "tagline": "Een sofra is een tafel, gedekt voor gasten.",
@@ -229,6 +236,240 @@
         "q": "Kan ik mijn eigen domeinnaam gebruiken?",
         "a": "Ja. Elk restaurant krijgt een gratis sofra-subdomein, en je kunt een domein koppelen dat je al bezit — of wij registreren tijdens de installatie een gloednieuw domein voor je."
       }
+    }
+  },
+  "control": {
+    "shell": {
+      "signOut": "Uitloggen",
+      "partner": "Partner",
+      "admin": "Admin",
+      "nav": {
+        "clients": "Klanten",
+        "ledger": "Grootboek",
+        "applications": "Aanmeldingen",
+        "partners": "Partners",
+        "tenants": "Tenants",
+        "billing": "Facturatie",
+        "audit": "Audit"
+      }
+    },
+    "status": {
+      "lead": "Lead",
+      "contacted": "Benaderd",
+      "demoScheduled": "Demo ingepland",
+      "agreed": "Akkoord",
+      "onboarding": "Onboarding",
+      "live": "Live",
+      "churned": "Afgehaakt"
+    },
+    "dashboard": {
+      "title": "Je klanten",
+      "intro": "Elk restaurant dat jij aan tafel brengt, van eerste gesprek tot live service.",
+      "addClient": "Klant toevoegen",
+      "empty": "Nog geen klanten — voeg hierboven het eerste restaurant toe.",
+      "updated": "bijgewerkt {date}"
+    },
+    "client": {
+      "back": "← Alle klanten",
+      "pipeline": "Pipeline",
+      "details": "Gegevens",
+      "notes": "Notities",
+      "noNotes": "Nog geen notities."
+    },
+    "clientForm": {
+      "restaurantName": "Naam restaurant / café",
+      "restaurantNameAria": "Restaurantnaam",
+      "contactName": "Contactpersoon",
+      "email": "Contact-e-mail",
+      "phone": "Telefoon",
+      "city": "Stad",
+      "saving": "Opslaan…",
+      "save": "Wijzigingen opslaan",
+      "add": "Klant toevoegen",
+      "saved": "Opgeslagen."
+    },
+    "pipeline": {
+      "statusAria": "Pipelinestatus",
+      "updating": "Bijwerken…",
+      "update": "Status bijwerken",
+      "onboardingRequested": "Onboarding aangevraagd — Sofra pakt het op. Je ziet hier wanneer deze klant live gaat.",
+      "managedBySofra": "De status van deze klant wordt nu door Sofra beheerd.",
+      "moveToAgreed": "Zet de klant eerst op ‘Akkoord’",
+      "sending": "Versturen…",
+      "requestOnboarding": "Onboarding aanvragen 🍽",
+      "sofraSetsUp": "Sofra richt het restaurant in en zet het live."
+    },
+    "noteForm": {
+      "placeholder": "Voeg een notitie toe — uitkomst van het gesprek, volgende stap, naar wie vragen…",
+      "aria": "Nieuwe notitie",
+      "saving": "Opslaan…",
+      "add": "Notitie toevoegen"
+    },
+    "ledger": {
+      "title": "Commissiegrootboek",
+      "intro": "Bijgehouden door Sofra; uitbetalingen worden voorlopig buiten de app geregeld.",
+      "balance": "Huidig saldo",
+      "date": "Datum",
+      "note": "Notitie",
+      "client": "Klant",
+      "amount": "Bedrag",
+      "empty": "Nog niets geboekt — je eerste commissie verschijnt hier."
+    },
+    "copy": {
+      "aria": "Link",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd!"
+    },
+    "thanks": {
+      "title": "Bedankt!",
+      "body": "Je betaling wordt verwerkt. Zodra die is bevestigd, start je Sofra-abonnement automatisch — we nemen snel contact op.",
+      "questions": "Vragen? Beantwoord gewoon een willekeurige Sofra-e-mail."
+    },
+    "admin": {
+      "applications": {
+        "title": "Partneraanmeldingen",
+        "queueEmpty": "De wachtrij is leeg.",
+        "waiting": "{count} wachten op een besluit.",
+        "recentlyDecided": "Recent besloten",
+        "statusApproved": "Goedgekeurd",
+        "statusRejected": "Afgewezen",
+        "approvedNote": "Goedgekeurd — uitnodiging gemaild. Reservelink (24 u, eenmalig):",
+        "rejectedNote": "Afgewezen.",
+        "approving": "Goedkeuren…",
+        "approve": "Goedkeuren",
+        "rejecting": "Afwijzen…",
+        "reject": "Afwijzen"
+      },
+      "audit": {
+        "title": "Auditlog",
+        "intro": "Laatste 200 gebeurtenissen, nieuwste eerst.",
+        "when": "Wanneer",
+        "actor": "Actor",
+        "action": "Actie",
+        "entity": "Entiteit",
+        "meta": "Meta"
+      },
+      "billing": {
+        "title": "Facturatie",
+        "intro": "Sofra → tenant-abonnementen via Mollie (ADR-011, deel A). Maak een facturatie-account aan en stuur de tenant de link voor de eerste betaling; het abonnement start vanzelf zodra het mandaat rond is.",
+        "mollieMissing": "MOLLIE_API_KEY is niet ingesteld op deze omgeving — facturatie-accounts aanmaken is uitgeschakeld.",
+        "newAccount": "Nieuw facturatie-account",
+        "tenantsHeading": "Tenants ({count})",
+        "since": "sinds {date}",
+        "active": "actief",
+        "awaitingFirstPayment": "{count} plan(nen) wachten op de eerste betaling",
+        "lastPayment": "laatste betaling: {status} ({amount})",
+        "empty": "Nog geen facturatie-accounts."
+      },
+      "billingForm": {
+        "slug": "Tenant-slug (registrysleutel, bijv. demo)",
+        "slugAria": "Tenant-slug",
+        "name": "Facturatienaam (restaurant / bedrijf)",
+        "nameAria": "Facturatienaam",
+        "email": "Facturatie-e-mail",
+        "description": "Planomschrijving (bijv. ‘Sofra Core — maandelijks’)",
+        "descriptionAria": "Planomschrijving",
+        "amount": "Bedrag per periode (EUR)",
+        "amountAria": "Bedrag per periode in EUR",
+        "intervalAria": "Facturatie-interval",
+        "creating": "Aanmaken…",
+        "create": "Aanmaken + checkout-link ophalen",
+        "created": "Aangemaakt. Stuur de tenant deze link voor de eerste betaling (staat ook op de detailpagina):",
+        "noCheckout": "Geen checkout-link ontvangen — kijk op de detailpagina."
+      },
+      "intervals": {
+        "month": "Maandelijks",
+        "quarter": "Per kwartaal",
+        "year": "Jaarlijks"
+      },
+      "billingDetail": {
+        "back": "← Alle facturatie",
+        "customer": "Mollie-klant {id}",
+        "crm": "CRM: {restaurant} (partner {partner})",
+        "checkoutTitle": "Checkout-link eerste betaling",
+        "checkoutIntro": "Stuur deze naar de tenant — betalen creëert het doorlopende mandaat en start het plan automatisch.",
+        "subscriptions": "Abonnementen",
+        "chargesFrom": "afschrijvingen vanaf {date}",
+        "canceledOn": "geannuleerd op {date}",
+        "noSubscriptions": "Geen abonnementen.",
+        "payments": "Betalingen",
+        "noPayments": "Nog geen betalingen.",
+        "cancelConfirm": "Dit abonnement annuleren? Mollie stopt direct met afschrijven.",
+        "cancelling": "Annuleren…",
+        "cancel": "Annuleren"
+      },
+      "clients": {
+        "title": "Alle klanten",
+        "onboardingQueue": "Wachten op onboarding ({count})",
+        "onboardingHint": "Provisioneer via de scripts van de deploy-repo (ADR-003), stel daarna de tenant-slug in en markeer LIVE.",
+        "everythingElse": "Al het overige",
+        "empty": "Niets hier.",
+        "partnerUpdated": "partner: {name} · bijgewerkt {date}",
+        "slugAria": "Tenant-slug",
+        "markLive": "Markeer LIVE",
+        "markChurned": "Markeer afgehaakt"
+      },
+      "partners": {
+        "title": "Partners",
+        "empty": "Nog geen partners — keur eerst een aanmelding goed.",
+        "clientCount": "{count, plural, one {# klant} other {# klanten}}"
+      },
+      "partnerDetail": {
+        "back": "← Alle partners",
+        "joined": "lid sinds {date}",
+        "clients": "Klanten",
+        "noClients": "Nog geen klanten.",
+        "ledger": "Commissiegrootboek",
+        "empty": "Nog niets geboekt."
+      },
+      "commissionForm": {
+        "amount": "Bedrag (EUR, negatief = uitbetaling)",
+        "amountAria": "Bedrag in EUR",
+        "clientAria": "Bijbehorende klant",
+        "noClient": "Geen specifieke klant",
+        "note": "Notitie (bijv. ‘RUMI-onboardingbonus’, ‘uitbetaling maart’)",
+        "noteAria": "Notitie",
+        "recording": "Boeken…",
+        "record": "Boeking vastleggen",
+        "recorded": "Geboekt."
+      },
+      "tenants": {
+        "title": "Tenants",
+        "intro": "Alleen-lezen weergave van het tenant-register uit de deploy-repo (ADR-007). Lifecycle-wijzigingen lopen via git + de provisioneringsscripts (ADR-003), niet via deze pagina.",
+        "unavailable": "Tenant-register niet beschikbaar: {error}",
+        "registered": "Geregistreerd ({count})",
+        "empty": "Het register is leeg.",
+        "noBilling": "geen facturatie-account",
+        "awaitingActivation": "{count} plan(nen) wachten op activering",
+        "noActivePlan": "geen actief plan",
+        "legacy": "(legacy — de scripts weigeren hem)",
+        "box": "box {box}",
+        "db": "db {db}",
+        "langCount": "{count} talen",
+        "modules": "modules: {list}"
+      }
+    },
+    "errors": {
+      "invalidClient": "Restaurantnaam is verplicht (e-mail moet geldig zijn).",
+      "clientNotFound": "Klant niet gevonden.",
+      "statusManaged": "De status van deze klant wordt nu door Sofra beheerd.",
+      "invalidStatus": "Ongeldige status.",
+      "invalidNote": "De notitie mag niet leeg zijn (max. 2000 tekens).",
+      "notAgreed": "Zet de klant eerst op ‘Akkoord’.",
+      "applicationDecided": "Aanmelding niet gevonden of al besloten.",
+      "userExists": "Er bestaat al een gebruiker met dit e-mailadres.",
+      "invalidSlug": "Tenant-slug: kleine letters, cijfers, streepjes.",
+      "slugTaken": "Deze tenant-slug is al in gebruik.",
+      "invalidCommission": "Controleer het bedrag en de notitie.",
+      "partnerNotFound": "Partner niet gevonden.",
+      "clientNotOwned": "Deze klant hoort niet bij deze partner.",
+      "mollieNotConfigured": "Mollie is niet geconfigureerd (MOLLIE_API_KEY ontbreekt op deze omgeving).",
+      "invalidInput": "Ongeldige invoer.",
+      "billingExists": "Er bestaat al een facturatie-account voor die tenant.",
+      "billingCreateFailed": "Het aanmaken van het facturatie-account is mislukt — zie de serverlogs.",
+      "subscriptionNotFound": "Abonnement niet gevonden.",
+      "activationInFlight": "Activering loopt — probeer opnieuw zodra het plan rond is.",
+      "cancelFailed": "Annuleren is mislukt — zie de serverlogs."
     }
   }
 }

@@ -1,10 +1,12 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { cancelSubscriptionAction, type BillingActionState } from "@/lib/actions/billing-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 
 export default function CancelSubscriptionButton({ id }: { id: string }) {
+  const t = useTranslations("control.admin.billingDetail");
   const [state, action, pending] = useActionState<BillingActionState, FormData>(
     cancelSubscriptionAction,
     {},
@@ -14,7 +16,7 @@ export default function CancelSubscriptionButton({ id }: { id: string }) {
     <form
       action={action}
       onSubmit={(e) => {
-        if (!confirm("Cancel this subscription? Mollie stops charging immediately.")) {
+        if (!confirm(t("cancelConfirm"))) {
           e.preventDefault();
         }
       }}
@@ -22,9 +24,9 @@ export default function CancelSubscriptionButton({ id }: { id: string }) {
     >
       <input type="hidden" name="id" value={id} />
       <button type="submit" disabled={pending} className="btn-secondary disabled:opacity-60">
-        {pending ? "Cancelling…" : "Cancel"}
+        {pending ? t("cancelling") : t("cancel")}
       </button>
-      <ErrorMessage>{state.error}</ErrorMessage>
+      <ActionError code={state.error} />
     </form>
   );
 }

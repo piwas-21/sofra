@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/rbac";
+import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
 import ClientStatusBadge from "@/components/control/ClientStatusBadge";
@@ -12,6 +14,8 @@ export default async function AdminPartnerDetailPage({
   params: Promise<{ id: string }>;
 }) {
   await requireAdmin();
+  const locale = await controlLocale();
+  const t = await getTranslations({ locale, namespace: "control.admin.partnerDetail" });
   const { id } = await params;
   const partner = await db.user.findFirst({
     where: { id, role: "PARTNER" },
@@ -29,19 +33,19 @@ export default async function AdminPartnerDetailPage({
     <div className="grid gap-10">
       <div>
         <Link href="/admin/partners" className="font-label text-sm text-muted-foreground underline">
-          ← All partners
+          {t("back")}
         </Link>
         <h1 className="mt-3 font-display font-bold text-5xl">{partner.name}</h1>
         <p className="mt-2 font-label text-muted-foreground">
           {partner.email}
           {partner.profile?.company ? ` · ${partner.profile.company}` : ""}
-          {partner.profile?.city ? ` · ${partner.profile.city}` : ""} · {partner.status} · joined{" "}
-          {shortDate(partner.createdAt)}
+          {partner.profile?.city ? ` · ${partner.profile.city}` : ""} · {partner.status} ·{" "}
+          {t("joined", { date: shortDate(partner.createdAt) })}
         </p>
       </div>
 
       <section>
-        <h2 className="font-hand text-3xl font-bold">Clients</h2>
+        <h2 className="font-hand text-3xl font-bold">{t("clients")}</h2>
         <ul className="mt-4 grid gap-2">
           {partner.clients.map((c) => (
             <li key={c.id} className="flex flex-wrap items-center gap-3">
@@ -51,14 +55,14 @@ export default async function AdminPartnerDetailPage({
             </li>
           ))}
           {partner.clients.length === 0 && (
-            <li className="font-label text-muted-foreground">No clients yet.</li>
+            <li className="font-label text-muted-foreground">{t("noClients")}</li>
           )}
         </ul>
       </section>
 
       <section className="hand-drawn-border bg-card p-6">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 className="font-hand text-3xl font-bold">Commission ledger</h2>
+          <h2 className="font-hand text-3xl font-bold">{t("ledger")}</h2>
           <p className="font-display font-bold text-3xl text-primary">{eur(balance)}</p>
         </div>
         <div className="mt-4">
@@ -79,7 +83,7 @@ export default async function AdminPartnerDetailPage({
             </li>
           ))}
           {partner.commissions.length === 0 && (
-            <li className="font-label text-muted-foreground">Nothing recorded yet.</li>
+            <li className="font-label text-muted-foreground">{t("empty")}</li>
           )}
         </ul>
       </section>

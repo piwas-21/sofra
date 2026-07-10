@@ -1,11 +1,13 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { createBillingAction, type BillingActionState } from "@/lib/actions/billing-actions";
-import { ErrorMessage } from "./StatusMessage";
+import ActionError from "./ActionError";
 import CopyField from "./CopyField";
 
 export default function BillingCreateForm({ disabled }: { disabled?: boolean }) {
+  const t = useTranslations("control.admin");
   const [state, action, pending] = useActionState<BillingActionState, FormData>(
     createBillingAction,
     {},
@@ -17,8 +19,8 @@ export default function BillingCreateForm({ disabled }: { disabled?: boolean }) 
         name="tenantSlug"
         required
         pattern="[a-z0-9][a-z0-9-]{1,30}"
-        placeholder="Tenant slug (registry key, e.g. demo)"
-        aria-label="Tenant slug"
+        placeholder={t("billingForm.slug")}
+        aria-label={t("billingForm.slugAria")}
         className="input-primary"
         disabled={disabled}
       />
@@ -26,8 +28,8 @@ export default function BillingCreateForm({ disabled }: { disabled?: boolean }) 
         name="name"
         required
         maxLength={200}
-        placeholder="Billing name (restaurant / company)"
-        aria-label="Billing name"
+        placeholder={t("billingForm.name")}
+        aria-label={t("billingForm.nameAria")}
         className="input-primary"
         disabled={disabled}
       />
@@ -36,8 +38,8 @@ export default function BillingCreateForm({ disabled }: { disabled?: boolean }) 
         type="email"
         required
         maxLength={200}
-        placeholder="Billing email"
-        aria-label="Billing email"
+        placeholder={t("billingForm.email")}
+        aria-label={t("billingForm.email")}
         className="input-primary"
         disabled={disabled}
       />
@@ -45,8 +47,8 @@ export default function BillingCreateForm({ disabled }: { disabled?: boolean }) 
         name="description"
         required
         maxLength={200}
-        placeholder="Plan description (e.g. 'Sofra Core — monthly')"
-        aria-label="Plan description"
+        placeholder={t("billingForm.description")}
+        aria-label={t("billingForm.descriptionAria")}
         className="input-primary"
         disabled={disabled}
       />
@@ -56,21 +58,21 @@ export default function BillingCreateForm({ disabled }: { disabled?: boolean }) 
         step="0.01"
         min="0.01"
         required
-        placeholder="Amount per period (EUR)"
-        aria-label="Amount per period in EUR"
+        placeholder={t("billingForm.amount")}
+        aria-label={t("billingForm.amountAria")}
         className="input-primary"
         disabled={disabled}
       />
       <select
         name="interval"
-        aria-label="Billing interval"
+        aria-label={t("billingForm.intervalAria")}
         className="input-primary"
         defaultValue="month"
         disabled={disabled}
       >
-        <option value="month">Monthly</option>
-        <option value="quarter">Quarterly</option>
-        <option value="year">Yearly</option>
+        <option value="month">{t("intervals.month")}</option>
+        <option value="quarter">{t("intervals.quarter")}</option>
+        <option value="year">{t("intervals.year")}</option>
       </select>
       <div className="sm:col-span-2 flex flex-wrap items-center gap-4">
         <button
@@ -78,20 +80,20 @@ export default function BillingCreateForm({ disabled }: { disabled?: boolean }) 
           disabled={pending || disabled}
           className="btn-primary disabled:opacity-60"
         >
-          {pending ? "Creating…" : "Create + get checkout link"}
+          {pending ? t("billingForm.creating") : t("billingForm.create")}
         </button>
-        <ErrorMessage>{state.error}</ErrorMessage>
+        <ActionError code={state.error} />
       </div>
       {state.ok && (
         <div className="sm:col-span-2 grid gap-2">
           <span className="font-label text-craft-success-text dark:text-craft-success">
-            Created. Send the tenant this first-payment link (also on the detail page):
+            {t("billingForm.created")}
           </span>
           {state.checkoutUrl ? (
             <CopyField value={state.checkoutUrl} />
           ) : (
             <span className="font-label text-sm text-muted-foreground">
-              No checkout link returned — check the detail page.
+              {t("billingForm.noCheckout")}
             </span>
           )}
         </div>

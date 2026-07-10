@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 const STYLES: Record<string, string> = {
   LEAD: "border-border text-muted-foreground",
   CONTACTED: "border-craft-saffron-text text-craft-saffron-text dark:border-craft-saffron-dark dark:text-craft-saffron-dark",
@@ -8,22 +12,24 @@ const STYLES: Record<string, string> = {
   CHURNED: "border-destructive text-destructive",
 };
 
-const LABELS: Record<string, string> = {
-  LEAD: "Lead",
-  CONTACTED: "Contacted",
-  DEMO_SCHEDULED: "Demo scheduled",
-  AGREED: "Agreed",
-  ONBOARDING: "Onboarding",
-  LIVE: "Live",
-  CHURNED: "Churned",
+// Prisma ClientStatus enum → control.status message key.
+const KEYS: Record<string, string> = {
+  LEAD: "lead",
+  CONTACTED: "contacted",
+  DEMO_SCHEDULED: "demoScheduled",
+  AGREED: "agreed",
+  ONBOARDING: "onboarding",
+  LIVE: "live",
+  CHURNED: "churned",
 };
 
 export default function ClientStatusBadge({ status }: { status: string }) {
+  const t = useTranslations("control.status");
   return (
     <span
       className={`inline-block rounded-craft border-2 px-2.5 py-0.5 font-label text-sm ${STYLES[status] ?? STYLES.LEAD}`}
     >
-      {LABELS[status] ?? status}
+      {KEYS[status] ? t(KEYS[status]) : status}
     </span>
   );
 }

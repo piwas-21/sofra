@@ -1,9 +1,13 @@
+import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/rbac";
+import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur } from "@/lib/format";
 
 export default async function AdminPartnersPage() {
   await requireAdmin();
+  const locale = await controlLocale();
+  const t = await getTranslations({ locale, namespace: "control.admin.partners" });
   const partners = await db.user.findMany({
     where: { role: "PARTNER" },
     orderBy: { createdAt: "desc" },
@@ -16,11 +20,9 @@ export default async function AdminPartnersPage() {
 
   return (
     <div className="grid gap-8">
-      <h1 className="font-display font-bold text-5xl">Partners</h1>
+      <h1 className="font-display font-bold text-5xl">{t("title")}</h1>
       {partners.length === 0 && (
-        <p className="font-hand text-2xl text-muted-foreground">
-          No partners yet — approve an application first.
-        </p>
+        <p className="font-hand text-2xl text-muted-foreground">{t("empty")}</p>
       )}
       <ul className="grid gap-4">
         {partners.map((p) => {
@@ -40,7 +42,7 @@ export default async function AdminPartnersPage() {
                   </span>
                 </span>
                 <span className="font-label text-sm text-muted-foreground text-right">
-                  {p._count.clients} client{p._count.clients === 1 ? "" : "s"}
+                  {t("clientCount", { count: p._count.clients })}
                   <span className="block font-mono">{eur(balance)}</span>
                 </span>
               </a>

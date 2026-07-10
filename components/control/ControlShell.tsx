@@ -1,16 +1,19 @@
 import Link from "next/link";
 import { logoutAction } from "@/lib/actions/auth-actions";
 
-/** Shared chrome for the partner dashboard and founder admin. */
+/** Shared chrome for the partner dashboard and founder admin. Labels arrive
+ *  translated from the server layouts (control-plane i18n, sofra #9). */
 export default function ControlShell({
   title,
   nav,
   userLabel,
+  signOutLabel,
   children,
 }: {
   title: string;
   nav: { href: string; label: string }[];
   userLabel: string;
+  signOutLabel: string;
   children: React.ReactNode;
 }) {
   return (
@@ -41,7 +44,7 @@ export default function ControlShell({
                 type="submit"
                 className="btn-artisanal rounded-craft border-2 border-border px-3 py-1 font-label text-sm"
               >
-                Sign out
+                {signOutLabel}
               </button>
             </form>
           </div>
