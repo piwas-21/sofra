@@ -446,7 +446,8 @@
         "box": "Box {box}",
         "db": "DB {db}",
         "langCount": "{count} Sprachen",
-        "modules": "Module: {list}"
+        "modules": "Module: {list}",
+        "template": "Template: {template}"
       }
     },
     "errors": {

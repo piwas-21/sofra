@@ -1,0 +1,13 @@
+# Fixture — otherwise valid, but `template` is outside the classic|craft enum
+# (frontend ADR-006). Must be rejected, never silently coerced to the default.
+version: 1
+tenants:
+  typo:
+    name: Typo Tenant
+    status: active
+    managed: sofra
+    box: staging
+    domain: typo.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_typo
+    template: clasic

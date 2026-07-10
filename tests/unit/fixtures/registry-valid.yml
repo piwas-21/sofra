@@ -12,6 +12,7 @@ tenants:
     currency: CHF
     languages: [en, fr, de, nl, tr, ar, ru, zh, es, it]
     modules: [core]
+    template: craft
     city: Geneva
   demo:
     name: Demo Diner

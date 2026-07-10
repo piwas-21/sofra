@@ -446,7 +446,8 @@
         "box": "box {box}",
         "db": "bdd {db}",
         "langCount": "{count} langues",
-        "modules": "modules : {list}"
+        "modules": "modules : {list}",
+        "template": "modèle : {template}"
       }
     },
     "errors": {

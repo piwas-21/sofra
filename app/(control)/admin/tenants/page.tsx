@@ -88,7 +88,9 @@ function TenantCard({
           </span>
           <span className="block text-muted-foreground">
             {tenant.currency ?? "EUR"} · {t("tenants.langCount", { count: tenant.languages.length })}{" "}
-            · {t("tenants.modules", { list: tenant.modules.join(", ") || "—" })}
+            · {t("tenants.modules", { list: tenant.modules.join(", ") || "—" })} ·{" "}
+            {/* classic/craft is a technical identifier — rendered raw like status */}
+            {t("tenants.template", { template: tenant.template ?? "classic" })}
           </span>
         </span>
       </div>

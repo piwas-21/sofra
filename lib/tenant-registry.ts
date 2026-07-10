@@ -22,6 +22,9 @@ const tenantSchema = z.object({
   currency: z.string().optional(),
   languages: z.array(z.string()).default([]),
   modules: z.array(z.string()).default([]),
+  // UI template (frontend ADR-006 / S15 T2). Optional: entries provisioned
+  // before the field existed must keep parsing — absent displays as classic.
+  template: z.enum(["classic", "craft"]).optional(),
   admin_email: z.string().optional(),
   city: z.string().optional(),
 });
