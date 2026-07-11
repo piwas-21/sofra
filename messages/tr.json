@@ -462,7 +462,9 @@
         "partners": "Partnerler",
         "tenants": "Tenant'lar",
         "billing": "Faturalama",
-        "audit": "Denetim"
+        "audit": "Denetim",
+        "onboard": "Katılım",
+        "plan": "Abonelik"
       }
     },
     "status": {
@@ -660,6 +662,22 @@
         "langCount": "{count} dil",
         "modules": "modüller: {list}",
         "template": "şablon: {template}"
+      },
+      "onboard": {
+        "title": "İş ortağı kaydı",
+        "intro": "Yönlendirilen bir iş ortağını bir kiracının ödeyeni olarak ayarlayın, ardından davet bağlantısını paylaşın — kendisi bir şifre belirleyip aylık aboneliği başlatır.",
+        "mollieMissing": "Bu ortamda Mollie yapılandırılmamış — MOLLIE_API_KEY ayarlanana kadar iş ortağı ödeme yapamaz.",
+        "name": "İş ortağı adı",
+        "email": "İş ortağı e-postası",
+        "slug": "Kiracı kısa adı (örn. rumi)",
+        "restaurantName": "Restoran adı",
+        "amount": "Aylık tutar (EUR)",
+        "interval": "Faturalandırma aralığı",
+        "liveSince": "Yayında olduğu tarih (kiracının yayına giriş tarihi)",
+        "create": "Davet bağlantısı oluştur",
+        "creating": "Oluşturuluyor…",
+        "created": "İş ortağı kaydedildi. Bu davet bağlantısını paylaşın:",
+        "inviteNote": "Şifresini belirleyip aboneliği başlatması için iş ortağıyla paylaşın."
       }
     },
     "errors": {
@@ -682,7 +700,39 @@
       "billingCreateFailed": "Faturalama hesabı oluşturulamadı — sunucu kayıtlarına bakın.",
       "subscriptionNotFound": "Abonelik bulunamadı.",
       "activationInFlight": "Aktivasyon sürüyor — plan oturunca yeniden deneyin.",
-      "cancelFailed": "İptal başarısız oldu — sunucu kayıtlarına bakın."
+      "cancelFailed": "İptal başarısız oldu — sunucu kayıtlarına bakın.",
+      "tenantAlreadyOnboarded": "Bu kiracı için faturalandırma zaten ayarlanmış.",
+      "planNotFound": "Abonelik bulunamadı.",
+      "alreadyActive": "Bu abonelik zaten etkin.",
+      "startPaymentFailed": "Ödeme başlatılamadı — lütfen tekrar deneyin.",
+      "tooManyAttempts": "Çok fazla deneme — lütfen birkaç dakika bekleyin.",
+      "paymentProcessing": "Ödemeniz işleniyor — tekrar ödemenize gerek yok."
+    },
+    "plan": {
+      "title": "Aboneliğiniz",
+      "intro": "Sofra aboneliğiniz ve ödeme geçmişiniz.",
+      "empty": "Henüz abonelik yok — sizinle iletişime geçeceğiz.",
+      "welcomeKicker": "Sofra'ya hoş geldiniz",
+      "welcomeTitle": "Hoş geldiniz, {name} 🎉",
+      "liveSince": "{restaurant} {date} tarihinden beri Sofra'da yayında.",
+      "liveSinceUnknown": "{restaurant} Sofra'da yayında.",
+      "amountLine": "{amount} / {interval}",
+      "firstChargeNote": "İlk ayı şimdi ödersiniz, ardından otomatik olarak yenilenir. İstediğiniz zaman iptal edebilirsiniz.",
+      "startPayment": "Otomatik aylık ödemeyi başlat",
+      "redirecting": "Ödemeye yönlendiriliyor…",
+      "awaitingPayment": "İlk ödemeniz bekleniyor.",
+      "processing": "Ödeme işleniyor — bu bir dakika sürebilir.",
+      "active": "Etkin.",
+      "activeNextCharge": "Etkin — sonraki tahsilat {date}.",
+      "liveSinceShort": "{date} tarihinden beri yayında",
+      "history": "Ödemeler",
+      "inactive": "Etkin değil.",
+      "noPlan": "Henüz abonelik ayarlanmadı.",
+      "interval": {
+        "month": "ay",
+        "quarter": "üç ay",
+        "year": "yıl"
+      }
     }
   }
 }

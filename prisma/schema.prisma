@@ -157,9 +157,15 @@ model TenantBilling {
   tenantSlug       String   @unique
   name             String
   email            String
-  mollieCustomerId String   @unique
+  // Null until the payer starts the first payment: an admin can define a
+  // PENDING plan (partner onboarding) before any Mollie customer exists. The
+  // @unique still holds — Postgres allows multiple NULLs.
+  mollieCustomerId String?  @unique
   clientId         String?  @unique
   client           Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  // Display-only: when the tenant's app went live (admin-entered at
+  // onboarding), shown on the partner's welcome panel.
+  liveSince        DateTime?
   createdAt        DateTime @default(now())
 
   subscriptions BillingSubscription[]

@@ -49,7 +49,7 @@ export default async function AdminBillingDetailPage({
         <h1 className="mt-3 font-display font-bold text-5xl">{billing.tenantSlug}</h1>
         <p className="mt-2 font-label text-muted-foreground">
           {billing.name} · {billing.email} ·{" "}
-          {t("billingDetail.customer", { id: billing.mollieCustomerId })}
+          {t("billingDetail.customer", { id: billing.mollieCustomerId ?? "—" })}
           {billing.client
             ? ` · ${t("billingDetail.crm", {
                 restaurant: billing.client.restaurantName,

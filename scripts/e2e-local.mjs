@@ -162,10 +162,19 @@ page = await req(pjar, "/dashboard");
 html = await page.text();
 ok("partner dashboard renders", page.status === 200 && html.includes("Your clients"));
 
-page = await req(pjar, "/admin");
-page = await follow(pjar, page);
+// Partner-role isolation: /admin must redirect a partner away to /dashboard.
+// (Don't string-match the body — the control layout ships the whole control.*
+// i18n catalogue, incl. admin labels like "Partner applications", to every
+// control page's client payload, so absence-of-string is a false signal.)
+const adminProbe = await req(pjar, "/admin");
+ok(
+  "partner blocked from /admin",
+  [301, 302, 303, 307, 308].includes(adminProbe.status) &&
+    (adminProbe.headers.get("location") ?? "").includes("/dashboard"),
+  `${adminProbe.status} -> ${adminProbe.headers.get("location") ?? "(none)"}`,
+);
+page = await follow(pjar, adminProbe);
 html = await page.text();
-ok("partner blocked from /admin", !html.includes("Partner applications"));
 
 // create client
 let fields = formFields(html, "") // placeholder, refetch dashboard
@@ -229,7 +238,54 @@ page = await req(pjar, "/dashboard/ledger");
 html = await page.text();
 ok("partner ledger shows entry + balance", html.includes("go-live bonus") && html.includes("250"));
 
-// ---------- 7. Forgot password (no enumeration) ----------
+// ---------- 7. Onboard a paying (reseller) partner + welcome panel ----------
+// Distinct email so this exercises the fresh-partner branch of onboarding.
+const onboardEmail = applicantEmail.replace("@", "+onboard@");
+page = await req(admin2, "/admin/onboard");
+html = await page.text();
+ok("admin onboard page renders", page.status === 200 && html.includes("Onboard a partner"));
+
+fields = formFields(html, "restaurantName");
+page = await postAction(admin2, "/admin/onboard", fields, {
+  name: "Onboard E2E",
+  email: onboardEmail,
+  tenantSlug: "onboard-e2e",
+  restaurantName: "Onboard Café",
+  amount: "89.00",
+  interval: "month",
+  liveSince: "2026-06-29",
+});
+html = await page.text();
+const onboardInvite = decode(/https?:\/\/[^<\s"]*\/invite\/[A-Za-z0-9_-]+/.exec(html)?.[0] ?? "");
+ok("onboard returns invite link", Boolean(onboardInvite), onboardInvite ? "link captured" : "not found");
+
+if (onboardInvite) {
+  const oJar = new Jar();
+  const oInvitePath = new URL(onboardInvite).pathname;
+  page = await req(oJar, oInvitePath);
+  const oPwFields = formFields(await page.text(), "purpose");
+  const oPass = "e2e-Onboard-Pass-42";
+  await postAction(oJar, oInvitePath, oPwFields, { password: oPass, confirm: oPass });
+
+  const opJar = new Jar();
+  await login(opJar, onboardEmail, oPass);
+  page = await req(opJar, "/dashboard");
+  html = await page.text();
+  ok(
+    "onboarded partner sees welcome + pay CTA",
+    html.includes("Onboard Café") && html.includes("Start auto-monthly payment"),
+  );
+
+  page = await req(opJar, "/dashboard/billing");
+  html = await page.text();
+  ok(
+    "billing page shows the pending plan",
+    html.includes("Onboard Café") && html.includes("Awaiting your first payment"),
+  );
+  // Stop here — clicking "Start auto-monthly payment" hits Mollie (live key).
+}
+
+// ---------- 8. Forgot password (no enumeration) ----------
 page = await req(new Jar(), "/forgot");
 ok("forgot page renders", page.status === 200);
 

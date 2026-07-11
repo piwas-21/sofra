@@ -1,0 +1,110 @@
+"use server";
+
+// Admin-only onboarding of a referred partner as the reseller payer for a
+// tenant (SOFRA-PARTNER-PLAN, reseller flow). Creates/reuses the PARTNER user +
+// the tenant Client + a PENDING billing plan (no Mollie yet), then mints a
+// set-password invite and ALWAYS returns the link so the founder can share it
+// manually. The partner completes the payment from their own dashboard.
+
+import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/rbac";
+import { db } from "@/lib/db";
+import { audit } from "@/lib/audit";
+import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
+import { craftEmail } from "@/lib/email-templates";
+import { createToken } from "@/lib/tokens";
+import { onboardSchema } from "@/lib/validation";
+import { defineTenantPlan } from "@/lib/billing-onboarding";
+import { type BillingInterval } from "@/lib/billing";
+
+/** `error` is a message key in `control.errors` (translated by <ActionError />);
+ *  Zod issue messages pass through raw. */
+export type OnboardActionState = { error?: string; ok?: boolean; inviteLink?: string };
+
+export async function onboardPartnerAction(
+  _prev: OnboardActionState,
+  formData: FormData,
+): Promise<OnboardActionState> {
+  const admin = await requireAdmin();
+
+  const parsed = onboardSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    tenantSlug: formData.get("tenantSlug"),
+    restaurantName: formData.get("restaurantName"),
+    amount: formData.get("amount"),
+    interval: formData.get("interval"),
+    liveSince: formData.get("liveSince"),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "invalidInput" };
+  const input = parsed.data;
+  const email = input.email.toLowerCase();
+  const tenantSlug = input.tenantSlug;
+
+  // One billing anchor per tenant (unique tenantSlug). Refuse a re-onboard.
+  if (await db.tenantBilling.findUnique({ where: { tenantSlug } })) {
+    return { error: "tenantAlreadyOnboarded" };
+  }
+
+  // Create-or-reuse the partner user (by email, so one partner can be given
+  // several tenants). Never repurpose a non-partner (e.g. ADMIN) account.
+  let user = await db.user.findUnique({ where: { email } });
+  if (user && user.role !== "PARTNER") return { error: "userExists" };
+  if (!user) {
+    user = await db.user.create({
+      data: { email, name: input.name, role: "PARTNER", status: "INVITED", profile: { create: {} } },
+    });
+  }
+
+  // Create-or-reuse the tenant's CRM Client, owned by this partner. The unique
+  // tenantSlug guards against onboarding a slug already tied to someone else.
+  const existingClient = await db.client.findUnique({ where: { tenantSlug } });
+  if (existingClient && existingClient.partnerId !== user.id) {
+    return { error: "tenantAlreadyOnboarded" };
+  }
+  const client =
+    existingClient ??
+    (await db.client.create({
+      data: { partnerId: user.id, restaurantName: input.restaurantName, tenantSlug, status: "LIVE" },
+    }));
+
+  const liveSince = input.liveSince ? new Date(`${input.liveSince}T00:00:00Z`) : null;
+  await defineTenantPlan({
+    tenantSlug,
+    name: input.name,
+    email,
+    description: input.restaurantName,
+    amountCents: Math.round(input.amount * 100),
+    interval: input.interval as BillingInterval,
+    liveSince,
+    clientId: client.id,
+    actorId: admin.id,
+  });
+
+  // An INVITED partner needs to set a password; an already-ACTIVE one just
+  // signs in to find the new plan waiting.
+  const needsPassword = user.status === "INVITED";
+  const link = needsPassword
+    ? `${siteUrl()}/invite/${await createToken(user.id, "invite")}`
+    : `${siteUrl()}/login`;
+  await sendEmail({
+    to: email,
+    subject: needsPassword
+      ? "Welcome to Sofra — set your password"
+      : `Sofra — ${input.restaurantName} is ready for your subscription`,
+    html: craftEmail({
+      kicker: "Partner program",
+      title: needsPassword ? "Welcome aboard 🎉" : "A new plan is waiting",
+      bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(input.name)},</p>
+<p style="margin:0;">${escapeHtml(input.restaurantName)} is set up on Sofra. ${
+        needsPassword ? "Set your password to open your dashboard" : "Sign in to your dashboard"
+      } and start the monthly subscription — afiyet olsun.</p>`,
+      cta: { label: needsPassword ? "Set your password" : "Open your dashboard", url: link },
+      footerNote: needsPassword ? "The link works once and expires in 24 hours." : undefined,
+    }),
+  });
+
+  await audit(admin.id, "partner.onboarded", "User", user.id, { tenantSlug, clientId: client.id });
+  revalidatePath("/admin/onboard");
+  return { ok: true, inviteLink: link };
+}

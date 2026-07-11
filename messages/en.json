@@ -462,7 +462,9 @@
         "partners": "Partners",
         "tenants": "Tenants",
         "billing": "Billing",
-        "audit": "Audit"
+        "audit": "Audit",
+        "onboard": "Onboard",
+        "plan": "Plan"
       }
     },
     "status": {
@@ -660,6 +662,22 @@
         "langCount": "{count} lang",
         "modules": "modules: {list}",
         "template": "template: {template}"
+      },
+      "onboard": {
+        "title": "Onboard a partner",
+        "intro": "Set up a referred partner as the payer for a tenant, then share the invite link — they set a password and start the monthly subscription themselves.",
+        "mollieMissing": "Mollie isn't configured on this environment — the partner can't pay until MOLLIE_API_KEY is set.",
+        "name": "Partner name",
+        "email": "Partner email",
+        "slug": "Tenant slug (e.g. rumi)",
+        "restaurantName": "Restaurant name",
+        "amount": "Monthly amount (EUR)",
+        "interval": "Billing interval",
+        "liveSince": "Live since (the tenant's go-live date)",
+        "create": "Create invite link",
+        "creating": "Creating…",
+        "created": "Partner onboarded. Share this invite link:",
+        "inviteNote": "Share it with the partner to set their password and start the subscription."
       }
     },
     "errors": {
@@ -682,7 +700,39 @@
       "billingCreateFailed": "Creating the billing account failed — see server logs.",
       "subscriptionNotFound": "Subscription not found.",
       "activationInFlight": "Activation in flight — retry once the plan settles.",
-      "cancelFailed": "Cancelling failed — see server logs."
+      "cancelFailed": "Cancelling failed — see server logs.",
+      "tenantAlreadyOnboarded": "That tenant already has billing set up.",
+      "planNotFound": "Plan not found.",
+      "alreadyActive": "This subscription is already active.",
+      "startPaymentFailed": "Couldn't start the payment — please try again.",
+      "tooManyAttempts": "Too many attempts — please wait a few minutes.",
+      "paymentProcessing": "Your payment is being processed — no need to pay again."
+    },
+    "plan": {
+      "title": "Your plan",
+      "intro": "Your Sofra subscription and payment history.",
+      "empty": "No plan yet — we'll be in touch.",
+      "welcomeKicker": "Welcome to Sofra",
+      "welcomeTitle": "Welcome, {name} 🎉",
+      "liveSince": "{restaurant} has been live on Sofra since {date}.",
+      "liveSinceUnknown": "{restaurant} is live on Sofra.",
+      "amountLine": "{amount} / {interval}",
+      "firstChargeNote": "You'll pay the first month now, then it renews automatically. Cancel anytime.",
+      "startPayment": "Start auto-monthly payment",
+      "redirecting": "Redirecting to checkout…",
+      "awaitingPayment": "Awaiting your first payment.",
+      "processing": "Payment processing — this can take a minute.",
+      "active": "Active.",
+      "activeNextCharge": "Active — next charge on {date}.",
+      "liveSinceShort": "live since {date}",
+      "history": "Payments",
+      "inactive": "Not active.",
+      "noPlan": "No plan set up yet.",
+      "interval": {
+        "month": "month",
+        "quarter": "quarter",
+        "year": "year"
+      }
     }
   }
 }

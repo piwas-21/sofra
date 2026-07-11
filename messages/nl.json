@@ -462,7 +462,9 @@
         "partners": "Partners",
         "tenants": "Tenants",
         "billing": "Facturatie",
-        "audit": "Audit"
+        "audit": "Audit",
+        "onboard": "Onboarden",
+        "plan": "Abonnement"
       }
     },
     "status": {
@@ -660,6 +662,22 @@
         "langCount": "{count} talen",
         "modules": "modules: {list}",
         "template": "sjabloon: {template}"
+      },
+      "onboard": {
+        "title": "Partner onboarden",
+        "intro": "Stel een aangedragen partner in als betaler voor een tenant en deel de uitnodigingslink — hij stelt een wachtwoord in en start zelf het maandabonnement.",
+        "mollieMissing": "Mollie is niet geconfigureerd in deze omgeving — de partner kan pas betalen als MOLLIE_API_KEY is ingesteld.",
+        "name": "Naam partner",
+        "email": "E-mail partner",
+        "slug": "Tenant-slug (bijv. rumi)",
+        "restaurantName": "Naam restaurant",
+        "amount": "Maandbedrag (EUR)",
+        "interval": "Facturatie-interval",
+        "liveSince": "Live sinds (go-live-datum van de tenant)",
+        "create": "Uitnodigingslink maken",
+        "creating": "Bezig met maken…",
+        "created": "Partner onboarded. Deel deze uitnodigingslink:",
+        "inviteNote": "Deel hem met de partner om het wachtwoord in te stellen en het abonnement te starten."
       }
     },
     "errors": {
@@ -682,7 +700,39 @@
       "billingCreateFailed": "Het aanmaken van het facturatie-account is mislukt — zie de serverlogs.",
       "subscriptionNotFound": "Abonnement niet gevonden.",
       "activationInFlight": "Activering loopt — probeer opnieuw zodra het plan rond is.",
-      "cancelFailed": "Annuleren is mislukt — zie de serverlogs."
+      "cancelFailed": "Annuleren is mislukt — zie de serverlogs.",
+      "tenantAlreadyOnboarded": "Voor deze tenant is al facturatie ingesteld.",
+      "planNotFound": "Abonnement niet gevonden.",
+      "alreadyActive": "Dit abonnement is al actief.",
+      "startPaymentFailed": "Kon de betaling niet starten — probeer het opnieuw.",
+      "tooManyAttempts": "Te veel pogingen — wacht een paar minuten.",
+      "paymentProcessing": "Je betaling wordt verwerkt — je hoeft niet opnieuw te betalen."
+    },
+    "plan": {
+      "title": "Jouw abonnement",
+      "intro": "Je Sofra-abonnement en betaalgeschiedenis.",
+      "empty": "Nog geen abonnement — we nemen contact op.",
+      "welcomeKicker": "Welkom bij Sofra",
+      "welcomeTitle": "Welkom, {name} 🎉",
+      "liveSince": "{restaurant} is sinds {date} live op Sofra.",
+      "liveSinceUnknown": "{restaurant} is live op Sofra.",
+      "amountLine": "{amount} / {interval}",
+      "firstChargeNote": "Je betaalt nu de eerste maand, daarna wordt het automatisch verlengd. Altijd opzegbaar.",
+      "startPayment": "Automatische maandbetaling starten",
+      "redirecting": "Doorsturen naar afrekenen…",
+      "awaitingPayment": "Wachten op je eerste betaling.",
+      "processing": "Betaling wordt verwerkt — dit kan even duren.",
+      "active": "Actief.",
+      "activeNextCharge": "Actief — volgende afschrijving op {date}.",
+      "liveSinceShort": "live sinds {date}",
+      "history": "Betalingen",
+      "inactive": "Niet actief.",
+      "noPlan": "Nog geen abonnement ingesteld.",
+      "interval": {
+        "month": "maand",
+        "quarter": "kwartaal",
+        "year": "jaar"
+      }
     }
   }
 }
