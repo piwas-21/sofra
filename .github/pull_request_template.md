@@ -44,7 +44,7 @@
 - [ ] Craft tokens only (no ad-hoc hex); dark mode via `.dark` class
 - [ ] Money handled as EUR integer cents
 - [ ] No secrets/keys in the diff
-- [ ] Branch off `main`, PR to `main`
+- [ ] Branch off `develop`, PR to `develop` (releases ship via a `develop` → `main` release PR — CLAUDE.md §8)
 
 ## Test plan
 <!-- e2e-local.mjs run? Manual steps with the QA test accounts (docs/runbooks/sofra-test-accounts.md)?
