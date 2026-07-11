@@ -7,7 +7,7 @@ import ActionError from "./ActionError";
 
 /** Partner "Start auto-monthly payment" — the action redirects to Mollie on
  *  success, so this stays a plain progressively-enhanced form. */
-export default function StartPaymentButton({ billingId }: { billingId: string }) {
+export default function StartPaymentButton({ billingId }: Readonly<{ billingId: string }>) {
   const t = useTranslations("control.plan");
   const [state, action, pending] = useActionState<StartPaymentState, FormData>(
     startPaymentAction,

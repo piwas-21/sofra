@@ -5,11 +5,10 @@
 // Mollie customer + hosted checkout; the browser then redirects to Mollie. The
 // recurring subscription is activated by the existing webhook (lib/billing.ts).
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { requirePartner } from "@/lib/rbac";
 import { db } from "@/lib/db";
-import { clientIpFromXff, rateLimit } from "@/lib/rate-limit";
+import { rateLimit } from "@/lib/rate-limit";
 import {
   startFirstPayment,
   NoPendingPlanError,
@@ -29,12 +28,13 @@ export async function startPaymentAction(
   const user = await requirePartner();
   if (!mollieConfigured()) return { error: "mollieNotConfigured" };
 
-  // Money-adjacent + network op → rate-limit per client IP.
-  const h = await headers();
-  const ip = clientIpFromXff(h.get("x-forwarded-for"));
-  if (!rateLimit(`start-payment:${ip}`, 10, 15 * 60 * 1000)) return { error: "tooManyAttempts" };
+  // Money-adjacent + network op → rate-limit per partner. This action is
+  // authenticated, so user.id beats IP: no NAT collisions (partners behind one
+  // router), no dependency on proxy headers, and nothing to spoof.
+  if (!rateLimit(`start-payment:${user.id}`, 10, 15 * 60 * 1000)) return { error: "tooManyAttempts" };
 
-  const billingId = String(formData.get("billingId") ?? "");
+  const rawBillingId = formData.get("billingId");
+  const billingId = typeof rawBillingId === "string" ? rawBillingId : "";
   const billing = await db.tenantBilling.findUnique({
     where: { id: billingId },
     include: { client: true, subscriptions: true },

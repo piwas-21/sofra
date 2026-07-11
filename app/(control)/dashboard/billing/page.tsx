@@ -3,13 +3,36 @@ import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
-import { intervalKeyOf, planState } from "@/lib/billing-display";
+import { intervalKeyOf, planState, type PlanState } from "@/lib/billing-display";
 import StartPaymentButton from "@/components/control/StartPaymentButton";
 
 export default async function DashboardBillingPage() {
   const partner = await requirePartner();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.plan" });
+
+  // Plan-status node via if/else (avoids a nested ternary — Sonar S3358).
+  const statusNode = (state: PlanState, startDate: Date | null, billingId: string) => {
+    if (state === "active") {
+      return (
+        <p className="font-label text-craft-success-text dark:text-craft-success">
+          {startDate ? t("activeNextCharge", { date: shortDate(startDate) }) : t("active")}
+        </p>
+      );
+    }
+    if (state === "pay") {
+      return (
+        <div className="grid gap-2">
+          <p className="font-label text-muted-foreground">{t("awaitingPayment")}</p>
+          <StartPaymentButton billingId={billingId} />
+        </div>
+      );
+    }
+    if (state === "processing") {
+      return <p className="font-label text-muted-foreground">{t("processing")}</p>;
+    }
+    return <p className="font-label text-muted-foreground">{t("inactive")}</p>;
+  };
 
   const billings = await db.tenantBilling.findMany({
     where: { client: { partnerId: partner.id } },
@@ -55,22 +78,7 @@ export default async function DashboardBillingPage() {
                         interval: t(`interval.${intervalKeyOf(sub.interval)}`),
                       })}
                     </p>
-                    {state === "active" ? (
-                      <p className="font-label text-craft-success-text dark:text-craft-success">
-                        {sub.startDate
-                          ? t("activeNextCharge", { date: shortDate(sub.startDate) })
-                          : t("active")}
-                      </p>
-                    ) : state === "pay" ? (
-                      <div className="grid gap-2">
-                        <p className="font-label text-muted-foreground">{t("awaitingPayment")}</p>
-                        <StartPaymentButton billingId={b.id} />
-                      </div>
-                    ) : state === "processing" ? (
-                      <p className="font-label text-muted-foreground">{t("processing")}</p>
-                    ) : (
-                      <p className="font-label text-muted-foreground">{t("inactive")}</p>
-                    )}
+                    {statusNode(state, sub.startDate, b.id)}
                   </>
                 ) : (
                   <p className="font-label text-muted-foreground">{t("noPlan")}</p>

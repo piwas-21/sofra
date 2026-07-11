@@ -41,6 +41,12 @@ export async function onboardPartnerAction(
   const email = input.email.toLowerCase();
   const tenantSlug = input.tenantSlug;
 
+  // Reject an impossible date (e.g. 2026-02-31 passes the format regex but is
+  // not a real day) BEFORE any DB write, so a bad date never reaches Prisma
+  // (500) and never leaves an orphan user/client behind.
+  const liveSince = input.liveSince ? new Date(`${input.liveSince}T00:00:00Z`) : null;
+  if (liveSince && Number.isNaN(liveSince.getTime())) return { error: "invalidInput" };
+
   // One billing anchor per tenant (unique tenantSlug). Refuse a re-onboard.
   if (await db.tenantBilling.findUnique({ where: { tenantSlug } })) {
     return { error: "tenantAlreadyOnboarded" };
@@ -68,7 +74,6 @@ export async function onboardPartnerAction(
       data: { partnerId: user.id, restaurantName: input.restaurantName, tenantSlug, status: "LIVE" },
     }));
 
-  const liveSince = input.liveSince ? new Date(`${input.liveSince}T00:00:00Z`) : null;
   await defineTenantPlan({
     tenantSlug,
     name: input.name,
