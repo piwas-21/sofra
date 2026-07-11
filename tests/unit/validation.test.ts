@@ -5,6 +5,7 @@ import {
   clientSchema,
   commissionSchema,
   noteSchema,
+  onboardSchema,
   partnerStatusSchema,
   PARTNER_STATUSES,
 } from "@/lib/validation";
@@ -148,5 +149,52 @@ describe("billingSchema (Mollie tenant billing) — slug grammar", () => {
     expect(
       billingSchema.safeParse({ ...base, tenantSlug: "rumi", interval: "week" }).success,
     ).toBe(false);
+  });
+});
+
+describe("onboardSchema (partner onboarding)", () => {
+  const base = {
+    name: "Ada Partner",
+    email: "partner@example.com",
+    tenantSlug: "rumi",
+    restaurantName: "RUMI Restaurant",
+    amount: "89.00",
+    interval: "month" as const,
+  };
+
+  it("accepts a full onboarding with a go-live date and coerces the amount", () => {
+    const parsed = onboardSchema.parse({ ...base, liveSince: "2026-06-29" });
+    expect(parsed.tenantSlug).toBe("rumi");
+    expect(parsed.restaurantName).toBe("RUMI Restaurant");
+    expect(parsed.amount).toBeCloseTo(89);
+    expect(parsed.liveSince).toBe("2026-06-29");
+  });
+
+  it("allows an omitted or empty liveSince", () => {
+    expect(onboardSchema.safeParse(base).success).toBe(true);
+    expect(onboardSchema.safeParse({ ...base, liveSince: "" }).success).toBe(true);
+  });
+
+  it("rejects a non-ISO liveSince", () => {
+    expect(onboardSchema.safeParse({ ...base, liveSince: "29-06-2026" }).success).toBe(false);
+  });
+
+  it("rejects an impossible calendar date that passes the format regex", () => {
+    expect(onboardSchema.safeParse({ ...base, liveSince: "2026-02-31" }).success).toBe(false);
+    expect(onboardSchema.safeParse({ ...base, liveSince: "2026-13-01" }).success).toBe(false);
+  });
+
+  it("reuses the registry slug grammar (rejects uppercase / leading hyphen)", () => {
+    expect(onboardSchema.safeParse({ ...base, tenantSlug: "Rumi" }).success).toBe(false);
+    expect(onboardSchema.safeParse({ ...base, tenantSlug: "-rumi" }).success).toBe(false);
+  });
+
+  it("requires a restaurant name and a positive amount", () => {
+    expect(onboardSchema.safeParse({ ...base, restaurantName: "" }).success).toBe(false);
+    expect(onboardSchema.safeParse({ ...base, amount: "0" }).success).toBe(false);
+  });
+
+  it("rejects a malformed partner email", () => {
+    expect(onboardSchema.safeParse({ ...base, email: "nope" }).success).toBe(false);
   });
 });

@@ -1,8 +1,11 @@
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
 export default function Footer() {
   const t = useTranslations("footer");
 
+  // Locale-aware links ("/#anchor" + content pages) so the footer works from
+  // every marketing page, not just the landing.
   return (
     <footer className="border-t-2 border-border">
       <div className="mx-auto max-w-6xl px-6 py-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
@@ -13,25 +16,34 @@ export default function Footer() {
           </p>
         </div>
 
-        <nav className="flex gap-6 font-label">
-          <a href="#features" className="hover:text-primary transition-colors">
+        <nav className="flex flex-wrap gap-x-6 gap-y-2 max-w-md font-label">
+          <Link href="/#features" className="hover:text-primary transition-colors">
             {t("nav.features")}
-          </a>
-          <a href="#showcase" className="hover:text-primary transition-colors">
+          </Link>
+          <Link href="/#showcase" className="hover:text-primary transition-colors">
             {t("nav.live")}
-          </a>
-          <a href="#pricing" className="hover:text-primary transition-colors">
+          </Link>
+          <Link href="/#pricing" className="hover:text-primary transition-colors">
             {t("nav.pricing")}
-          </a>
-          <a href="#faq" className="hover:text-primary transition-colors">
+          </Link>
+          <Link href="/#faq" className="hover:text-primary transition-colors">
             {t("nav.faq")}
-          </a>
-          <a href="#waitlist" className="hover:text-primary transition-colors">
+          </Link>
+          <Link href="/#waitlist" className="hover:text-primary transition-colors">
             {t("nav.waitlist")}
-          </a>
-          <a href="#partner" className="hover:text-primary transition-colors">
+          </Link>
+          <Link href="/#partner" className="hover:text-primary transition-colors">
             {t("nav.partner")}
-          </a>
+          </Link>
+          <Link href="/case/rumi" className="hover:text-primary transition-colors">
+            {t("nav.caseStudy")}
+          </Link>
+          <Link href="/compare/gloriafood" className="hover:text-primary transition-colors">
+            {t("nav.compare")}
+          </Link>
+          <Link href="/changelog" className="hover:text-primary transition-colors">
+            {t("nav.changelog")}
+          </Link>
         </nav>
 
         <div className="text-sm text-muted-foreground">

@@ -85,8 +85,10 @@ export async function cancelSubscriptionAction(
   }
 
   try {
-    // PENDING plans (no Mollie subscription yet) cancel locally only.
-    if (sub.mollieSubscriptionId) {
+    // PENDING plans (no Mollie subscription yet) cancel locally only. A live
+    // subscription always has a Mollie customer; the null-guard just satisfies
+    // the (now-nullable) type — a subscription id can't exist without one.
+    if (sub.mollieSubscriptionId && sub.billing.mollieCustomerId) {
       await cancelSubscription(sub.billing.mollieCustomerId, sub.mollieSubscriptionId);
     }
     await db.billingSubscription.update({

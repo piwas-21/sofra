@@ -1,0 +1,20 @@
+# Sofra — pre-commit configuration
+#
+# Primary purpose: the **no-commit-to-branch** guard. Since 2026-07-10 both
+# `main` and `develop` are protected server-side by the no-bypass `main-develop`
+# GitHub Ruleset (GitFlow: `develop` = integration, `main` = releases only) —
+# this hook mirrors that locally so a direct commit to a protected branch is
+# blocked before it ever reaches a push. Branch + PR always.
+#
+# Install (commit-stage only — deliberately NOT `--hook-type pre-push`, which
+# would clobber the review-gate pre-push symlink; see workspace memory
+# review-gate-precommit-clobber):
+#     pre-commit install
+# Run manually:  pre-commit run --all-files
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: no-commit-to-branch
+        # `master` included defensively against an accidental rename/fork.
+        args: ["--branch", "main", "--branch", "develop", "--branch", "master"]

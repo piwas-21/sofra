@@ -199,7 +199,10 @@
       "waitlist": "Jetzt starten",
       "live": "Live ansehen",
       "partner": "Partner",
-      "faq": "FAQ"
+      "faq": "FAQ",
+      "caseStudy": "Fallstudie",
+      "compare": "Sofra vs GloriaFood",
+      "changelog": "Was gibt's Neues"
     },
     "copyright": "© {year} Sofra. Alle Rechte vorbehalten."
   },
@@ -238,6 +241,215 @@
       }
     }
   },
+  "caseStudy": {
+    "meta": {
+      "title": "Fallstudie: RUMI Restaurant, Genf — läuft auf Sofra",
+      "description": "Das RUMI Restaurant in Genf betreibt Online-Bestellungen, Tischreservierungen und den Küchenbon-Druck auf Sofra — in zehn Gästesprachen, auf EU-Infrastruktur, seit Juni 2026 in Produktion."
+    },
+    "label": "Fallstudie",
+    "title": "RUMI Restaurant, Genf",
+    "subtitle": "Sofras erstes Restaurant — und der Gastraum, in dem sich jede Funktion beweist, bevor sie ausgeliefert wird.",
+    "facts": {
+      "location": {
+        "label": "Ort",
+        "value": "Genf, Schweiz"
+      },
+      "since": {
+        "label": "In Produktion seit"
+      },
+      "languages": {
+        "label": "Gästesprachen",
+        "value": "10"
+      },
+      "hosting": {
+        "label": "Infrastruktur",
+        "value": "EU, betrieben von Sofra"
+      }
+    },
+    "runs": {
+      "title": "Was RUMI auf Sofra betreibt",
+      "intro": "Kein Pilot, kein Teilbetrieb — der tägliche Service des Restaurants läuft auf der Plattform:",
+      "items": {
+        "ordering": {
+          "title": "QR-Menüs & Online-Bestellung",
+          "text": "Gäste scannen am Tisch oder bestellen online — Fotos, Allergene, Anpassungen."
+        },
+        "boards": {
+          "title": "Live-Bestellübersichten",
+          "text": "Küche, Kasse und Service verfolgen Bestellungen je auf dem eigenen Live-Bildschirm."
+        },
+        "reservations": {
+          "title": "Tischreservierungen",
+          "text": "Online-Buchung mit Tischplanung und Öffnungszeiten; das Team bestätigt mit einem Tipp."
+        },
+        "loyalty": {
+          "title": "Treuepunkte",
+          "text": "Treuepunkte und Rabattregeln pro Gästegruppe bringen Stammgäste zurück."
+        },
+        "printing": {
+          "title": "Küchenbon-Druck",
+          "text": "Bestellungen drucken auf Netzwerk-Thermodruckern — genau an den Stationen, wo sie gebraucht werden."
+        }
+      }
+    },
+    "languagesSection": {
+      "title": "Zehn Sprachen an einem Tisch",
+      "body": "Genf ist international — und RUMIs Karte hält mit: Gäste stöbern und bestellen auf Englisch, Französisch, Deutsch, Niederländisch, Italienisch, Spanisch, Türkisch, Arabisch, Russisch oder Chinesisch — gleiche Karte, gleiche Küche."
+    },
+    "infra": {
+      "title": "Die Infrastruktur dahinter",
+      "body": "RUMI läuft auf Infrastruktur in der EU, betrieben von Sofra — in Produktion seit dem {date}, rund um die Uhr überwacht, mit nächtlichen Backups. Das Restaurant macht seinen Service; wir halten im Hintergrund die Teller in der Luft."
+    },
+    "numbers": {
+      "title": "Und wo sind die Zahlen?",
+      "body": "Wir veröffentlichen nur Zahlen, hinter denen wir stehen können. Detaillierte Service-Statistiken aus dem RUMI erscheinen hier, sobald wir sie sauber teilen können — bis dahin: Karte öffnen und das Produkt auf die ehrliche Art beurteilen."
+    },
+    "visit": "rumirestaurant.ch besuchen",
+    "ctaTitle": "Wollen Sie das auf Ihren Tischen?",
+    "ctaBody": "Restaurant, Café oder Takeaway — erzählen Sie uns von Ihrem Lokal, wir melden uns innerhalb eines Tages.",
+    "ctaButton": "Jetzt starten"
+  },
+  "compare": {
+    "meta": {
+      "title": "Sofra vs. GloriaFood (2026): ein ehrlicher Vergleich",
+      "description": "GloriaFood ist ein kostenloses Online-Bestellsystem mit bezahlten Zusatzmodulen; Sofra ist eine Full-Service-Restaurantplattform aus den Niederlanden. Ein fairer, datierter Vergleich mit Quellen."
+    },
+    "label": "Seite an Seite",
+    "title": "Sofra vs GloriaFood",
+    "subtitle": "Zwei ehrliche Wege, ein Restaurant online zu bringen — fair verglichen, mit Quellen und Datum.",
+    "updated": "Zuletzt geprüft: {date}",
+    "intro1": "GloriaFood — Teil von Oracle — ist eines der bekanntesten Online-Bestellsysteme: Der Kern ist gratis, bezahlte Module kommen nach Bedarf dazu. Sofra ist eine jüngere Full-Service-Plattform, gebaut in den Niederlanden und täglich im Genfer Service erprobt: Bestellungen, Reservierungen, Treuepunkte und Küchendruck als ein System — persönlich für Sie eingerichtet.",
+    "intro2": "Beides sind ehrliche Optionen. Welche passt, hängt davon ab, wie viel Sie selbst machen wollen — die Tabelle unten hält sich an Fakten, die wir auf GloriaFoods eigenen Seiten geprüft haben.",
+    "table": {
+      "caption": "Sofra und GloriaFood, Funktion für Funktion",
+      "feature": "Auf einen Blick",
+      "sofra": "Sofra",
+      "gloriafood": "GloriaFood",
+      "rows": {
+        "pricing": {
+          "label": "Preismodell",
+          "sofra": "Early Access: für Gründungsrestaurants aufs Haus, mit lebenslangem Rabatt, sobald reguläre Preise kommen. Danach: ein einfacher, fixer Monatspreis mit optionalen Modulen.",
+          "gf": "Kostenloser Kern: keine Monatsgebühr, keine Provision pro Bestellung. Bezahlte Module: Online-Zahlungen 29 US$/Monat, erweiterte Promotions 19 US$/Monat, Kasse (POS) 49 US$/Monat pro Standort (zwei Jahre Bindung)."
+        },
+        "ordering": {
+          "label": "QR & Online-Bestellung",
+          "sofra": "Inklusive — QR-Menüs am Tisch und Online-Bestellung, mit Fotos, Allergenen und Anpassungen. Keine App nötig.",
+          "gf": "Gratis inklusive — Bestell-Widget für Website und Facebook-Seite, plus QR-Bestellung im Lokal."
+        },
+        "reservations": {
+          "label": "Tischreservierungen",
+          "sofra": "Inklusive — Online-Buchung, Tischplanung, Öffnungszeiten, Bestätigung mit einem Tipp.",
+          "gf": "Reservierungs-Widget inklusive; Anzahlungen kosten 0,50 US$ pro Gast bei angenommenen Buchungen."
+        },
+        "loyalty": {
+          "label": "Treue & Promotions",
+          "sofra": "Inklusive — Treuepunkte plus Rabattregeln pro Gästegruppe.",
+          "gf": "Promotions und Gutscheine im Gratisplan; das erweiterte Promo-Marketing-Modul kostet 19 US$/Monat."
+        },
+        "printing": {
+          "label": "Küchendruck",
+          "sofra": "Eine Begleit-App (Windows und Android) steuert ESC/POS-Thermodrucker im Netzwerk — Bons pro Station, ohne Zusatzabo.",
+          "gf": "Ihre kostenlose Bestellannahme-App (Android und iOS) verbindet sich mit einem Thermodrucker und druckt angenommene Bestellungen automatisch."
+        },
+        "languages": {
+          "label": "Sprachen",
+          "sofra": "Gäste stöbern und bestellen in 10 Sprachen — auf derselben Karte.",
+          "gf": "Produktoberfläche in rund einem Dutzend Sprachen, übersetzt von ihrer Community — Details auf ihrer Übersetzungsseite."
+        },
+        "hosting": {
+          "label": "Hosting & Domains",
+          "sofra": "Läuft auf Sofra-verwalteter Infrastruktur in der EU; jedes Restaurant bekommt seine eigene Domain — Ihre eigene oder eine, die wir für Sie registrieren.",
+          "gf": "Cloud-Dienst, betrieben von Oracle (GloriaFood ist ein Oracle-Produkt)."
+        },
+        "setup": {
+          "label": "Einrichtung & Support",
+          "sofra": "Persönliche Einrichtung — wir bauen Karte, QR-Codes, Drucker und Team-Ansichten mit Ihnen auf und bleiben einen Draht entfernt.",
+          "gf": "Self-Service — Sie richten das System selbst über Admin-Bereich und Dokumentation ein."
+        },
+        "payments": {
+          "label": "Online-Zahlungen",
+          "sofra": "Auf der Roadmap als Zusatzmodul — lokale Methoden wie TWINT und iDEAL neben Karten geplant. Heute kassieren Sie am Tresen wie gewohnt.",
+          "gf": "Als bezahltes Modul verfügbar — Online-/Kartenzahlungen für 29 US$/Monat."
+        }
+      }
+    },
+    "disclaimer": "Die GloriaFood-Angaben oben wurden im Juli 2026 auf deren öffentlichen Seiten geprüft und können sich ändern — massgeblich ist immer deren Preisseite. GloriaFood ist ein Oracle-Produkt; alle Namen und Marken gehören ihren Eigentümern. Genannte Preise sind deren Preise, in US-Dollar, exklusive Steuern.",
+    "qa": {
+      "free": {
+        "q": "Ist GloriaFood wirklich gratis?",
+        "a": "Der Kern schon. Laut ihrer Preisseite: keine Provision pro Bestellung, keine Monatsgebühr für das Basis-Bestellsystem; Online-Zahlungen (29 US$/Monat), erweiterte Promotions (19 US$/Monat), die Kasse (49 US$/Monat pro Standort, zwei Jahre Bindung), eine verkaufsoptimierte Website und eigene Marken-Apps kosten extra. Für viele kleine Restaurants reicht der Gratisplan tatsächlich."
+      },
+      "cost": {
+        "q": "Was kostet Sofra?",
+        "a": "Während des Early Access zahlen Gründungsrestaurants nichts — Einrichtung und Support gehen aufs Haus, und sie behalten lebenslang ihren Rabatt, wenn reguläre Preise kommen. Reguläre Pläne werden ein einfacher, fixer Monatspreis mit optionalen Modulen sein."
+      },
+      "pick": {
+        "q": "Welches soll ich nehmen?",
+        "a": "Wenn Sie vor allem ein kostenloses Bestell-Widget auf Ihrer bestehenden Website wollen und die Einrichtung gern selbst übernehmen, ist GloriaFood eine solide, bewährte Wahl. Wenn Sie ein System für Bestellungen, Reservierungen, Treuepunkte und Küchendruck wollen — persönlich mit Ihnen eingerichtet, in den Sprachen Ihrer Gäste, auf EU-Infrastruktur — genau dafür ist Sofra gebaut."
+      }
+    },
+    "fitGf": {
+      "title": "Wann GloriaFood gut passt",
+      "items": {
+        "widget": "Sie wollen heute ein kostenloses Bestell-Widget auf Ihrer bestehenden Website.",
+        "self": "Sie richten das System gern selbst ein und betreiben es selbst.",
+        "freeTier": "Der Gratisplan deckt bereits ab, was Sie brauchen — kein Grund, mehr zu zahlen."
+      }
+    },
+    "fitSofra": {
+      "title": "Wann Sofra besser passt",
+      "items": {
+        "one": "Sie wollen Bestellungen, Reservierungen, Treue und Küchendruck als ein System, nicht als einzelne Module.",
+        "languages": "Ihre Gäste sprechen mehr als eine Sprache — Sofra serviert zehn auf derselben Karte.",
+        "hands": "Sie hätten lieber jemanden, der den Tisch mit Ihnen deckt — und eine Nachricht entfernt bleibt — statt alles allein zu machen.",
+        "domain": "Sie wollen Ihr Restaurant auf eigener Domain, in Ihrer Währung, gehostet in der EU."
+      }
+    },
+    "sources": {
+      "title": "Quellen",
+      "note": "Jede GloriaFood-Angabe auf dieser Seite wurde am {date} auf deren öffentlichen Seiten geprüft:",
+      "items": {
+        "pricing": "GloriaFood-Preisseite",
+        "app": "GloriaFood-Bestellannahme-App",
+        "translation": "GloriaFood-Oberflächensprachen"
+      }
+    },
+    "ctaTitle": "Kosten Sie den Unterschied",
+    "ctaBody": "Am schnellsten vergleicht man, indem man Sofra in einem echten Restaurant laufen sieht — oder auf den eigenen Tischen.",
+    "ctaButton": "Jetzt starten",
+    "ctaCase": "Zur RUMI-Fallstudie"
+  },
+  "changelog": {
+    "meta": {
+      "title": "Was gibt's Neues bei Sofra — Changelog",
+      "description": "Datierte Notizen zu Neuem bei Sofra: Funktionen, Sprachen, Abrechnung, Sicherheit und Zuverlässigkeit. Kurz und ehrlich — was hier steht, ist live."
+    },
+    "label": "Frisch aus der Küche",
+    "title": "Was gibt's Neues",
+    "subtitle": "Kurze, datierte Notizen zu dem, was zuletzt aus unserer Küche kam. Was hier steht, ist live.",
+    "entries": {
+      "currency": {
+        "title": "Ihre Währung, durchgängig",
+        "body": "Jedes Restaurant auf Sofra läuft jetzt in seiner eigenen Währung — Karte, Bestellungen, Bons und Belege sprechen dieselbe Sprache. Zudem haben wir den Grundstein für eigene Looks pro Restaurant gelegt: eine klassische und eine handwerkliche Vorlage sind in Arbeit."
+      },
+      "hardening": {
+        "title": "Woche der Sicherheit & Zuverlässigkeit",
+        "body": "Verfügbarkeits-Monitoring rund um die Uhr, Fehler-Tracking und Performance-Checks bei jedem Release — dazu strikte Security-Header mit einer engen Content-Security-Policy auf der ganzen Website."
+      },
+      "billing": {
+        "title": "Abos, ganz unaufgeregt",
+        "body": "Die Abrechnung ist live: Restaurants zahlen per einfachem, wiederkehrendem Abo, abgewickelt über Mollie. Hinter dem Tresen hält ein neues Restaurant-Register im Admin-Bereich jede Einrichtung an einem Ort zusammen."
+      },
+      "languages": {
+        "title": "Sechs Sprachen auf der Website, zehn am Tisch",
+        "body": "sofrapiwas.com spricht jetzt Englisch, Französisch, Deutsch, Niederländisch, Türkisch und Arabisch — von rechts nach links inklusive. Gäste in Sofra-Restaurants bestellen in zehn Sprachen, und neue Restaurants werden automatisch eingerichtet, jedes mit eigener Domain."
+      },
+      "launch": {
+        "title": "Sofra öffnet die Türen",
+        "body": "sofrapiwas.com ist live — und mit ihm das Partnerprogramm: Agenturen und Selbstständige bewerben sich, werden persönlich freigeschaltet und begleiten jedes Restaurant vom ersten Anruf bis zum Live-Service, mit transparenter Provisionsübersicht."
+      }
+    }
+  },
   "control": {
     "shell": {
       "signOut": "Abmelden",
@@ -250,7 +462,9 @@
         "partners": "Partner",
         "tenants": "Tenants",
         "billing": "Abrechnung",
-        "audit": "Audit"
+        "audit": "Audit",
+        "onboard": "Onboarding",
+        "plan": "Abo"
       }
     },
     "status": {
@@ -448,6 +662,22 @@
         "langCount": "{count} Sprachen",
         "modules": "Module: {list}",
         "template": "Template: {template}"
+      },
+      "onboard": {
+        "title": "Partner onboarden",
+        "intro": "Richten Sie einen empfohlenen Partner als Zahler für einen Mandanten ein und teilen Sie den Einladungslink — er legt ein Passwort fest und startet das Monatsabo selbst.",
+        "mollieMissing": "Mollie ist in dieser Umgebung nicht konfiguriert — der Partner kann erst zahlen, wenn MOLLIE_API_KEY gesetzt ist.",
+        "name": "Partnername",
+        "email": "Partner-E-Mail",
+        "slug": "Tenant-Slug (z. B. rumi)",
+        "restaurantName": "Restaurantname",
+        "amount": "Monatsbetrag (EUR)",
+        "interval": "Abrechnungsintervall",
+        "liveSince": "Live seit (Go-Live-Datum des Mandanten)",
+        "create": "Einladungslink erstellen",
+        "creating": "Wird erstellt…",
+        "created": "Partner onboarded. Teilen Sie diesen Einladungslink:",
+        "inviteNote": "Teilen Sie ihn mit dem Partner, um das Passwort festzulegen und das Abo zu starten."
       }
     },
     "errors": {
@@ -470,7 +700,39 @@
       "billingCreateFailed": "Das Anlegen des Abrechnungskontos ist fehlgeschlagen — siehe Server-Logs.",
       "subscriptionNotFound": "Abonnement nicht gefunden.",
       "activationInFlight": "Aktivierung läuft — versuchen Sie es erneut, sobald der Plan stabil ist.",
-      "cancelFailed": "Die Kündigung ist fehlgeschlagen — siehe Server-Logs."
+      "cancelFailed": "Die Kündigung ist fehlgeschlagen — siehe Server-Logs.",
+      "tenantAlreadyOnboarded": "Für diesen Mandanten ist bereits eine Abrechnung eingerichtet.",
+      "planNotFound": "Abo nicht gefunden.",
+      "alreadyActive": "Dieses Abo ist bereits aktiv.",
+      "startPaymentFailed": "Zahlung konnte nicht gestartet werden — bitte erneut versuchen.",
+      "tooManyAttempts": "Zu viele Versuche — bitte warten Sie einige Minuten.",
+      "paymentProcessing": "Ihre Zahlung wird verarbeitet — Sie müssen nicht erneut zahlen."
+    },
+    "plan": {
+      "title": "Ihr Abo",
+      "intro": "Ihr Sofra-Abo und Zahlungsverlauf.",
+      "empty": "Noch kein Abo — wir melden uns.",
+      "welcomeKicker": "Willkommen bei Sofra",
+      "welcomeTitle": "Willkommen, {name} 🎉",
+      "liveSince": "{restaurant} ist seit {date} auf Sofra live.",
+      "liveSinceUnknown": "{restaurant} ist auf Sofra live.",
+      "amountLine": "{amount} / {interval}",
+      "firstChargeNote": "Sie zahlen jetzt den ersten Monat, danach verlängert es sich automatisch. Jederzeit kündbar.",
+      "startPayment": "Automatische Monatszahlung starten",
+      "redirecting": "Weiterleitung zur Kasse…",
+      "awaitingPayment": "Warten auf Ihre erste Zahlung.",
+      "processing": "Zahlung wird verarbeitet — das kann einen Moment dauern.",
+      "active": "Aktiv.",
+      "activeNextCharge": "Aktiv — nächste Abbuchung am {date}.",
+      "liveSinceShort": "live seit {date}",
+      "history": "Zahlungen",
+      "inactive": "Nicht aktiv.",
+      "noPlan": "Noch kein Abo eingerichtet.",
+      "interval": {
+        "month": "Monat",
+        "quarter": "Quartal",
+        "year": "Jahr"
+      }
     }
   }
 }

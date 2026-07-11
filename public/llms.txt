@@ -34,6 +34,14 @@ next: the Netherlands and France, then the rest of Europe.
 Sofra runs every live service at RUMI Restaurant, Geneva
 (https://www.rumirestaurant.ch) — orders, kitchen board, reservations and
 printers, in production since June 2026.
+Case study: https://sofrapiwas.com/en/case/rumi
+
+## More pages
+
+- What's new (dated changelog): https://sofrapiwas.com/en/changelog
+- Sofra vs GloriaFood (honest, sourced comparison, updated 2026-07):
+  https://sofrapiwas.com/en/compare/gloriafood
+All pages exist in every site language (/en /fr /de /nl /tr /ar).
 
 ## Pricing
 

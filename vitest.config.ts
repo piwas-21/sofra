@@ -29,6 +29,8 @@ export default defineConfig({
         "lib/tenant-registry.ts",
         "lib/email-templates.ts",
         "lib/retention-policy.ts",
+        "lib/seo.ts",
+        "lib/billing-display.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial
