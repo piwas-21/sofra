@@ -105,7 +105,9 @@ export async function onboardPartnerAction(
   // a DIFFERENT partner must reject here, not after resolvePartnerUser has
   // created a fresh user (which would then be left orphaned).
   const slugOwner = await db.client.findUnique({ where: { tenantSlug }, include: { partner: true } });
-  if (slugOwner && slugOwner.partner.email !== email) {
+  // Case-insensitive: emails are, and `email` is already lowercased. (All
+  // current paths store lowercased, but don't depend on that here.)
+  if (slugOwner && slugOwner.partner.email.toLowerCase() !== email) {
     return { error: "tenantAlreadyOnboarded" };
   }
 
