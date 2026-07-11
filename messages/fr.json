@@ -199,7 +199,10 @@
       "waitlist": "Commencer",
       "live": "Voir en vrai",
       "partner": "Partenaires",
-      "faq": "FAQ"
+      "faq": "FAQ",
+      "caseStudy": "Étude de cas",
+      "compare": "Sofra vs GloriaFood",
+      "changelog": "Quoi de neuf"
     },
     "copyright": "© {year} Sofra. Tous droits réservés."
   },
@@ -235,6 +238,215 @@
       "domain": {
         "q": "Puis-je utiliser mon propre nom de domaine ?",
         "a": "Oui. Chaque restaurant reçoit un sous-domaine sofra gratuit, et vous pouvez connecter un domaine que vous possédez déjà — ou nous enregistrons un tout nouveau domaine pour vous lors de l'installation."
+      }
+    }
+  },
+  "caseStudy": {
+    "meta": {
+      "title": "Étude de cas : RUMI Restaurant, Genève — propulsé par Sofra",
+      "description": "RUMI Restaurant à Genève fait tourner ses commandes en ligne, ses réservations et l'impression des tickets cuisine sur Sofra — en dix langues, sur une infrastructure européenne, en production depuis juin 2026."
+    },
+    "label": "Étude de cas",
+    "title": "RUMI Restaurant, Genève",
+    "subtitle": "Le premier restaurant de Sofra — et la salle où chaque fonctionnalité fait ses preuves avant de sortir.",
+    "facts": {
+      "location": {
+        "label": "Lieu",
+        "value": "Genève, Suisse"
+      },
+      "since": {
+        "label": "En production depuis"
+      },
+      "languages": {
+        "label": "Langues des clients",
+        "value": "10"
+      },
+      "hosting": {
+        "label": "Infrastructure",
+        "value": "UE, gérée par Sofra"
+      }
+    },
+    "runs": {
+      "title": "Ce que RUMI fait tourner sur Sofra",
+      "intro": "Ni pilote, ni sous-ensemble — le service quotidien du restaurant repose sur la plateforme :",
+      "items": {
+        "ordering": {
+          "title": "Menus QR & commande en ligne",
+          "text": "Les clients scannent à table ou commandent en ligne — photos, allergènes, personnalisations."
+        },
+        "boards": {
+          "title": "Tableaux de commandes en direct",
+          "text": "Cuisine, caisse et serveurs suivent les commandes chacun sur leur écran, en direct."
+        },
+        "reservations": {
+          "title": "Réservations",
+          "text": "Réservation en ligne avec plan de salle et horaires ; l'équipe valide d'un geste."
+        },
+        "loyalty": {
+          "title": "Points de fidélité",
+          "text": "Des points et des règles de remise par groupe qui font revenir les habitués."
+        },
+        "printing": {
+          "title": "Impression des tickets cuisine",
+          "text": "Les commandes s'impriment sur des imprimantes thermiques en réseau — exactement aux postes où on les attend."
+        }
+      }
+    },
+    "languagesSection": {
+      "title": "Dix langues à une même table",
+      "body": "Genève est une ville internationale, et le menu de RUMI est à sa hauteur : les clients parcourent la carte et commandent en anglais, français, allemand, néerlandais, italien, espagnol, turc, arabe, russe ou chinois — même menu, même cuisine."
+    },
+    "infra": {
+      "title": "L'infrastructure derrière",
+      "body": "RUMI tourne sur une infrastructure hébergée dans l'UE et opérée par Sofra — en production depuis le {date}, surveillée en continu, avec des sauvegardes chaque nuit. Le restaurant assure son service ; nous faisons tourner les assiettes en coulisses."
+    },
+    "numbers": {
+      "title": "Et les chiffres ?",
+      "body": "Nous ne publions que des chiffres que nous pouvons défendre. Les statistiques détaillées du service chez RUMI paraîtront ici dès que nous pourrons les partager proprement — d'ici là, ouvrez le menu en ligne et jugez le produit à la loyale."
+    },
+    "visit": "Visiter rumirestaurant.ch",
+    "ctaTitle": "Envie de la même chose chez vous ?",
+    "ctaBody": "Restaurant, café ou vente à emporter — parlez-nous de votre établissement et nous revenons vers vous sous 24 h.",
+    "ctaButton": "Commencer"
+  },
+  "compare": {
+    "meta": {
+      "title": "Sofra ou GloriaFood (2026) : comparaison honnête",
+      "description": "GloriaFood est un système de commande en ligne gratuit avec des modules payants ; Sofra est une plateforme de restaurant tout-en-un venue des Pays-Bas. Une comparaison loyale, datée et sourcée."
+    },
+    "label": "Côte à côte",
+    "title": "Sofra vs GloriaFood",
+    "subtitle": "Deux façons honnêtes de mettre un restaurant en ligne — comparées loyalement, avec sources et date.",
+    "updated": "Dernière vérification : {date}",
+    "intro1": "GloriaFood — qui appartient à Oracle — est l'un des systèmes de commande en ligne les plus connus : le cœur du produit est gratuit, et l'on ajoute des modules payants en grandissant. Sofra est une plateforme plus jeune et tout-en-un, construite aux Pays-Bas et éprouvée chaque jour en service à Genève : commandes, réservations, fidélité et impression cuisine dans un seul système, installé pour vous, personnellement.",
+    "intro2": "Les deux sont des choix honnêtes. Le bon dépend de ce que vous voulez faire vous-même — le tableau ci-dessous s'en tient aux faits vérifiés sur les pages de GloriaFood.",
+    "table": {
+      "caption": "Sofra et GloriaFood, fonctionnalité par fonctionnalité",
+      "feature": "En un coup d'œil",
+      "sofra": "Sofra",
+      "gloriafood": "GloriaFood",
+      "rows": {
+        "pricing": {
+          "label": "Modèle de prix",
+          "sofra": "Accès anticipé : offert aux restaurants fondateurs, avec une remise à vie à l'arrivée des tarifs réguliers. Ensuite : un tarif mensuel simple et fixe, avec des modules optionnels.",
+          "gf": "Cœur gratuit : pas d'abonnement, pas de commission par commande. Modules payants : paiements en ligne 29 $US/mois, promotions avancées 19 $US/mois, caisse (POS) 49 $US/mois par établissement (engagement de deux ans)."
+        },
+        "ordering": {
+          "label": "QR & commande en ligne",
+          "sofra": "Inclus — menus QR à table et commande en ligne, avec photos, allergènes et personnalisations. Aucune appli à installer.",
+          "gf": "Inclus gratuitement — widget de commande pour votre site et votre page Facebook, plus la commande QR sur place."
+        },
+        "reservations": {
+          "label": "Réservations",
+          "sofra": "Incluses — réservation en ligne, plan de salle, horaires, validation d'un geste.",
+          "gf": "Widget de réservation inclus ; encaisser des arrhes coûte 0,50 $US par convive sur les réservations acceptées."
+        },
+        "loyalty": {
+          "label": "Fidélité & promotions",
+          "sofra": "Inclus — points de fidélité et règles de remise par groupe de clients.",
+          "gf": "Promotions et bons dans l'offre gratuite ; le module de marketing promotionnel avancé coûte 19 $US/mois."
+        },
+        "printing": {
+          "label": "Impression cuisine",
+          "sofra": "Une appli compagnon (Windows et Android) pilote les imprimantes thermiques ESC/POS en réseau — tickets par poste, sans abonnement supplémentaire.",
+          "gf": "Leur appli de prise de commande gratuite (Android et iOS) se connecte à une imprimante thermique et imprime automatiquement les commandes acceptées."
+        },
+        "languages": {
+          "label": "Langues",
+          "sofra": "Vos clients parcourent la carte et commandent en 10 langues — sur le même menu.",
+          "gf": "Interface produit disponible dans une douzaine de langues, traduites par leur communauté — voir leur page de traduction pour le détail."
+        },
+        "hosting": {
+          "label": "Hébergement & domaines",
+          "sofra": "Tourne sur une infrastructure gérée par Sofra dans l'UE ; chaque restaurant a son propre domaine — le vôtre, ou un que nous enregistrons pour vous.",
+          "gf": "Service cloud opéré par Oracle (GloriaFood est un produit Oracle)."
+        },
+        "setup": {
+          "label": "Installation & accompagnement",
+          "sofra": "Accompagnement personnalisé — nous installons menu, QR codes, imprimantes et écrans d'équipe avec vous, et restons à portée de message.",
+          "gf": "En autonomie — vous configurez le système vous-même via leur panneau d'administration et leur documentation."
+        },
+        "payments": {
+          "label": "Paiement en ligne",
+          "sofra": "Sur la feuille de route comme module optionnel — TWINT et iDEAL prévus aux côtés des cartes. Aujourd'hui, vous encaissez au comptoir comme d'habitude.",
+          "gf": "Disponible en module payant — paiements en ligne / par carte à 29 $US/mois."
+        }
+      }
+    },
+    "disclaimer": "Les informations sur GloriaFood ci-dessus ont été vérifiées sur leurs pages publiques en juillet 2026 et peuvent évoluer — vérifiez toujours leur page tarifs. GloriaFood est un produit Oracle ; les noms et marques appartiennent à leurs propriétaires. Les prix indiqués sont les leurs, en dollars US, hors taxes.",
+    "qa": {
+      "free": {
+        "q": "GloriaFood est-il vraiment gratuit ?",
+        "a": "Le cœur, oui. Leur page tarifs annonce zéro commission par commande et zéro abonnement pour le système de commande de base ; les paiements en ligne (29 $US/mois), les promotions avancées (19 $US/mois), la caisse (49 $US/mois par établissement, engagement de deux ans), le site web optimisé pour la vente et les applis à votre marque sont des extras payants. Pour beaucoup de petits restaurants, l'offre gratuite suffit réellement."
+      },
+      "cost": {
+        "q": "Combien coûte Sofra ?",
+        "a": "Pendant l'accès anticipé, les restaurants fondateurs ne paient rien — installation et accompagnement offerts, et ils gardent une remise à vie à l'arrivée des tarifs réguliers. Les offres régulières seront un tarif mensuel simple et fixe, avec des modules optionnels."
+      },
+      "pick": {
+        "q": "Lequel choisir ?",
+        "a": "Si vous voulez surtout un widget de commande gratuit sur un site que vous avez déjà, et que la configuration en autonomie ne vous fait pas peur, GloriaFood est un choix solide et éprouvé. Si vous voulez un seul système pour commandes, réservations, fidélité et impression cuisine — installé avec vous, dans les langues de vos clients, sur une infrastructure européenne — c'est exactement pour cela que Sofra existe."
+      }
+    },
+    "fitGf": {
+      "title": "Quand GloriaFood est un bon choix",
+      "items": {
+        "widget": "Vous voulez un widget de commande gratuit sur votre site actuel, dès aujourd'hui.",
+        "self": "Configurer et faire tourner le système vous-même ne vous dérange pas.",
+        "freeTier": "L'offre gratuite couvre déjà vos besoins — inutile de payer plus."
+      }
+    },
+    "fitSofra": {
+      "title": "Quand Sofra convient mieux",
+      "items": {
+        "one": "Vous voulez commandes, réservations, fidélité et impression cuisine dans un seul système, pas en modules séparés.",
+        "languages": "Vos clients parlent plusieurs langues — Sofra en sert dix sur le même menu.",
+        "hands": "Vous préférez qu'on dresse la table avec vous — et qu'on reste à portée de message — plutôt que de tout faire seul.",
+        "domain": "Vous voulez votre restaurant sur son propre domaine, dans votre devise, hébergé dans l'UE."
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "note": "Chaque fait concernant GloriaFood sur cette page a été vérifié le {date} sur leurs pages publiques :",
+      "items": {
+        "pricing": "Page tarifs de GloriaFood",
+        "app": "Appli de prise de commande GloriaFood",
+        "translation": "Langues de l'interface GloriaFood"
+      }
+    },
+    "ctaTitle": "Goûtez la différence",
+    "ctaBody": "La façon la plus rapide de comparer, c'est de voir Sofra tourner dans un vrai restaurant — ou sur vos propres tables.",
+    "ctaButton": "Commencer",
+    "ctaCase": "Lire l'étude de cas RUMI"
+  },
+  "changelog": {
+    "meta": {
+      "title": "Quoi de neuf chez Sofra — journal des nouveautés",
+      "description": "Notes datées sur les nouveautés de Sofra : fonctionnalités, langues, facturation, sécurité et fiabilité. Courtes et honnêtes — si c'est écrit ici, c'est en ligne."
+    },
+    "label": "Frais du jour",
+    "title": "Quoi de neuf",
+    "subtitle": "Des notes courtes et datées sur ce qui vient de sortir de notre cuisine. Si c'est écrit ici, c'est en ligne.",
+    "entries": {
+      "currency": {
+        "title": "Votre devise, de bout en bout",
+        "body": "Chaque restaurant sur Sofra fonctionne désormais dans sa propre devise — menu, commandes, tickets et reçus parlent d'une seule voix. Nous avons aussi posé les bases des habillages par restaurant, avec un modèle classique et un modèle artisanal en préparation."
+      },
+      "hardening": {
+        "title": "Semaine sécurité & fiabilité",
+        "body": "Surveillance de disponibilité 24h/24, suivi des erreurs et contrôles de performance à chaque mise en ligne, et des en-têtes de sécurité stricts avec une politique de sécurité du contenu resserrée sur tout le site."
+      },
+      "billing": {
+        "title": "Les abonnements, sans histoires",
+        "body": "La facturation est en place : les restaurants paient par simple abonnement récurrent, traité par Mollie. En coulisses, un nouveau registre des restaurants dans le panneau d'administration garde chaque installation au même endroit."
+      },
+      "languages": {
+        "title": "Six langues sur le site, dix à table",
+        "body": "sofrapiwas.com parle désormais anglais, français, allemand, néerlandais, turc et arabe — écriture de droite à gauche comprise. Les clients des restaurants Sofra commandent en dix langues, et chaque nouveau restaurant est mis en place automatiquement, avec son propre domaine."
+      },
+      "launch": {
+        "title": "Sofra ouvre ses portes",
+        "body": "sofrapiwas.com est en ligne — et le programme partenaires aussi : agences et indépendants candidatent, sont approuvés personnellement et suivent chaque restaurant du premier appel au service en salle, avec un suivi transparent des commissions."
       }
     }
   },

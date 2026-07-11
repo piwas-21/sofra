@@ -1,8 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/seo";
 import { FAQ_KEYS } from "./faq-data";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sofrapiwas.com";
+import JsonLdScript from "./JsonLdScript";
 
 /**
  * schema.org JSON-LD for the landing page (AEO — see workspace
@@ -69,18 +69,8 @@ export default async function JsonLd({ locale }: { locale: string }) {
   };
 
   return (
-    <>
-      {[organization, website, softwareApplication, faqPage].map((data, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          // JSON of static message strings; "<" escaped so no value can ever
-          // close the script tag (standard Next.js JSON-LD hardening).
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(data).replace(/</g, "\\u003c"),
-          }}
-        />
-      ))}
-    </>
+    <JsonLdScript
+      data={[organization, website, softwareApplication, faqPage]}
+    />
   );
 }

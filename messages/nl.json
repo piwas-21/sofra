@@ -199,7 +199,10 @@
       "waitlist": "Aan de slag",
       "live": "Bekijk het live",
       "partner": "Partners",
-      "faq": "FAQ"
+      "faq": "FAQ",
+      "caseStudy": "Casestudy",
+      "compare": "Sofra vs GloriaFood",
+      "changelog": "Wat is er nieuw"
     },
     "copyright": "© {year} Sofra. Alle rechten voorbehouden."
   },
@@ -235,6 +238,215 @@
       "domain": {
         "q": "Kan ik mijn eigen domeinnaam gebruiken?",
         "a": "Ja. Elk restaurant krijgt een gratis sofra-subdomein, en je kunt een domein koppelen dat je al bezit — of wij registreren tijdens de installatie een gloednieuw domein voor je."
+      }
+    }
+  },
+  "caseStudy": {
+    "meta": {
+      "title": "Casestudy: RUMI Restaurant, Genève — draait op Sofra",
+      "description": "RUMI Restaurant in Genève draait zijn online bestellingen, tafelreserveringen en keukenbonprinten op Sofra — in tien gasttalen, op EU-infrastructuur, live in productie sinds juni 2026."
+    },
+    "label": "Casestudy",
+    "title": "RUMI Restaurant, Genève",
+    "subtitle": "Sofra's eerste restaurant — en de eetzaal waar elke functie zich bewijst voordat die uitkomt.",
+    "facts": {
+      "location": {
+        "label": "Locatie",
+        "value": "Genève, Zwitserland"
+      },
+      "since": {
+        "label": "In productie sinds"
+      },
+      "languages": {
+        "label": "Gasttalen",
+        "value": "10"
+      },
+      "hosting": {
+        "label": "Infrastructuur",
+        "value": "EU, beheerd door Sofra"
+      }
+    },
+    "runs": {
+      "title": "Wat RUMI op Sofra draait",
+      "intro": "Geen pilot, geen deelproject — de dagelijkse service van het restaurant draait op het platform:",
+      "items": {
+        "ordering": {
+          "title": "QR-menu's & online bestellen",
+          "text": "Gasten scannen aan tafel of bestellen online — foto's, allergenen, aanpassingen."
+        },
+        "boards": {
+          "title": "Live bestelborden",
+          "text": "Keuken, kassa en bediening volgen bestellingen elk op hun eigen live scherm."
+        },
+        "reservations": {
+          "title": "Tafelreserveringen",
+          "text": "Online boeken met tafelindeling en openingstijden; het team keurt goed met één tik."
+        },
+        "loyalty": {
+          "title": "Spaarpunten",
+          "text": "Spaarpunten en kortingsregels per klantgroep laten vaste gasten terugkomen."
+        },
+        "printing": {
+          "title": "Keukenbonnen printen",
+          "text": "Bestellingen printen op thermische netwerkprinters — precies op de werkplekken waar ze nodig zijn."
+        }
+      }
+    },
+    "languagesSection": {
+      "title": "Tien talen aan één tafel",
+      "body": "Genève is een internationale stad, en RUMI's kaart kan dat aan: gasten bladeren en bestellen in het Engels, Frans, Duits, Nederlands, Italiaans, Spaans, Turks, Arabisch, Russisch of Chinees — zelfde kaart, zelfde keuken."
+    },
+    "infra": {
+      "title": "De infrastructuur erachter",
+      "body": "RUMI draait op infrastructuur in de EU, beheerd door Sofra — in productie sinds {date}, de klok rond bewaakt, met nachtelijke back-ups. Het restaurant draait zijn service; wij houden achter de schermen de borden in de lucht."
+    },
+    "numbers": {
+      "title": "Waar zijn de cijfers?",
+      "body": "We publiceren alleen cijfers waar we achter staan. Gedetailleerde servicestatistieken van RUMI verschijnen hier zodra we ze netjes kunnen delen — open tot die tijd de live menukaart en beoordeel het product op de eerlijke manier."
+    },
+    "visit": "Bezoek rumirestaurant.ch",
+    "ctaTitle": "Wil je dit op jouw tafels?",
+    "ctaBody": "Restaurant, café of afhaalzaak — vertel ons over je zaak en we komen binnen een dag bij je terug.",
+    "ctaButton": "Aan de slag"
+  },
+  "compare": {
+    "meta": {
+      "title": "Sofra vs GloriaFood (2026): een eerlijke vergelijking",
+      "description": "GloriaFood is een gratis online bestelsysteem met betaalde modules; Sofra is een full-service restaurantplatform uit Nederland. Een eerlijke, gedateerde vergelijking met bronnen."
+    },
+    "label": "Zij aan zij",
+    "title": "Sofra vs GloriaFood",
+    "subtitle": "Twee eerlijke manieren om een restaurant online te brengen — eerlijk vergeleken, met bronnen en datum.",
+    "updated": "Laatst gecontroleerd: {date}",
+    "intro1": "GloriaFood — onderdeel van Oracle — is een van de bekendste online bestelsystemen: de kern is gratis en je voegt betaalde modules toe naarmate je groeit. Sofra is een jonger full-service platform, gebouwd in Nederland en dagelijks bewezen in de service in Genève: bestellen, reserveren, spaarpunten en keukenprinten als één systeem, persoonlijk voor je opgezet.",
+    "intro2": "Allebei eerlijke keuzes. Welke past, hangt af van hoeveel je zelf wilt doen — de tabel hieronder houdt zich aan feiten die we op GloriaFoods eigen pagina's hebben gecontroleerd.",
+    "table": {
+      "caption": "Sofra en GloriaFood, functie voor functie",
+      "feature": "In één oogopslag",
+      "sofra": "Sofra",
+      "gloriafood": "GloriaFood",
+      "rows": {
+        "pricing": {
+          "label": "Prijsmodel",
+          "sofra": "Vroege toegang: van het huis voor oprichtersrestaurants, met levenslange korting zodra vaste prijzen komen. Daarna: een eenvoudige vaste maandprijs met optionele modules.",
+          "gf": "Gratis kern: geen maandbedrag, geen commissie per bestelling. Betaalde modules: online betalingen US$ 29/maand, geavanceerde promoties US$ 19/maand, kassa (POS) US$ 49/maand per vestiging (tweejarig contract)."
+        },
+        "ordering": {
+          "label": "QR & online bestellen",
+          "sofra": "Inbegrepen — QR-menu's aan tafel en online bestellen, met foto's, allergenen en aanpassingen. Geen app nodig.",
+          "gf": "Gratis inbegrepen — bestelwidget voor je website en Facebookpagina, plus QR-bestellen in de zaak."
+        },
+        "reservations": {
+          "label": "Tafelreserveringen",
+          "sofra": "Inbegrepen — online boeken, tafelindeling, openingstijden, goedkeuren met één tik.",
+          "gf": "Reserveringswidget inbegrepen; aanbetalingen innen kost US$ 0,50 per gast bij geaccepteerde boekingen."
+        },
+        "loyalty": {
+          "label": "Loyaliteit & promoties",
+          "sofra": "Inbegrepen — spaarpunten plus kortingsregels per klantgroep.",
+          "gf": "Promoties en kortingsbonnen in het gratis plan; de geavanceerde promotiemodule kost US$ 19/maand."
+        },
+        "printing": {
+          "label": "Keukenprinten",
+          "sofra": "Een hulp-app (Windows en Android) stuurt thermische ESC/POS-netwerkprinters aan — bonnen per werkplek, zonder extra abonnement.",
+          "gf": "Hun gratis bestelapp (Android en iOS) koppelt met een thermische printer en print geaccepteerde bestellingen automatisch."
+        },
+        "languages": {
+          "label": "Talen",
+          "sofra": "Gasten bladeren en bestellen in 10 talen — op dezelfde menukaart.",
+          "gf": "Productinterface beschikbaar in een tiental talen, vertaald door hun community — zie hun vertaalpagina voor de details."
+        },
+        "hosting": {
+          "label": "Hosting & domeinen",
+          "sofra": "Draait op door Sofra beheerde infrastructuur in de EU; elk restaurant krijgt een eigen domein — dat van jou, of eentje die wij voor je registreren.",
+          "gf": "Clouddienst van Oracle (GloriaFood is een Oracle-product)."
+        },
+        "setup": {
+          "label": "Opzet & ondersteuning",
+          "sofra": "Persoonlijke onboarding — we zetten menukaart, QR-codes, printers en teamschermen samen met jou op, en blijven één berichtje verwijderd.",
+          "gf": "Selfservice — je richt het systeem zelf in via hun beheerpaneel en documentatie."
+        },
+        "payments": {
+          "label": "Online betalen",
+          "sofra": "Op de planning als optionele module — lokale methoden zoals iDEAL en TWINT gepland naast kaarten. Vandaag reken je af aan de balie zoals altijd.",
+          "gf": "Beschikbaar als betaalde module — online-/kaartbetalingen voor US$ 29/maand."
+        }
+      }
+    },
+    "disclaimer": "De GloriaFood-gegevens hierboven zijn in juli 2026 gecontroleerd op hun openbare pagina's en kunnen veranderen — hun prijspagina is altijd leidend. GloriaFood is een Oracle-product; alle namen en merken zijn van hun eigenaren. Genoemde prijzen zijn hún prijzen, in Amerikaanse dollars, exclusief belastingen.",
+    "qa": {
+      "free": {
+        "q": "Is GloriaFood echt gratis?",
+        "a": "De kern wel. Hun prijspagina belooft geen commissie per bestelling en geen maandbedrag voor het basisbestelsysteem; online betalingen (US$ 29/maand), geavanceerde promoties (US$ 19/maand), de kassa (US$ 49/maand per vestiging, tweejarig contract), een verkoopgerichte website en eigen merk-apps zijn betaalde extra's. Voor veel kleine restaurants is het gratis plan echt genoeg."
+      },
+      "cost": {
+        "q": "Wat kost Sofra?",
+        "a": "Tijdens de vroege toegang betalen oprichtersrestaurants niets — opzet en ondersteuning zijn van het huis, en ze houden levenslang korting zodra vaste prijzen komen. Vaste plannen worden een eenvoudige vaste maandprijs met optionele modules."
+      },
+      "pick": {
+        "q": "Welke moet ik kiezen?",
+        "a": "Wil je vooral een gratis bestelwidget op een website die je al hebt, en vind je het prima om alles zelf in te stellen? Dan is GloriaFood een degelijke, bewezen keuze. Wil je één systeem voor bestellen, reserveren, spaarpunten en keukenprinten — persoonlijk met jou opgezet, in de talen van je gasten, op EU-infrastructuur — dan is Sofra daar precies voor gebouwd."
+      }
+    },
+    "fitGf": {
+      "title": "Wanneer GloriaFood prima past",
+      "items": {
+        "widget": "Je wilt vandaag een gratis bestelwidget op je bestaande website.",
+        "self": "Je vindt het prima om het systeem zelf op te zetten en te beheren.",
+        "freeTier": "Het gratis plan dekt al wat je nodig hebt — geen reden om meer te betalen."
+      }
+    },
+    "fitSofra": {
+      "title": "Wanneer Sofra beter past",
+      "items": {
+        "one": "Je wilt bestellen, reserveren, loyaliteit en keukenprinten als één systeem, niet als losse modules.",
+        "languages": "Je gasten spreken meer dan één taal — Sofra serveert er tien op dezelfde kaart.",
+        "hands": "Je hebt liever iemand die de tafel mét je dekt — en één berichtje verwijderd blijft — dan alles alleen doen.",
+        "domain": "Je wilt je restaurant op een eigen domein, in je eigen valuta, gehost in de EU."
+      }
+    },
+    "sources": {
+      "title": "Bronnen",
+      "note": "Elk GloriaFood-feit op deze pagina is op {date} gecontroleerd op hun openbare pagina's:",
+      "items": {
+        "pricing": "GloriaFood-prijspagina",
+        "app": "GloriaFood-bestelapp",
+        "translation": "GloriaFood-interfacetalen"
+      }
+    },
+    "ctaTitle": "Proef het verschil",
+    "ctaBody": "De snelste manier om te vergelijken is Sofra zien draaien in een echt restaurant — of op je eigen tafels.",
+    "ctaButton": "Aan de slag",
+    "ctaCase": "Lees de RUMI-casestudy"
+  },
+  "changelog": {
+    "meta": {
+      "title": "Wat is er nieuw bij Sofra — changelog",
+      "description": "Gedateerde notities over wat er nieuw is bij Sofra: functies, talen, facturering, beveiliging en betrouwbaarheid. Kort en eerlijk — staat het hier, dan is het live."
+    },
+    "label": "Vers uit de keuken",
+    "title": "Wat is er nieuw",
+    "subtitle": "Korte, gedateerde notities over wat er net uit onze keuken komt. Staat het hier, dan is het live.",
+    "entries": {
+      "currency": {
+        "title": "Jouw valuta, van begin tot eind",
+        "body": "Elk restaurant op Sofra draait nu in zijn eigen valuta — menukaart, bestellingen, bonnen en betaalbewijzen spreken dezelfde taal. We legden ook de basis voor een eigen uitstraling per restaurant, met een klassiek en een ambachtelijk sjabloon in de maak."
+      },
+      "hardening": {
+        "title": "Week van beveiliging & betrouwbaarheid",
+        "body": "Uptime-bewaking de klok rond, foutregistratie en performancechecks bij elke release, en strikte beveiligingsheaders met een strak content-security-beleid over de hele site."
+      },
+      "billing": {
+        "title": "Abonnementen, lekker saai",
+        "body": "De facturering is live: restaurants betalen via een eenvoudig doorlopend abonnement, verwerkt door Mollie. Achter de toonbank houdt een nieuw restaurantregister in het beheerpaneel elke installatie op één plek bij."
+      },
+      "languages": {
+        "title": "Zes talen op de site, tien aan tafel",
+        "body": "sofrapiwas.com spreekt nu Engels, Frans, Duits, Nederlands, Turks en Arabisch — van rechts naar links inbegrepen. Gasten van Sofra-restaurants bestellen in tien talen, en nieuwe restaurants worden automatisch opgezet, elk met een eigen domein."
+      },
+      "launch": {
+        "title": "Sofra opent de deuren",
+        "body": "sofrapiwas.com is live — en het partnerprogramma ook: bureaus en zelfstandigen melden zich aan, worden persoonlijk goedgekeurd en volgen elk restaurant van het eerste gesprek tot live service, met transparante commissie-opvolging."
       }
     }
   },
