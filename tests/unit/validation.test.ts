@@ -179,6 +179,11 @@ describe("onboardSchema (partner onboarding)", () => {
     expect(onboardSchema.safeParse({ ...base, liveSince: "29-06-2026" }).success).toBe(false);
   });
 
+  it("rejects an impossible calendar date that passes the format regex", () => {
+    expect(onboardSchema.safeParse({ ...base, liveSince: "2026-02-31" }).success).toBe(false);
+    expect(onboardSchema.safeParse({ ...base, liveSince: "2026-13-01" }).success).toBe(false);
+  });
+
   it("reuses the registry slug grammar (rejects uppercase / leading hyphen)", () => {
     expect(onboardSchema.safeParse({ ...base, tenantSlug: "Rumi" }).success).toBe(false);
     expect(onboardSchema.safeParse({ ...base, tenantSlug: "-rumi" }).success).toBe(false);

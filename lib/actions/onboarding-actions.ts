@@ -92,14 +92,22 @@ export async function onboardPartnerAction(
   const email = input.email.toLowerCase();
   const tenantSlug = input.tenantSlug;
 
-  // Reject an impossible date (e.g. 2026-02-31 passes the format regex but is
-  // not a real day) BEFORE any DB write, so a bad date never reaches Prisma
-  // (500) and never leaves an orphan user/client behind.
+  // onboardSchema already rejected an impossible calendar date, so this parses
+  // to a valid Date (or null when omitted).
   const liveSince = input.liveSince ? new Date(`${input.liveSince}T00:00:00Z`) : null;
-  if (liveSince && Number.isNaN(liveSince.getTime())) return { error: "invalidInput" };
 
   // One billing anchor per tenant (unique tenantSlug). Refuse a re-onboard.
   if (await db.tenantBilling.findUnique({ where: { tenantSlug } })) {
+    return { error: "tenantAlreadyOnboarded" };
+  }
+
+  // Pre-check tenant ownership BEFORE creating anything: a slug already held by
+  // a DIFFERENT partner must reject here, not after resolvePartnerUser has
+  // created a fresh user (which would then be left orphaned).
+  const slugOwner = await db.client.findUnique({ where: { tenantSlug }, include: { partner: true } });
+  // Case-insensitive: emails are, and `email` is already lowercased. (All
+  // current paths store lowercased, but don't depend on that here.)
+  if (slugOwner && slugOwner.partner.email.toLowerCase() !== email) {
     return { error: "tenantAlreadyOnboarded" };
   }
 
