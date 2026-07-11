@@ -21,7 +21,10 @@ export default async function DashboardPage() {
       include: {
         client: true,
         subscriptions: { orderBy: { createdAt: "desc" } },
-        payments: { orderBy: { createdAt: "desc" } },
+        // Only first payments distinguish "pay" from "processing" (planState);
+        // scope + bound so the unboundedly-growing recurring history is never
+        // pulled into this request path.
+        payments: { where: { sequenceType: "first" }, orderBy: { createdAt: "desc" }, take: 20 },
       },
       orderBy: { createdAt: "desc" },
     }),

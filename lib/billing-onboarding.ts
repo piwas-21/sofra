@@ -89,7 +89,12 @@ export class FirstPaymentPaidError extends Error {
 export async function startFirstPayment(input: { billingId: string; actorId: string }) {
   const billing = await db.tenantBilling.findUnique({
     where: { id: input.billingId },
-    include: { subscriptions: true, payments: { orderBy: { createdAt: "desc" } } },
+    // Only first payments matter here (the paid-guard + the reuse-open-checkout
+    // guard); scope + bound so recurring history never floods this path.
+    include: {
+      subscriptions: true,
+      payments: { where: { sequenceType: "first" }, orderBy: { createdAt: "desc" }, take: 20 },
+    },
   });
   if (!billing) throw new NoPendingPlanError();
   const pending = billing.subscriptions.find((s) => s.status === "PENDING");
