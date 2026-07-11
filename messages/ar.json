@@ -462,7 +462,9 @@
         "partners": "الشركاء",
         "tenants": "المستأجرون",
         "billing": "الفوترة",
-        "audit": "التدقيق"
+        "audit": "التدقيق",
+        "onboard": "الإعداد",
+        "plan": "الاشتراك"
       }
     },
     "status": {
@@ -660,6 +662,22 @@
         "langCount": "{count} لغات",
         "modules": "الوحدات: {list}",
         "template": "القالب: {template}"
+      },
+      "onboard": {
+        "title": "إعداد شريك",
+        "intro": "قم بتعيين شريك مُحال كدافع لأحد المستأجرين، ثم شارك رابط الدعوة — سيقوم بتعيين كلمة مرور وبدء الاشتراك الشهري بنفسه.",
+        "mollieMissing": "لم يتم تكوين Mollie في هذه البيئة — لن يتمكن الشريك من الدفع حتى يتم تعيين MOLLIE_API_KEY.",
+        "name": "اسم الشريك",
+        "email": "بريد الشريك الإلكتروني",
+        "slug": "معرّف المستأجر (مثال: rumi)",
+        "restaurantName": "اسم المطعم",
+        "amount": "المبلغ الشهري (يورو)",
+        "interval": "فترة الفوترة",
+        "liveSince": "مباشر منذ (تاريخ إطلاق المستأجر)",
+        "create": "إنشاء رابط الدعوة",
+        "creating": "جارٍ الإنشاء…",
+        "created": "تم إعداد الشريك. شارك رابط الدعوة هذا:",
+        "inviteNote": "شاركه مع الشريك لتعيين كلمة المرور وبدء الاشتراك."
       }
     },
     "errors": {
@@ -682,7 +700,39 @@
       "billingCreateFailed": "فشل إنشاء حساب الفوترة — راجع سجلات الخادم.",
       "subscriptionNotFound": "الاشتراك غير موجود.",
       "activationInFlight": "التفعيل جارٍ — أعد المحاولة بعد استقرار الخطة.",
-      "cancelFailed": "فشل الإلغاء — راجع سجلات الخادم."
+      "cancelFailed": "فشل الإلغاء — راجع سجلات الخادم.",
+      "tenantAlreadyOnboarded": "تم بالفعل إعداد الفوترة لهذا المستأجر.",
+      "planNotFound": "الاشتراك غير موجود.",
+      "alreadyActive": "هذا الاشتراك نشط بالفعل.",
+      "startPaymentFailed": "تعذّر بدء الدفع — يرجى المحاولة مرة أخرى.",
+      "tooManyAttempts": "محاولات كثيرة جدًا — يرجى الانتظار بضع دقائق.",
+      "paymentProcessing": "جارٍ معالجة دفعتك — لا حاجة للدفع مرة أخرى."
+    },
+    "plan": {
+      "title": "اشتراكك",
+      "intro": "اشتراكك في Sofra وسجل المدفوعات.",
+      "empty": "لا يوجد اشتراك بعد — سنتواصل معك.",
+      "welcomeKicker": "مرحبًا بك في Sofra",
+      "welcomeTitle": "مرحبًا، {name} 🎉",
+      "liveSince": "{restaurant} مباشر على Sofra منذ {date}.",
+      "liveSinceUnknown": "{restaurant} مباشر على Sofra.",
+      "amountLine": "{amount} / {interval}",
+      "firstChargeNote": "ستدفع الشهر الأول الآن، ثم يتجدد تلقائيًا. يمكنك الإلغاء في أي وقت.",
+      "startPayment": "بدء الدفع الشهري التلقائي",
+      "redirecting": "جارٍ التحويل إلى الدفع…",
+      "awaitingPayment": "في انتظار دفعتك الأولى.",
+      "processing": "جارٍ معالجة الدفع — قد يستغرق هذا دقيقة.",
+      "active": "نشط.",
+      "activeNextCharge": "نشط — الخصم التالي في {date}.",
+      "liveSinceShort": "مباشر منذ {date}",
+      "history": "المدفوعات",
+      "inactive": "غير نشط.",
+      "noPlan": "لم يتم إعداد اشتراك بعد.",
+      "interval": {
+        "month": "شهر",
+        "quarter": "ربع سنة",
+        "year": "سنة"
+      }
     }
   }
 }

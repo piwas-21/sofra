@@ -45,7 +45,7 @@ export class MandateNotReadyError extends Error {
   }
 }
 
-function webhookUrl() {
+export function webhookUrl() {
   return `${siteUrl()}/api/webhooks/mollie`;
 }
 
@@ -176,7 +176,10 @@ export async function recordPayment(payment: MolliePayment) {
   });
 
   if (payment.sequenceType === "first" && payment.status === "paid") {
-    await activatePendingSubscriptions(billing.id, billing.mollieCustomerId);
+    // billing was located BY this customerId (guarded non-null above), so it is
+    // the customer to activate against — pass it directly (the column is now
+    // nullable for plans defined before their first payment).
+    await activatePendingSubscriptions(billing.id, payment.customerId);
   }
 
   await notifyFounder(billing.tenantSlug, payment, amountCents);

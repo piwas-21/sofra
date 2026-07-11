@@ -462,7 +462,9 @@
         "partners": "Partenaires",
         "tenants": "Tenants",
         "billing": "Facturation",
-        "audit": "Audit"
+        "audit": "Audit",
+        "onboard": "Intégrer",
+        "plan": "Abonnement"
       }
     },
     "status": {
@@ -660,6 +662,22 @@
         "langCount": "{count} langues",
         "modules": "modules : {list}",
         "template": "modèle : {template}"
+      },
+      "onboard": {
+        "title": "Intégrer un partenaire",
+        "intro": "Configurez un partenaire recommandé comme payeur d'un établissement, puis partagez le lien d'invitation — il définit un mot de passe et démarre lui-même l'abonnement mensuel.",
+        "mollieMissing": "Mollie n'est pas configuré sur cet environnement — le partenaire ne pourra pas payer tant que MOLLIE_API_KEY n'est pas défini.",
+        "name": "Nom du partenaire",
+        "email": "E-mail du partenaire",
+        "slug": "Identifiant du tenant (ex. rumi)",
+        "restaurantName": "Nom du restaurant",
+        "amount": "Montant mensuel (EUR)",
+        "interval": "Fréquence de facturation",
+        "liveSince": "En ligne depuis (date de mise en service)",
+        "create": "Créer le lien d'invitation",
+        "creating": "Création…",
+        "created": "Partenaire intégré. Partagez ce lien d'invitation :",
+        "inviteNote": "Partagez-le avec le partenaire pour définir son mot de passe et démarrer l'abonnement."
       }
     },
     "errors": {
@@ -682,7 +700,39 @@
       "billingCreateFailed": "La création du compte de facturation a échoué — voir les journaux du serveur.",
       "subscriptionNotFound": "Abonnement introuvable.",
       "activationInFlight": "Activation en cours — réessayez une fois le plan stabilisé.",
-      "cancelFailed": "L'annulation a échoué — voir les journaux du serveur."
+      "cancelFailed": "L'annulation a échoué — voir les journaux du serveur.",
+      "tenantAlreadyOnboarded": "Cet établissement a déjà une facturation configurée.",
+      "planNotFound": "Abonnement introuvable.",
+      "alreadyActive": "Cet abonnement est déjà actif.",
+      "startPaymentFailed": "Impossible de démarrer le paiement — veuillez réessayer.",
+      "tooManyAttempts": "Trop de tentatives — veuillez patienter quelques minutes.",
+      "paymentProcessing": "Votre paiement est en cours de traitement — inutile de payer à nouveau."
+    },
+    "plan": {
+      "title": "Votre abonnement",
+      "intro": "Votre abonnement Sofra et l'historique des paiements.",
+      "empty": "Pas encore d'abonnement — nous vous contacterons.",
+      "welcomeKicker": "Bienvenue chez Sofra",
+      "welcomeTitle": "Bienvenue, {name} 🎉",
+      "liveSince": "{restaurant} est en ligne sur Sofra depuis le {date}.",
+      "liveSinceUnknown": "{restaurant} est en ligne sur Sofra.",
+      "amountLine": "{amount} / {interval}",
+      "firstChargeNote": "Vous payez le premier mois maintenant, puis le renouvellement est automatique. Annulable à tout moment.",
+      "startPayment": "Démarrer le paiement mensuel automatique",
+      "redirecting": "Redirection vers le paiement…",
+      "awaitingPayment": "En attente de votre premier paiement.",
+      "processing": "Paiement en cours — cela peut prendre une minute.",
+      "active": "Actif.",
+      "activeNextCharge": "Actif — prochain prélèvement le {date}.",
+      "liveSinceShort": "en ligne depuis le {date}",
+      "history": "Paiements",
+      "inactive": "Inactif.",
+      "noPlan": "Aucun abonnement configuré.",
+      "interval": {
+        "month": "mois",
+        "quarter": "trimestre",
+        "year": "an"
+      }
     }
   }
 }

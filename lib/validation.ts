@@ -47,3 +47,24 @@ export const billingSchema = z.object({
   amount: z.coerce.number().finite().gt(0).lt(100_000),
   interval: z.enum(["month", "quarter", "year"]),
 });
+
+// Onboard a referred partner as the reseller payer for a tenant. Admin sets the
+// price/interval/go-live; the partner completes the payment (SOFRA-PARTNER-PLAN,
+// reseller flow). amount is EUR, stored as cents; liveSince is a plain date.
+export const onboardSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  email: z.string().trim().max(200).email(),
+  tenantSlug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9][a-z0-9-]{1,30}$/, "lowercase slug, 2-31 chars"),
+  restaurantName: z.string().trim().min(1).max(200),
+  amount: z.coerce.number().finite().gt(0).lt(100_000),
+  interval: z.enum(["month", "quarter", "year"]),
+  liveSince: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "date as YYYY-MM-DD")
+    .optional()
+    .or(z.literal("")),
+});

@@ -462,7 +462,9 @@
         "partners": "Partner",
         "tenants": "Tenants",
         "billing": "Abrechnung",
-        "audit": "Audit"
+        "audit": "Audit",
+        "onboard": "Onboarding",
+        "plan": "Abo"
       }
     },
     "status": {
@@ -660,6 +662,22 @@
         "langCount": "{count} Sprachen",
         "modules": "Module: {list}",
         "template": "Template: {template}"
+      },
+      "onboard": {
+        "title": "Partner onboarden",
+        "intro": "Richten Sie einen empfohlenen Partner als Zahler für einen Mandanten ein und teilen Sie den Einladungslink — er legt ein Passwort fest und startet das Monatsabo selbst.",
+        "mollieMissing": "Mollie ist in dieser Umgebung nicht konfiguriert — der Partner kann erst zahlen, wenn MOLLIE_API_KEY gesetzt ist.",
+        "name": "Partnername",
+        "email": "Partner-E-Mail",
+        "slug": "Tenant-Slug (z. B. rumi)",
+        "restaurantName": "Restaurantname",
+        "amount": "Monatsbetrag (EUR)",
+        "interval": "Abrechnungsintervall",
+        "liveSince": "Live seit (Go-Live-Datum des Mandanten)",
+        "create": "Einladungslink erstellen",
+        "creating": "Wird erstellt…",
+        "created": "Partner onboarded. Teilen Sie diesen Einladungslink:",
+        "inviteNote": "Teilen Sie ihn mit dem Partner, um das Passwort festzulegen und das Abo zu starten."
       }
     },
     "errors": {
@@ -682,7 +700,39 @@
       "billingCreateFailed": "Das Anlegen des Abrechnungskontos ist fehlgeschlagen — siehe Server-Logs.",
       "subscriptionNotFound": "Abonnement nicht gefunden.",
       "activationInFlight": "Aktivierung läuft — versuchen Sie es erneut, sobald der Plan stabil ist.",
-      "cancelFailed": "Die Kündigung ist fehlgeschlagen — siehe Server-Logs."
+      "cancelFailed": "Die Kündigung ist fehlgeschlagen — siehe Server-Logs.",
+      "tenantAlreadyOnboarded": "Für diesen Mandanten ist bereits eine Abrechnung eingerichtet.",
+      "planNotFound": "Abo nicht gefunden.",
+      "alreadyActive": "Dieses Abo ist bereits aktiv.",
+      "startPaymentFailed": "Zahlung konnte nicht gestartet werden — bitte erneut versuchen.",
+      "tooManyAttempts": "Zu viele Versuche — bitte warten Sie einige Minuten.",
+      "paymentProcessing": "Ihre Zahlung wird verarbeitet — Sie müssen nicht erneut zahlen."
+    },
+    "plan": {
+      "title": "Ihr Abo",
+      "intro": "Ihr Sofra-Abo und Zahlungsverlauf.",
+      "empty": "Noch kein Abo — wir melden uns.",
+      "welcomeKicker": "Willkommen bei Sofra",
+      "welcomeTitle": "Willkommen, {name} 🎉",
+      "liveSince": "{restaurant} ist seit {date} auf Sofra live.",
+      "liveSinceUnknown": "{restaurant} ist auf Sofra live.",
+      "amountLine": "{amount} / {interval}",
+      "firstChargeNote": "Sie zahlen jetzt den ersten Monat, danach verlängert es sich automatisch. Jederzeit kündbar.",
+      "startPayment": "Automatische Monatszahlung starten",
+      "redirecting": "Weiterleitung zur Kasse…",
+      "awaitingPayment": "Warten auf Ihre erste Zahlung.",
+      "processing": "Zahlung wird verarbeitet — das kann einen Moment dauern.",
+      "active": "Aktiv.",
+      "activeNextCharge": "Aktiv — nächste Abbuchung am {date}.",
+      "liveSinceShort": "live seit {date}",
+      "history": "Zahlungen",
+      "inactive": "Nicht aktiv.",
+      "noPlan": "Noch kein Abo eingerichtet.",
+      "interval": {
+        "month": "Monat",
+        "quarter": "Quartal",
+        "year": "Jahr"
+      }
     }
   }
 }
