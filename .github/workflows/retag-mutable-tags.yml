@@ -1,0 +1,84 @@
+name: retag-mutable-tags
+
+# Break-glass: re-point the mutable :latest (app) and :migrate (DB-tooling) GHCR
+# tags at an already-published immutable release build (:sha-<sha> / :migrate-<sha>)
+# without rebuilding — a server-side manifest copy via `docker buildx imagetools
+# create`. Use when a release's mutable tags did not advance (e.g. the 2026-07-12
+# is_default_branch bug, fixed in build-image.yml) or to roll :latest back to a
+# known-good release sha.
+#
+# Security posture mirrors build-image.yml: the operator-supplied `sha` input is
+# passed via env and regex-validated (never interpolated into a run: shell), the
+# action is pinned to an immutable SHA, and GITHUB_TOKEN is packages:write only.
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'Full 40-char commit SHA of the release whose :sha-<sha> / :migrate-<sha> images become :latest / :migrate'
+        required: true
+        type: string
+
+concurrency:
+  group: retag-mutable-tags
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  retag:
+    name: re-point :latest and :migrate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Re-point mutable tags (server-side manifest copy)
+        env:
+          SHA: ${{ inputs.sha }}
+          IMAGE: ghcr.io/${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::sha must be a 40-char lowercase hex commit SHA (got: '$SHA')"
+            exit 1
+          fi
+          echo "Re-pointing $IMAGE:latest  -> $IMAGE:sha-$SHA"
+          docker buildx imagetools create --tag "$IMAGE:latest"  "$IMAGE:sha-$SHA"
+          echo "Re-pointing $IMAGE:migrate -> $IMAGE:migrate-$SHA"
+          docker buildx imagetools create --tag "$IMAGE:migrate" "$IMAGE:migrate-$SHA"
+
+      - name: Verify mutable tags resolve to the release image (amd64 manifest)
+        env:
+          SHA: ${{ inputs.sha }}
+          IMAGE: ghcr.io/${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # Compare the linux/amd64 child-manifest digest (what the box actually
+          # runs), not the top-level index digest — imagetools reserializes the
+          # index, so index digests can differ even on a correct retag.
+          amd64() {
+            docker buildx imagetools inspect "$1" \
+              --format '{{range .Manifest.Manifests}}{{if eq .Platform.Architecture "amd64"}}{{println .Digest}}{{end}}{{end}}' \
+              | head -n1
+          }
+          fail=0
+          for pair in "latest:sha-$SHA" "migrate:migrate-$SHA"; do
+            mut="${pair%%:*}"; imm="${pair#*:}"
+            md="$(amd64 "$IMAGE:$mut")"; id="$(amd64 "$IMAGE:$imm")"
+            echo ":$mut amd64  = $md"
+            echo ":$imm amd64  = $id"
+            if [[ -n "$md" && "$md" == "$id" ]]; then
+              echo "OK: :$mut now resolves to :$imm"
+            else
+              echo "::error::$IMAGE:$mut amd64 digest ($md) != $IMAGE:$imm ($id)"
+              fail=1
+            fi
+          done
+          exit "$fail"
