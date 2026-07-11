@@ -27,9 +27,9 @@ export async function generateMetadata({
 
 export default async function ChangelogPage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ locale: string }>;
-}) {
+}>) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "changelog" });
