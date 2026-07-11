@@ -65,6 +65,17 @@ export const onboardSchema = z.object({
     .string()
     .trim()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "date as YYYY-MM-DD")
+    // Reject an impossible calendar date. A plain `new Date("2026-02-31…")` does
+    // NOT return Invalid Date — JS silently ROLLS OVER (Feb 31 -> Mar 3), so an
+    // isNaN check wouldn't catch it and we'd store the wrong day. Round-trip
+    // instead: reconstruct the date and require it to equal what was typed.
+    .refine((v) => {
+      const [y, m, d] = v.split("-").map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d));
+      // NaN guard first: this refine still runs when the format regex failed
+      // (e.g. ""), and toISOString() throws on an Invalid Date.
+      return !Number.isNaN(dt.getTime()) && dt.toISOString().slice(0, 10) === v;
+    }, "not a real calendar date")
     .optional()
     .or(z.literal("")),
 });
