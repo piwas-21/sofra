@@ -677,7 +677,14 @@
         "create": "Uitnodigingslink maken",
         "creating": "Bezig met maken…",
         "created": "Partner onboarded. Deel deze uitnodigingslink:",
-        "inviteNote": "Deel hem met de partner om het wachtwoord in te stellen en het abonnement te starten."
+        "inviteNote": "Deel hem met de partner om het wachtwoord in te stellen en het abonnement te starten.",
+        "tenant": "Tenant",
+        "tenantPlaceholder": "Selecteer een tenant…",
+        "showAll": "Toon ge-onboarde & gestopte tenants",
+        "onboardedBadge": "al ge-onboard",
+        "liveSincePrefix": "live sinds",
+        "noTenants": "Geen partnervrije tenants beschikbaar — zet de schakelaar aan om ge-onboarde en gestopte te tonen.",
+        "registryUnavailable": "Tenant-register niet beschikbaar ({error}) — voer de tenantgegevens hieronder handmatig in."
       }
     },
     "errors": {

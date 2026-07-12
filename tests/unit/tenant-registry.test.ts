@@ -34,12 +34,16 @@ describe("loadTenantRegistry", () => {
       expect(rumi.languages).toHaveLength(10);
       // template parses when present (frontend ADR-006 enum)
       expect(rumi.template).toBe("craft");
+      // live_since parses as a plain YYYY-MM-DD string when present
+      expect(rumi.live_since).toBe("2026-06-29");
       // optional fields absent on demo default to []
       const demo = res.tenants.find((t) => t.slug === "demo")!;
       expect(demo.modules).toEqual([]);
       expect(demo.currency).toBeUndefined();
       // template is optional — pre-T2 entries stay parseable, no baked default
       expect(demo.template).toBeUndefined();
+      // live_since is optional — absent entries stay parseable
+      expect(demo.live_since).toBeUndefined();
     }
   });
 
@@ -48,6 +52,13 @@ describe("loadTenantRegistry", () => {
     const res = await loadTenantRegistry();
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.error).toMatch(/template/);
+  });
+
+  it("returns ok:false when live_since is not a YYYY-MM-DD date", async () => {
+    process.env.TENANT_REGISTRY_PATH = fixture("registry-bad-livesince.yml");
+    const res = await loadTenantRegistry();
+    expect(res.ok).toBe(false);
+    if (!res.ok) expect(res.error).toMatch(/live_since/);
   });
 
   it("returns ok:false (not a throw) on a schema-invalid file", async () => {

@@ -27,6 +27,18 @@ const tenantSchema = z.object({
   template: z.enum(["classic", "craft"]).optional(),
   admin_email: z.string().optional(),
   city: z.string().optional(),
+  // Go-live date (YYYY-MM-DD), optional — the durable source for the onboard
+  // form's "Live since" pre-fill (deploy repo owns the value; read-only here).
+  // Absent for tenants provisioned before the field existed. A malformed value
+  // fails the whole load (same fail-loud contract as `template`), surfaced as
+  // the registry-unavailable banner rather than silently pre-filling a bad date.
+  // Format-only here (calendar validity — e.g. rejecting Feb 31 — is enforced by
+  // onboardSchema.liveSince when the admin submits, so a pre-fill can't persist
+  // an impossible date).
+  live_since: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "live_since must be YYYY-MM-DD")
+    .optional(),
 });
 
 const registrySchema = z.object({

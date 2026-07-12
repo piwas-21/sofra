@@ -677,7 +677,14 @@
         "create": "Créer le lien d'invitation",
         "creating": "Création…",
         "created": "Partenaire intégré. Partagez ce lien d'invitation :",
-        "inviteNote": "Partagez-le avec le partenaire pour définir son mot de passe et démarrer l'abonnement."
+        "inviteNote": "Partagez-le avec le partenaire pour définir son mot de passe et démarrer l'abonnement.",
+        "tenant": "Tenant",
+        "tenantPlaceholder": "Sélectionnez un tenant…",
+        "showAll": "Afficher les tenants intégrés et retirés",
+        "onboardedBadge": "déjà intégré",
+        "liveSincePrefix": "en ligne depuis",
+        "noTenants": "Aucun tenant sans partenaire disponible — activez l'option pour afficher les tenants intégrés et retirés.",
+        "registryUnavailable": "Registre des tenants indisponible ({error}) — saisissez les détails du tenant manuellement ci-dessous."
       }
     },
     "errors": {
