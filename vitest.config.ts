@@ -27,6 +27,7 @@ export default defineConfig({
         "lib/rate-limit.ts",
         "lib/validation.ts",
         "lib/tenant-registry.ts",
+        "lib/onboard-tenants.ts",
         "lib/email-templates.ts",
         "lib/retention-policy.ts",
         "lib/seo.ts",

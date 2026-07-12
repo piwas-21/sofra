@@ -677,7 +677,14 @@
         "create": "Create invite link",
         "creating": "Creating…",
         "created": "Partner onboarded. Share this invite link:",
-        "inviteNote": "Share it with the partner to set their password and start the subscription."
+        "inviteNote": "Share it with the partner to set their password and start the subscription.",
+        "tenant": "Tenant",
+        "tenantPlaceholder": "Select a tenant…",
+        "showAll": "Show onboarded & retired tenants",
+        "onboardedBadge": "already onboarded",
+        "liveSincePrefix": "live since",
+        "noTenants": "No partner-free tenants available — toggle to show onboarded and retired ones.",
+        "registryUnavailable": "Tenant registry unavailable ({error}) — enter the tenant details manually below."
       }
     },
     "errors": {

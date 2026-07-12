@@ -677,7 +677,14 @@
         "create": "Davet bağlantısı oluştur",
         "creating": "Oluşturuluyor…",
         "created": "İş ortağı kaydedildi. Bu davet bağlantısını paylaşın:",
-        "inviteNote": "Şifresini belirleyip aboneliği başlatması için iş ortağıyla paylaşın."
+        "inviteNote": "Şifresini belirleyip aboneliği başlatması için iş ortağıyla paylaşın.",
+        "tenant": "Kiracı",
+        "tenantPlaceholder": "Bir kiracı seçin…",
+        "showAll": "Kaydı yapılmış ve kullanımdan kaldırılmış kiracıları göster",
+        "onboardedBadge": "zaten kaydedildi",
+        "liveSincePrefix": "yayında olduğu tarih",
+        "noTenants": "Uygun (iş ortağı atanmamış) kiracı yok — kaydı yapılmış ve kullanımdan kaldırılmışları görmek için düğmeyi açın.",
+        "registryUnavailable": "Tenant kaydına ulaşılamıyor ({error}) — kiracı bilgilerini aşağıya elle girin."
       }
     },
     "errors": {

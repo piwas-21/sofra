@@ -82,6 +82,23 @@ function formFields(html, marker) {
   return null;
 }
 
+/** Parse the <option>s of a named <select>; returns [{value,label,disabled}]
+ *  or null when there's no such select (e.g. the free-text onboard fallback
+ *  when the tenant registry isn't mounted). */
+function selectOptions(html, selectName) {
+  const sel = new RegExp(String.raw`<select[^>]*name="${selectName}"[^>]*>([\s\S]*?)</select>`).exec(html);
+  if (!sel) return null;
+  const opts = [];
+  for (const o of sel[1].matchAll(/<option([^>]*)>([\s\S]*?)<\/option>/g)) {
+    opts.push({
+      value: /value="([^"]*)"/.exec(o[1])?.[1] ?? "",
+      disabled: /\bdisabled\b/.test(o[1]),
+      label: unescapeHtml(o[2].trim()),
+    });
+  }
+  return opts;
+}
+
 async function postAction(jar, path, fields, extra = {}) {
   const fd = new FormData();
   for (const [k, v] of Object.entries({ ...fields, ...extra })) fd.set(k, v);
@@ -238,19 +255,36 @@ page = await req(pjar, "/dashboard/ledger");
 html = await page.text();
 ok("partner ledger shows entry + balance", html.includes("go-live bonus") && html.includes("250"));
 
-// ---------- 7. Onboard a paying (reseller) partner + welcome panel ----------
+// ---------- 7. Onboard a paying (reseller) partner via the tenant picker ----------
 // Distinct email so this exercises the fresh-partner branch of onboarding.
 const onboardEmail = applicantEmail.replace("@", "+onboard@");
+const onboardName = "Onboard Café"; // restaurantName we submit (the registry name, in prod)
 page = await req(admin2, "/admin/onboard");
 html = await page.text();
 ok("admin onboard page renders", page.status === 200 && html.includes("Onboard a partner"));
+
+// The registry-driven picker only renders when the server can read the tenant
+// registry (TENANT_REGISTRY_PATH). Without it the page falls back to a free-text
+// slug — drive whichever is present so this passes in both setups.
+const picker = selectOptions(html, "tenantSlug");
+let onboardSlug;
+if (picker) {
+  // The default view lists only partner-free (no-billing) active tenants, so
+  // every real option is selectable; pick the first.
+  const free = picker.filter((o) => o.value && !o.disabled);
+  ok("picker offers a partner-free tenant", free.length > 0, `${free.length} selectable`);
+  onboardSlug = free[0]?.value;
+} else {
+  onboardSlug = "onboard-e2e"; // free-text fallback (registry not mounted)
+  ok("onboard uses the free-text fallback (no registry mounted)", true);
+}
 
 fields = formFields(html, "restaurantName");
 page = await postAction(admin2, "/admin/onboard", fields, {
   name: "Onboard E2E",
   email: onboardEmail,
-  tenantSlug: "onboard-e2e",
-  restaurantName: "Onboard Café",
+  tenantSlug: onboardSlug,
+  restaurantName: onboardName,
   amount: "89.00",
   interval: "month",
   liveSince: "2026-06-29",
@@ -258,6 +292,14 @@ page = await postAction(admin2, "/admin/onboard", fields, {
 html = await page.text();
 const onboardInvite = decode(/https?:\/\/[^<\s"]*\/invite\/[A-Za-z0-9_-]+/.exec(html)?.[0] ?? "");
 ok("onboard returns invite link", Boolean(onboardInvite), onboardInvite ? "link captured" : "not found");
+
+// Partner-free filter: once it has a billing anchor, the tenant must drop out
+// of the default (partner-free) picker options.
+if (picker && onboardInvite) {
+  const after = selectOptions(await (await req(admin2, "/admin/onboard")).text(), "tenantSlug");
+  const stillOffered = after?.some((o) => o.value === onboardSlug && !o.disabled) ?? false;
+  ok("onboarded tenant leaves the partner-free picker", !stillOffered, `slug=${onboardSlug}`);
+}
 
 if (onboardInvite) {
   const oJar = new Jar();
@@ -273,14 +315,14 @@ if (onboardInvite) {
   html = await page.text();
   ok(
     "onboarded partner sees welcome + pay CTA",
-    html.includes("Onboard Café") && html.includes("Start auto-monthly payment"),
+    html.includes(onboardName) && html.includes("Start auto-monthly payment"),
   );
 
   page = await req(opJar, "/dashboard/billing");
   html = await page.text();
   ok(
     "billing page shows the pending plan",
-    html.includes("Onboard Café") && html.includes("Awaiting your first payment"),
+    html.includes(onboardName) && html.includes("Awaiting your first payment"),
   );
   // Stop here — clicking "Start auto-monthly payment" hits Mollie (live key).
 }
