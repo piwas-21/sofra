@@ -14,6 +14,7 @@ tenants:
     modules: [core]
     template: craft
     city: Geneva
+    live_since: "2026-06-29"
   demo:
     name: Demo Diner
     status: active

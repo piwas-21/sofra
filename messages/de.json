@@ -677,7 +677,14 @@
         "create": "Einladungslink erstellen",
         "creating": "Wird erstellt…",
         "created": "Partner onboarded. Teilen Sie diesen Einladungslink:",
-        "inviteNote": "Teilen Sie ihn mit dem Partner, um das Passwort festzulegen und das Abo zu starten."
+        "inviteNote": "Teilen Sie ihn mit dem Partner, um das Passwort festzulegen und das Abo zu starten.",
+        "tenant": "Tenant",
+        "tenantPlaceholder": "Tenant auswählen…",
+        "showAll": "Onboardete & stillgelegte Tenants anzeigen",
+        "onboardedBadge": "bereits onboardet",
+        "liveSincePrefix": "live seit",
+        "noTenants": "Keine partnerfreien Tenants verfügbar — Schalter aktivieren, um onboardete und stillgelegte anzuzeigen.",
+        "registryUnavailable": "Tenant-Registry nicht verfügbar ({error}) — Tenant-Daten unten manuell eingeben."
       }
     },
     "errors": {
