@@ -54,7 +54,9 @@ describe("loadTenantRegistry", () => {
     if (!res.ok) expect(res.error).toMatch(/template/);
   });
 
-  it("returns ok:false when live_since is not a YYYY-MM-DD date", async () => {
+  it("returns ok:false when live_since is an impossible calendar date", async () => {
+    // 2026-02-31 passes the YYYY-MM-DD regex but is not a real day — the
+    // round-trip refine must reject it (new Date would roll it over to Mar 3).
     process.env.TENANT_REGISTRY_PATH = fixture("registry-bad-livesince.yml");
     const res = await loadTenantRegistry();
     expect(res.ok).toBe(false);

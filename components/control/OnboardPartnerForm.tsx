@@ -28,7 +28,7 @@ export default function OnboardPartnerForm({ tenants }: { tenants?: OnboardTenan
   const [showAll, setShowAll] = useState(false);
   const registryMode = Array.isArray(tenants);
   const selectable = tenants?.filter(isOnboardable) ?? [];
-  const visible = showAll ? tenants! : selectable;
+  const visible = showAll ? (tenants ?? []) : selectable;
   const selected = tenants?.find((tn) => tn.slug === slug);
 
   const optionLabel = (tn: OnboardTenant) => {

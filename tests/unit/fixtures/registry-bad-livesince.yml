@@ -1,5 +1,6 @@
-# Fixture — otherwise valid, but `live_since` is not a YYYY-MM-DD date. Must be
-# rejected (fail-loud, same contract as a bad `template`), never pre-filled raw.
+# Fixture — otherwise valid, but `live_since` is a format-valid yet IMPOSSIBLE
+# calendar date (Feb 31). Must be rejected by the round-trip refine (fail-loud,
+# same contract as a bad `template`), never silently rolled over + pre-filled.
 version: 1
 tenants:
   typo:
@@ -10,4 +11,4 @@ tenants:
     domain: typo.sofrapiwas.com
     domain_mode: subdomain
     db: tenant_typo
-    live_since: "yesterday"
+    live_since: "2026-02-31"
