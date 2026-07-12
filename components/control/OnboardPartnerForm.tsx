@@ -14,7 +14,7 @@ import CopyField from "./CopyField";
  * unavailable `tenants` is undefined and it falls back to free-text inputs — the
  * server action + slug regex are identical in both modes.
  */
-export default function OnboardPartnerForm({ tenants }: { tenants?: OnboardTenant[] }) {
+export default function OnboardPartnerForm({ tenants }: Readonly<{ tenants?: OnboardTenant[] }>) {
   const t = useTranslations("control.admin");
   const [state, action, pending] = useActionState<OnboardActionState, FormData>(
     onboardPartnerAction,
@@ -32,12 +32,11 @@ export default function OnboardPartnerForm({ tenants }: { tenants?: OnboardTenan
   const selected = tenants?.find((tn) => tn.slug === slug);
 
   const optionLabel = (tn: OnboardTenant) => {
-    const badge = tn.onboarded
-      ? ` (${t("onboard.onboardedBadge")})`
-      : tn.status !== "active"
-        ? ` (${tn.status})`
-        : "";
-    return `${tn.slug} — ${tn.name}${tn.city ? ` · ${tn.city}` : ""}${badge}`;
+    const cityPart = tn.city ? ` · ${tn.city}` : "";
+    let badge = "";
+    if (tn.onboarded) badge = ` (${t("onboard.onboardedBadge")})`;
+    else if (tn.status !== "active") badge = ` (${tn.status})`;
+    return `${tn.slug} — ${tn.name}${cityPart}${badge}`;
   };
 
   return (

@@ -86,7 +86,7 @@ function formFields(html, marker) {
  *  or null when there's no such select (e.g. the free-text onboard fallback
  *  when the tenant registry isn't mounted). */
 function selectOptions(html, selectName) {
-  const sel = new RegExp(`<select[^>]*name="${selectName}"[^>]*>([\\s\\S]*?)</select>`).exec(html);
+  const sel = new RegExp(String.raw`<select[^>]*name="${selectName}"[^>]*>([\s\S]*?)</select>`).exec(html);
   if (!sel) return null;
   const opts = [];
   for (const o of sel[1].matchAll(/<option([^>]*)>([\s\S]*?)<\/option>/g)) {
