@@ -759,5 +759,46 @@
         "year": "jaar"
       }
     }
+  },
+  "signup": {
+    "meta": {
+      "title": "Aanmelden — Sofra",
+      "description": "Start uw Sofra-restaurantplatform: QR-menu's, live bestellingen, reserveringen en loyaliteit. Vertel ons over uw zaak en wij regelen de rest."
+    },
+    "label": "Aan de slag",
+    "title": "Zet uw restaurant aan tafel",
+    "subtitle": "Vertel ons over uw zaak en wij stellen uw Sofra in — QR-menu's, live bestellingen, reserveringen en loyaliteit. We begeleiden elk restaurant persoonlijk.",
+    "points": {
+      "quick": {
+        "title": "Snel starten",
+        "text": "Een paar gegevens nu; wij verzorgen de installatie en nemen contact op."
+      },
+      "personal": {
+        "title": "Persoonlijke onboarding",
+        "text": "Geen callcenter — de oprichter stelt uw restaurant samen met u in."
+      },
+      "noCard": {
+        "title": "Geen kaart nodig",
+        "text": "Meld u eerst aan. De facturatie komt later, zodra uw zaak klaar is om live te gaan."
+      }
+    },
+    "loginHint": "Heeft u al een account?",
+    "loginLink": "Inloggen",
+    "form": {
+      "restaurantName": "Naam restaurant",
+      "contactName": "Uw naam",
+      "email": "E-mail",
+      "phone": "Telefoon (optioneel)",
+      "city": "Plaats (optioneel)",
+      "desiredSlug": "Gewenst webadres (optioneel)",
+      "desiredSlugHint": "Kleine letters, cijfers en koppeltekens — bijv. uw-restaurant. Wij bevestigen de beschikbaarheid.",
+      "message": "Iets wat we moeten weten? (optioneel)",
+      "submit": "Aanmelden",
+      "sending": "Versturen…",
+      "success": "Welkom aan boord! We hebben uw gegevens en nemen binnenkort contact op om uw restaurant in te stellen — afiyet olsun.",
+      "error": "Er ging iets mis — probeer het over een minuut opnieuw.",
+      "invalidEmail": "Voer een geldig e-mailadres in.",
+      "invalidSlug": "Gebruik kleine letters, cijfers en koppeltekens (2–31 tekens)."
+    }
   }
 }

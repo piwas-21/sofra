@@ -1,39 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-
-type Status = "idle" | "sending" | "success" | "error" | "invalid";
+import { useTranslations } from "next-intl";
+import { useIntakeForm, looksLikeEmail } from "@/hooks/useIntakeForm";
 
 export default function PartnerForm() {
   const t = useTranslations("partner.form");
-  const locale = useLocale();
-  const [status, setStatus] = useState<Status>("idle");
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.email ?? ""))) {
-      setStatus("invalid");
-      return;
-    }
-
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/partner/apply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, locale }),
-      });
-      if (!res.ok) throw new Error(`apply api ${res.status}`);
-      form.reset();
-      setStatus("success");
-    } catch {
-      setStatus("error");
-    }
-  }
+  const { status, submit } = useIntakeForm("/api/partner/apply", (data) =>
+    looksLikeEmail(data.email) ? null : "invalid",
+  );
 
   if (status === "success") {
     return (
@@ -47,7 +21,7 @@ export default function PartnerForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
       <input
         name="name"
         required

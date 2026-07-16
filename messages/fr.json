@@ -759,5 +759,46 @@
         "year": "an"
       }
     }
+  },
+  "signup": {
+    "meta": {
+      "title": "Inscription — Sofra",
+      "description": "Lancez votre plateforme de restaurant Sofra : menus QR, commandes en direct, réservations et fidélité. Parlez-nous de votre établissement et nous nous occupons de tout."
+    },
+    "label": "Commencer",
+    "title": "Installez votre restaurant à table",
+    "subtitle": "Parlez-nous de votre établissement et nous configurons votre Sofra — menus QR, commandes en direct, réservations et fidélité. Nous accompagnons chaque restaurant personnellement.",
+    "points": {
+      "quick": {
+        "title": "Démarrage rapide",
+        "text": "Quelques informations maintenant ; nous gérons la configuration et vous recontactons."
+      },
+      "personal": {
+        "title": "Accompagnement personnel",
+        "text": "Pas de centre d'appels — le fondateur configure votre restaurant avec vous."
+      },
+      "noCard": {
+        "title": "Sans carte bancaire",
+        "text": "Inscrivez-vous d'abord. La facturation vient plus tard, une fois votre établissement prêt."
+      }
+    },
+    "loginHint": "Vous avez déjà un compte ?",
+    "loginLink": "Se connecter",
+    "form": {
+      "restaurantName": "Nom du restaurant",
+      "contactName": "Votre nom",
+      "email": "E-mail",
+      "phone": "Téléphone (facultatif)",
+      "city": "Ville (facultatif)",
+      "desiredSlug": "Adresse web souhaitée (facultatif)",
+      "desiredSlugHint": "Lettres minuscules, chiffres et tirets — par ex. votre-restaurant. Nous confirmerons la disponibilité.",
+      "message": "Quelque chose à nous signaler ? (facultatif)",
+      "submit": "S'inscrire",
+      "sending": "Envoi…",
+      "success": "Bienvenue ! Nous avons vos informations et vous recontactons très vite pour configurer votre restaurant — afiyet olsun.",
+      "error": "Une erreur s'est produite — veuillez réessayer dans une minute.",
+      "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+      "invalidSlug": "Utilisez des lettres minuscules, chiffres et tirets (2 à 31 caractères)."
+    }
   }
 }

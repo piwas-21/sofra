@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import WatercolourBlob from "./WatercolourBlob";
 
 export default function Hero() {
@@ -38,9 +39,9 @@ export default function Hero() {
           className="mt-10 flex flex-wrap items-center gap-4 animate-rise-in"
           style={{ animationDelay: "280ms" }}
         >
-          <a href="#waitlist" className="btn-primary">
+          <Link href="/signup" className="btn-primary">
             {t("ctaPrimary")}
-          </a>
+          </Link>
           <a href="#features" className="btn-secondary">
             {t("ctaSecondary")}
           </a>
