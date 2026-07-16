@@ -10,7 +10,7 @@ import ActionError from "./ActionError";
 // Founder pipeline controls for a signup lead. Conversion stays founder-operated:
 // "Convert" marks the lead CONVERTED, and the "Open onboarding" link jumps to the
 // existing /admin/onboard provisioning flow (the lead's details are on the card).
-export default function SignupActions({ id }: { id: string }) {
+export default function SignupActions({ id }: Readonly<{ id: string }>) {
   const t = useTranslations("control.admin.signups");
   const [state, submit, pending] = useActionState<AdminActionState, FormData>(
     setSignupStatusAction,

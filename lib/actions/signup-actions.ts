@@ -18,7 +18,8 @@ export async function setSignupStatusAction(
   formData: FormData,
 ): Promise<AdminActionState> {
   const admin = await requireAdmin();
-  const id = String(formData.get("id") ?? "");
+  const rawId = formData.get("id");
+  const id = typeof rawId === "string" ? rawId : "";
 
   const parsedStatus = signupStatusSchema.safeParse(formData.get("status"));
   if (!parsedStatus.success) {
@@ -29,6 +30,13 @@ export async function setSignupStatusAction(
   const signup = await db.signupRequest.findUnique({ where: { id } });
   if (!signup) {
     return { error: "signupNotFound" };
+  }
+  // No-op if it's already there — skip a redundant write + audit row. Otherwise
+  // any transition is allowed: this is a founder-only pipeline with no automated
+  // side effects (provisioning is separate, via /admin/onboard), so re-opening a
+  // mis-clicked DECLINED/CONVERTED lead is a feature, not a hazard.
+  if (signup.status === status) {
+    return { ok: true };
   }
 
   await db.signupRequest.update({
