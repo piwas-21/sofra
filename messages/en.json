@@ -464,7 +464,8 @@
         "billing": "Billing",
         "audit": "Audit",
         "onboard": "Onboard",
-        "plan": "Plan"
+        "plan": "Plan",
+        "signups": "Signups"
       }
     },
     "status": {
@@ -685,6 +686,22 @@
         "liveSincePrefix": "live since",
         "noTenants": "No partner-free tenants available — toggle to show onboarded and retired ones.",
         "registryUnavailable": "Tenant registry unavailable ({error}) — enter the tenant details manually below."
+      },
+      "signups": {
+        "title": "Restaurant signups",
+        "empty": "No signups yet.",
+        "desiredSlug": "Preferred slug",
+        "status": {
+          "NEW": "New",
+          "CONTACTED": "Contacted",
+          "CONVERTED": "Converted",
+          "DECLINED": "Declined"
+        },
+        "markContacted": "Mark contacted",
+        "convert": "Convert",
+        "decline": "Decline",
+        "openOnboarding": "Open onboarding →",
+        "updatedNote": "Updated."
       }
     },
     "errors": {
@@ -713,7 +730,8 @@
       "alreadyActive": "This subscription is already active.",
       "startPaymentFailed": "Couldn't start the payment — please try again.",
       "tooManyAttempts": "Too many attempts — please wait a few minutes.",
-      "paymentProcessing": "Your payment is being processed — no need to pay again."
+      "paymentProcessing": "Your payment is being processed — no need to pay again.",
+      "signupNotFound": "That signup no longer exists."
     },
     "plan": {
       "title": "Your plan",

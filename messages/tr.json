@@ -464,7 +464,8 @@
         "billing": "Faturalama",
         "audit": "Denetim",
         "onboard": "Katılım",
-        "plan": "Abonelik"
+        "plan": "Abonelik",
+        "signups": "Kayıtlar"
       }
     },
     "status": {
@@ -685,6 +686,22 @@
         "liveSincePrefix": "yayında olduğu tarih",
         "noTenants": "Uygun (iş ortağı atanmamış) kiracı yok — kaydı yapılmış ve kullanımdan kaldırılmışları görmek için düğmeyi açın.",
         "registryUnavailable": "Tenant kaydına ulaşılamıyor ({error}) — kiracı bilgilerini aşağıya elle girin."
+      },
+      "signups": {
+        "title": "Restoran kayıtları",
+        "empty": "Henüz kayıt yok.",
+        "desiredSlug": "Tercih edilen slug",
+        "status": {
+          "NEW": "Yeni",
+          "CONTACTED": "İletişime geçildi",
+          "CONVERTED": "Dönüştürüldü",
+          "DECLINED": "Reddedildi"
+        },
+        "markContacted": "İletişime geçildi olarak işaretle",
+        "convert": "Dönüştür",
+        "decline": "Reddet",
+        "openOnboarding": "Kurulumu aç →",
+        "updatedNote": "Güncellendi."
       }
     },
     "errors": {
@@ -713,7 +730,8 @@
       "alreadyActive": "Bu abonelik zaten etkin.",
       "startPaymentFailed": "Ödeme başlatılamadı — lütfen tekrar deneyin.",
       "tooManyAttempts": "Çok fazla deneme — lütfen birkaç dakika bekleyin.",
-      "paymentProcessing": "Ödemeniz işleniyor — tekrar ödemenize gerek yok."
+      "paymentProcessing": "Ödemeniz işleniyor — tekrar ödemenize gerek yok.",
+      "signupNotFound": "Bu kayıt artık mevcut değil."
     },
     "plan": {
       "title": "Aboneliğiniz",

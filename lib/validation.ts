@@ -42,6 +42,11 @@ export const clientSchema = z.object({
 export const PARTNER_STATUSES = ["LEAD", "CONTACTED", "DEMO_SCHEDULED", "AGREED"] as const;
 export const partnerStatusSchema = z.enum(PARTNER_STATUSES);
 
+// Target statuses an ADMIN may move a signup lead to (NEW is the initial state,
+// set on intake, and is never a valid transition target).
+export const SIGNUP_STATUSES = ["CONTACTED", "CONVERTED", "DECLINED"] as const;
+export const signupStatusSchema = z.enum(SIGNUP_STATUSES);
+
 export const noteSchema = z.object({
   body: z.string().trim().min(1).max(2000),
 });

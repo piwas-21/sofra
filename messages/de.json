@@ -464,7 +464,8 @@
         "billing": "Abrechnung",
         "audit": "Audit",
         "onboard": "Onboarding",
-        "plan": "Abo"
+        "plan": "Abo",
+        "signups": "Anmeldungen"
       }
     },
     "status": {
@@ -685,6 +686,22 @@
         "liveSincePrefix": "live seit",
         "noTenants": "Keine partnerfreien Tenants verfügbar — Schalter aktivieren, um onboardete und stillgelegte anzuzeigen.",
         "registryUnavailable": "Tenant-Registry nicht verfügbar ({error}) — Tenant-Daten unten manuell eingeben."
+      },
+      "signups": {
+        "title": "Restaurant-Anmeldungen",
+        "empty": "Noch keine Anmeldungen.",
+        "desiredSlug": "Gewünschter Slug",
+        "status": {
+          "NEW": "Neu",
+          "CONTACTED": "Kontaktiert",
+          "CONVERTED": "Konvertiert",
+          "DECLINED": "Abgelehnt"
+        },
+        "markContacted": "Als kontaktiert markieren",
+        "convert": "Konvertieren",
+        "decline": "Ablehnen",
+        "openOnboarding": "Onboarding öffnen →",
+        "updatedNote": "Aktualisiert."
       }
     },
     "errors": {
@@ -713,7 +730,8 @@
       "alreadyActive": "Dieses Abo ist bereits aktiv.",
       "startPaymentFailed": "Zahlung konnte nicht gestartet werden — bitte erneut versuchen.",
       "tooManyAttempts": "Zu viele Versuche — bitte warten Sie einige Minuten.",
-      "paymentProcessing": "Ihre Zahlung wird verarbeitet — Sie müssen nicht erneut zahlen."
+      "paymentProcessing": "Ihre Zahlung wird verarbeitet — Sie müssen nicht erneut zahlen.",
+      "signupNotFound": "Diese Anmeldung existiert nicht mehr."
     },
     "plan": {
       "title": "Ihr Abo",

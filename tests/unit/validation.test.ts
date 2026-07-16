@@ -9,6 +9,8 @@ import {
   partnerStatusSchema,
   PARTNER_STATUSES,
   signupSchema,
+  signupStatusSchema,
+  SIGNUP_STATUSES,
 } from "@/lib/validation";
 
 describe("applySchema (partner application)", () => {
@@ -110,6 +112,20 @@ describe("partnerStatusSchema", () => {
   it("rejects admin-only / onboarding statuses", () => {
     for (const s of ["LIVE", "CHURNED", "ONBOARDING", "lead"]) {
       expect(partnerStatusSchema.safeParse(s).success).toBe(false);
+    }
+  });
+});
+
+describe("signupStatusSchema", () => {
+  it("accepts every admin-settable signup status", () => {
+    for (const s of SIGNUP_STATUSES) {
+      expect(signupStatusSchema.safeParse(s).success).toBe(true);
+    }
+  });
+
+  it("rejects NEW (initial only) and unknown values", () => {
+    for (const s of ["NEW", "PENDING", "converted", ""]) {
+      expect(signupStatusSchema.safeParse(s).success).toBe(false);
     }
   });
 });
