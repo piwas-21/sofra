@@ -464,7 +464,8 @@
         "billing": "Facturation",
         "audit": "Audit",
         "onboard": "Intégrer",
-        "plan": "Abonnement"
+        "plan": "Abonnement",
+        "signups": "Inscriptions"
       }
     },
     "status": {
@@ -685,6 +686,22 @@
         "liveSincePrefix": "en ligne depuis",
         "noTenants": "Aucun tenant sans partenaire disponible — activez l'option pour afficher les tenants intégrés et retirés.",
         "registryUnavailable": "Registre des tenants indisponible ({error}) — saisissez les détails du tenant manuellement ci-dessous."
+      },
+      "signups": {
+        "title": "Inscriptions de restaurants",
+        "empty": "Aucune inscription pour le moment.",
+        "desiredSlug": "Slug souhaité",
+        "status": {
+          "NEW": "Nouveau",
+          "CONTACTED": "Contacté",
+          "CONVERTED": "Converti",
+          "DECLINED": "Refusé"
+        },
+        "markContacted": "Marquer contacté",
+        "convert": "Convertir",
+        "decline": "Refuser",
+        "openOnboarding": "Ouvrir l'intégration →",
+        "updatedNote": "Mis à jour."
       }
     },
     "errors": {
@@ -713,7 +730,8 @@
       "alreadyActive": "Cet abonnement est déjà actif.",
       "startPaymentFailed": "Impossible de démarrer le paiement — veuillez réessayer.",
       "tooManyAttempts": "Trop de tentatives — veuillez patienter quelques minutes.",
-      "paymentProcessing": "Votre paiement est en cours de traitement — inutile de payer à nouveau."
+      "paymentProcessing": "Votre paiement est en cours de traitement — inutile de payer à nouveau.",
+      "signupNotFound": "Cette inscription n'existe plus."
     },
     "plan": {
       "title": "Votre abonnement",

@@ -464,7 +464,8 @@
         "billing": "Facturatie",
         "audit": "Audit",
         "onboard": "Onboarden",
-        "plan": "Abonnement"
+        "plan": "Abonnement",
+        "signups": "Aanmeldingen"
       }
     },
     "status": {
@@ -685,6 +686,22 @@
         "liveSincePrefix": "live sinds",
         "noTenants": "Geen partnervrije tenants beschikbaar — zet de schakelaar aan om ge-onboarde en gestopte te tonen.",
         "registryUnavailable": "Tenant-register niet beschikbaar ({error}) — voer de tenantgegevens hieronder handmatig in."
+      },
+      "signups": {
+        "title": "Restaurant-aanmeldingen",
+        "empty": "Nog geen aanmeldingen.",
+        "desiredSlug": "Gewenste slug",
+        "status": {
+          "NEW": "Nieuw",
+          "CONTACTED": "Gecontacteerd",
+          "CONVERTED": "Geconverteerd",
+          "DECLINED": "Afgewezen"
+        },
+        "markContacted": "Markeer als gecontacteerd",
+        "convert": "Converteren",
+        "decline": "Afwijzen",
+        "openOnboarding": "Onboarding openen →",
+        "updatedNote": "Bijgewerkt."
       }
     },
     "errors": {
@@ -713,7 +730,8 @@
       "alreadyActive": "Dit abonnement is al actief.",
       "startPaymentFailed": "Kon de betaling niet starten — probeer het opnieuw.",
       "tooManyAttempts": "Te veel pogingen — wacht een paar minuten.",
-      "paymentProcessing": "Je betaling wordt verwerkt — je hoeft niet opnieuw te betalen."
+      "paymentProcessing": "Je betaling wordt verwerkt — je hoeft niet opnieuw te betalen.",
+      "signupNotFound": "Deze aanmelding bestaat niet meer."
     },
     "plan": {
       "title": "Jouw abonnement",

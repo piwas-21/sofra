@@ -15,6 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       signOutLabel={t("signOut")}
       nav={[
         { href: "/admin", label: t("nav.applications") },
+        { href: "/admin/signups", label: t("nav.signups") },
         { href: "/admin/partners", label: t("nav.partners") },
         { href: "/admin/clients", label: t("nav.clients") },
         { href: "/admin/tenants", label: t("nav.tenants") },
