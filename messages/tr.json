@@ -741,5 +741,46 @@
         "year": "yıl"
       }
     }
+  },
+  "signup": {
+    "meta": {
+      "title": "Kayıt ol — Sofra",
+      "description": "Sofra restoran platformunuzu başlatın: QR menüler, canlı siparişler, rezervasyonlar ve sadakat. Mekanınızı anlatın, kurulumu biz hallederiz."
+    },
+    "label": "Başlayın",
+    "title": "Restoranınızı sofraya getirin",
+    "subtitle": "Mekanınızı anlatın, Sofra'nızı kuralım — QR menüler, canlı siparişler, rezervasyonlar ve sadakat. Her restoranı tek tek, bizzat kuruyoruz.",
+    "points": {
+      "quick": {
+        "title": "Hızlı başlangıç",
+        "text": "Şimdi birkaç bilgi; kurulumu biz yapar, sizi canlıya almak için size ulaşırız."
+      },
+      "personal": {
+        "title": "Kişisel kurulum",
+        "text": "Çağrı merkezi yok — restoranınızı kurucu sizinle birlikte kurar."
+      },
+      "noCard": {
+        "title": "Kart gerekmez",
+        "text": "Önce kayıt olun. Faturalama, mekanınız yayına hazır olduğunda gelir."
+      }
+    },
+    "loginHint": "Zaten hesabınız var mı?",
+    "loginLink": "Giriş yap",
+    "form": {
+      "restaurantName": "Restoran adı",
+      "contactName": "Adınız",
+      "email": "E-posta",
+      "phone": "Telefon (isteğe bağlı)",
+      "city": "Şehir (isteğe bağlı)",
+      "desiredSlug": "Tercih edilen web adresi (isteğe bağlı)",
+      "desiredSlugHint": "Küçük harfler, rakamlar ve tireler — örn. restoraniniz. Uygunluğu teyit ederiz.",
+      "message": "Bize iletmek istediğiniz bir şey var mı? (isteğe bağlı)",
+      "submit": "Kayıt ol",
+      "sending": "Gönderiliyor…",
+      "success": "Aramıza hoş geldiniz! Bilgilerinizi aldık, restoranınızı kurmak için kısa süre içinde size ulaşacağız — afiyet olsun.",
+      "error": "Bir şeyler ters gitti — lütfen bir dakika sonra tekrar deneyin.",
+      "invalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
+      "invalidSlug": "Küçük harf, rakam ve tire kullanın (2–31 karakter)."
+    }
   }
 }
