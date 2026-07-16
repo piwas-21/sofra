@@ -35,7 +35,9 @@ export default function SignupForm() {
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, locale }),
+        // Send the trimmed slug so the value we validated is the value we submit
+        // (no client/server divergence on stray whitespace).
+        body: JSON.stringify({ ...data, desiredSlug: slug, locale }),
       });
       if (!res.ok) throw new Error(`signup api ${res.status}`);
       form.reset();
@@ -104,9 +106,12 @@ export default function SignupForm() {
           inputMode="url"
           placeholder={t("desiredSlug")}
           aria-label={t("desiredSlug")}
+          aria-describedby="desiredSlug-hint"
           className="input-primary"
         />
-        <span className="font-label text-xs text-muted-foreground">{t("desiredSlugHint")}</span>
+        <span id="desiredSlug-hint" className="font-label text-xs text-muted-foreground">
+          {t("desiredSlugHint")}
+        </span>
       </div>
       <textarea
         name="message"
