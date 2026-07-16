@@ -741,5 +741,46 @@
         "year": "Jahr"
       }
     }
+  },
+  "signup": {
+    "meta": {
+      "title": "Registrieren — Sofra",
+      "description": "Starten Sie Ihre Sofra-Restaurantplattform: QR-Menüs, Live-Bestellungen, Reservierungen und Treue. Erzählen Sie uns von Ihrem Lokal, wir richten alles ein."
+    },
+    "label": "Loslegen",
+    "title": "Bringen Sie Ihr Restaurant an den Tisch",
+    "subtitle": "Erzählen Sie uns von Ihrem Lokal und wir richten Ihr Sofra ein — QR-Menüs, Live-Bestellungen, Reservierungen und Treue. Wir begleiten jedes Restaurant persönlich.",
+    "points": {
+      "quick": {
+        "title": "Schneller Start",
+        "text": "Ein paar Angaben jetzt; um die Einrichtung kümmern wir uns und melden uns bei Ihnen."
+      },
+      "personal": {
+        "title": "Persönliches Onboarding",
+        "text": "Kein Callcenter — der Gründer richtet Ihr Restaurant gemeinsam mit Ihnen ein."
+      },
+      "noCard": {
+        "title": "Keine Karte nötig",
+        "text": "Erst registrieren. Die Abrechnung kommt später, sobald Ihr Lokal startklar ist."
+      }
+    },
+    "loginHint": "Sie haben bereits ein Konto?",
+    "loginLink": "Anmelden",
+    "form": {
+      "restaurantName": "Name des Restaurants",
+      "contactName": "Ihr Name",
+      "email": "E-Mail",
+      "phone": "Telefon (optional)",
+      "city": "Stadt (optional)",
+      "desiredSlug": "Gewünschte Webadresse (optional)",
+      "desiredSlugHint": "Kleinbuchstaben, Zahlen und Bindestriche — z. B. ihr-restaurant. Wir bestätigen die Verfügbarkeit.",
+      "message": "Möchten Sie uns etwas mitteilen? (optional)",
+      "submit": "Registrieren",
+      "sending": "Wird gesendet…",
+      "success": "Willkommen an Bord! Wir haben Ihre Angaben und melden uns in Kürze, um Ihr Restaurant einzurichten — afiyet olsun.",
+      "error": "Etwas ist schiefgelaufen — bitte versuchen Sie es in einer Minute erneut.",
+      "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+      "invalidSlug": "Verwenden Sie Kleinbuchstaben, Zahlen und Bindestriche (2–31 Zeichen)."
+    }
   }
 }

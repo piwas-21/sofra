@@ -741,5 +741,46 @@
         "year": "year"
       }
     }
+  },
+  "signup": {
+    "meta": {
+      "title": "Sign up — Sofra",
+      "description": "Start your Sofra restaurant platform: QR menus, live orders, reservations and loyalty. Tell us about your place and we'll set you up."
+    },
+    "label": "Get started",
+    "title": "Bring your restaurant to the table",
+    "subtitle": "Tell us about your place and we'll set up your Sofra — QR menus, live orders, reservations and loyalty. We onboard every restaurant personally.",
+    "points": {
+      "quick": {
+        "title": "Quick to start",
+        "text": "A few details now; we handle the setup and reach out to get you live."
+      },
+      "personal": {
+        "title": "Personal onboarding",
+        "text": "No call centre — the founder sets up your restaurant with you, one by one."
+      },
+      "noCard": {
+        "title": "No card needed",
+        "text": "Sign up first. Billing comes later, once your place is ready to go live."
+      }
+    },
+    "loginHint": "Already have an account?",
+    "loginLink": "Log in",
+    "form": {
+      "restaurantName": "Restaurant name",
+      "contactName": "Your name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "city": "City (optional)",
+      "desiredSlug": "Preferred web address (optional)",
+      "desiredSlugHint": "Lowercase letters, numbers and hyphens — e.g. your-restaurant. We'll confirm availability.",
+      "message": "Anything you'd like us to know? (optional)",
+      "submit": "Sign up",
+      "sending": "Sending…",
+      "success": "Welcome aboard! We've got your details and will reach out shortly to set up your restaurant — afiyet olsun.",
+      "error": "Something went wrong — please try again in a minute.",
+      "invalidEmail": "Please enter a valid email address.",
+      "invalidSlug": "Use lowercase letters, numbers and hyphens (2–31 characters)."
+    }
   }
 }
