@@ -2,33 +2,20 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendEmail, escapeHtml, founderInbox, siteUrl } from "@/lib/email";
 import { craftEmail, detailRows } from "@/lib/email-templates";
-import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { guardIntake } from "@/lib/intake";
 import { applySchema } from "@/lib/validation";
 import { audit } from "@/lib/audit";
 
 /**
- * Public "Become a partner" intake. Same guards as the waitlist route
- * (honeypot, caps, escaping) plus rate limiting; applications land in the
- * founder admin queue AND the founder inbox.
+ * Public "Become a partner" intake. Shares the honeypot + rate-limit guard with
+ * the signup route (guardIntake); applications land in the founder admin queue
+ * AND the founder inbox.
  */
 export async function POST(request: Request) {
-  if (!rateLimit(`apply:${clientIp(request)}`, 5, 15 * 60 * 1000)) {
-    return NextResponse.json({ ok: false }, { status: 429 });
-  }
+  const guard = await guardIntake(request, "apply");
+  if ("response" in guard) return guard.response;
 
-  let body: Record<string, unknown>;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ ok: false }, { status: 400 });
-  }
-
-  // Bots fill the hidden field; pretend success and drop it.
-  if (String(body.company_website ?? "")) {
-    return NextResponse.json({ ok: true });
-  }
-
-  const parsed = applySchema.safeParse(body);
+  const parsed = applySchema.safeParse(guard.body);
   if (!parsed.success) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }

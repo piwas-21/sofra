@@ -27,6 +27,13 @@ enum ApplicationStatus {
   REJECTED
 }
 
+enum SignupStatus {
+  NEW
+  CONTACTED
+  CONVERTED
+  DECLINED
+}
+
 enum ClientStatus {
   LEAD
   CONTACTED
@@ -66,6 +73,27 @@ model PartnerApplication {
   status    ApplicationStatus @default(PENDING)
   createdAt DateTime          @default(now())
   decidedAt DateTime?
+
+  @@index([status, createdAt])
+}
+
+// Direct (non-partner) restaurant signup intake (ADR-004 self-serve v1). A
+// public form drops a NEW row + founder email; conversion stays founder-operated
+// via /admin/onboard until the auto-provisioning hook lands. Mirrors
+// PartnerApplication (a lead queue, not a User/Client yet).
+model SignupRequest {
+  id             String       @id @default(cuid())
+  restaurantName String
+  contactName    String
+  email          String
+  phone          String?
+  city           String?
+  desiredSlug    String?
+  message        String?
+  locale         String       @default("en")
+  status         SignupStatus @default(NEW)
+  createdAt      DateTime     @default(now())
+  decidedAt      DateTime?
 
   @@index([status, createdAt])
 }
