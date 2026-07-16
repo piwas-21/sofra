@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-
-type Status = "idle" | "sending" | "success" | "error" | "invalidEmail" | "invalidSlug";
+import { useTranslations } from "next-intl";
+import { useIntakeForm, looksLikeEmail } from "@/hooks/useIntakeForm";
 
 // Must mirror the registry grammar used by signupSchema (lib/validation.ts) so
 // the client rejects a bad slug with a field-level message instead of letting
@@ -12,54 +10,25 @@ const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,30}$/;
 
 export default function SignupForm() {
   const t = useTranslations("signup.form");
-  const locale = useLocale();
-  const [status, setStatus] = useState<Status>("idle");
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.email ?? ""))) {
-      setStatus("invalidEmail");
-      return;
-    }
-    const slug = String(data.desiredSlug ?? "").trim();
-    if (slug && !SLUG_RE.test(slug)) {
-      setStatus("invalidSlug");
-      return;
-    }
-
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        // Send the trimmed slug so the value we validated is the value we submit
-        // (no client/server divergence on stray whitespace).
-        body: JSON.stringify({ ...data, desiredSlug: slug, locale }),
-      });
-      if (!res.ok) throw new Error(`signup api ${res.status}`);
-      form.reset();
-      setStatus("success");
-    } catch {
-      setStatus("error");
-    }
-  }
+  const { status, submit } = useIntakeForm("/api/signup", (data) => {
+    if (!looksLikeEmail(data.email)) return "invalidEmail";
+    const slug = data.desiredSlug.trim();
+    if (slug && !SLUG_RE.test(slug)) return "invalidSlug";
+    // Send the trimmed slug we validated (no client/server whitespace divergence).
+    data.desiredSlug = slug;
+    return null;
+  });
 
   if (status === "success") {
     return (
-      <p
-        role="status"
-        className="hand-drawn-border bg-card px-6 py-5 font-hand text-2xl text-craft-olive-text dark:text-craft-olive-dark"
-      >
+      <output className="block hand-drawn-border bg-card px-6 py-5 font-hand text-2xl text-craft-olive-text dark:text-craft-olive-dark">
         {t("success")}
-      </p>
+      </output>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
       <input
         name="restaurantName"
         required
@@ -133,19 +102,9 @@ export default function SignupForm() {
         <button type="submit" disabled={status === "sending"} className="btn-primary disabled:opacity-60">
           {status === "sending" ? t("sending") : t("submit")}
         </button>
-        {status === "invalidEmail" && (
+        {(status === "invalidEmail" || status === "invalidSlug" || status === "error") && (
           <p role="alert" className="font-label text-destructive">
-            {t("invalidEmail")}
-          </p>
-        )}
-        {status === "invalidSlug" && (
-          <p role="alert" className="font-label text-destructive">
-            {t("invalidSlug")}
-          </p>
-        )}
-        {status === "error" && (
-          <p role="alert" className="font-label text-destructive">
-            {t("error")}
+            {t(status)}
           </p>
         )}
       </div>
