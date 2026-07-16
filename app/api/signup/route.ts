@@ -2,34 +2,21 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendEmail, escapeHtml, founderInbox, siteUrl } from "@/lib/email";
 import { craftEmail, detailRows } from "@/lib/email-templates";
-import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { guardIntake } from "@/lib/intake";
 import { signupSchema } from "@/lib/validation";
 import { audit } from "@/lib/audit";
 
 /**
- * Public direct-restaurant signup intake (ADR-004 self-serve v1). Same guards as
- * the partner-apply route (honeypot, rate limit, escaping); leads land in the
+ * Public direct-restaurant signup intake (ADR-004 self-serve v1). Shares the
+ * partner-apply guards (honeypot, rate limit) via guardIntake; leads land in the
  * founder admin queue (SignupRequest, status NEW) AND the founder inbox. The
  * founder converts a lead via /admin/onboard — no auto-provisioning yet.
  */
 export async function POST(request: Request) {
-  if (!rateLimit(`signup:${clientIp(request)}`, 5, 15 * 60 * 1000)) {
-    return NextResponse.json({ ok: false }, { status: 429 });
-  }
+  const guard = await guardIntake(request, "signup");
+  if ("response" in guard) return guard.response;
 
-  let body: Record<string, unknown>;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ ok: false }, { status: 400 });
-  }
-
-  // Bots fill the hidden field; pretend success and drop it.
-  if (String(body.company_website ?? "")) {
-    return NextResponse.json({ ok: true });
-  }
-
-  const parsed = signupSchema.safeParse(body);
+  const parsed = signupSchema.safeParse(guard.body);
   if (!parsed.success) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
@@ -51,6 +38,9 @@ export async function POST(request: Request) {
 
   const to = founderInbox();
   if (to) {
+    const messageHtml = data.message
+      ? `<p style="margin:12px 0 0;">${escapeHtml(data.message)}</p>`
+      : "";
     await sendEmail({
       to,
       replyTo: data.email,
@@ -66,7 +56,7 @@ export async function POST(request: Request) {
           ["City", data.city || "—"],
           ["Desired slug", data.desiredSlug || "—"],
           ["Language", data.locale],
-        ])}${data.message ? `<p style="margin:12px 0 0;">${escapeHtml(data.message)}</p>` : ""}`,
+        ])}${messageHtml}`,
         cta: { label: "Review in admin", url: `${siteUrl()}/admin` },
       }),
     });
