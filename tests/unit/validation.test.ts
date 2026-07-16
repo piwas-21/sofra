@@ -8,6 +8,7 @@ import {
   onboardSchema,
   partnerStatusSchema,
   PARTNER_STATUSES,
+  signupSchema,
 } from "@/lib/validation";
 
 describe("applySchema (partner application)", () => {
@@ -38,6 +39,48 @@ describe("applySchema (partner application)", () => {
 
   it("allows an empty-string company (optional-or-literal)", () => {
     expect(applySchema.safeParse({ ...valid, company: "" }).success).toBe(true);
+  });
+});
+
+describe("signupSchema (direct restaurant signup)", () => {
+  const valid = {
+    restaurantName: "Sofra Demo",
+    contactName: "Ada Owner",
+    email: "ada@example.com",
+  };
+
+  it("accepts a minimal valid signup and defaults locale to en", () => {
+    const parsed = signupSchema.parse(valid);
+    expect(parsed.locale).toBe("en");
+  });
+
+  it("trims and lower-cases nothing it shouldn't, but trims whitespace", () => {
+    const parsed = signupSchema.parse({ ...valid, restaurantName: "  Sofra Demo  " });
+    expect(parsed.restaurantName).toBe("Sofra Demo");
+  });
+
+  it("requires restaurantName, contactName, and email", () => {
+    expect(signupSchema.safeParse({ ...valid, restaurantName: "" }).success).toBe(false);
+    expect(signupSchema.safeParse({ ...valid, contactName: "" }).success).toBe(false);
+    expect(signupSchema.safeParse({ ...valid, email: "nope" }).success).toBe(false);
+  });
+
+  it("allows empty-string optionals (phone/city/desiredSlug/message)", () => {
+    expect(
+      signupSchema.safeParse({ ...valid, phone: "", city: "", desiredSlug: "", message: "" })
+        .success,
+    ).toBe(true);
+  });
+
+  it("accepts a canonical desiredSlug and reuses the registry grammar", () => {
+    expect(signupSchema.safeParse({ ...valid, desiredSlug: "sofra-demo" }).success).toBe(true);
+    expect(signupSchema.safeParse({ ...valid, desiredSlug: "Sofra" }).success).toBe(false);
+    expect(signupSchema.safeParse({ ...valid, desiredSlug: "-x" }).success).toBe(false);
+    expect(signupSchema.safeParse({ ...valid, desiredSlug: "a" }).success).toBe(false);
+  });
+
+  it("rejects an over-length message", () => {
+    expect(signupSchema.safeParse({ ...valid, message: "x".repeat(2001) }).success).toBe(false);
   });
 });
 
