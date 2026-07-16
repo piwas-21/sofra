@@ -9,6 +9,26 @@ export const applySchema = z.object({
   locale: z.string().max(5).default("en"),
 });
 
+// Direct restaurant signup intake (ADR-004 self-serve v1). Public form; the
+// founder converts leads via /admin/onboard. desiredSlug is optional but, when
+// given, must match the registry grammar (same as billing/onboard) so we don't
+// capture garbage the founder then has to clean up.
+export const signupSchema = z.object({
+  restaurantName: z.string().trim().min(1).max(200),
+  contactName: z.string().trim().min(1).max(200),
+  email: z.string().trim().max(200).email(),
+  phone: z.string().trim().max(50).optional().or(z.literal("")),
+  city: z.string().trim().max(200).optional().or(z.literal("")),
+  desiredSlug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9][a-z0-9-]{1,30}$/, "lowercase slug, 2-31 chars")
+    .optional()
+    .or(z.literal("")),
+  message: z.string().trim().max(2000).optional().or(z.literal("")),
+  locale: z.string().max(5).default("en"),
+});
+
 export const clientSchema = z.object({
   restaurantName: z.string().trim().min(1).max(200),
   contactName: z.string().trim().max(200).optional().or(z.literal("")),
@@ -21,6 +41,11 @@ export const clientSchema = z.object({
 // "request onboarding" action; LIVE/CHURNED are ADMIN-only.
 export const PARTNER_STATUSES = ["LEAD", "CONTACTED", "DEMO_SCHEDULED", "AGREED"] as const;
 export const partnerStatusSchema = z.enum(PARTNER_STATUSES);
+
+// Target statuses an ADMIN may move a signup lead to (NEW is the initial state,
+// set on intake, and is never a valid transition target).
+export const SIGNUP_STATUSES = ["CONTACTED", "CONVERTED", "DECLINED"] as const;
+export const signupStatusSchema = z.enum(SIGNUP_STATUSES);
 
 export const noteSchema = z.object({
   body: z.string().trim().min(1).max(2000),
