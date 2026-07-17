@@ -19,12 +19,12 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminOnboardPage({
   searchParams,
-}: {
+}: Readonly<{
   // `from` = a signup-lead id (opaque, never PII in the URL): when present we
   // re-read that lead server-side and pre-fill the form (ADR-004 conversion).
   // A repeated key yields string[] in the App Router — normalize to the first.
   searchParams: Promise<{ from?: string | string[] }>;
-}) {
+}>) {
   await requireAdmin();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.admin" });
