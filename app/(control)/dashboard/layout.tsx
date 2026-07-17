@@ -1,13 +1,28 @@
 import { getTranslations } from "next-intl/server";
-import { requirePartner } from "@/lib/rbac";
+import { requirePartnerOrOwner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import ControlShell from "@/components/control/ControlShell";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const user = await requirePartner();
+  const user = await requirePartnerOrOwner();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.shell" });
+
+  // OWNER (direct self-serve, ADR-004): a single-restaurant view — one nav item,
+  // no reseller CRM / ledger / plan pages (those all requirePartner).
+  if (user.role === "OWNER") {
+    return (
+      <ControlShell
+        title={t("owner")}
+        userLabel={user.name}
+        signOutLabel={t("signOut")}
+        nav={[{ href: "/dashboard", label: t("nav.overview") }]}
+      >
+        {children}
+      </ControlShell>
+    );
+  }
 
   // Derive the partner "type" from what they actually have (SOFRA-PARTNER-PLAN):
   // a reseller pays (has billing) and sees Plan; a commission partner earns and

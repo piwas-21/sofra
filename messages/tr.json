@@ -454,6 +454,7 @@
     "shell": {
       "signOut": "Çıkış yap",
       "partner": "Partner",
+      "owner": "Restoran",
       "admin": "Yönetici",
       "nav": {
         "clients": "Müşteriler",
@@ -465,6 +466,7 @@
         "audit": "Denetim",
         "onboard": "Katılım",
         "plan": "Abonelik",
+        "overview": "Genel bakış",
         "signups": "Kayıtlar"
       }
     },
@@ -479,9 +481,12 @@
     },
     "dashboard": {
       "title": "Müşterileriniz",
+      "ownerTitle": "Aboneliğiniz",
       "intro": "Sofraya getirdiğiniz her restoran — ilk aramadan canlı servise kadar.",
+      "ownerIntro": "Sofra planınız ve faturalandırmanız tek bir yerde.",
       "addClient": "Müşteri ekle",
       "empty": "Henüz müşteri yok — ilk restoranı yukarıdan ekleyin.",
+      "ownerAllSet": "Aboneliğiniz etkin — şu anda burada yapılacak bir şey yok.",
       "updated": "güncelleme: {date}"
     },
     "client": {

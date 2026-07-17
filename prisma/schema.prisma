@@ -13,6 +13,9 @@ datasource db {
 enum UserRole {
   ADMIN
   PARTNER
+  // Direct restaurant owner (ADR-004 self-serve): pays for their own tenant, no
+  // reseller relationship. Onboarded from a signup lead; dashboard = own plan only.
+  OWNER
 }
 
 enum UserStatus {
@@ -60,6 +63,8 @@ model User {
   createdEntries CommissionEntry[] @relation("EntryAuthor")
   inviteTokens InviteToken[]
   auditLogs    AuditLog[]
+  // Tenants this user pays for directly (OWNER self-serve; ADR-004).
+  billingsPaid TenantBilling[]     @relation("BillingPayer")
 }
 
 model PartnerApplication {
@@ -191,6 +196,11 @@ model TenantBilling {
   mollieCustomerId String?  @unique
   clientId         String?  @unique
   client           Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  // Explicit payer for the direct-owner flow (ADR-004): set when there is no
+  // reseller Client. The reseller flow leaves this null and derives the payer
+  // from client.partner. Exactly one of clientId / payerUserId is set in practice.
+  payerUserId      String?
+  payer            User?    @relation("BillingPayer", fields: [payerUserId], references: [id], onDelete: SetNull)
   // Display-only: when the tenant's app went live (admin-entered at
   // onboarding), shown on the partner's welcome panel.
   liveSince        DateTime?
@@ -198,6 +208,8 @@ model TenantBilling {
 
   subscriptions BillingSubscription[]
   payments      BillingPayment[]
+
+  @@index([payerUserId])
 }
 
 model BillingSubscription {
