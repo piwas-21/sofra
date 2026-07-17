@@ -454,6 +454,7 @@
     "shell": {
       "signOut": "Se déconnecter",
       "partner": "Partenaire",
+      "owner": "Restaurant",
       "admin": "Admin",
       "nav": {
         "clients": "Clients",
@@ -465,6 +466,7 @@
         "audit": "Audit",
         "onboard": "Intégrer",
         "plan": "Abonnement",
+        "overview": "Aperçu",
         "signups": "Inscriptions"
       }
     },
@@ -479,9 +481,12 @@
     },
     "dashboard": {
       "title": "Vos clients",
+      "ownerTitle": "Votre abonnement",
       "intro": "Chaque restaurant que vous amenez à table, du premier appel au service en salle.",
+      "ownerIntro": "Votre offre Sofra et votre facturation, au même endroit.",
       "addClient": "Ajouter un client",
       "empty": "Pas encore de clients — ajoutez le premier restaurant ci-dessus.",
+      "ownerAllSet": "Votre abonnement est actif — rien à faire ici pour le moment.",
       "updated": "mis à jour le {date}"
     },
     "client": {

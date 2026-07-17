@@ -454,6 +454,7 @@
     "shell": {
       "signOut": "Uitloggen",
       "partner": "Partner",
+      "owner": "Restaurant",
       "admin": "Admin",
       "nav": {
         "clients": "Klanten",
@@ -465,6 +466,7 @@
         "audit": "Audit",
         "onboard": "Onboarden",
         "plan": "Abonnement",
+        "overview": "Overzicht",
         "signups": "Aanmeldingen"
       }
     },
@@ -479,9 +481,12 @@
     },
     "dashboard": {
       "title": "Je klanten",
+      "ownerTitle": "Je abonnement",
       "intro": "Elk restaurant dat jij aan tafel brengt, van eerste gesprek tot live service.",
+      "ownerIntro": "Je Sofra-abonnement en facturering op één plek.",
       "addClient": "Klant toevoegen",
       "empty": "Nog geen klanten — voeg hierboven het eerste restaurant toe.",
+      "ownerAllSet": "Je abonnement is actief — hier is nu niets te doen.",
       "updated": "bijgewerkt {date}"
     },
     "client": {

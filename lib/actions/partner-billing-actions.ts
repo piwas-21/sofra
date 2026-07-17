@@ -1,12 +1,13 @@
 "use server";
 
-// Partner-facing billing (SOFRA-PARTNER-PLAN, reseller flow). A logged-in
-// partner starts the first payment for a tenant they own, which creates the
-// Mollie customer + hosted checkout; the browser then redirects to Mollie. The
-// recurring subscription is activated by the existing webhook (lib/billing.ts).
+// Payer-facing billing. A logged-in payer — a reseller PARTNER (via their CRM
+// client) or a direct OWNER (via payerUserId, ADR-004) — starts the first
+// payment for a tenant they own, which creates the Mollie customer + hosted
+// checkout; the browser then redirects to Mollie. The recurring subscription is
+// activated by the existing webhook (lib/billing.ts).
 
 import { redirect } from "next/navigation";
-import { requirePartner } from "@/lib/rbac";
+import { requirePartnerOrOwner } from "@/lib/rbac";
 import { db } from "@/lib/db";
 import { rateLimit } from "@/lib/rate-limit";
 import {
@@ -25,11 +26,11 @@ export async function startPaymentAction(
   _prev: StartPaymentState,
   formData: FormData,
 ): Promise<StartPaymentState> {
-  const user = await requirePartner();
+  const user = await requirePartnerOrOwner();
   if (!mollieConfigured()) return { error: "mollieNotConfigured" };
 
-  // Money-adjacent + network op → rate-limit per partner. This action is
-  // authenticated, so user.id beats IP: no NAT collisions (partners behind one
+  // Money-adjacent + network op → rate-limit per payer. This action is
+  // authenticated, so user.id beats IP: no NAT collisions (payers behind one
   // router), no dependency on proxy headers, and nothing to spoof.
   if (!rateLimit(`start-payment:${user.id}`, 10, 15 * 60 * 1000)) return { error: "tooManyAttempts" };
 
@@ -39,9 +40,11 @@ export async function startPaymentAction(
     where: { id: billingId },
     include: { client: true, subscriptions: true },
   });
-  // Ownership: the partner must own the CRM client behind this billing. A
-  // billing with no client (or another partner's) is invisible to them.
-  if (!billing || billing.client?.partnerId !== user.id) return { error: "planNotFound" };
+  // Ownership: the caller is either the direct OWNER named as payerUserId, or the
+  // reseller PARTNER behind the CRM client. A billing they own neither way is
+  // invisible to them.
+  const owns = !!billing && (billing.payerUserId === user.id || billing.client?.partnerId === user.id);
+  if (!billing || !owns) return { error: "planNotFound" };
   if (billing.subscriptions.some((s) => s.status === "ACTIVE")) return { error: "alreadyActive" };
 
   let checkoutUrl: string | null = null;
