@@ -667,6 +667,7 @@
       "onboard": {
         "title": "Onboard a partner",
         "intro": "Set up a referred partner as the payer for a tenant, then share the invite link — they set a password and start the monthly subscription themselves.",
+        "fromSignup": "Onboarding {restaurant} from its signup — the fields below are pre-filled.",
         "mollieMissing": "Mollie isn't configured on this environment — the partner can't pay until MOLLIE_API_KEY is set.",
         "name": "Partner name",
         "email": "Partner email",

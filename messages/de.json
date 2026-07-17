@@ -667,6 +667,7 @@
       "onboard": {
         "title": "Partner onboarden",
         "intro": "Richten Sie einen empfohlenen Partner als Zahler für einen Mandanten ein und teilen Sie den Einladungslink — er legt ein Passwort fest und startet das Monatsabo selbst.",
+        "fromSignup": "{restaurant} wird aus seiner Anmeldung eingerichtet — die Felder unten sind vorausgefüllt.",
         "mollieMissing": "Mollie ist in dieser Umgebung nicht konfiguriert — der Partner kann erst zahlen, wenn MOLLIE_API_KEY gesetzt ist.",
         "name": "Partnername",
         "email": "Partner-E-Mail",

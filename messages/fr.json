@@ -667,6 +667,7 @@
       "onboard": {
         "title": "Intégrer un partenaire",
         "intro": "Configurez un partenaire recommandé comme payeur d'un établissement, puis partagez le lien d'invitation — il définit un mot de passe et démarre lui-même l'abonnement mensuel.",
+        "fromSignup": "Intégration de {restaurant} depuis sa demande d’inscription — les champs ci-dessous sont pré-remplis.",
         "mollieMissing": "Mollie n'est pas configuré sur cet environnement — le partenaire ne pourra pas payer tant que MOLLIE_API_KEY n'est pas défini.",
         "name": "Nom du partenaire",
         "email": "E-mail du partenaire",

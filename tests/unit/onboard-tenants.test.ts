@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { RegistryTenant } from "@/lib/tenant-registry";
-import { isOnboardable, toOnboardTenants } from "@/lib/onboard-tenants";
+import { isOnboardable, toOnboardPrefill, toOnboardTenants } from "@/lib/onboard-tenants";
 import type { OnboardTenant } from "@/lib/onboard-tenants";
 
 // Minimal registry tenant — only the fields toOnboardTenants reads matter; the
@@ -70,5 +70,35 @@ describe("isOnboardable", () => {
     expect(isOnboardable(onb({ slug: "prov", status: "provisioning" }))).toBe(false);
     // onboarded AND retired — still not onboardable
     expect(isOnboardable(onb({ slug: "gone", status: "retired", onboarded: true }))).toBe(false);
+  });
+});
+
+describe("toOnboardPrefill", () => {
+  it("maps a signup lead to onboard defaults (contact is the payer)", () => {
+    expect(
+      toOnboardPrefill({
+        id: "sig_1",
+        contactName: "Amara Diallo",
+        email: "amara@example.com",
+        restaurantName: "Chez Amara",
+        desiredSlug: "chez-amara",
+      }),
+    ).toEqual({
+      signupId: "sig_1",
+      name: "Amara Diallo",
+      email: "amara@example.com",
+      restaurantName: "Chez Amara",
+      tenantSlug: "chez-amara",
+    });
+  });
+
+  it("defaults an omitted desiredSlug to an empty string", () => {
+    expect(toOnboardPrefill({
+      id: "sig_2",
+      contactName: "Bo Lin",
+      email: "bo@example.com",
+      restaurantName: "Lin Noodles",
+      desiredSlug: null,
+    }).tenantSlug).toBe("");
   });
 });

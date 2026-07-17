@@ -667,6 +667,7 @@
       "onboard": {
         "title": "Partner onboarden",
         "intro": "Stel een aangedragen partner in als betaler voor een tenant en deel de uitnodigingslink — hij stelt een wachtwoord in en start zelf het maandabonnement.",
+        "fromSignup": "{restaurant} onboarden vanuit zijn aanmelding — de velden hieronder zijn vooraf ingevuld.",
         "mollieMissing": "Mollie is niet geconfigureerd in deze omgeving — de partner kan pas betalen als MOLLIE_API_KEY is ingesteld.",
         "name": "Naam partner",
         "email": "E-mail partner",
