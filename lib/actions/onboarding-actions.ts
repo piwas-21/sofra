@@ -72,6 +72,23 @@ async function emailOnboardInvite(
   return link;
 }
 
+/** Close the originating signup lead (ADR-004) once its onboard succeeds.
+ *  Idempotent by input: no id, an unknown id, or an already-CONVERTED lead is a
+ *  no-op (returns false). A genuine DB error still propagates. Founder-reversible,
+ *  like the pipeline's own transitions. Returns whether the lead was flipped, so
+ *  the caller can revalidate /admin/signups. */
+async function markSignupConverted(signupId: unknown, actorId: string): Promise<boolean> {
+  if (typeof signupId !== "string" || signupId === "") return false;
+  const signup = await db.signupRequest.findUnique({ where: { id: signupId } });
+  if (!signup || signup.status === "CONVERTED") return false;
+  await db.signupRequest.update({
+    where: { id: signupId },
+    data: { status: "CONVERTED", decidedAt: new Date() },
+  });
+  await audit(actorId, "signup.converted", "SignupRequest", signupId);
+  return true;
+}
+
 export async function onboardPartnerAction(
   _prev: OnboardActionState,
   formData: FormData,
@@ -131,6 +148,12 @@ export async function onboardPartnerAction(
 
   const inviteLink = await emailOnboardInvite(user, email, input.restaurantName);
   await audit(admin.id, "partner.onboarded", "User", user.id, { tenantSlug, clientId: client.id });
+
+  // Onboarding IS the conversion event: when this flow was opened from a signup
+  // lead (hidden signupId), close that lead so it leaves the pipeline.
+  if (await markSignupConverted(formData.get("signupId"), admin.id)) {
+    revalidatePath("/admin/signups");
+  }
   revalidatePath("/admin/onboard");
   return { ok: true, inviteLink };
 }

@@ -667,6 +667,7 @@
       "onboard": {
         "title": "İş ortağı kaydı",
         "intro": "Yönlendirilen bir iş ortağını bir kiracının ödeyeni olarak ayarlayın, ardından davet bağlantısını paylaşın — kendisi bir şifre belirleyip aylık aboneliği başlatır.",
+        "fromSignup": "{restaurant} kaydından yola çıkılarak ekleniyor — aşağıdaki alanlar önceden dolduruldu.",
         "mollieMissing": "Bu ortamda Mollie yapılandırılmamış — MOLLIE_API_KEY ayarlanana kadar iş ortağı ödeme yapamaz.",
         "name": "İş ortağı adı",
         "email": "İş ortağı e-postası",

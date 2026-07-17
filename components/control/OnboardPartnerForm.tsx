@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import { onboardPartnerAction, type OnboardActionState } from "@/lib/actions/onboarding-actions";
-import { type OnboardTenant, isOnboardable } from "@/lib/onboard-tenants";
+import { type OnboardPrefill, type OnboardTenant, isOnboardable } from "@/lib/onboard-tenants";
 import ActionError from "./ActionError";
 import CopyField from "./CopyField";
 
@@ -13,8 +13,17 @@ import CopyField from "./CopyField";
  * by default, pre-filling restaurant name + go-live date). When the registry is
  * unavailable `tenants` is undefined and it falls back to free-text inputs — the
  * server action + slug regex are identical in both modes.
+ *
+ * `prefill` carries a signup lead's known fields (ADR-004 conversion): payer
+ * name/email + restaurant name always, and the desired slug pre-selected only
+ * when it is an onboardable registry tenant (a brand-new signup usually isn't
+ * provisioned yet, so the picker stays on its placeholder). The hidden signupId
+ * lets a successful onboard close the lead.
  */
-export default function OnboardPartnerForm({ tenants }: Readonly<{ tenants?: OnboardTenant[] }>) {
+export default function OnboardPartnerForm({
+  tenants,
+  prefill,
+}: Readonly<{ tenants?: OnboardTenant[]; prefill?: OnboardPrefill }>) {
   const t = useTranslations("control.admin");
   const [state, action, pending] = useActionState<OnboardActionState, FormData>(
     onboardPartnerAction,
@@ -23,8 +32,12 @@ export default function OnboardPartnerForm({ tenants }: Readonly<{ tenants?: Onb
 
   // Registry-driven picker state. `slug` also keys the pre-filled restaurant
   // name + date inputs so selecting a tenant remounts them with fresh defaults
-  // while leaving them editable.
-  const [slug, setSlug] = useState("");
+  // while leaving them editable. Seed it from the lead's desired slug only when
+  // that slug is actually selectable, else the <select> would hold an invalid value.
+  const prefillSlug = prefill?.tenantSlug ?? "";
+  const [slug, setSlug] = useState(
+    tenants?.some((tn) => tn.slug === prefillSlug && isOnboardable(tn)) ? prefillSlug : "",
+  );
   const [showAll, setShowAll] = useState(false);
   const registryMode = Array.isArray(tenants);
   const selectable = tenants?.filter(isOnboardable) ?? [];
@@ -41,10 +54,12 @@ export default function OnboardPartnerForm({ tenants }: Readonly<{ tenants?: Onb
 
   return (
     <form action={action} className="grid gap-3 sm:grid-cols-2">
+      {prefill?.signupId && <input type="hidden" name="signupId" value={prefill.signupId} />}
       <input
         name="name"
         required
         maxLength={200}
+        defaultValue={prefill?.name}
         placeholder={t("onboard.name")}
         aria-label={t("onboard.name")}
         className="input-primary"
@@ -54,6 +69,7 @@ export default function OnboardPartnerForm({ tenants }: Readonly<{ tenants?: Onb
         type="email"
         required
         maxLength={200}
+        defaultValue={prefill?.email}
         placeholder={t("onboard.email")}
         aria-label={t("onboard.email")}
         className="input-primary"
@@ -101,7 +117,7 @@ export default function OnboardPartnerForm({ tenants }: Readonly<{ tenants?: Onb
             name="restaurantName"
             required
             maxLength={200}
-            defaultValue={selected?.name ?? ""}
+            defaultValue={selected?.name ?? prefill?.restaurantName ?? ""}
             placeholder={t("onboard.restaurantName")}
             aria-label={t("onboard.restaurantName")}
             className="input-primary sm:col-span-2"
@@ -113,6 +129,7 @@ export default function OnboardPartnerForm({ tenants }: Readonly<{ tenants?: Onb
             name="tenantSlug"
             required
             pattern="[a-z0-9][a-z0-9-]{1,30}"
+            defaultValue={prefill?.tenantSlug}
             placeholder={t("onboard.slug")}
             aria-label={t("onboard.slug")}
             className="input-primary"
@@ -121,6 +138,7 @@ export default function OnboardPartnerForm({ tenants }: Readonly<{ tenants?: Onb
             name="restaurantName"
             required
             maxLength={200}
+            defaultValue={prefill?.restaurantName}
             placeholder={t("onboard.restaurantName")}
             aria-label={t("onboard.restaurantName")}
             className="input-primary"
