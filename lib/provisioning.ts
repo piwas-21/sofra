@@ -51,8 +51,10 @@ async function gh<T>(token: string, path: string, init?: RequestInit): Promise<T
 /**
  * Open a PR on the deploy repo that appends the tenant's registry entry. Returns
  * the PR URL. Steps: read the current registry (content+sha) on BASE, append the
- * entry, branch off BASE, commit the change on the branch, open the PR. Idempotent
- * enough for a retry: a slug already present in the registry is refused up front.
+ * entry, branch off BASE, commit the change on the branch, open the PR. A slug
+ * already MERGED into the registry is refused up front; a still-open proposal for
+ * the same slug is caught at branch creation with a clear message (the slug isn't
+ * on BASE until its PR merges, so the up-front check can't see it).
  */
 export async function openProvisioningPr(input: TenantProvisionInput): Promise<{ prUrl: string }> {
   const token = process.env.PROVISION_GITHUB_TOKEN;
@@ -76,10 +78,21 @@ export async function openProvisioningPr(input: TenantProvisionInput): Promise<{
     `/repos/${OWNER}/${REPO}/git/ref/heads/${BASE}`,
   );
   const branch = `provision/${input.slug}`;
-  await gh(token, `/repos/${OWNER}/${REPO}/git/refs`, {
-    method: "POST",
-    body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: baseRef.object.sha }),
-  });
+  try {
+    await gh(token, `/repos/${OWNER}/${REPO}/git/refs`, {
+      method: "POST",
+      body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: baseRef.object.sha }),
+    });
+  } catch (e) {
+    // A still-open proposal for this slug already holds the branch (the slug is
+    // not on BASE yet, so the registry check above couldn't catch it).
+    if (e instanceof ProvisioningApiError && /Reference already exists/i.test(e.message)) {
+      throw new ProvisioningApiError(
+        `a provisioning proposal for '${input.slug}' is already open (branch ${branch} exists)`,
+      );
+    }
+    throw e;
+  }
 
   // Commit the appended registry on the branch.
   await gh(token, `/repos/${OWNER}/${REPO}/contents/${REGISTRY_PATH}`, {
