@@ -31,6 +31,8 @@ export function provisioningConfigured(): boolean {
 
 async function gh<T>(token: string, path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API}${path}`, {
+    // Never serve a cached registry/ref read — a stale sha would 409 the commit.
+    cache: "no-store",
     ...init,
     headers: {
       Authorization: `Bearer ${token}`,
