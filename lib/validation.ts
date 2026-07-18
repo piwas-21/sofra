@@ -104,3 +104,20 @@ export const onboardSchema = z.object({
     .optional()
     .or(z.literal("")),
 });
+
+// Propose a NEW tenant registry entry (ADR-012). languages/modules are comma-
+// separated in the form; the action splits + lowercases them. Slug mirrors the
+// registry grammar; currency is an ISO-4217 code.
+export const provisionSchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9][a-z0-9-]{1,30}$/, "lowercase slug, 2-31 chars"),
+  name: z.string().trim().min(1).max(200),
+  adminEmail: z.string().trim().max(200).email(),
+  template: z.enum(["classic", "craft"]),
+  currency: z.string().trim().regex(/^[A-Z]{3}$/, "3-letter ISO code, e.g. EUR"),
+  languages: z.string().trim().min(1),
+  modules: z.string().trim().min(1),
+  city: z.string().trim().max(200).optional().or(z.literal("")),
+});

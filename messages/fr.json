@@ -462,6 +462,7 @@
         "applications": "Candidatures",
         "partners": "Partenaires",
         "tenants": "Tenants",
+        "provision": "Provisionner",
         "billing": "Facturation",
         "audit": "Audit",
         "onboard": "Intégrer",
@@ -708,6 +709,23 @@
         "decline": "Refuser",
         "openOnboarding": "Ouvrir l'intégration →",
         "updatedNote": "Mis à jour."
+      },
+      "provision": {
+        "title": "Provisionner un établissement",
+        "intro": "Proposez un nouvel établissement — cela ouvre une PR de registre à réviser sur le dépôt de déploiement. Fusionnez-la, synchronisez avec le serveur, puis lancez l’action de provisionnement.",
+        "notConfigured": "Le provisionnement n’est pas configuré sur cet environnement — définissez PROVISION_GITHUB_TOKEN (un jeton GitHub limité au dépôt de déploiement).",
+        "slug": "Identifiant (ex. bistro-nova)",
+        "name": "Nom du restaurant",
+        "adminEmail": "E-mail de l’administrateur",
+        "city": "Ville (facultatif)",
+        "template": "Modèle",
+        "currency": "Devise (ex. EUR)",
+        "languages": "Langues (séparées par des virgules, ex. en, nl)",
+        "modules": "Modules (séparés par des virgules, ex. core)",
+        "create": "Ouvrir la PR de registre",
+        "creating": "Ouverture…",
+        "created": "PR de registre ouverte — révisez + fusionnez, puis provisionnez :",
+        "nextSteps": "Après la fusion : la modification se synchronise avec le serveur lors de la prochaine synchro de déploiement, puis lancez l’action provision-tenant avec cet identifiant."
       }
     },
     "errors": {
@@ -737,7 +755,9 @@
       "startPaymentFailed": "Impossible de démarrer le paiement — veuillez réessayer.",
       "tooManyAttempts": "Trop de tentatives — veuillez patienter quelques minutes.",
       "paymentProcessing": "Votre paiement est en cours de traitement — inutile de payer à nouveau.",
-      "signupNotFound": "Cette inscription n'existe plus."
+      "signupNotFound": "Cette inscription n'existe plus.",
+      "provisioningNotConfigured": "Le provisionnement n’est pas configuré (jeton GitHub manquant).",
+      "provisionFailed": "Impossible d’ouvrir la PR de provisionnement. Consultez les journaux."
     },
     "plan": {
       "title": "Votre abonnement",
