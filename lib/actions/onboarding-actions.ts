@@ -1,10 +1,14 @@
 "use server";
 
-// Admin-only onboarding of a referred partner as the reseller payer for a
-// tenant (SOFRA-PARTNER-PLAN, reseller flow). Creates/reuses the PARTNER user +
-// the tenant Client + a PENDING billing plan (no Mollie yet), then mints a
-// set-password invite and ALWAYS returns the link so the founder can share it
-// manually. The partner completes the payment from their own dashboard.
+// Admin-only tenant onboarding. Two flows, chosen by whether it was opened from
+// a signup lead (hidden signupId):
+//   • RESELLER (no signup) — a referred PARTNER pays for the tenant: create/reuse
+//     the PARTNER user + a CRM Client + a PENDING plan linked to that Client.
+//   • DIRECT OWNER (from a signup, ADR-004) — the restaurant's own contact pays:
+//     create/reuse an OWNER user + a PENDING plan with payerUserId set, NO Client,
+//     and mark the originating signup CONVERTED.
+// Both mint a set-password invite and ALWAYS return the link so the founder can
+// share it manually; the payer completes the first payment from their dashboard.
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/rbac";
@@ -32,6 +36,16 @@ async function resolvePartnerUser(email: string, name: string) {
   });
 }
 
+/** Create the OWNER user (direct self-serve, ADR-004) if new; reuse an existing
+ *  OWNER (one owner may hold several tenants). Returns null if the email already
+ *  belongs to a PARTNER/ADMIN — never repurpose another role. No PartnerProfile:
+ *  that's reseller metadata and an owner isn't a partner. */
+async function resolveOwnerUser(email: string, name: string) {
+  const existing = await db.user.findUnique({ where: { email } });
+  if (existing) return existing.role === "OWNER" ? existing : null;
+  return db.user.create({ data: { email, name, role: "OWNER", status: "INVITED" } });
+}
+
 /** Create the tenant's CRM Client if new; reuse the partner's own. Returns null
  *  if the (unique) slug is already tied to a different partner. */
 async function resolveTenantClient(userId: string, tenantSlug: string, restaurantName: string) {
@@ -48,6 +62,7 @@ async function emailOnboardInvite(
   user: { id: string; name: string; status: string },
   email: string,
   restaurantName: string,
+  ownerFlow: boolean,
 ): Promise<string> {
   const needsPassword = user.status === "INVITED";
   const link = needsPassword
@@ -59,7 +74,7 @@ async function emailOnboardInvite(
       ? "Welcome to Sofra — set your password"
       : `Sofra — ${restaurantName} is ready for your subscription`,
     html: craftEmail({
-      kicker: "Partner program",
+      kicker: ownerFlow ? "Welcome to Sofra" : "Partner program",
       title: needsPassword ? "Welcome aboard 🎉" : "A new plan is waiting",
       bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
 <p style="margin:0;">${escapeHtml(restaurantName)} is set up on Sofra. ${
@@ -70,6 +85,23 @@ async function emailOnboardInvite(
     }),
   });
   return link;
+}
+
+/** Close the originating signup lead (ADR-004) once its onboard succeeds. No-op
+ *  (returns false) when there was no lead or it's already CONVERTED. A genuine DB
+ *  error still propagates. Founder-reversible, like the pipeline's own transitions.
+ *  Returns whether it flipped, so the caller can revalidate /admin/signups. */
+async function markSignupConverted(
+  signup: { id: string; status: string } | null,
+  actorId: string,
+): Promise<boolean> {
+  if (!signup || signup.status === "CONVERTED") return false;
+  await db.signupRequest.update({
+    where: { id: signup.id },
+    data: { status: "CONVERTED", decidedAt: new Date() },
+  });
+  await audit(actorId, "signup.converted", "SignupRequest", signup.id);
+  return true;
 }
 
 export async function onboardPartnerAction(
@@ -96,14 +128,24 @@ export async function onboardPartnerAction(
   // to a valid Date (or null when omitted).
   const liveSince = input.liveSince ? new Date(`${input.liveSince}T00:00:00Z`) : null;
 
+  // A real signup lead behind this onboarding = the DIRECT-OWNER flow (the
+  // restaurant's own contact pays). Absent/unknown id = the RESELLER flow.
+  const rawSignupId = formData.get("signupId");
+  const signup =
+    typeof rawSignupId === "string" && rawSignupId
+      ? await db.signupRequest.findUnique({ where: { id: rawSignupId } })
+      : null;
+  const ownerFlow = signup !== null;
+
   // One billing anchor per tenant (unique tenantSlug). Refuse a re-onboard.
   if (await db.tenantBilling.findUnique({ where: { tenantSlug } })) {
     return { error: "tenantAlreadyOnboarded" };
   }
 
   // Pre-check tenant ownership BEFORE creating anything: a slug already held by
-  // a DIFFERENT partner must reject here, not after resolvePartnerUser has
-  // created a fresh user (which would then be left orphaned).
+  // a DIFFERENT partner must reject here, not after a fresh user is created (it
+  // would be left orphaned). The owner flow creates no Client, but this still
+  // guards against onboarding a slug an existing reseller Client already holds.
   const slugOwner = await db.client.findUnique({ where: { tenantSlug }, include: { partner: true } });
   // Case-insensitive: emails are, and `email` is already lowercased. (All
   // current paths store lowercased, but don't depend on that here.)
@@ -111,11 +153,18 @@ export async function onboardPartnerAction(
     return { error: "tenantAlreadyOnboarded" };
   }
 
-  const user = await resolvePartnerUser(email, input.name);
+  const user = ownerFlow
+    ? await resolveOwnerUser(email, input.name)
+    : await resolvePartnerUser(email, input.name);
   if (!user) return { error: "userExists" };
 
-  const client = await resolveTenantClient(user.id, tenantSlug, input.restaurantName);
-  if (!client) return { error: "tenantAlreadyOnboarded" };
+  // Reseller flow links a CRM Client; owner flow pays via payerUserId, no Client.
+  let clientId: string | null = null;
+  if (!ownerFlow) {
+    const client = await resolveTenantClient(user.id, tenantSlug, input.restaurantName);
+    if (!client) return { error: "tenantAlreadyOnboarded" };
+    clientId = client.id;
+  }
 
   await defineTenantPlan({
     tenantSlug,
@@ -125,12 +174,21 @@ export async function onboardPartnerAction(
     amountCents: Math.round(input.amount * 100),
     interval: input.interval as BillingInterval,
     liveSince,
-    clientId: client.id,
+    clientId,
+    payerUserId: ownerFlow ? user.id : null,
     actorId: admin.id,
   });
 
-  const inviteLink = await emailOnboardInvite(user, email, input.restaurantName);
-  await audit(admin.id, "partner.onboarded", "User", user.id, { tenantSlug, clientId: client.id });
+  const inviteLink = await emailOnboardInvite(user, email, input.restaurantName, ownerFlow);
+  await audit(admin.id, ownerFlow ? "owner.onboarded" : "partner.onboarded", "User", user.id, {
+    tenantSlug,
+    clientId,
+  });
+
+  // Onboarding IS the conversion event: close the originating signup lead.
+  if (await markSignupConverted(signup, admin.id)) {
+    revalidatePath("/admin/signups");
+  }
   revalidatePath("/admin/onboard");
   return { ok: true, inviteLink };
 }

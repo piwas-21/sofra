@@ -29,7 +29,10 @@ export async function defineTenantPlan(input: {
   amountCents: number;
   interval: BillingInterval;
   liveSince: Date | null;
+  // Reseller flow: the CRM Client (payer derived from client.partner). Owner flow
+  // (ADR-004): payerUserId is the direct owner and clientId is null. Exactly one.
   clientId: string | null;
+  payerUserId?: string | null;
   actorId: string;
 }) {
   const billing = await db.$transaction(async (tx) => {
@@ -42,6 +45,7 @@ export async function defineTenantPlan(input: {
         mollieCustomerId: null,
         liveSince: input.liveSince ?? undefined,
         clientId: input.clientId ?? undefined,
+        payerUserId: input.payerUserId ?? undefined,
       },
     });
     await tx.billingSubscription.create({

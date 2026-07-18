@@ -44,3 +44,38 @@ export function toOnboardTenants(
     onboarded: onboardedSlugs.has(t.slug),
   }));
 }
+
+/** Onboard-form defaults carried over from a direct-restaurant signup lead
+ *  (ADR-004), so the founder doesn't re-type the card. Maps to the always-present
+ *  onboard inputs; amount/interval/liveSince are founder-set and never inferred.
+ *  `signupId` rides a hidden field so a successful onboard can close the lead. */
+export type OnboardPrefill = {
+  signupId: string;
+  name: string;
+  email: string;
+  restaurantName: string;
+  /** Registry-grammar slug when the lead supplied one, else "" (optional field). */
+  tenantSlug: string;
+};
+
+/** The signup fields the prefill reads — a structural subset of the Prisma row. */
+type SignupPrefillSource = {
+  id: string;
+  contactName: string;
+  email: string;
+  restaurantName: string;
+  desiredSlug: string | null;
+};
+
+/** Build onboard-form defaults from a signup lead. The onboard payer is the
+ *  restaurant's own contact (a direct signup has no reseller partner), so
+ *  `name` is the contactName. `desiredSlug` is optional on intake → "". */
+export function toOnboardPrefill(signup: SignupPrefillSource): OnboardPrefill {
+  return {
+    signupId: signup.id,
+    name: signup.contactName,
+    email: signup.email,
+    restaurantName: signup.restaurantName,
+    tenantSlug: signup.desiredSlug ?? "",
+  };
+}
