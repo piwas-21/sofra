@@ -462,6 +462,7 @@
         "applications": "Bewerbungen",
         "partners": "Partner",
         "tenants": "Tenants",
+        "provision": "Bereitstellen",
         "billing": "Abrechnung",
         "audit": "Audit",
         "onboard": "Onboarding",
@@ -708,6 +709,23 @@
         "decline": "Ablehnen",
         "openOnboarding": "Onboarding öffnen →",
         "updatedNote": "Aktualisiert."
+      },
+      "provision": {
+        "title": "Mandanten bereitstellen",
+        "intro": "Schlagen Sie einen neuen Mandanten vor — dies öffnet eine prüfbare Registry-PR im Deploy-Repo. Führen Sie sie zusammen, synchronisieren Sie mit dem Server und starten Sie dann die Bereitstellungs-Action.",
+        "notConfigured": "Bereitstellung ist in dieser Umgebung nicht konfiguriert — setzen Sie PROVISION_GITHUB_TOKEN (ein auf das Deploy-Repo beschränktes GitHub-Token).",
+        "slug": "Slug (z. B. bistro-nova)",
+        "name": "Name des Restaurants",
+        "adminEmail": "Admin-E-Mail",
+        "city": "Stadt (optional)",
+        "template": "Vorlage",
+        "currency": "Währung (z. B. EUR)",
+        "languages": "Sprachen (kommagetrennt, z. B. en, nl)",
+        "modules": "Module (kommagetrennt, z. B. core)",
+        "create": "Registry-PR öffnen",
+        "creating": "Wird geöffnet…",
+        "created": "Registry-PR geöffnet — prüfen + zusammenführen, dann bereitstellen:",
+        "nextSteps": "Nach dem Zusammenführen: Die Änderung wird beim nächsten Deploy-Sync auf den Server übertragen, dann die provision-tenant-Action mit diesem Slug starten."
       }
     },
     "errors": {
@@ -737,7 +755,9 @@
       "startPaymentFailed": "Zahlung konnte nicht gestartet werden — bitte erneut versuchen.",
       "tooManyAttempts": "Zu viele Versuche — bitte warten Sie einige Minuten.",
       "paymentProcessing": "Ihre Zahlung wird verarbeitet — Sie müssen nicht erneut zahlen.",
-      "signupNotFound": "Diese Anmeldung existiert nicht mehr."
+      "signupNotFound": "Diese Anmeldung existiert nicht mehr.",
+      "provisioningNotConfigured": "Bereitstellung ist nicht konfiguriert (GitHub-Token fehlt).",
+      "provisionFailed": "Bereitstellungs-PR konnte nicht geöffnet werden. Prüfen Sie die Protokolle."
     },
     "plan": {
       "title": "Ihr Abo",

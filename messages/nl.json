@@ -462,6 +462,7 @@
         "applications": "Aanmeldingen",
         "partners": "Partners",
         "tenants": "Tenants",
+        "provision": "Inrichten",
         "billing": "Facturatie",
         "audit": "Audit",
         "onboard": "Onboarden",
@@ -708,6 +709,23 @@
         "decline": "Afwijzen",
         "openOnboarding": "Onboarding openen →",
         "updatedNote": "Bijgewerkt."
+      },
+      "provision": {
+        "title": "Een tenant inrichten",
+        "intro": "Stel een nieuwe tenant voor — dit opent een te beoordelen registry-PR op de deploy-repo. Voeg hem samen, synchroniseer met de server en start dan de inricht-Action.",
+        "notConfigured": "Inrichten is niet geconfigureerd in deze omgeving — stel PROVISION_GITHUB_TOKEN in (een tot de deploy-repo beperkt GitHub-token).",
+        "slug": "Slug (bijv. bistro-nova)",
+        "name": "Naam van het restaurant",
+        "adminEmail": "Beheerders-e-mail",
+        "city": "Stad (optioneel)",
+        "template": "Sjabloon",
+        "currency": "Valuta (bijv. EUR)",
+        "languages": "Talen (komma-gescheiden, bijv. en, nl)",
+        "modules": "Modules (komma-gescheiden, bijv. core)",
+        "create": "Registry-PR openen",
+        "creating": "Bezig met openen…",
+        "created": "Registry-PR geopend — beoordeel + voeg samen, richt dan in:",
+        "nextSteps": "Na samenvoegen: de wijziging synchroniseert naar de server bij de volgende deploy-sync, start dan de provision-tenant Action met deze slug."
       }
     },
     "errors": {
@@ -737,7 +755,9 @@
       "startPaymentFailed": "Kon de betaling niet starten — probeer het opnieuw.",
       "tooManyAttempts": "Te veel pogingen — wacht een paar minuten.",
       "paymentProcessing": "Je betaling wordt verwerkt — je hoeft niet opnieuw te betalen.",
-      "signupNotFound": "Deze aanmelding bestaat niet meer."
+      "signupNotFound": "Deze aanmelding bestaat niet meer.",
+      "provisioningNotConfigured": "Inrichten is niet geconfigureerd (GitHub-token ontbreekt).",
+      "provisionFailed": "Kon de inricht-PR niet openen. Controleer de logs."
     },
     "plan": {
       "title": "Jouw abonnement",

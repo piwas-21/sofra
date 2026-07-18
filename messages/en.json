@@ -462,6 +462,7 @@
         "applications": "Applications",
         "partners": "Partners",
         "tenants": "Tenants",
+        "provision": "Provision",
         "billing": "Billing",
         "audit": "Audit",
         "onboard": "Onboard",
@@ -708,6 +709,23 @@
         "decline": "Decline",
         "openOnboarding": "Open onboarding →",
         "updatedNote": "Updated."
+      },
+      "provision": {
+        "title": "Provision a tenant",
+        "intro": "Propose a new tenant — this opens a reviewable registry PR on the deploy repo. Merge it, sync to the box, then run the provisioning Action.",
+        "notConfigured": "Provisioning isn’t configured on this environment — set PROVISION_GITHUB_TOKEN (a deploy-repo-scoped GitHub token).",
+        "slug": "Slug (e.g. bistro-nova)",
+        "name": "Restaurant name",
+        "adminEmail": "Admin email",
+        "city": "City (optional)",
+        "template": "Template",
+        "currency": "Currency (e.g. EUR)",
+        "languages": "Languages (comma-separated, e.g. en, nl)",
+        "modules": "Modules (comma-separated, e.g. core)",
+        "create": "Open registry PR",
+        "creating": "Opening…",
+        "created": "Registry PR opened — review + merge it, then provision:",
+        "nextSteps": "After merge: the change syncs to the box on the next deploy sync, then run the provision-tenant Action with this slug."
       }
     },
     "errors": {
@@ -737,7 +755,9 @@
       "startPaymentFailed": "Couldn't start the payment — please try again.",
       "tooManyAttempts": "Too many attempts — please wait a few minutes.",
       "paymentProcessing": "Your payment is being processed — no need to pay again.",
-      "signupNotFound": "That signup no longer exists."
+      "signupNotFound": "That signup no longer exists.",
+      "provisioningNotConfigured": "Provisioning isn’t configured (missing GitHub token).",
+      "provisionFailed": "Couldn’t open the provisioning PR. Check the logs."
     },
     "plan": {
       "title": "Your plan",

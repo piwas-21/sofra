@@ -462,6 +462,7 @@
         "applications": "Başvurular",
         "partners": "Partnerler",
         "tenants": "Tenant'lar",
+        "provision": "Sağla",
         "billing": "Faturalama",
         "audit": "Denetim",
         "onboard": "Katılım",
@@ -708,6 +709,23 @@
         "decline": "Reddet",
         "openOnboarding": "Kurulumu aç →",
         "updatedNote": "Güncellendi."
+      },
+      "provision": {
+        "title": "Kiracı sağla",
+        "intro": "Yeni bir kiracı önerin — bu, dağıtım deposunda incelenebilir bir kayıt PR’si açar. Birleştirin, sunucuyla eşitleyin, ardından sağlama Action’ını çalıştırın.",
+        "notConfigured": "Bu ortamda sağlama yapılandırılmamış — PROVISION_GITHUB_TOKEN ayarlayın (dağıtım deposuyla sınırlı bir GitHub belirteci).",
+        "slug": "Kısa ad (ör. bistro-nova)",
+        "name": "Restoran adı",
+        "adminEmail": "Yönetici e-postası",
+        "city": "Şehir (isteğe bağlı)",
+        "template": "Şablon",
+        "currency": "Para birimi (ör. EUR)",
+        "languages": "Diller (virgülle ayrılmış, ör. en, nl)",
+        "modules": "Modüller (virgülle ayrılmış, ör. core)",
+        "create": "Kayıt PR’si aç",
+        "creating": "Açılıyor…",
+        "created": "Kayıt PR’si açıldı — inceleyip birleştirin, sonra sağlayın:",
+        "nextSteps": "Birleştirmeden sonra: değişiklik bir sonraki dağıtım eşitlemesinde sunucuya eşitlenir, ardından bu kısa adla provision-tenant Action’ını çalıştırın."
       }
     },
     "errors": {
@@ -737,7 +755,9 @@
       "startPaymentFailed": "Ödeme başlatılamadı — lütfen tekrar deneyin.",
       "tooManyAttempts": "Çok fazla deneme — lütfen birkaç dakika bekleyin.",
       "paymentProcessing": "Ödemeniz işleniyor — tekrar ödemenize gerek yok.",
-      "signupNotFound": "Bu kayıt artık mevcut değil."
+      "signupNotFound": "Bu kayıt artık mevcut değil.",
+      "provisioningNotConfigured": "Sağlama yapılandırılmamış (GitHub belirteci eksik).",
+      "provisionFailed": "Sağlama PR’si açılamadı. Günlükleri kontrol edin."
     },
     "plan": {
       "title": "Aboneliğiniz",
