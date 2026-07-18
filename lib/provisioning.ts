@@ -72,7 +72,9 @@ export async function openProvisioningPr(input: TenantProvisionInput): Promise<{
   }
 
   const entry = buildTenantRegistryEntry(input);
-  const updated = `${current.replace(/\n*$/, "\n")}${entry}\n`;
+  // trimEnd() (no regex) drops any trailing whitespace/newlines, then we re-add
+  // exactly one before the appended entry — avoids the ReDoS-prone `\n*$`.
+  const updated = `${current.trimEnd()}\n${entry}\n`;
 
   // Branch off BASE's tip.
   const baseRef = await gh<{ object: { sha: string } }>(
