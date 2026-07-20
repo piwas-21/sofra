@@ -468,7 +468,8 @@
         "onboard": "Onboarding",
         "plan": "Abo",
         "overview": "Übersicht",
-        "signups": "Anmeldungen"
+        "signups": "Anmeldungen",
+        "fleet": "Flotte"
       }
     },
     "status": {
@@ -726,6 +727,28 @@
         "creating": "Wird geöffnet…",
         "created": "Registry-PR geöffnet — prüfen + zusammenführen, dann bereitstellen:",
         "nextSteps": "Nach dem Zusammenführen: Die Änderung wird beim nächsten Deploy-Sync auf den Server übertragen, dann die provision-tenant-Action mit diesem Slug starten."
+      },
+      "fleet": {
+        "title": "Drucker-Flotte",
+        "intro": "Live-Status der Drucker-Apps jedes Mandanten — Geräteaktivität, Bestell-Feed und verpasste Bestellungen.",
+        "unavailable": "Mandantenregister nicht verfügbar: {error}",
+        "registered": "{count} Mandanten",
+        "empty": "Noch keine Mandanten registriert.",
+        "tenant": {
+          "noReport": "Noch keine Geräte gemeldet."
+        },
+        "device": {
+          "online": "Online",
+          "offlineSince": "Offline · vor {minutes} Min.",
+          "neverSeen": "Nie gesehen",
+          "feedRunning": "Feed läuft",
+          "feedStopped": "Feed gestoppt",
+          "feedStale": "Feed hängt"
+        },
+        "summary": {
+          "missed": "{count} verpasst",
+          "errors": "{count} Fehler"
+        }
       }
     },
     "errors": {

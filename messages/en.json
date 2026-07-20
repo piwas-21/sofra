@@ -468,7 +468,8 @@
         "onboard": "Onboard",
         "plan": "Plan",
         "overview": "Overview",
-        "signups": "Signups"
+        "signups": "Signups",
+        "fleet": "Fleet"
       }
     },
     "status": {
@@ -726,6 +727,28 @@
         "creating": "Opening…",
         "created": "Registry PR opened — review + merge it, then provision:",
         "nextSteps": "After merge: the change syncs to the box on the next deploy sync, then run the provision-tenant Action with this slug."
+      },
+      "fleet": {
+        "title": "Printer fleet",
+        "intro": "Live status of every tenant's printer apps — device liveness, order feed, and missed orders.",
+        "unavailable": "Tenant registry unavailable: {error}",
+        "registered": "{count} tenants",
+        "empty": "No tenants registered yet.",
+        "tenant": {
+          "noReport": "No devices have reported yet."
+        },
+        "device": {
+          "online": "Online",
+          "offlineSince": "Offline · {minutes}m ago",
+          "neverSeen": "Never seen",
+          "feedRunning": "Feed running",
+          "feedStopped": "Feed stopped",
+          "feedStale": "Feed stalled"
+        },
+        "summary": {
+          "missed": "{count} missed",
+          "errors": "{count} errors"
+        }
       }
     },
     "errors": {
