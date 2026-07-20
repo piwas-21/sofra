@@ -468,7 +468,8 @@
         "onboard": "Onboarden",
         "plan": "Abonnement",
         "overview": "Overzicht",
-        "signups": "Aanmeldingen"
+        "signups": "Aanmeldingen",
+        "fleet": "Vloot"
       }
     },
     "status": {
@@ -726,6 +727,28 @@
         "creating": "Bezig met openen…",
         "created": "Registry-PR geopend — beoordeel + voeg samen, richt dan in:",
         "nextSteps": "Na samenvoegen: de wijziging synchroniseert naar de server bij de volgende deploy-sync, start dan de provision-tenant Action met deze slug."
+      },
+      "fleet": {
+        "title": "Printervloot",
+        "intro": "Live-status van de printer-apps van elke tenant — apparaatactiviteit, bestelfeed en gemiste bestellingen.",
+        "unavailable": "Tenantregister niet beschikbaar: {error}",
+        "registered": "{count} tenants",
+        "empty": "Nog geen tenants geregistreerd.",
+        "tenant": {
+          "noReport": "Nog geen apparaten gemeld."
+        },
+        "device": {
+          "online": "Online",
+          "offlineSince": "Offline · {minutes} min geleden",
+          "neverSeen": "Nooit gezien",
+          "feedRunning": "Feed actief",
+          "feedStopped": "Feed gestopt",
+          "feedStale": "Feed vastgelopen"
+        },
+        "summary": {
+          "missed": "{count} gemist",
+          "errors": "{count} fouten"
+        }
       }
     },
     "errors": {

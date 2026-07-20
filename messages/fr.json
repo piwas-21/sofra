@@ -468,7 +468,8 @@
         "onboard": "Intégrer",
         "plan": "Abonnement",
         "overview": "Aperçu",
-        "signups": "Inscriptions"
+        "signups": "Inscriptions",
+        "fleet": "Parc"
       }
     },
     "status": {
@@ -726,6 +727,28 @@
         "creating": "Ouverture…",
         "created": "PR de registre ouverte — révisez + fusionnez, puis provisionnez :",
         "nextSteps": "Après la fusion : la modification se synchronise avec le serveur lors de la prochaine synchro de déploiement, puis lancez l’action provision-tenant avec cet identifiant."
+      },
+      "fleet": {
+        "title": "Parc d'imprimantes",
+        "intro": "État en direct des applications d'impression de chaque locataire — activité des appareils, flux de commandes et commandes manquées.",
+        "unavailable": "Registre des locataires indisponible : {error}",
+        "registered": "{count} locataires",
+        "empty": "Aucun locataire enregistré pour l'instant.",
+        "tenant": {
+          "noReport": "Aucun appareil n'a encore signalé."
+        },
+        "device": {
+          "online": "En ligne",
+          "offlineSince": "Hors ligne · il y a {minutes} min",
+          "neverSeen": "Jamais vu",
+          "feedRunning": "Flux actif",
+          "feedStopped": "Flux arrêté",
+          "feedStale": "Flux bloqué"
+        },
+        "summary": {
+          "missed": "{count} manquées",
+          "errors": "{count} erreurs"
+        }
       }
     },
     "errors": {

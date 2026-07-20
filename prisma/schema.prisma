@@ -276,3 +276,39 @@ model AuditLog {
 
   @@index([createdAt])
 }
+
+// Fleet observability roll-up (Track S; docs/plans/PRINTER-APP-FLEET-OBSERVABILITY-PLAN.md).
+// A compact per-tenant snapshot pushed one-directionally by each tenant backend's
+// FleetSummaryPushService (bearer-authed — devices/backends hold no sofra credential, sofra
+// holds no backend credential). Keyed on the registry slug, NOT a FK (same rationale as
+// TenantBilling.tenantSlug — the registry graduates to a table only at >3 tenants). Non-PII:
+// no customer data, no API keys, no raw orders — only device roster + counts.
+model FleetSummary {
+  id           String   @id @default(cuid())
+  tenantSlug   String   @unique
+  deviceCount  Int      @default(0)
+  missedOrders Int      @default(0)
+  recentErrors Int      @default(0)
+  reportedAt   DateTime // the backend's snapshot time
+  receivedAt   DateTime @default(now()) // sofra ingest time
+  updatedAt    DateTime @updatedAt
+}
+
+model FleetDevice {
+  id                   String    @id @default(cuid())
+  tenantSlug           String
+  deviceId             String
+  label                String?
+  platform             String?
+  appVersion           String?
+  feedRunning          Boolean   @default(false)
+  lastHeartbeatAt      DateTime?
+  lastSuccessfulPollAt DateTime?
+  apiBaseUrl           String?
+  kitchenPrinter       String?
+  cashierPrinter       String?
+  updatedAt            DateTime  @updatedAt
+
+  @@unique([tenantSlug, deviceId])
+  @@index([tenantSlug])
+}
