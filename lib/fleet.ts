@@ -46,21 +46,27 @@ function deviceColumns(d: FleetDeviceInput) {
 export async function ingestFleetPush(push: FleetPush): Promise<void> {
   const slug = push.tenantSlug;
   const now = new Date();
-  const reportedIds = push.devices.map((d) => d.deviceId);
+  // Dedup by deviceId (a repeated id in one push would upsert the same row twice) and sort
+  // deterministically, so concurrent same-tenant pushes acquire row locks in the same order and
+  // can't deadlock. A later duplicate wins (Map keeps the last value for a key).
+  const devices = Array.from(new Map(push.devices.map((d) => [d.deviceId, d])).values()).sort((a, b) =>
+    a.deviceId.localeCompare(b.deviceId),
+  );
+  const reportedIds = devices.map((d) => d.deviceId);
 
   await db.$transaction(async (tx) => {
     await tx.fleetSummary.upsert({
       where: { tenantSlug: slug },
       create: {
         tenantSlug: slug,
-        deviceCount: push.devices.length,
+        deviceCount: devices.length,
         missedOrders: push.missedOrders,
         recentErrors: push.recentErrors,
         reportedAt: push.reportedAt,
         receivedAt: now,
       },
       update: {
-        deviceCount: push.devices.length,
+        deviceCount: devices.length,
         missedOrders: push.missedOrders,
         recentErrors: push.recentErrors,
         reportedAt: push.reportedAt,
@@ -76,7 +82,7 @@ export async function ingestFleetPush(push: FleetPush): Promise<void> {
       await tx.fleetDevice.deleteMany({ where: { tenantSlug: slug, deviceId: { notIn: reportedIds } } });
     }
 
-    for (const d of push.devices) {
+    for (const d of devices) {
       const columns = deviceColumns(d);
       await tx.fleetDevice.upsert({
         where: { tenantSlug_deviceId: { tenantSlug: slug, deviceId: d.deviceId } },

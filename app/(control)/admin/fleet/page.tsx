@@ -22,32 +22,33 @@ type FleetDeviceRow = {
   feedRunning: boolean;
   lastHeartbeatAt: Date | null;
   lastSuccessfulPollAt: Date | null;
-  kitchenPrinter: string | null;
-  cashierPrinter: string | null;
 };
 
-type FleetSummaryRow = { missedOrders: number; recentErrors: number; reportedAt: Date };
+type FleetSummaryRow = { missedOrders: number; recentErrors: number };
 
-function minutesAgo(when: Date | null, now: number): number | null {
-  if (!when) return null;
-  return Math.max(0, Math.round((now - when.getTime()) / 60000));
+function livenessLabel(device: FleetDeviceRow, now: number, t: Translator): { label: string; online: boolean } {
+  const online = device.lastHeartbeatAt != null && now - device.lastHeartbeatAt.getTime() < ONLINE_WINDOW_MS;
+  if (online) return { label: t("device.online"), online };
+  if (device.lastHeartbeatAt == null) return { label: t("device.neverSeen"), online };
+  const minutes = Math.max(0, Math.round((now - device.lastHeartbeatAt.getTime()) / 60000));
+  return { label: t("device.offlineSince", { minutes }), online };
 }
 
-function DeviceRow({ device, now, t }: { device: FleetDeviceRow; now: number; t: Translator }) {
-  const online = device.lastHeartbeatAt != null && now - device.lastHeartbeatAt.getTime() < ONLINE_WINDOW_MS;
-  const feedStale =
+function feedStatus(device: FleetDeviceRow, now: number, t: Translator): { label: string; ok: boolean } {
+  const stale =
     device.feedRunning &&
     (device.lastSuccessfulPollAt == null || now - device.lastSuccessfulPollAt.getTime() > STALE_FEED_MS);
-  const mins = minutesAgo(device.lastHeartbeatAt, now);
+  if (!device.feedRunning) return { label: t("device.feedStopped"), ok: false };
+  if (stale) return { label: t("device.feedStale"), ok: false };
+  return { label: t("device.feedRunning"), ok: true };
+}
 
-  const feedLabel = !device.feedRunning
-    ? t("device.feedStopped")
-    : feedStale
-      ? t("device.feedStale")
-      : t("device.feedRunning");
-  const feedTone = !device.feedRunning || feedStale
-    ? "text-craft-error-text dark:text-craft-error"
-    : "text-craft-success-text dark:text-craft-success";
+function DeviceRow({ device, now, t }: Readonly<{ device: FleetDeviceRow; now: number; t: Translator }>) {
+  const liveness = livenessLabel(device, now, t);
+  const feed = feedStatus(device, now, t);
+  const feedTone = feed.ok
+    ? "text-craft-success-text dark:text-craft-success"
+    : "text-craft-error-text dark:text-craft-error";
 
   return (
     <li className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-2 first:border-t-0 first:pt-0">
@@ -58,10 +59,10 @@ function DeviceRow({ device, now, t }: { device: FleetDeviceRow; now: number; t:
         </span>
       </span>
       <span className="font-label text-sm text-right">
-        <span className={online ? "text-craft-success-text dark:text-craft-success" : "text-muted-foreground"}>
-          {online ? t("device.online") : mins == null ? t("device.neverSeen") : t("device.offlineSince", { minutes: mins })}
+        <span className={liveness.online ? "text-craft-success-text dark:text-craft-success" : "text-muted-foreground"}>
+          {liveness.label}
         </span>
-        <span className={`ml-3 ${feedTone}`}>{feedLabel}</span>
+        <span className={`ml-3 ${feedTone}`}>{feed.label}</span>
       </span>
     </li>
   );
@@ -73,13 +74,13 @@ function TenantCard({
   summary,
   now,
   t,
-}: {
+}: Readonly<{
   tenant: RegistryTenant;
   devices: FleetDeviceRow[];
   summary?: FleetSummaryRow;
   now: number;
   t: Translator;
-}) {
+}>) {
   return (
     <li className="hand-drawn-border bg-card p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -111,11 +112,32 @@ function TenantCard({
   );
 }
 
+function FleetHeader({ t }: Readonly<{ t: Translator }>) {
+  return (
+    <div>
+      <h1 className="font-display font-bold text-5xl">{t("title")}</h1>
+      <p className="mt-2 font-label text-muted-foreground">{t("intro")}</p>
+    </div>
+  );
+}
+
 export default async function AdminFleetPage() {
   await requireAdmin();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.admin.fleet" });
   const registry = await loadTenantRegistry();
+
+  // Registry unavailable ⇒ bail before the DB reads (nothing to join to).
+  if (!registry.ok) {
+    return (
+      <div className="grid gap-10">
+        <FleetHeader t={t} />
+        <p className="hand-drawn-border bg-card p-4 font-label text-craft-error-text">
+          {t("unavailable", { error: registry.error })}
+        </p>
+      </div>
+    );
+  }
 
   const [devices, summaries] = await Promise.all([
     db.fleetDevice.findMany({ orderBy: [{ tenantSlug: "asc" }, { label: "asc" }] }),
@@ -133,37 +155,27 @@ export default async function AdminFleetPage() {
 
   return (
     <div className="grid gap-10">
-      <div>
-        <h1 className="font-display font-bold text-5xl">{t("title")}</h1>
-        <p className="mt-2 font-label text-muted-foreground">{t("intro")}</p>
-      </div>
-
-      {!registry.ok ? (
-        <p className="hand-drawn-border bg-card p-4 font-label text-craft-error-text">
-          {t("unavailable", { error: registry.error })}
-        </p>
-      ) : (
-        <section>
-          <h2 className="font-hand text-3xl font-bold">
-            {t("registered", { count: registry.tenants.length })}
-          </h2>
-          <ul className="mt-4 grid gap-4">
-            {registry.tenants.map((tenant) => (
-              <TenantCard
-                key={tenant.slug}
-                tenant={tenant}
-                devices={devicesBySlug.get(tenant.slug) ?? []}
-                summary={summaryBySlug.get(tenant.slug)}
-                now={now}
-                t={t}
-              />
-            ))}
-            {registry.tenants.length === 0 && (
-              <li className="font-label text-muted-foreground">{t("empty")}</li>
-            )}
-          </ul>
-        </section>
-      )}
+      <FleetHeader t={t} />
+      <section>
+        <h2 className="font-hand text-3xl font-bold">
+          {t("registered", { count: registry.tenants.length })}
+        </h2>
+        <ul className="mt-4 grid gap-4">
+          {registry.tenants.map((tenant) => (
+            <TenantCard
+              key={tenant.slug}
+              tenant={tenant}
+              devices={devicesBySlug.get(tenant.slug) ?? []}
+              summary={summaryBySlug.get(tenant.slug)}
+              now={now}
+              t={t}
+            />
+          ))}
+          {registry.tenants.length === 0 && (
+            <li className="font-label text-muted-foreground">{t("empty")}</li>
+          )}
+        </ul>
+      </section>
     </div>
   );
 }
