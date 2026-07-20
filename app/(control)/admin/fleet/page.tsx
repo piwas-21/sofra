@@ -139,9 +139,15 @@ export default async function AdminFleetPage() {
     );
   }
 
+  // Scope the reads to the tenants we'll actually render (the registry), so orphaned/decommissioned
+  // rows don't get loaded as the fleet grows (Gemini review on #71).
+  const tenantSlugs = registry.tenants.map((t) => t.slug);
   const [devices, summaries] = await Promise.all([
-    db.fleetDevice.findMany({ orderBy: [{ tenantSlug: "asc" }, { label: "asc" }] }),
-    db.fleetSummary.findMany(),
+    db.fleetDevice.findMany({
+      where: { tenantSlug: { in: tenantSlugs } },
+      orderBy: [{ tenantSlug: "asc" }, { label: "asc" }],
+    }),
+    db.fleetSummary.findMany({ where: { tenantSlug: { in: tenantSlugs } } }),
   ]);
 
   const devicesBySlug = new Map<string, FleetDeviceRow[]>();
