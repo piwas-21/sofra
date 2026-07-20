@@ -468,7 +468,8 @@
         "onboard": "Katılım",
         "plan": "Abonelik",
         "overview": "Genel bakış",
-        "signups": "Kayıtlar"
+        "signups": "Kayıtlar",
+        "fleet": "Filo"
       }
     },
     "status": {
@@ -726,6 +727,28 @@
         "creating": "Açılıyor…",
         "created": "Kayıt PR’si açıldı — inceleyip birleştirin, sonra sağlayın:",
         "nextSteps": "Birleştirmeden sonra: değişiklik bir sonraki dağıtım eşitlemesinde sunucuya eşitlenir, ardından bu kısa adla provision-tenant Action’ını çalıştırın."
+      },
+      "fleet": {
+        "title": "Yazıcı filosu",
+        "intro": "Her kiracının yazıcı uygulamalarının canlı durumu — cihaz etkinliği, sipariş akışı ve kaçırılan siparişler.",
+        "unavailable": "Kiracı kaydı kullanılamıyor: {error}",
+        "registered": "{count} kiracı",
+        "empty": "Henüz kayıtlı kiracı yok.",
+        "tenant": {
+          "noReport": "Henüz cihaz bildirmedi."
+        },
+        "device": {
+          "online": "Çevrimiçi",
+          "offlineSince": "Çevrimdışı · {minutes} dk önce",
+          "neverSeen": "Hiç görülmedi",
+          "feedRunning": "Akış çalışıyor",
+          "feedStopped": "Akış durdu",
+          "feedStale": "Akış takıldı"
+        },
+        "summary": {
+          "missed": "{count} kaçırıldı",
+          "errors": "{count} hata"
+        }
       }
     },
     "errors": {
