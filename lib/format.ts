@@ -1,4 +1,4 @@
-// Sofra's books are EUR (NL-registered company) — flipped from CHF on
+// SofraPiwas's books are EUR (NL-registered company) — flipped from CHF on
 // 2026-07-06 while the ledger was still empty. Per-tenant display currency
 // is a separate product concern (tenant registry).
 export function eur(cents: number): string {

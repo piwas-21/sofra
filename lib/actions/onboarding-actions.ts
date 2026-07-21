@@ -71,13 +71,13 @@ async function emailOnboardInvite(
   await sendEmail({
     to: email,
     subject: needsPassword
-      ? "Welcome to Sofra — set your password"
-      : `Sofra — ${restaurantName} is ready for your subscription`,
+      ? "Welcome to SofraPiwas — set your password"
+      : `SofraPiwas — ${restaurantName} is ready for your subscription`,
     html: craftEmail({
-      kicker: ownerFlow ? "Welcome to Sofra" : "Partner program",
+      kicker: ownerFlow ? "Welcome to SofraPiwas" : "Partner program",
       title: needsPassword ? "Welcome aboard 🎉" : "A new plan is waiting",
       bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
-<p style="margin:0;">${escapeHtml(restaurantName)} is set up on Sofra. ${
+<p style="margin:0;">${escapeHtml(restaurantName)} is set up on SofraPiwas. ${
         needsPassword ? "Set your password to open your dashboard" : "Sign in to your dashboard"
       } and start the monthly subscription — afiyet olsun.</p>`,
       cta: { label: needsPassword ? "Set your password" : "Open your dashboard", url: link },

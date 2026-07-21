@@ -267,7 +267,7 @@ async function notifyFounder(tenantSlug: string, payment: MolliePayment, amountC
   const ok = payment.status === "paid";
   await sendEmail({
     to: inbox,
-    subject: `[Sofra billing] ${tenantSlug}: ${payment.sequenceType} payment ${payment.status} (${eur(amountCents)})`,
+    subject: `[SofraPiwas billing] ${tenantSlug}: ${payment.sequenceType} payment ${payment.status} (${eur(amountCents)})`,
     html: craftEmail({
       kicker: "Billing",
       title: ok ? "Payment received" : `Payment ${payment.status}`,

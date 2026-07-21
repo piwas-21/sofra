@@ -46,7 +46,7 @@ describe("applySchema (partner application)", () => {
 
 describe("signupSchema (direct restaurant signup)", () => {
   const valid = {
-    restaurantName: "Sofra Demo",
+    restaurantName: "SofraPiwas Demo",
     contactName: "Ada Owner",
     email: "ada@example.com",
   };
@@ -57,8 +57,8 @@ describe("signupSchema (direct restaurant signup)", () => {
   });
 
   it("trims and lower-cases nothing it shouldn't, but trims whitespace", () => {
-    const parsed = signupSchema.parse({ ...valid, restaurantName: "  Sofra Demo  " });
-    expect(parsed.restaurantName).toBe("Sofra Demo");
+    const parsed = signupSchema.parse({ ...valid, restaurantName: "  SofraPiwas Demo  " });
+    expect(parsed.restaurantName).toBe("SofraPiwas Demo");
   });
 
   it("requires restaurantName, contactName, and email", () => {
@@ -76,7 +76,7 @@ describe("signupSchema (direct restaurant signup)", () => {
 
   it("accepts a canonical desiredSlug and reuses the registry grammar", () => {
     expect(signupSchema.safeParse({ ...valid, desiredSlug: "sofra-demo" }).success).toBe(true);
-    expect(signupSchema.safeParse({ ...valid, desiredSlug: "Sofra" }).success).toBe(false);
+    expect(signupSchema.safeParse({ ...valid, desiredSlug: "SofraPiwas" }).success).toBe(false);
     expect(signupSchema.safeParse({ ...valid, desiredSlug: "-x" }).success).toBe(false);
     expect(signupSchema.safeParse({ ...valid, desiredSlug: "a" }).success).toBe(false);
   });
@@ -92,7 +92,7 @@ describe("clientSchema", () => {
   });
 
   it("accepts only a restaurant name (all else optional)", () => {
-    expect(clientSchema.safeParse({ restaurantName: "Sofra Demo" }).success).toBe(true);
+    expect(clientSchema.safeParse({ restaurantName: "SofraPiwas Demo" }).success).toBe(true);
   });
 
   it("rejects a bad email when one is supplied", () => {
@@ -169,7 +169,7 @@ describe("billingSchema (Mollie tenant billing) — slug grammar", () => {
   const base = {
     name: "Rumi Restaurant",
     email: "owner@example.com",
-    description: "Sofra Core — monthly",
+    description: "SofraPiwas Core — monthly",
     amount: "129.00",
     interval: "month" as const,
   };

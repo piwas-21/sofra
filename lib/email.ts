@@ -13,7 +13,7 @@ export async function sendEmail(opts: {
   replyTo?: string;
 }): Promise<{ sent: boolean }> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.WAITLIST_FROM ?? "Sofra <onboarding@resend.dev>";
+  const from = process.env.WAITLIST_FROM ?? "SofraPiwas <onboarding@resend.dev>";
   if (!apiKey) {
     console.warn(`email (not sent, no RESEND_API_KEY): to=${opts.to} subject=${opts.subject}`);
     return { sent: false };

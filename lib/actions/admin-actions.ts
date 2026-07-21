@@ -53,12 +53,12 @@ export async function approveApplicationAction(
   const inviteLink = `${siteUrl()}/invite/${raw}`;
   await sendEmail({
     to: user.email,
-    subject: "Welcome to the Sofra partner program",
+    subject: "Welcome to the SofraPiwas partner program",
     html: craftEmail({
       kicker: "Partner program",
       title: "Welcome aboard 🎉",
       bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
-<p style="margin:0;">Your Sofra partner application is approved. Set your password to open your partner dashboard — afiyet olsun.</p>`,
+<p style="margin:0;">Your SofraPiwas partner application is approved. Set your password to open your partner dashboard — afiyet olsun.</p>`,
       cta: { label: "Set your password", url: inviteLink },
       footerNote: "The link works once and expires in 24 hours.",
     }),

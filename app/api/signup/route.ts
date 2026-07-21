@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     await sendEmail({
       to,
       replyTo: data.email,
-      subject: `Sofra — New signup: ${data.restaurantName}`,
+      subject: `SofraPiwas — New signup: ${data.restaurantName}`,
       html: craftEmail({
         kicker: "Signups",
         title: "New restaurant signup",

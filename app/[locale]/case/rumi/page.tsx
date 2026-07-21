@@ -53,8 +53,8 @@ export default async function RumiCaseStudyPage({
     dateModified: PUBLISHED,
     inLanguage: locale,
     mainEntityOfPage: `${SITE_URL}/${locale}/case/rumi`,
-    author: { "@type": "Organization", name: "Sofra", url: SITE_URL },
-    publisher: { "@type": "Organization", name: "Sofra", url: SITE_URL },
+    author: { "@type": "Organization", name: "SofraPiwas", url: SITE_URL },
+    publisher: { "@type": "Organization", name: "SofraPiwas", url: SITE_URL },
     about: {
       "@type": "Restaurant",
       name: "RUMI Restaurant",
