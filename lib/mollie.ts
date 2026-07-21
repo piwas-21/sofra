@@ -1,5 +1,5 @@
 // Minimal typed Mollie v2 client (fetch-based, no SDK dep — mirrors the
-// Resend pattern in lib/email.ts). Sofra→tenant subscription billing only
+// Resend pattern in lib/email.ts). SofraPiwas→tenant subscription billing only
 // (ADR-005/ADR-011 Job A): customers + first payments (mandate creation) +
 // subscriptions. Auth is a plain API key; test_/live_ prefix selects mode.
 //

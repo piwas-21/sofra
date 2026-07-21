@@ -90,12 +90,12 @@ export async function forgotPasswordAction(_prev: FormState, formData: FormData)
   const link = `${siteUrl()}/reset/${raw}`;
   await sendEmail({
     to: user.email,
-    subject: "Sofra — reset your password",
+    subject: "SofraPiwas — reset your password",
     html: craftEmail({
       kicker: "Partner area",
       title: "Reset your password",
       bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
-<p style="margin:0;">Someone (hopefully you) asked to reset your Sofra partner password. If this wasn't you, you can safely ignore this email.</p>`,
+<p style="margin:0;">Someone (hopefully you) asked to reset your SofraPiwas partner password. If this wasn't you, you can safely ignore this email.</p>`,
       cta: { label: "Set a new password", url: link },
       footerNote: "The link works once and expires in 24 hours.",
     }),

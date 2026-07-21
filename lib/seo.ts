@@ -48,7 +48,7 @@ export function marketingPageMetadata({
     openGraph: {
       title,
       description,
-      siteName: "Sofra",
+      siteName: "SofraPiwas",
       locale,
       type: "website",
       images: [OG_IMAGE],

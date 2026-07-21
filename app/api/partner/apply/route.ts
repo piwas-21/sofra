@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     await sendEmail({
       to,
       replyTo: data.email,
-      subject: `Sofra — Partner application: ${data.name}`,
+      subject: `SofraPiwas — Partner application: ${data.name}`,
       html: craftEmail({
         kicker: "Partner program",
         title: "New partner application",

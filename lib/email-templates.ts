@@ -32,7 +32,7 @@ export function craftEmail(opts: {
     <tr><td align="center">
       <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
         <tr><td style="padding:0 8px 18px;">
-          <span style="font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:bold;color:${C.primary};">Sofra</span>
+          <span style="font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:bold;color:${C.primary};">SofraPiwas</span>
           <span style="font-family:Georgia,serif;font-style:italic;font-size:14px;color:${C.muted};">&nbsp;— a table laid for guests</span>
         </td></tr>
         <tr><td style="background:${C.card};border:2px dashed ${C.border};border-radius:14px;padding:32px 28px;">
@@ -53,7 +53,7 @@ export function craftEmail(opts: {
           ${opts.footerNote ? `<p style="margin:18px 0 0;font-family:Verdana,Geneva,sans-serif;font-size:12px;color:${C.muted};">${opts.footerNote}</p>` : ""}
         </td></tr>
         <tr><td style="padding:18px 8px 0;font-family:Verdana,Geneva,sans-serif;font-size:11px;color:${C.muted};">
-          Sofra · restaurant software with a warm heart · <a href="https://sofrapiwas.com" style="color:${C.muted};">sofrapiwas.com</a>
+          SofraPiwas · restaurant software with a warm heart · <a href="https://sofrapiwas.com" style="color:${C.muted};">sofrapiwas.com</a>
         </td></tr>
       </table>
     </td></tr>

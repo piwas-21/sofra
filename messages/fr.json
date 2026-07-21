@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Sofra — Le logiciel de restaurant au grand cœur",
-    "description": "Menus QR, commandes en direct, réservations et fidélité — une plateforme pensée pour la cuisine, éprouvée dans un vrai restaurant à chaque service. Sofra signifie une table dressée pour les invités."
+    "title": "SofraPiwas — Le logiciel de restaurant au grand cœur",
+    "description": "Menus QR, commandes en direct, réservations et fidélité — une plateforme pensée pour la cuisine, éprouvée dans un vrai restaurant à chaque service. Nommé d'après la sofra — une table dressée pour les invités."
   },
   "header": {
     "features": "Au menu",
@@ -17,7 +17,7 @@
     "stamp": "Fait main en Europe",
     "titleLine1": "Dressez la table.",
     "titleLine2": "On s'occupe du reste.",
-    "subtitle": "Sofra est la plateforme de restaurant au grand cœur : menus QR, commandes en direct, réservations et fidélité — tout ce dont votre salle et votre cuisine ont besoin, sur une seule table.",
+    "subtitle": "SofraPiwas est la plateforme de restaurant au grand cœur : menus QR, commandes en direct, réservations et fidélité — tout ce dont votre salle et votre cuisine ont besoin, sur une seule table.",
     "note": "Une « sofra », c'est une table dressée pour les invités. Toute notre philosophie tient là.",
     "ctaPrimary": "Commencer",
     "ctaSecondary": "Voir ce qui mijote",
@@ -75,10 +75,10 @@
   "showcase": {
     "label": "La preuve par l'assiette",
     "title": "Goûtez-le en vrai",
-    "subtitle": "Sofra n'est pas une démo sur diapositives — il fait tourner une vraie salle, à chaque service, depuis le premier jour.",
+    "subtitle": "SofraPiwas n'est pas une démo sur diapositives — il fait tourner une vraie salle, à chaque service, depuis le premier jour.",
     "cardStamp": "En production",
     "cardTitle": "RUMI Restaurant — Genève",
-    "cardBody": "Menus QR sur chaque table, commandes envoyées aux écrans cuisine et caisse, réservations, points de fidélité et tickets thermiques — le tout sur Sofra.",
+    "cardBody": "Menus QR sur chaque table, commandes envoyées aux écrans cuisine et caisse, réservations, points de fidélité et tickets thermiques — le tout sur SofraPiwas.",
     "cardHint": "Ouvrez le menu et parcourez-le comme un client — c'est exactement le produit.",
     "visit": "Visiter rumirestaurant.ch",
     "ctaTitle": "Envie de la même chose chez vous ?",
@@ -110,7 +110,7 @@
     "points": {
       "find": {
         "title": "Trouvez",
-        "text": "Repérez les restaurants et cafés qui aimeraient Sofra — votre réseau, vos villes."
+        "text": "Repérez les restaurants et cafés qui aimeraient SofraPiwas — votre réseau, vos villes."
       },
       "onboard": {
         "title": "Accompagnez",
@@ -159,7 +159,7 @@
   },
   "auth": {
     "loginTitle": "Espace partenaires",
-    "loginIntro": "Réservé aux partenaires Sofra. Pas encore partenaire ?",
+    "loginIntro": "Réservé aux partenaires SofraPiwas. Pas encore partenaire ?",
     "becomeOne": "Devenez-le.",
     "passwordSaved": "Mot de passe enregistré — vous pouvez vous connecter.",
     "email": "E-mail",
@@ -201,10 +201,10 @@
       "partner": "Partenaires",
       "faq": "FAQ",
       "caseStudy": "Étude de cas",
-      "compare": "Sofra vs GloriaFood",
+      "compare": "SofraPiwas vs GloriaFood",
       "changelog": "Quoi de neuf"
     },
-    "copyright": "© {year} Sofra. Tous droits réservés."
+    "copyright": "© {year} SofraPiwas. Tous droits réservés."
   },
   "faq": {
     "label": "Questions",
@@ -212,11 +212,11 @@
     "subtitle": "Des réponses franches, sans jargon.",
     "items": {
       "what": {
-        "q": "Qu'est-ce que Sofra ?",
-        "a": "Sofra est une plateforme de gestion de restaurant : menus QR et commande en ligne, tableaux de commandes en direct pour la cuisine, la caisse et les serveurs, réservations, points de fidélité et tickets sur imprimante thermique — le tout au même endroit. Elle est née du système qui fait tourner tous les services du RUMI Restaurant à Genève."
+        "q": "Qu'est-ce que SofraPiwas ?",
+        "a": "SofraPiwas est une plateforme de gestion de restaurant : menus QR et commande en ligne, tableaux de commandes en direct pour la cuisine, la caisse et les serveurs, réservations, points de fidélité et tickets sur imprimante thermique — le tout au même endroit. Elle est née du système qui fait tourner tous les services du RUMI Restaurant à Genève."
       },
       "pricing": {
-        "q": "Combien coûte Sofra ?",
+        "q": "Combien coûte SofraPiwas ?",
         "a": "Pendant l'accès anticipé, les restaurants fondateurs ne paient rien — installation et accompagnement offerts, et ils gardent une remise à vie quand la tarification régulière arrivera. Les formules seront simples : un prix mensuel fixe avec des modules optionnels."
       },
       "payments": {
@@ -232,8 +232,8 @@
         "a": "Oui. Une application compagnon (Windows et Android) pilote les imprimantes thermiques ESC/POS via le réseau : les commandes s'impriment en cuisine, là où vous le voulez — sans abonnement matériel supplémentaire."
       },
       "who": {
-        "q": "Qui est derrière Sofra, et est-ce vraiment utilisé quelque part ?",
-        "a": "Sofra est développé par une petite équipe basée aux Pays-Bas et fait tourner tous les services du RUMI Restaurant à Genève (rumirestaurant.ch) — commandes, cuisine, réservations et imprimantes y sont en production depuis juin 2026. Nous accueillons chaque nouveau restaurant personnellement."
+        "q": "Qui est derrière SofraPiwas, et est-ce vraiment utilisé quelque part ?",
+        "a": "SofraPiwas est développé par une petite équipe basée aux Pays-Bas et fait tourner tous les services du RUMI Restaurant à Genève (rumirestaurant.ch) — commandes, cuisine, réservations et imprimantes y sont en production depuis juin 2026. Nous accueillons chaque nouveau restaurant personnellement."
       },
       "domain": {
         "q": "Puis-je utiliser mon propre nom de domaine ?",
@@ -243,12 +243,12 @@
   },
   "caseStudy": {
     "meta": {
-      "title": "Étude de cas : RUMI Restaurant, Genève — propulsé par Sofra",
-      "description": "RUMI Restaurant à Genève fait tourner ses commandes en ligne, ses réservations et l'impression des tickets cuisine sur Sofra — en dix langues, sur une infrastructure européenne, en production depuis juin 2026."
+      "title": "Étude de cas : RUMI Restaurant, Genève — propulsé par SofraPiwas",
+      "description": "RUMI Restaurant à Genève fait tourner ses commandes en ligne, ses réservations et l'impression des tickets cuisine sur SofraPiwas — en dix langues, sur une infrastructure européenne, en production depuis juin 2026."
     },
     "label": "Étude de cas",
     "title": "RUMI Restaurant, Genève",
-    "subtitle": "Le premier restaurant de Sofra — et la salle où chaque fonctionnalité fait ses preuves avant de sortir.",
+    "subtitle": "Le premier restaurant de SofraPiwas — et la salle où chaque fonctionnalité fait ses preuves avant de sortir.",
     "facts": {
       "location": {
         "label": "Lieu",
@@ -263,11 +263,11 @@
       },
       "hosting": {
         "label": "Infrastructure",
-        "value": "UE, gérée par Sofra"
+        "value": "UE, gérée par SofraPiwas"
       }
     },
     "runs": {
-      "title": "Ce que RUMI fait tourner sur Sofra",
+      "title": "Ce que RUMI fait tourner sur SofraPiwas",
       "intro": "Ni pilote, ni sous-ensemble — le service quotidien du restaurant repose sur la plateforme :",
       "items": {
         "ordering": {
@@ -298,7 +298,7 @@
     },
     "infra": {
       "title": "L'infrastructure derrière",
-      "body": "RUMI tourne sur une infrastructure hébergée dans l'UE et opérée par Sofra — en production depuis le {date}, surveillée en continu, avec des sauvegardes chaque nuit. Le restaurant assure son service ; nous faisons tourner les assiettes en coulisses."
+      "body": "RUMI tourne sur une infrastructure hébergée dans l'UE et opérée par SofraPiwas — en production depuis le {date}, surveillée en continu, avec des sauvegardes chaque nuit. Le restaurant assure son service ; nous faisons tourner les assiettes en coulisses."
     },
     "numbers": {
       "title": "Et les chiffres ?",
@@ -311,19 +311,19 @@
   },
   "compare": {
     "meta": {
-      "title": "Sofra ou GloriaFood (2026) : comparaison honnête",
-      "description": "GloriaFood est un système de commande en ligne gratuit avec des modules payants ; Sofra est une plateforme de restaurant tout-en-un venue des Pays-Bas. Une comparaison loyale, datée et sourcée."
+      "title": "SofraPiwas ou GloriaFood (2026) : comparaison honnête",
+      "description": "GloriaFood est un système de commande en ligne gratuit avec des modules payants ; SofraPiwas est une plateforme de restaurant tout-en-un venue des Pays-Bas. Une comparaison loyale, datée et sourcée."
     },
     "label": "Côte à côte",
-    "title": "Sofra vs GloriaFood",
+    "title": "SofraPiwas vs GloriaFood",
     "subtitle": "Deux façons honnêtes de mettre un restaurant en ligne — comparées loyalement, avec sources et date.",
     "updated": "Dernière vérification : {date}",
-    "intro1": "GloriaFood — qui appartient à Oracle — est l'un des systèmes de commande en ligne les plus connus : le cœur du produit est gratuit, et l'on ajoute des modules payants en grandissant. Sofra est une plateforme plus jeune et tout-en-un, construite aux Pays-Bas et éprouvée chaque jour en service à Genève : commandes, réservations, fidélité et impression cuisine dans un seul système, installé pour vous, personnellement.",
+    "intro1": "GloriaFood — qui appartient à Oracle — est l'un des systèmes de commande en ligne les plus connus : le cœur du produit est gratuit, et l'on ajoute des modules payants en grandissant. SofraPiwas est une plateforme plus jeune et tout-en-un, construite aux Pays-Bas et éprouvée chaque jour en service à Genève : commandes, réservations, fidélité et impression cuisine dans un seul système, installé pour vous, personnellement.",
     "intro2": "Les deux sont des choix honnêtes. Le bon dépend de ce que vous voulez faire vous-même — le tableau ci-dessous s'en tient aux faits vérifiés sur les pages de GloriaFood.",
     "table": {
-      "caption": "Sofra et GloriaFood, fonctionnalité par fonctionnalité",
+      "caption": "SofraPiwas et GloriaFood, fonctionnalité par fonctionnalité",
       "feature": "En un coup d'œil",
-      "sofra": "Sofra",
+      "sofra": "SofraPiwas",
       "gloriafood": "GloriaFood",
       "rows": {
         "pricing": {
@@ -358,7 +358,7 @@
         },
         "hosting": {
           "label": "Hébergement & domaines",
-          "sofra": "Tourne sur une infrastructure gérée par Sofra dans l'UE ; chaque restaurant a son propre domaine — le vôtre, ou un que nous enregistrons pour vous.",
+          "sofra": "Tourne sur une infrastructure gérée par SofraPiwas dans l'UE ; chaque restaurant a son propre domaine — le vôtre, ou un que nous enregistrons pour vous.",
           "gf": "Service cloud opéré par Oracle (GloriaFood est un produit Oracle)."
         },
         "setup": {
@@ -380,12 +380,12 @@
         "a": "Le cœur, oui. Leur page tarifs annonce zéro commission par commande et zéro abonnement pour le système de commande de base ; les paiements en ligne (29 $US/mois), les promotions avancées (19 $US/mois), la caisse (49 $US/mois par établissement, engagement de deux ans), le site web optimisé pour la vente et les applis à votre marque sont des extras payants. Pour beaucoup de petits restaurants, l'offre gratuite suffit réellement."
       },
       "cost": {
-        "q": "Combien coûte Sofra ?",
+        "q": "Combien coûte SofraPiwas ?",
         "a": "Pendant l'accès anticipé, les restaurants fondateurs ne paient rien — installation et accompagnement offerts, et ils gardent une remise à vie à l'arrivée des tarifs réguliers. Les offres régulières seront un tarif mensuel simple et fixe, avec des modules optionnels."
       },
       "pick": {
         "q": "Lequel choisir ?",
-        "a": "Si vous voulez surtout un widget de commande gratuit sur un site que vous avez déjà, et que la configuration en autonomie ne vous fait pas peur, GloriaFood est un choix solide et éprouvé. Si vous voulez un seul système pour commandes, réservations, fidélité et impression cuisine — installé avec vous, dans les langues de vos clients, sur une infrastructure européenne — c'est exactement pour cela que Sofra existe."
+        "a": "Si vous voulez surtout un widget de commande gratuit sur un site que vous avez déjà, et que la configuration en autonomie ne vous fait pas peur, GloriaFood est un choix solide et éprouvé. Si vous voulez un seul système pour commandes, réservations, fidélité et impression cuisine — installé avec vous, dans les langues de vos clients, sur une infrastructure européenne — c'est exactement pour cela que SofraPiwas existe."
       }
     },
     "fitGf": {
@@ -397,10 +397,10 @@
       }
     },
     "fitSofra": {
-      "title": "Quand Sofra convient mieux",
+      "title": "Quand SofraPiwas convient mieux",
       "items": {
         "one": "Vous voulez commandes, réservations, fidélité et impression cuisine dans un seul système, pas en modules séparés.",
-        "languages": "Vos clients parlent plusieurs langues — Sofra en sert dix sur le même menu.",
+        "languages": "Vos clients parlent plusieurs langues — SofraPiwas en sert dix sur le même menu.",
         "hands": "Vous préférez qu'on dresse la table avec vous — et qu'on reste à portée de message — plutôt que de tout faire seul.",
         "domain": "Vous voulez votre restaurant sur son propre domaine, dans votre devise, hébergé dans l'UE."
       }
@@ -415,14 +415,14 @@
       }
     },
     "ctaTitle": "Goûtez la différence",
-    "ctaBody": "La façon la plus rapide de comparer, c'est de voir Sofra tourner dans un vrai restaurant — ou sur vos propres tables.",
+    "ctaBody": "La façon la plus rapide de comparer, c'est de voir SofraPiwas tourner dans un vrai restaurant — ou sur vos propres tables.",
     "ctaButton": "Commencer",
     "ctaCase": "Lire l'étude de cas RUMI"
   },
   "changelog": {
     "meta": {
-      "title": "Quoi de neuf chez Sofra — journal des nouveautés",
-      "description": "Notes datées sur les nouveautés de Sofra : fonctionnalités, langues, facturation, sécurité et fiabilité. Courtes et honnêtes — si c'est écrit ici, c'est en ligne."
+      "title": "Quoi de neuf chez SofraPiwas — journal des nouveautés",
+      "description": "Notes datées sur les nouveautés de SofraPiwas : fonctionnalités, langues, facturation, sécurité et fiabilité. Courtes et honnêtes — si c'est écrit ici, c'est en ligne."
     },
     "label": "Frais du jour",
     "title": "Quoi de neuf",
@@ -430,7 +430,7 @@
     "entries": {
       "currency": {
         "title": "Votre devise, de bout en bout",
-        "body": "Chaque restaurant sur Sofra fonctionne désormais dans sa propre devise — menu, commandes, tickets et reçus parlent d'une seule voix. Nous avons aussi posé les bases des habillages par restaurant, avec un modèle classique et un modèle artisanal en préparation."
+        "body": "Chaque restaurant sur SofraPiwas fonctionne désormais dans sa propre devise — menu, commandes, tickets et reçus parlent d'une seule voix. Nous avons aussi posé les bases des habillages par restaurant, avec un modèle classique et un modèle artisanal en préparation."
       },
       "hardening": {
         "title": "Semaine sécurité & fiabilité",
@@ -442,10 +442,10 @@
       },
       "languages": {
         "title": "Six langues sur le site, dix à table",
-        "body": "sofrapiwas.com parle désormais anglais, français, allemand, néerlandais, turc et arabe — écriture de droite à gauche comprise. Les clients des restaurants Sofra commandent en dix langues, et chaque nouveau restaurant est mis en place automatiquement, avec son propre domaine."
+        "body": "sofrapiwas.com parle désormais anglais, français, allemand, néerlandais, turc et arabe — écriture de droite à gauche comprise. Les clients des restaurants SofraPiwas commandent en dix langues, et chaque nouveau restaurant est mis en place automatiquement, avec son propre domaine."
       },
       "launch": {
-        "title": "Sofra ouvre ses portes",
+        "title": "SofraPiwas ouvre ses portes",
         "body": "sofrapiwas.com est en ligne — et le programme partenaires aussi : agences et indépendants candidatent, sont approuvés personnellement et suivent chaque restaurant du premier appel au service en salle, avec un suivi transparent des commissions."
       }
     }
@@ -485,7 +485,7 @@
       "title": "Vos clients",
       "ownerTitle": "Votre abonnement",
       "intro": "Chaque restaurant que vous amenez à table, du premier appel au service en salle.",
-      "ownerIntro": "Votre offre Sofra et votre facturation, au même endroit.",
+      "ownerIntro": "Votre offre SofraPiwas et votre facturation, au même endroit.",
       "addClient": "Ajouter un client",
       "empty": "Pas encore de clients — ajoutez le premier restaurant ci-dessus.",
       "ownerAllSet": "Votre abonnement est actif — rien à faire ici pour le moment.",
@@ -514,12 +514,12 @@
       "statusAria": "Statut du pipeline",
       "updating": "Mise à jour…",
       "update": "Mettre à jour le statut",
-      "onboardingRequested": "Intégration demandée — Sofra s'en occupe. Vous verrez ici ce client passer en production.",
-      "managedBySofra": "Le statut de ce client est désormais géré par Sofra.",
+      "onboardingRequested": "Intégration demandée — SofraPiwas s'en occupe. Vous verrez ici ce client passer en production.",
+      "managedBySofra": "Le statut de ce client est désormais géré par SofraPiwas.",
       "moveToAgreed": "Passez d'abord le client à « Accord conclu »",
       "sending": "Envoi…",
       "requestOnboarding": "Demander l'intégration 🍽",
-      "sofraSetsUp": "Sofra installe le restaurant et le met en production."
+      "sofraSetsUp": "SofraPiwas installe le restaurant et le met en production."
     },
     "noteForm": {
       "placeholder": "Ajouter une note — résultat de l'appel, prochaine étape, qui demander…",
@@ -529,7 +529,7 @@
     },
     "ledger": {
       "title": "Registre des commissions",
-      "intro": "Tenu par Sofra ; pour l'instant, les versements sont réglés en dehors de l'application.",
+      "intro": "Tenu par SofraPiwas ; pour l'instant, les versements sont réglés en dehors de l'application.",
       "balance": "Solde actuel",
       "date": "Date",
       "note": "Note",
@@ -544,8 +544,8 @@
     },
     "thanks": {
       "title": "Merci !",
-      "body": "Votre paiement est en cours de traitement. Une fois confirmé, votre abonnement Sofra démarre automatiquement — nous vous contactons très vite.",
-      "questions": "Des questions ? Répondez simplement à n'importe quel e-mail de Sofra."
+      "body": "Votre paiement est en cours de traitement. Une fois confirmé, votre abonnement SofraPiwas démarre automatiquement — nous vous contactons très vite.",
+      "questions": "Des questions ? Répondez simplement à n'importe quel e-mail de SofraPiwas."
     },
     "admin": {
       "applications": {
@@ -573,7 +573,7 @@
       },
       "billing": {
         "title": "Facturation",
-        "intro": "Abonnements Sofra → tenant via Mollie (ADR-011, volet A). Créez un compte de facturation, envoyez au tenant le lien du premier paiement ; l'abonnement démarre de lui-même dès que le mandat est actif.",
+        "intro": "Abonnements SofraPiwas → tenant via Mollie (ADR-011, volet A). Créez un compte de facturation, envoyez au tenant le lien du premier paiement ; l'abonnement démarre de lui-même dès que le mandat est actif.",
         "mollieMissing": "MOLLIE_API_KEY n'est pas défini sur cet environnement — la création de comptes de facturation est désactivée.",
         "newAccount": "Nouveau compte de facturation",
         "tenantsHeading": "Tenants ({count})",
@@ -589,7 +589,7 @@
         "name": "Nom de facturation (restaurant / société)",
         "nameAria": "Nom de facturation",
         "email": "E-mail de facturation",
-        "description": "Description du plan (ex. « Sofra Core — mensuel »)",
+        "description": "Description du plan (ex. « SofraPiwas Core — mensuel »)",
         "descriptionAria": "Description du plan",
         "amount": "Montant par période (EUR)",
         "amountAria": "Montant par période en EUR",
@@ -754,7 +754,7 @@
     "errors": {
       "invalidClient": "Le nom du restaurant est requis (l'e-mail doit être valide).",
       "clientNotFound": "Client introuvable.",
-      "statusManaged": "Le statut de ce client est désormais géré par Sofra.",
+      "statusManaged": "Le statut de ce client est désormais géré par SofraPiwas.",
       "invalidStatus": "Statut invalide.",
       "invalidNote": "La note ne peut pas être vide (2000 caractères max).",
       "notAgreed": "Passez d'abord le client à « Accord conclu ».",
@@ -784,12 +784,12 @@
     },
     "plan": {
       "title": "Votre abonnement",
-      "intro": "Votre abonnement Sofra et l'historique des paiements.",
+      "intro": "Votre abonnement SofraPiwas et l'historique des paiements.",
       "empty": "Pas encore d'abonnement — nous vous contacterons.",
-      "welcomeKicker": "Bienvenue chez Sofra",
+      "welcomeKicker": "Bienvenue chez SofraPiwas",
       "welcomeTitle": "Bienvenue, {name} 🎉",
-      "liveSince": "{restaurant} est en ligne sur Sofra depuis le {date}.",
-      "liveSinceUnknown": "{restaurant} est en ligne sur Sofra.",
+      "liveSince": "{restaurant} est en ligne sur SofraPiwas depuis le {date}.",
+      "liveSinceUnknown": "{restaurant} est en ligne sur SofraPiwas.",
       "amountLine": "{amount} / {interval}",
       "firstChargeNote": "Vous payez le premier mois maintenant, puis le renouvellement est automatique. Annulable à tout moment.",
       "startPayment": "Démarrer le paiement mensuel automatique",
@@ -811,12 +811,12 @@
   },
   "signup": {
     "meta": {
-      "title": "Inscription — Sofra",
-      "description": "Lancez votre plateforme de restaurant Sofra : menus QR, commandes en direct, réservations et fidélité. Parlez-nous de votre établissement et nous nous occupons de tout."
+      "title": "Inscription — SofraPiwas",
+      "description": "Lancez votre plateforme de restaurant SofraPiwas : menus QR, commandes en direct, réservations et fidélité. Parlez-nous de votre établissement et nous nous occupons de tout."
     },
     "label": "Commencer",
     "title": "Installez votre restaurant à table",
-    "subtitle": "Parlez-nous de votre établissement et nous configurons votre Sofra — menus QR, commandes en direct, réservations et fidélité. Nous accompagnons chaque restaurant personnellement.",
+    "subtitle": "Parlez-nous de votre établissement et nous configurons votre SofraPiwas — menus QR, commandes en direct, réservations et fidélité. Nous accompagnons chaque restaurant personnellement.",
     "points": {
       "quick": {
         "title": "Démarrage rapide",

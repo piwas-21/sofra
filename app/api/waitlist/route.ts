@@ -54,7 +54,7 @@ export async function POST(request: Request) {
   const { sent } = await sendEmail({
     to,
     replyTo: email,
-    subject: `Sofra — ${meta.subject}: ${restaurant}`,
+    subject: `SofraPiwas — ${meta.subject}: ${restaurant}`,
     html: craftEmail({
       kicker: meta.kicker,
       title: meta.title,
