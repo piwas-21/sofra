@@ -6,7 +6,7 @@ type BrandMarkProps = { className?: string };
  * `aria-hidden` with an empty alt. A static SVG served from /public; next/image
  * would add no value (no optimization for inline vector) so a plain <img> is used.
  */
-export default function BrandMark({ className }: BrandMarkProps) {
+export default function BrandMark({ className }: Readonly<BrandMarkProps>) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- static SVG logo, no next/image optimization
     <img
