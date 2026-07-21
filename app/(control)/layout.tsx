@@ -13,7 +13,7 @@ import { fontClassNames, themeInitScript } from "@/lib/fonts";
 export const metadata: Metadata = {
   title: "Sofra — Partner area",
   robots: { index: false, follow: false },
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: "/favicon.svg", apple: "/apple-touch-icon.png" },
 };
 
 export default async function ControlLayout({ children }: { children: React.ReactNode }) {
