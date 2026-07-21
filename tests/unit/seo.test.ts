@@ -35,7 +35,7 @@ describe("marketingPageMetadata", () => {
       title: "T",
       description: "D",
       locale: "de",
-      siteName: "Sofra",
+      siteName: "SofraPiwas",
     });
     expect(meta.alternates?.canonical).toBe("/de/case/rumi");
     expect(meta.robots).toMatchObject({ index: true, follow: true });
