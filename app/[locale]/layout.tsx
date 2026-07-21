@@ -38,7 +38,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-      images: [{ url: OG_IMAGE.url, alt: OG_IMAGE.alt }],
+      images: [OG_IMAGE],
     },
     robots: { index: true, follow: true },
   };

@@ -9,6 +9,13 @@ type BrandMarkProps = { className?: string };
 export default function BrandMark({ className }: BrandMarkProps) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- static SVG logo, no next/image optimization
-    <img src="/mark.svg" alt="" aria-hidden="true" className={className} />
+    <img
+      src="/mark.svg"
+      alt=""
+      aria-hidden="true"
+      width={452}
+      height={501}
+      className={className}
+    />
   );
 }

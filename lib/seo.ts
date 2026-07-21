@@ -57,7 +57,7 @@ export function marketingPageMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [{ url: OG_IMAGE.url, alt: OG_IMAGE.alt }],
+      images: [OG_IMAGE],
     },
     robots: { index: true, follow: true },
   };
