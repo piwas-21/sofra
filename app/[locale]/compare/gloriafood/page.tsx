@@ -15,7 +15,7 @@ import {
 } from "@/components/compare-gloriafood-data";
 import { SITE_URL, marketingPageMetadata } from "@/lib/seo";
 
-// Honest, dated Sofra-vs-GloriaFood comparison (AEO plan §2 priority 2).
+// Honest, dated SofraPiwas-vs-GloriaFood comparison (AEO plan §2 priority 2).
 // Every GloriaFood claim is sourced (see compare-gloriafood-data.ts) —
 // re-verify the sources before editing any factual cell.
 

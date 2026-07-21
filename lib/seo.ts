@@ -3,6 +3,14 @@ import { routing } from "@/i18n/routing";
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sofrapiwas.com";
 
+/** The SofraPiwas open-graph / social share image (resolved against metadataBase). */
+export const OG_IMAGE = {
+  url: "/og-image.png",
+  width: 1200,
+  height: 630,
+  alt: "SofraPiwas",
+} as const;
+
 /**
  * hreflang + canonical for a localized marketing route (AEO plan §1 pattern,
  * shared by the landing layout and the content-engine pages). `path` is the
@@ -37,7 +45,20 @@ export function marketingPageMetadata({
     title,
     description,
     alternates: pageAlternates(locale, path),
-    openGraph: { title, description, siteName: "Sofra", locale, type: "website" },
+    openGraph: {
+      title,
+      description,
+      siteName: "SofraPiwas",
+      locale,
+      type: "website",
+      images: [OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [OG_IMAGE],
+    },
     robots: { index: true, follow: true },
   };
 }

@@ -17,7 +17,7 @@ export default async function ResetPage({
   return (
     <main className="mx-auto max-w-md px-6 py-24">
       <Link href="/" className="font-hand text-4xl font-bold text-primary">
-        Sofra
+        SofraPiwas
       </Link>
       <h1 className="mt-8 font-display font-bold text-5xl">{t("resetTitle")}</h1>
       {valid ? (

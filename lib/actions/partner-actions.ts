@@ -150,7 +150,7 @@ export async function requestOnboardingAction(
   if (to) {
     await sendEmail({
       to,
-      subject: `Sofra — Onboarding request: ${client.restaurantName}`,
+      subject: `SofraPiwas — Onboarding request: ${client.restaurantName}`,
       html: craftEmail({
         kicker: "Partner pipeline",
         title: "Onboarding requested",

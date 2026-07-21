@@ -10,7 +10,7 @@ export default function Footer() {
     <footer className="border-t-2 border-border">
       <div className="mx-auto max-w-6xl px-6 py-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
         <div>
-          <p className="font-hand text-4xl font-bold text-primary">Sofra</p>
+          <p className="font-hand text-4xl font-bold text-primary">SofraPiwas</p>
           <p className="mt-1 font-label text-sm text-muted-foreground">
             {t("tagline")}
           </p>

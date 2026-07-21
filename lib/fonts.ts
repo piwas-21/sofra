@@ -1,4 +1,4 @@
-// Sofra craft typography stack — shared by both root layouts
+// SofraPiwas craft typography stack — shared by both root layouts
 // (the localized marketing tree and the en-only control plane).
 import {
   Quicksand,

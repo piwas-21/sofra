@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Link as LocaleLink } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import BrandMark from "./BrandMark";
 import ThemeToggle from "./ThemeToggle";
 import LocaleSwitcher from "./LocaleSwitcher";
 
@@ -12,8 +13,12 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xs border-b-2 border-border">
       <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
-        <LocaleLink href="/#top" className="font-hand text-3xl font-bold text-primary">
-          Sofra
+        <LocaleLink
+          href="/#top"
+          className="flex items-center gap-2.5 text-primary"
+        >
+          <BrandMark className="h-10 w-auto" />
+          <span className="font-hand text-3xl font-bold">SofraPiwas</span>
         </LocaleLink>
 
         <nav className="hidden md:flex items-center gap-8 font-label text-lg">

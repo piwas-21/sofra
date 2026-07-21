@@ -17,7 +17,7 @@ export default async function JsonLd({ locale }: { locale: string }) {
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": `${SITE_URL}/#organization`,
-    name: "Sofra",
+    name: "SofraPiwas",
     url: SITE_URL,
     logo: `${SITE_URL}/favicon.svg`,
     description: meta("description"),
@@ -31,7 +31,7 @@ export default async function JsonLd({ locale }: { locale: string }) {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${SITE_URL}/#website`,
-    name: "Sofra",
+    name: "SofraPiwas",
     url: SITE_URL,
     inLanguage: [...routing.locales],
     publisher: { "@id": `${SITE_URL}/#organization` },
@@ -40,14 +40,14 @@ export default async function JsonLd({ locale }: { locale: string }) {
   const softwareApplication = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Sofra",
+    name: "SofraPiwas",
     url: SITE_URL,
     description: meta("description"),
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     inLanguage: locale,
     // Free applies to the early-access founding cohort only — name the offer
-    // so answer engines don't lift a bare "Sofra is free" claim.
+    // so answer engines don't lift a bare "SofraPiwas is free" claim.
     offers: {
       "@type": "Offer",
       name: "Early access — founding restaurants",

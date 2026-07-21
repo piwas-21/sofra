@@ -18,10 +18,10 @@ describe("craftEmail", () => {
     expect(html).toContain("<p>Line one</p><strong>bold</strong>");
   });
 
-  it("always includes the Sofra brand shell and a valid document", () => {
+  it("always includes the SofraPiwas brand shell and a valid document", () => {
     const html = craftEmail({ title: "T", bodyHtml: "b" });
     expect(html).toMatch(/^<!doctype html>/);
-    expect(html).toContain(">Sofra<");
+    expect(html).toContain(">SofraPiwas<");
   });
 
   it("renders the kicker only when provided", () => {

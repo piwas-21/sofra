@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Sofra — Sıcacık restoran yazılımı",
-    "description": "QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — mutfağa saygılı tek platform, gerçek bir restoranda her serviste sınandı. Sofra, misafirler için kurulan sofradır."
+    "title": "SofraPiwas — Sıcacık restoran yazılımı",
+    "description": "QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — mutfağa saygılı tek platform, gerçek bir restoranda her serviste sınandı. SofraPiwas, misafirler için kurulan sofradır."
   },
   "header": {
     "features": "Mutfakta ne var",
@@ -17,11 +17,11 @@
     "stamp": "Avrupa'da el yapımı",
     "titleLine1": "Sofrayı kurun.",
     "titleLine2": "Gerisi bizden.",
-    "subtitle": "Sofra, sıcacık bir restoran platformu: QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — salonunuzun ve mutfağınızın ihtiyacı olan her şey, tek sofrada.",
-    "note": "Sofra, misafirler için kurulan masadır. Bütün felsefemiz bu.",
+    "subtitle": "SofraPiwas, sıcacık bir restoran platformu: QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — salonunuzun ve mutfağınızın ihtiyacı olan her şey, tek sofrada.",
+    "note": "SofraPiwas, misafirler için kurulan masadır. Bütün felsefemiz bu.",
     "ctaPrimary": "Hemen başlayın",
     "ctaSecondary": "Mutfakta ne var, bak",
-    "proof": "Cenevre'deki RUMI Restaurant'ın tüm servisi Sofra ile dönüyor — siparişler, mutfak, rezervasyonlar ve yazıcılar, canlı."
+    "proof": "Cenevre'deki RUMI Restaurant'ın tüm servisi SofraPiwas ile dönüyor — siparişler, mutfak, rezervasyonlar ve yazıcılar, canlı."
   },
   "features": {
     "label": "Mutfakta ne var",
@@ -75,10 +75,10 @@
   "showcase": {
     "label": "Tadı damağında",
     "title": "Canlı deneyin",
-    "subtitle": "Sofra bir sunum demosu değil — ilk günden beri gerçek bir restoranı her serviste çalıştırıyor.",
+    "subtitle": "SofraPiwas bir sunum demosu değil — ilk günden beri gerçek bir restoranı her serviste çalıştırıyor.",
     "cardStamp": "Canlı yayında",
     "cardTitle": "RUMI Restaurant — Cenevre",
-    "cardBody": "Her masada QR menü, mutfak ve kasa ekranlarına akan siparişler, rezervasyonlar, sadakat puanları ve termal fişler — hepsi Sofra üzerinde.",
+    "cardBody": "Her masada QR menü, mutfak ve kasa ekranlarına akan siparişler, rezervasyonlar, sadakat puanları ve termal fişler — hepsi SofraPiwas üzerinde.",
     "cardHint": "Menüyü bir misafir gibi açıp gezin — alacağınız ürün tam olarak bu.",
     "visit": "rumirestaurant.ch'yi ziyaret edin",
     "ctaTitle": "Aynısını kendi mekânınızda ister misiniz?",
@@ -110,7 +110,7 @@
     "points": {
       "find": {
         "title": "Bulun",
-        "text": "Sofra'yı sevecek restoran ve kafeleri keşfedin — sizin çevreniz, sizin şehirleriniz."
+        "text": "SofraPiwas'yı sevecek restoran ve kafeleri keşfedin — sizin çevreniz, sizin şehirleriniz."
       },
       "onboard": {
         "title": "Kazandırın",
@@ -159,7 +159,7 @@
   },
   "auth": {
     "loginTitle": "Partner girişi",
-    "loginIntro": "Sofra partnerleri için. Henüz partner değil misiniz?",
+    "loginIntro": "SofraPiwas partnerleri için. Henüz partner değil misiniz?",
     "becomeOne": "Partner olun.",
     "passwordSaved": "Şifre kaydedildi — şimdi giriş yapabilirsiniz.",
     "email": "E-posta",
@@ -191,7 +191,7 @@
     }
   },
   "footer": {
-    "tagline": "Sofra, misafirler için kurulan masadır.",
+    "tagline": "SofraPiwas, misafirler için kurulan masadır.",
     "madeIn": "Hollanda'da pişti, ilk servis Cenevre'de",
     "nav": {
       "features": "Mutfakta ne var",
@@ -201,10 +201,10 @@
       "partner": "Partnerler",
       "faq": "SSS",
       "caseStudy": "Vaka çalışması",
-      "compare": "Sofra vs GloriaFood",
+      "compare": "SofraPiwas vs GloriaFood",
       "changelog": "Neler yeni"
     },
-    "copyright": "© {year} Sofra. Tüm hakları saklıdır."
+    "copyright": "© {year} SofraPiwas. Tüm hakları saklıdır."
   },
   "faq": {
     "label": "Sorular",
@@ -212,11 +212,11 @@
     "subtitle": "Dolambaçsız, net cevaplar.",
     "items": {
       "what": {
-        "q": "Sofra nedir?",
-        "a": "Sofra bir restoran yönetim platformudur: QR menü ve online sipariş, mutfak-kasa-garson için canlı sipariş panoları, rezervasyon, sadakat puanları ve termal yazıcı fişleri — hepsi tek yerde. Cenevre'deki RUMI Restaurant'ın tüm servisini yürüten sistemden doğdu."
+        "q": "SofraPiwas nedir?",
+        "a": "SofraPiwas bir restoran yönetim platformudur: QR menü ve online sipariş, mutfak-kasa-garson için canlı sipariş panoları, rezervasyon, sadakat puanları ve termal yazıcı fişleri — hepsi tek yerde. Cenevre'deki RUMI Restaurant'ın tüm servisini yürüten sistemden doğdu."
       },
       "pricing": {
-        "q": "Sofra ne kadar?",
+        "q": "SofraPiwas ne kadar?",
         "a": "Erken erişim boyunca kurucu restoranlar hiçbir şey ödemez — kurulum ve destek ikramımızdır; normal fiyatlar geldiğinde kurucuların indirimi ömür boyu sürer. Planlar sade olacak: sabit aylık fiyat, isteğe bağlı ek modüller."
       },
       "payments": {
@@ -232,8 +232,8 @@
         "a": "Evet. Yardımcı uygulama (Windows ve Android) ağ üzerinden ESC/POS termal yazıcıları sürer; siparişler mutfakta tam istediğiniz yerde basılır — ekstra donanım aboneliği yok."
       },
       "who": {
-        "q": "Sofra'nın arkasında kim var, gerçekten kullanılıyor mu?",
-        "a": "Sofra, Hollanda merkezli küçük bir ekip tarafından geliştiriliyor ve Cenevre'deki RUMI Restaurant'ın (rumirestaurant.ch) tüm canlı servisini yürütüyor — siparişler, mutfak panosu, rezervasyonlar ve yazıcılar Haziran 2026'dan beri orada üretimde. Yeni restoranları birebir ağırlıyoruz."
+        "q": "SofraPiwas'nın arkasında kim var, gerçekten kullanılıyor mu?",
+        "a": "SofraPiwas, Hollanda merkezli küçük bir ekip tarafından geliştiriliyor ve Cenevre'deki RUMI Restaurant'ın (rumirestaurant.ch) tüm canlı servisini yürütüyor — siparişler, mutfak panosu, rezervasyonlar ve yazıcılar Haziran 2026'dan beri orada üretimde. Yeni restoranları birebir ağırlıyoruz."
       },
       "domain": {
         "q": "Kendi alan adımı kullanabilir miyim?",
@@ -243,12 +243,12 @@
   },
   "caseStudy": {
     "meta": {
-      "title": "Vaka çalışması: RUMI Restaurant, Cenevre — Sofra üzerinde",
-      "description": "Cenevre'deki RUMI Restaurant çevrim içi siparişlerini, masa rezervasyonlarını ve mutfak fişi yazdırmayı Sofra üzerinde yürütüyor — on misafir dilinde, AB altyapısında, Haziran 2026'dan beri canlı."
+      "title": "Vaka çalışması: RUMI Restaurant, Cenevre — SofraPiwas üzerinde",
+      "description": "Cenevre'deki RUMI Restaurant çevrim içi siparişlerini, masa rezervasyonlarını ve mutfak fişi yazdırmayı SofraPiwas üzerinde yürütüyor — on misafir dilinde, AB altyapısında, Haziran 2026'dan beri canlı."
     },
     "label": "Vaka çalışması",
     "title": "RUMI Restaurant, Cenevre",
-    "subtitle": "Sofra'nın ilk restoranı — ve her özelliğin yayına çıkmadan önce piştiği salon.",
+    "subtitle": "SofraPiwas'nın ilk restoranı — ve her özelliğin yayına çıkmadan önce piştiği salon.",
     "facts": {
       "location": {
         "label": "Konum",
@@ -263,11 +263,11 @@
       },
       "hosting": {
         "label": "Altyapı",
-        "value": "AB, Sofra yönetiminde"
+        "value": "AB, SofraPiwas yönetiminde"
       }
     },
     "runs": {
-      "title": "RUMI, Sofra'da neleri çalıştırıyor",
+      "title": "RUMI, SofraPiwas'da neleri çalıştırıyor",
       "intro": "Ne pilot ne de kısmi kullanım — restoranın günlük servisi platform üzerinde dönüyor:",
       "items": {
         "ordering": {
@@ -298,7 +298,7 @@
     },
     "infra": {
       "title": "Arkasındaki altyapı",
-      "body": "RUMI, AB'de barındırılan ve Sofra'nın işlettiği bir altyapıda çalışıyor — {date} tarihinden beri canlı, günün her saati izleniyor, her gece yedekleniyor. Restoran servisini yapıyor; biz sahne arkasında tabakları döndürüyoruz."
+      "body": "RUMI, AB'de barındırılan ve SofraPiwas'nın işlettiği bir altyapıda çalışıyor — {date} tarihinden beri canlı, günün her saati izleniyor, her gece yedekleniyor. Restoran servisini yapıyor; biz sahne arkasında tabakları döndürüyoruz."
     },
     "numbers": {
       "title": "Peki rakamlar nerede?",
@@ -311,19 +311,19 @@
   },
   "compare": {
     "meta": {
-      "title": "Sofra vs GloriaFood (2026): dürüst bir karşılaştırma",
-      "description": "GloriaFood, ücretli ek modülleri olan ücretsiz bir çevrim içi sipariş sistemi; Sofra ise Hollanda çıkışlı, tam hizmet bir restoran platformu. Adil, tarihli ve kaynaklı bir karşılaştırma."
+      "title": "SofraPiwas vs GloriaFood (2026): dürüst bir karşılaştırma",
+      "description": "GloriaFood, ücretli ek modülleri olan ücretsiz bir çevrim içi sipariş sistemi; SofraPiwas ise Hollanda çıkışlı, tam hizmet bir restoran platformu. Adil, tarihli ve kaynaklı bir karşılaştırma."
     },
     "label": "Yan yana",
-    "title": "Sofra vs GloriaFood",
+    "title": "SofraPiwas vs GloriaFood",
     "subtitle": "Bir restoranı internete taşımanın iki dürüst yolu — kaynaklarla ve tarihiyle, adilce karşılaştırıldı.",
     "updated": "Son kontrol: {date}",
-    "intro1": "GloriaFood — Oracle bünyesinde — en bilinen çevrim içi sipariş sistemlerinden biri: ürünün çekirdeği ücretsiz, büyüdükçe ücretli modüller ekleniyor. Sofra ise daha genç, tam hizmet bir platform: Hollanda'da geliştirildi, Cenevre'de her gün serviste sınanıyor — sipariş, rezervasyon, sadakat ve mutfak yazdırma tek sistemde, sizin için birebir kuruluyor.",
+    "intro1": "GloriaFood — Oracle bünyesinde — en bilinen çevrim içi sipariş sistemlerinden biri: ürünün çekirdeği ücretsiz, büyüdükçe ücretli modüller ekleniyor. SofraPiwas ise daha genç, tam hizmet bir platform: Hollanda'da geliştirildi, Cenevre'de her gün serviste sınanıyor — sipariş, rezervasyon, sadakat ve mutfak yazdırma tek sistemde, sizin için birebir kuruluyor.",
     "intro2": "İkisi de dürüst seçenekler. Hangisinin uyduğu, ne kadarını kendiniz yapmak istediğinize bağlı — aşağıdaki tablo yalnızca GloriaFood'un kendi sayfalarında doğruladığımız bilgilere dayanıyor.",
     "table": {
-      "caption": "Sofra ve GloriaFood, özellik özellik",
+      "caption": "SofraPiwas ve GloriaFood, özellik özellik",
       "feature": "Bir bakışta",
-      "sofra": "Sofra",
+      "sofra": "SofraPiwas",
       "gloriafood": "GloriaFood",
       "rows": {
         "pricing": {
@@ -358,7 +358,7 @@
         },
         "hosting": {
           "label": "Barındırma & alan adları",
-          "sofra": "AB'de, Sofra'nın yönettiği altyapıda çalışır; her restoran kendi alan adını alır — sizinkini ya da sizin için kaydettiğimiz yeni bir tanesini.",
+          "sofra": "AB'de, SofraPiwas'nın yönettiği altyapıda çalışır; her restoran kendi alan adını alır — sizinkini ya da sizin için kaydettiğimiz yeni bir tanesini.",
           "gf": "Oracle'ın işlettiği bulut hizmeti (GloriaFood bir Oracle ürünüdür)."
         },
         "setup": {
@@ -380,12 +380,12 @@
         "a": "Çekirdeği evet. Fiyat sayfalarına göre temel sipariş sisteminde sipariş başına komisyon ve aylık ücret yok; çevrim içi ödeme (29 ABD$/ay), gelişmiş promosyon (19 ABD$/ay), kasa (şube başına 49 ABD$/ay, iki yıl taahhüt), satışa dönük web sitesi ve markanıza özel uygulamalar ücretli ekstralar. Birçok küçük restoran için ücretsiz plan gerçekten yeterli."
       },
       "cost": {
-        "q": "Sofra ne kadar?",
+        "q": "SofraPiwas ne kadar?",
         "a": "Erken erişim boyunca kurucu restoranlar hiçbir şey ödemiyor — kurulum ve destek ikramımız; normal fiyatlar geldiğinde ömür boyu indirimleri baki. Normal planlar, isteğe bağlı modüllerle basit ve sabit bir aylık fiyat olacak."
       },
       "pick": {
         "q": "Hangisini seçmeliyim?",
-        "a": "Asıl istediğiniz, hâlihazırdaki sitenize bugün ücretsiz bir sipariş bileşeni eklemekse ve kurulumu kendiniz yapmaktan çekinmiyorsanız, GloriaFood sağlam ve kendini kanıtlamış bir seçim. Sipariş, rezervasyon, sadakat ve mutfak yazdırmayı tek sistemde — sizinle birlikte kurulmuş, misafirlerinizin dillerinde, AB altyapısında — istiyorsanız, Sofra tam da bunun için var."
+        "a": "Asıl istediğiniz, hâlihazırdaki sitenize bugün ücretsiz bir sipariş bileşeni eklemekse ve kurulumu kendiniz yapmaktan çekinmiyorsanız, GloriaFood sağlam ve kendini kanıtlamış bir seçim. Sipariş, rezervasyon, sadakat ve mutfak yazdırmayı tek sistemde — sizinle birlikte kurulmuş, misafirlerinizin dillerinde, AB altyapısında — istiyorsanız, SofraPiwas tam da bunun için var."
       }
     },
     "fitGf": {
@@ -397,10 +397,10 @@
       }
     },
     "fitSofra": {
-      "title": "Sofra ne zaman daha iyi oturur",
+      "title": "SofraPiwas ne zaman daha iyi oturur",
       "items": {
         "one": "Sipariş, rezervasyon, sadakat ve mutfak yazdırmayı ayrı modüller değil, tek sistem olarak istiyorsunuz.",
-        "languages": "Misafirleriniz birden çok dil konuşuyor — Sofra aynı menüde on dil servis ediyor.",
+        "languages": "Misafirleriniz birden çok dil konuşuyor — SofraPiwas aynı menüde on dil servis ediyor.",
         "hands": "Her şeyi tek başına yapmaktansa, sofrayı sizinle birlikte kuran — ve bir mesaj uzağınızda kalan — birini tercih ediyorsunuz.",
         "domain": "Restoranınızı kendi alan adında, kendi para biriminizde, AB'de barındırılmış istiyorsunuz."
       }
@@ -415,14 +415,14 @@
       }
     },
     "ctaTitle": "Farkı tadın",
-    "ctaBody": "Karşılaştırmanın en hızlı yolu, Sofra'yı gerçek bir restoranda çalışırken görmek — ya da kendi masalarınızda.",
+    "ctaBody": "Karşılaştırmanın en hızlı yolu, SofraPiwas'yı gerçek bir restoranda çalışırken görmek — ya da kendi masalarınızda.",
     "ctaButton": "Hemen başlayın",
     "ctaCase": "RUMI vaka çalışmasını okuyun"
   },
   "changelog": {
     "meta": {
-      "title": "Sofra'da neler yeni — değişiklik günlüğü",
-      "description": "Sofra'daki yeniliklere dair tarihli notlar: özellikler, diller, faturalama, güvenlik ve güvenilirlik. Kısa ve dürüst — burada yazıyorsa, yayında."
+      "title": "SofraPiwas'da neler yeni — değişiklik günlüğü",
+      "description": "SofraPiwas'daki yeniliklere dair tarihli notlar: özellikler, diller, faturalama, güvenlik ve güvenilirlik. Kısa ve dürüst — burada yazıyorsa, yayında."
     },
     "label": "Mutfaktan taze",
     "title": "Neler yeni",
@@ -430,7 +430,7 @@
     "entries": {
       "currency": {
         "title": "Para biriminiz, uçtan uca",
-        "body": "Sofra'daki her restoran artık kendi para birimiyle çalışıyor — menü, siparişler, fişler ve makbuzlar aynı dili konuşuyor. Ayrıca restorana özel görünümlerin temelini attık: klasik ve zanaatkâr olmak üzere iki şablon yolda."
+        "body": "SofraPiwas'daki her restoran artık kendi para birimiyle çalışıyor — menü, siparişler, fişler ve makbuzlar aynı dili konuşuyor. Ayrıca restorana özel görünümlerin temelini attık: klasik ve zanaatkâr olmak üzere iki şablon yolda."
       },
       "hardening": {
         "title": "Güvenlik ve güvenilirlik haftası",
@@ -442,10 +442,10 @@
       },
       "languages": {
         "title": "Sitede altı dil, sofrada on",
-        "body": "sofrapiwas.com artık İngilizce, Fransızca, Almanca, Hollandaca, Türkçe ve Arapça konuşuyor — sağdan sola yazım dâhil. Sofra restoranlarının misafirleri on dilde sipariş veriyor; yeni restoranlar otomatik kuruluyor, her biri kendi alan adıyla."
+        "body": "sofrapiwas.com artık İngilizce, Fransızca, Almanca, Hollandaca, Türkçe ve Arapça konuşuyor — sağdan sola yazım dâhil. SofraPiwas restoranlarının misafirleri on dilde sipariş veriyor; yeni restoranlar otomatik kuruluyor, her biri kendi alan adıyla."
       },
       "launch": {
-        "title": "Sofra kapılarını açıyor",
+        "title": "SofraPiwas kapılarını açıyor",
         "body": "sofrapiwas.com yayında — partner programı da öyle: ajanslar ve bağımsız çalışanlar başvuruyor, tek tek onaylanıyor ve her restoranı ilk telefondan canlı servise kadar takip ediyor; komisyonlar şeffaf biçimde izleniyor."
       }
     }
@@ -485,7 +485,7 @@
       "title": "Müşterileriniz",
       "ownerTitle": "Aboneliğiniz",
       "intro": "Sofraya getirdiğiniz her restoran — ilk aramadan canlı servise kadar.",
-      "ownerIntro": "Sofra planınız ve faturalandırmanız tek bir yerde.",
+      "ownerIntro": "SofraPiwas planınız ve faturalandırmanız tek bir yerde.",
       "addClient": "Müşteri ekle",
       "empty": "Henüz müşteri yok — ilk restoranı yukarıdan ekleyin.",
       "ownerAllSet": "Aboneliğiniz etkin — şu anda burada yapılacak bir şey yok.",
@@ -514,12 +514,12 @@
       "statusAria": "Süreç durumu",
       "updating": "Güncelleniyor…",
       "update": "Durumu güncelle",
-      "onboardingRequested": "Kurulum talep edildi — Sofra ilgileniyor. Müşterinin yayına geçtiğini burada göreceksiniz.",
-      "managedBySofra": "Bu müşterinin durumu artık Sofra tarafından yönetiliyor.",
+      "onboardingRequested": "Kurulum talep edildi — SofraPiwas ilgileniyor. Müşterinin yayına geçtiğini burada göreceksiniz.",
+      "managedBySofra": "Bu müşterinin durumu artık SofraPiwas tarafından yönetiliyor.",
       "moveToAgreed": "Önce müşteriyi ‘Anlaşıldı’ durumuna alın",
       "sending": "Gönderiliyor…",
       "requestOnboarding": "Kurulum talep et 🍽",
-      "sofraSetsUp": "Sofra restoranı kurar ve yayına alır."
+      "sofraSetsUp": "SofraPiwas restoranı kurar ve yayına alır."
     },
     "noteForm": {
       "placeholder": "Not ekleyin — görüşme sonucu, sonraki adım, kiminle konuşulacağı…",
@@ -529,7 +529,7 @@
     },
     "ledger": {
       "title": "Komisyon defteri",
-      "intro": "Sofra tarafından kaydedilir; ödemeler şimdilik uygulama dışında yapılır.",
+      "intro": "SofraPiwas tarafından kaydedilir; ödemeler şimdilik uygulama dışında yapılır.",
       "balance": "Güncel bakiye",
       "date": "Tarih",
       "note": "Not",
@@ -544,8 +544,8 @@
     },
     "thanks": {
       "title": "Teşekkürler!",
-      "body": "Ödemeniz işleniyor. Onaylandığında Sofra aboneliğiniz otomatik olarak başlar — kısa süre içinde sizinle iletişime geçeceğiz.",
-      "questions": "Sorunuz mu var? Herhangi bir Sofra e-postasını yanıtlamanız yeterli."
+      "body": "Ödemeniz işleniyor. Onaylandığında SofraPiwas aboneliğiniz otomatik olarak başlar — kısa süre içinde sizinle iletişime geçeceğiz.",
+      "questions": "Sorunuz mu var? Herhangi bir SofraPiwas e-postasını yanıtlamanız yeterli."
     },
     "admin": {
       "applications": {
@@ -573,7 +573,7 @@
       },
       "billing": {
         "title": "Faturalama",
-        "intro": "Mollie üzerinden Sofra → tenant abonelikleri (ADR-011, A işi). Bir faturalama hesabı oluşturun, tenant'a ilk ödeme bağlantısını gönderin; ödeme talimatı (mandate) aktifleşince abonelik kendiliğinden başlar.",
+        "intro": "Mollie üzerinden SofraPiwas → tenant abonelikleri (ADR-011, A işi). Bir faturalama hesabı oluşturun, tenant'a ilk ödeme bağlantısını gönderin; ödeme talimatı (mandate) aktifleşince abonelik kendiliğinden başlar.",
         "mollieMissing": "Bu ortamda MOLLIE_API_KEY tanımlı değil — faturalama hesabı oluşturma devre dışı.",
         "newAccount": "Yeni faturalama hesabı",
         "tenantsHeading": "Tenant'lar ({count})",
@@ -589,7 +589,7 @@
         "name": "Fatura adı (restoran / şirket)",
         "nameAria": "Fatura adı",
         "email": "Fatura e-postası",
-        "description": "Plan açıklaması (örn. ‘Sofra Core — aylık’)",
+        "description": "Plan açıklaması (örn. ‘SofraPiwas Core — aylık’)",
         "descriptionAria": "Plan açıklaması",
         "amount": "Dönem başına tutar (EUR)",
         "amountAria": "EUR cinsinden dönem tutarı",
@@ -754,7 +754,7 @@
     "errors": {
       "invalidClient": "Restoran adı zorunludur (e-posta geçerli olmalı).",
       "clientNotFound": "Müşteri bulunamadı.",
-      "statusManaged": "Bu müşterinin durumu artık Sofra tarafından yönetiliyor.",
+      "statusManaged": "Bu müşterinin durumu artık SofraPiwas tarafından yönetiliyor.",
       "invalidStatus": "Geçersiz durum.",
       "invalidNote": "Not boş olamaz (en fazla 2000 karakter).",
       "notAgreed": "Önce müşteriyi ‘Anlaşıldı’ durumuna alın.",
@@ -784,12 +784,12 @@
     },
     "plan": {
       "title": "Aboneliğiniz",
-      "intro": "Sofra aboneliğiniz ve ödeme geçmişiniz.",
+      "intro": "SofraPiwas aboneliğiniz ve ödeme geçmişiniz.",
       "empty": "Henüz abonelik yok — sizinle iletişime geçeceğiz.",
-      "welcomeKicker": "Sofra'ya hoş geldiniz",
+      "welcomeKicker": "SofraPiwas'ya hoş geldiniz",
       "welcomeTitle": "Hoş geldiniz, {name} 🎉",
-      "liveSince": "{restaurant} {date} tarihinden beri Sofra'da yayında.",
-      "liveSinceUnknown": "{restaurant} Sofra'da yayında.",
+      "liveSince": "{restaurant} {date} tarihinden beri SofraPiwas'da yayında.",
+      "liveSinceUnknown": "{restaurant} SofraPiwas'da yayında.",
       "amountLine": "{amount} / {interval}",
       "firstChargeNote": "İlk ayı şimdi ödersiniz, ardından otomatik olarak yenilenir. İstediğiniz zaman iptal edebilirsiniz.",
       "startPayment": "Otomatik aylık ödemeyi başlat",
@@ -811,12 +811,12 @@
   },
   "signup": {
     "meta": {
-      "title": "Kayıt ol — Sofra",
-      "description": "Sofra restoran platformunuzu başlatın: QR menüler, canlı siparişler, rezervasyonlar ve sadakat. Mekanınızı anlatın, kurulumu biz hallederiz."
+      "title": "Kayıt ol — SofraPiwas",
+      "description": "SofraPiwas restoran platformunuzu başlatın: QR menüler, canlı siparişler, rezervasyonlar ve sadakat. Mekanınızı anlatın, kurulumu biz hallederiz."
     },
     "label": "Başlayın",
     "title": "Restoranınızı sofraya getirin",
-    "subtitle": "Mekanınızı anlatın, Sofra'nızı kuralım — QR menüler, canlı siparişler, rezervasyonlar ve sadakat. Her restoranı tek tek, bizzat kuruyoruz.",
+    "subtitle": "Mekanınızı anlatın, SofraPiwas'nızı kuralım — QR menüler, canlı siparişler, rezervasyonlar ve sadakat. Her restoranı tek tek, bizzat kuruyoruz.",
     "points": {
       "quick": {
         "title": "Hızlı başlangıç",

@@ -17,7 +17,7 @@ const PARTNER_STATUSES = [
 ] as const;
 
 /** Status stepper + "request onboarding", shown while the partner still owns
- *  the pipeline (server rejects changes once Sofra takes over). */
+ *  the pipeline (server rejects changes once SofraPiwas takes over). */
 export default function ClientPipelineControls({
   clientId,
   status,
