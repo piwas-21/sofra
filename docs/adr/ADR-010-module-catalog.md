@@ -45,3 +45,24 @@ change via re-provision.
 Catalog + pricing sheet + registry fields **only**. No enforcement code yet:
 RUMI (tenant 1) keeps everything enabled, and building gates before tenant 2
 exists is speculative work. Enforcement ships with real tenant-2 provisioning.
+
+## Pricing v1 — decided 2026-07-26 (amends the "free core" leaning above)
+
+Prices live in `lib/module-catalog.ts` (EUR integer cents, unit-tested) with the
+rationale, commercial terms and market check in the workspace repo's
+`docs/plans/SOFRA-MODULE-CATALOG-AND-PRICING.md`. Summary: **Core €19/mo**,
+add-ons €5–12, bundles **Counter €45** / **Full service €69**, all per venue per
+month.
+
+**Core is cheap, not free** — the one substantive change to what this ADR
+originally sketched. GloriaFood can give the core away because Oracle upsells POS
+hardware behind it; Sofra has no such backstop, and under instance-per-tenant
+(ADR-001) a free tenant still burns €1.5–5/mo of hosting plus a solo operator's
+support time. The acquisition hook becomes a **30-day free trial**: same
+"try it at no risk", without permanently unpaid instances.
+
+Also decided: the module **vocabulary** is now validated at both ends
+(`provision-tenant.sh` in the deploy repo, `provisionSchema` here) even though
+runtime enforcement is still deferred. An unknown module id used to be silent —
+it reached the tenant env unchallenged and the tenant simply never got the
+module they were paying for.
