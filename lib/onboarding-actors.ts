@@ -48,3 +48,53 @@ export async function resolveTenantClient(userId: string, tenantSlug: string, re
     data: { partnerId: userId, restaurantName, tenantSlug, status: "LIVE" },
   });
 }
+
+/** The lead behind an onboarding, if any — only what the action actually uses. */
+export type OnboardSignup = { id: string; status: string };
+
+/** Either a message key to return, or the resolved flow. Discriminated on `ok`
+ *  so the caller narrows with one check. */
+export type OnboardFlow =
+  | { ok: false; error: string }
+  | { ok: true; signup: OnboardSignup | null; ownerFlow: boolean };
+
+/**
+ * Decide which onboarding flow this submission is, and refuse the three ways a
+ * tenant slug can already be taken — all BEFORE anything is created, so a
+ * rejection never leaves a freshly minted user orphaned.
+ *
+ * A `signupId` that is present but does not resolve is refused rather than
+ * treated as "no signup": falling through would quietly onboard the restaurant
+ * as a PARTNER with a CRM Client, a different product shape than the founder
+ * asked for, discovered later by whoever wonders why the owner has a partner
+ * dashboard.
+ */
+export async function resolveOnboardFlow(input: {
+  signupId: string | null;
+  tenantSlug: string;
+  /** Already lowercased by the caller. */
+  email: string;
+}): Promise<OnboardFlow> {
+  const signup = input.signupId
+    ? await db.signupRequest.findUnique({ where: { id: input.signupId } })
+    : null;
+  if (input.signupId && !signup) return { ok: false, error: "signupNotFound" };
+
+  // One billing anchor per tenant (unique tenantSlug). Refuse a re-onboard.
+  if (await db.tenantBilling.findUnique({ where: { tenantSlug: input.tenantSlug } })) {
+    return { ok: false, error: "tenantAlreadyOnboarded" };
+  }
+
+  // A slug already held by a DIFFERENT partner must reject here. The owner flow
+  // creates no Client, but this still guards a slug an existing reseller holds.
+  // Case-insensitive: emails are, and `email` arrives lowercased.
+  const slugOwner = await db.client.findUnique({
+    where: { tenantSlug: input.tenantSlug },
+    include: { partner: true },
+  });
+  if (slugOwner && slugOwner.partner.email.toLowerCase() !== input.email) {
+    return { ok: false, error: "tenantAlreadyOnboarded" };
+  }
+
+  return { ok: true, signup, ownerFlow: signup !== null };
+}

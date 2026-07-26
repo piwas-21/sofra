@@ -20,6 +20,7 @@ import { createToken } from "@/lib/tokens";
 import { onboardSchema } from "@/lib/validation";
 import { defineTenantPlan } from "@/lib/billing-onboarding";
 import {
+  resolveOnboardFlow,
   resolveOwnerUser,
   resolvePartnerUser,
   resolveTenantClient,
@@ -102,35 +103,14 @@ export async function onboardPartnerAction(
   // to a valid Date (or null when omitted).
   const liveSince = input.liveSince ? new Date(`${input.liveSince}T00:00:00Z`) : null;
 
-  // A real signup lead behind this onboarding = the DIRECT-OWNER flow (the
-  // restaurant's own contact pays). NO signupId = the RESELLER flow.
-  //
-  // A signupId that is present but does not resolve is neither: it used to fall
-  // through to the reseller flow, which would quietly onboard the restaurant as
-  // a PARTNER with a CRM Client — a different product shape than the founder
-  // asked for, discovered later by whoever wonders why the owner has a partner
-  // dashboard. Refuse instead; the founder can reload /admin/signups and retry.
   const rawSignupId = formData.get("signupId");
-  const signupId = typeof rawSignupId === "string" && rawSignupId ? rawSignupId : null;
-  const signup = signupId ? await db.signupRequest.findUnique({ where: { id: signupId } }) : null;
-  if (signupId && !signup) return { error: "signupNotFound" };
-  const ownerFlow = signup !== null;
-
-  // One billing anchor per tenant (unique tenantSlug). Refuse a re-onboard.
-  if (await db.tenantBilling.findUnique({ where: { tenantSlug } })) {
-    return { error: "tenantAlreadyOnboarded" };
-  }
-
-  // Pre-check tenant ownership BEFORE creating anything: a slug already held by
-  // a DIFFERENT partner must reject here, not after a fresh user is created (it
-  // would be left orphaned). The owner flow creates no Client, but this still
-  // guards against onboarding a slug an existing reseller Client already holds.
-  const slugOwner = await db.client.findUnique({ where: { tenantSlug }, include: { partner: true } });
-  // Case-insensitive: emails are, and `email` is already lowercased. (All
-  // current paths store lowercased, but don't depend on that here.)
-  if (slugOwner && slugOwner.partner.email.toLowerCase() !== email) {
-    return { error: "tenantAlreadyOnboarded" };
-  }
+  const flow = await resolveOnboardFlow({
+    signupId: typeof rawSignupId === "string" && rawSignupId ? rawSignupId : null,
+    tenantSlug,
+    email,
+  });
+  if (!flow.ok) return { error: flow.error };
+  const { signup, ownerFlow } = flow;
 
   const user = ownerFlow
     ? await resolveOwnerUser(email, input.name)
