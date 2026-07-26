@@ -6,7 +6,7 @@
 
 import { requireAdmin } from "@/lib/rbac";
 import { audit } from "@/lib/audit";
-import { provisionSchema } from "@/lib/validation";
+import { provisionSchema, splitCsvLower } from "@/lib/validation";
 import {
   openProvisioningPr,
   provisioningConfigured,
@@ -17,12 +17,6 @@ import {
 /** `error` is a message key in `control.errors` (rendered by <ActionError />);
  *  GitHub API errors pass through raw. `prUrl` on success. */
 export type ProvisionActionState = { error?: string; ok?: boolean; prUrl?: string };
-
-const splitList = (raw: string): string[] =>
-  raw
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
 
 export async function openProvisioningPrAction(
   _prev: ProvisionActionState,
@@ -44,8 +38,8 @@ export async function openProvisioningPrAction(
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "invalidInput" };
   const input = parsed.data;
 
-  const languages = splitList(input.languages);
-  const modules = splitList(input.modules);
+  const languages = splitCsvLower(input.languages);
+  const modules = splitCsvLower(input.modules);
   if (languages.length === 0 || modules.length === 0) return { error: "invalidInput" };
 
   try {
