@@ -77,8 +77,10 @@ export async function openProvisioningPr(input: TenantProvisionInput): Promise<{
 
   const entry = buildTenantRegistryEntry(input);
   // trimEnd() (no regex) drops any trailing whitespace/newlines, then we re-add
-  // exactly one before the appended entry — avoids the ReDoS-prone `\n*$`.
-  const updated = `${current.trimEnd()}\n${entry}\n`;
+  // exactly two — avoids the ReDoS-prone `\n*$`, and the blank line keeps the
+  // new tenant from butting against the previous one's trailing comment, which
+  // reads as if it belongs to the new entry.
+  const updated = `${current.trimEnd()}\n\n${entry}\n`;
 
   // Branch off BASE's tip.
   const baseRef = await gh<{ object: { sha: string } }>(
