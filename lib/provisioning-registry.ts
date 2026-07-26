@@ -61,10 +61,15 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): string {
     .join("\n");
 }
 
-/** Quote a value for a POSIX shell single-quoted argument (`'` -> `'\''`). The
- *  tenant name is free text and the founder copy-pastes these commands into a
- *  terminal, so an apostrophe must not end the quoting. */
-const shq = (value: string): string => `'${value.replaceAll("'", `'\\''`)}'`;
+// Close the quote, emit an escaped apostrophe, reopen: the only way to get a
+// literal ' inside a POSIX single-quoted argument.
+const SHELL_QUOTED_APOSTROPHE = String.raw`'\''`;
+
+/** Quote a value for a POSIX shell single-quoted argument. The tenant name is
+ *  free text and the founder copy-pastes these commands into a terminal, so an
+ *  apostrophe must not end the quoting. */
+const shq = (value: string): string =>
+  "'" + value.replaceAll("'", SHELL_QUOTED_APOSTROPHE) + "'";
 
 /**
  * The PR body for a provisioning proposal: what is being added, then the exact
