@@ -6,7 +6,11 @@
 // repo-scoped GitHub token (PROVISION_GITHUB_TOKEN) — never the box SSH key
 // (invariant 2).
 
-import { buildTenantRegistryEntry, type TenantProvisionInput } from "@/lib/provisioning-registry";
+import {
+  buildProvisioningPrBody,
+  buildTenantRegistryEntry,
+  type TenantProvisionInput,
+} from "@/lib/provisioning-registry";
 
 const OWNER = "piwas-21";
 const REPO = "restaurant-app-deploy";
@@ -115,11 +119,7 @@ export async function openProvisioningPr(input: TenantProvisionInput): Promise<{
       title: `Provision tenant: ${input.slug}`,
       head: branch,
       base: BASE,
-      body:
-        `Adds the \`${input.slug}\` tenant to \`${REGISTRY_PATH}\` (proposed by the control plane, ADR-012).\n\n` +
-        `- template: **${input.template}** · currency: ${input.currency} · box: ${input.box ?? "staging"}\n` +
-        `- After merge: sync to the box, then run the \`provision-tenant\` Action with slug \`${input.slug}\`.\n\n` +
-        `Review the entry before merging — this is the human checkpoint before any box provisioning.`,
+      body: buildProvisioningPrBody(input),
     }),
   });
   return { prUrl: pr.html_url };

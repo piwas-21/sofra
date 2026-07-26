@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
-import { buildTenantRegistryEntry } from "@/lib/provisioning-registry";
+import { buildProvisioningPrBody, buildTenantRegistryEntry } from "@/lib/provisioning-registry";
 
 // Parse a generated block back through the registry shape it will live in.
 const asTenant = (block: string, slug: string) =>
@@ -76,5 +76,52 @@ describe("buildTenantRegistryEntry", () => {
     ) as Record<string, unknown>;
     expect(t.name).toBe(name);
     expect(t.managed).toBe("scripts"); // the injected "managed: legacy" did NOT take effect
+  });
+});
+
+describe("buildProvisioningPrBody", () => {
+  const input = {
+    slug: "bistro-nova",
+    name: "Bistro Nova",
+    adminEmail: "owner@nova.example",
+    template: "craft" as const,
+    currency: "EUR",
+    languages: ["en", "nl"],
+    modules: ["core", "reservations"],
+    city: "Rotterdam",
+  };
+
+  it("carries the post-merge commands with the tenant's own values", () => {
+    const body = buildProvisioningPrBody(input);
+    // The image build is the step that is easy to skip and fatal to skip.
+    expect(body).toContain(
+      "gh workflow run build-tenant-image.yml --repo piwas-21/restaurant-app-frontend",
+    );
+    expect(body).toContain("-f tenant_domain=bistro-nova.sofrapiwas.com");
+    expect(body).toContain("-f image_tag=tenant-bistro-nova");
+    expect(body).toContain("-f template=craft");
+    expect(body).toContain("-f currency=EUR");
+    expect(body).toContain(
+      "gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=bistro-nova",
+    );
+    // Ordering is the point: build the image before provisioning.
+    expect(body.indexOf("build-tenant-image.yml")).toBeLessThan(
+      body.indexOf("provision-tenant.yml"),
+    );
+  });
+
+  it("summarises the proposed entry", () => {
+    const body = buildProvisioningPrBody(input);
+    expect(body).toContain("`bistro-nova.sofrapiwas.com`");
+    expect(body).toContain("`en, nl`");
+    expect(body).toContain("`core, reservations`");
+    expect(body).toContain("`staging`"); // default box
+  });
+
+  it("shell-quotes the tenant name so an apostrophe cannot break the command", () => {
+    const body = buildProvisioningPrBody({ ...input, name: "Chez L'Ami; rm -rf /" });
+    expect(body).toContain(`-f restaurant_name='Chez L'\\''Ami; rm -rf /'`);
+    // No bare, unquoted occurrence that a shell would split or execute.
+    expect(body).not.toContain("-f restaurant_name=Chez");
   });
 });
