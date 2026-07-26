@@ -32,18 +32,23 @@ export interface TenantProvisionInput {
  */
 export function buildTenantRegistryEntry(input: TenantProvisionInput): string {
   const { slug } = input;
+  const box = input.box ?? "staging";
   const entry = {
     [slug]: {
       name: input.name,
       status: "provisioning",
       managed: "scripts",
-      box: input.box ?? "staging",
+      box,
       domain: `${slug}.sofrapiwas.com`,
       domain_mode: "subdomain",
       db: `tenant_${slug}`,
       db_role: `tenant_${slug}`,
       compose_project: `tenant-${slug}`,
-      backend_tag: "latest",
+      // `:latest` means main/prod since the 2026-07-16 tag fix, so a staging-box
+      // tenant pinned to it would silently run production code instead of the
+      // develop build it exists to showcase. Found by hand-correcting the first
+      // generated entry (deploy #61).
+      backend_tag: box === "staging" ? "staging" : "latest",
       frontend_tag: `tenant-${slug}`,
       currency: input.currency,
       languages: input.languages,
