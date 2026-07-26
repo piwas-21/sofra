@@ -163,10 +163,10 @@ export const TENANT_LANGUAGES = [
 
 export type TenantLanguage = (typeof TENANT_LANGUAGES)[number]["code"];
 
-const LANGUAGE_CODES: readonly string[] = TENANT_LANGUAGES.map((l) => l.code);
+const LANGUAGE_CODES = new Set<string>(TENANT_LANGUAGES.map((l) => l.code));
 
 export function isTenantLanguage(value: string): value is TenantLanguage {
-  return LANGUAGE_CODES.includes(value);
+  return LANGUAGE_CODES.has(value);
 }
 
 /** The ids in `values` that the tenant app cannot serve — empty means all valid. */
