@@ -3,8 +3,11 @@ import {
   BUNDLES,
   MODULES,
   MODULE_IDS,
+  TENANT_LANGUAGES,
+  extraLanguageCount,
   isModuleId,
   quoteModules,
+  unknownLanguages,
   unknownModuleIds,
 } from "@/lib/module-catalog";
 
@@ -107,5 +110,37 @@ describe("quoteModules", () => {
   it("ignores unknown ids and duplicates rather than double-charging", () => {
     const q = quoteModules(["core", "core", "loyalty", "loyalty", "nonsense"]);
     expect(q.monthlyCents).toBe(1900 + 900);
+  });
+});
+
+describe("tenant languages", () => {
+  it("covers exactly the 10 locales the tenant app ships", () => {
+    expect(TENANT_LANGUAGES.map((l) => l.code)).toEqual([
+      "en",
+      "nl",
+      "fr",
+      "de",
+      "it",
+      "es",
+      "tr",
+      "ar",
+      "ru",
+      "zh",
+    ]);
+    expect(unknownLanguages(["en", "zh"])).toEqual([]);
+    expect(unknownLanguages(["en", "kl", "xx"])).toEqual(["kl", "xx"]);
+  });
+
+  it("bills extra-languages only past English + one", () => {
+    expect(extraLanguageCount(["en"])).toBe(0);
+    expect(extraLanguageCount(["en", "nl"])).toBe(0);
+    expect(extraLanguageCount(["en", "nl", "fr"])).toBe(1);
+    expect(extraLanguageCount(["en", "nl", "fr", "de"])).toBe(2);
+  });
+
+  it("ignores duplicates and unknown codes when counting", () => {
+    // The picker can only emit valid codes, but the registry is hand-editable.
+    expect(extraLanguageCount(["en", "en", "nl"])).toBe(0);
+    expect(extraLanguageCount(["en", "nl", "klingon"])).toBe(0);
   });
 });

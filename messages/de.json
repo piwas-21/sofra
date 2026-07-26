@@ -470,6 +470,12 @@
         "overview": "Übersicht",
         "signups": "Anmeldungen",
         "fleet": "Flotte"
+      },
+      "groups": {
+        "pipeline": "Pipeline",
+        "tenants": "Mandanten",
+        "money": "Finanzen",
+        "system": "System"
       }
     },
     "status": {
@@ -721,12 +727,17 @@
         "city": "Stadt (optional)",
         "template": "Vorlage",
         "currency": "Währung (z. B. EUR)",
-        "languages": "Sprachen (kommagetrennt, z. B. en, nl)",
-        "modules": "Module (kommagetrennt, z. B. core)",
+        "languages": "Sprachen",
+        "modules": "Module",
         "create": "Registry-PR öffnen",
         "creating": "Wird geöffnet…",
         "created": "Registry-PR geöffnet — prüfen + zusammenführen, dann bereitstellen:",
-        "nextSteps": "Nach dem Zusammenführen: Die Änderung wird beim nächsten Deploy-Sync auf den Server übertragen, dann die provision-tenant-Action mit diesem Slug starten."
+        "nextSteps": "Nach dem Zusammenführen: Die Änderung wird beim nächsten Deploy-Sync auf den Server übertragen, dann die provision-tenant-Action mit diesem Slug starten.",
+        "modulesCore": "Core (immer enthalten)",
+        "languagesHint": "Englisch ist immer dabei (Fallback der Tenant-App). Über Englisch + eine Sprache hinaus greift das Add-on extra-languages.",
+        "price": "Monatlicher Listenpreis",
+        "priceBundle": "als Paket",
+        "priceALaCarte": "einzeln"
       },
       "fleet": {
         "title": "Drucker-Flotte",

@@ -139,3 +139,42 @@ export function quoteModules(selection: readonly string[]): Quote {
   }
   return best;
 }
+
+/**
+ * Locales the TENANT app ships (frontend `src/i18n.ts` — 10 since the Dutch
+ * addition, frontend #126). Not the same set as this control plane's six site
+ * locales: a tenant can serve languages sofrapiwas.com does not.
+ *
+ * Core includes English plus one; anything beyond that is the `extra-languages`
+ * add-on. `en` is not optional — it is the fallback the tenant app falls back to.
+ */
+export const TENANT_LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "nl", label: "Nederlands" },
+  { code: "fr", label: "Français" },
+  { code: "de", label: "Deutsch" },
+  { code: "it", label: "Italiano" },
+  { code: "es", label: "Español" },
+  { code: "tr", label: "Türkçe" },
+  { code: "ar", label: "العربية" },
+  { code: "ru", label: "Русский" },
+  { code: "zh", label: "中文" },
+] as const;
+
+export type TenantLanguage = (typeof TENANT_LANGUAGES)[number]["code"];
+
+const LANGUAGE_CODES: readonly string[] = TENANT_LANGUAGES.map((l) => l.code);
+
+export function isTenantLanguage(value: string): value is TenantLanguage {
+  return LANGUAGE_CODES.includes(value);
+}
+
+/** The ids in `values` that the tenant app cannot serve — empty means all valid. */
+export function unknownLanguages(values: readonly string[]): string[] {
+  return values.filter((v) => !isTenantLanguage(v));
+}
+
+/** Languages billable as `extra-languages`: everything past English + one. */
+export function extraLanguageCount(codes: readonly string[]): number {
+  return Math.max(0, new Set(codes.filter(isTenantLanguage)).size - 2);
+}

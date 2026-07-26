@@ -31,8 +31,11 @@ export async function openProvisioningPrAction(
     adminEmail: formData.get("adminEmail"),
     template: formData.get("template"),
     currency: formData.get("currency"),
-    languages: formData.get("languages"),
-    modules: formData.get("modules"),
+    // Checkbox groups: several values under one name, so getAll + join — a
+    // plain get() would silently take the FIRST box and provision a tenant
+    // missing everything else that was ticked.
+    languages: formData.getAll("languages").join(","),
+    modules: formData.getAll("modules").join(","),
     city: formData.get("city"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "invalidInput" };

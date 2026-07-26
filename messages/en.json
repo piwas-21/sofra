@@ -470,6 +470,12 @@
         "overview": "Overview",
         "signups": "Signups",
         "fleet": "Fleet"
+      },
+      "groups": {
+        "pipeline": "Pipeline",
+        "tenants": "Tenants",
+        "money": "Money",
+        "system": "System"
       }
     },
     "status": {
@@ -721,12 +727,17 @@
         "city": "City (optional)",
         "template": "Template",
         "currency": "Currency (e.g. EUR)",
-        "languages": "Languages (comma-separated, e.g. en, nl)",
-        "modules": "Modules (comma-separated, e.g. core)",
+        "languages": "Languages",
+        "modules": "Modules",
         "create": "Open registry PR",
         "creating": "Opening…",
         "created": "Registry PR opened — review + merge it, then provision:",
-        "nextSteps": "After merge: the change syncs to the box on the next deploy sync, then run the provision-tenant Action with this slug."
+        "nextSteps": "After merge: the change syncs to the box on the next deploy sync, then run the provision-tenant Action with this slug.",
+        "modulesCore": "Core (always included)",
+        "languagesHint": "English always ships (the tenant app's fallback). Beyond English + one, the extra-languages add-on applies.",
+        "price": "Monthly list price",
+        "priceBundle": "as bundle",
+        "priceALaCarte": "à la carte"
       },
       "fleet": {
         "title": "Printer fleet",
