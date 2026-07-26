@@ -10,11 +10,8 @@ import { redirect } from "next/navigation";
 import { requirePartnerOrOwner } from "@/lib/rbac";
 import { db } from "@/lib/db";
 import { rateLimit } from "@/lib/rate-limit";
-import {
-  startFirstPayment,
-  NoPendingPlanError,
-  FirstPaymentPaidError,
-} from "@/lib/billing-onboarding";
+import { startFirstPayment } from "@/lib/billing-onboarding";
+import { FirstPaymentPaidError, NoPendingPlanError } from "@/lib/billing-errors";
 import { mollieConfigured, MollieError } from "@/lib/mollie";
 
 /** `error` is a message key in `control.errors` (translated by <ActionError />);

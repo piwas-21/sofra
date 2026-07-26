@@ -30,6 +30,7 @@ export default defineConfig({
         "lib/onboard-tenants.ts",
         "lib/provisioning-registry.ts",
         "lib/module-catalog.ts",
+        "lib/checkout-window.ts",
         "lib/email-templates.ts",
         "lib/retention-policy.ts",
         "lib/seo.ts",
