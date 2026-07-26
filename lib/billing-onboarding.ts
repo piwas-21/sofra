@@ -16,6 +16,12 @@ import { audit } from "@/lib/audit";
 import { siteUrl } from "@/lib/email";
 import { BILLING_INTERVALS, webhookUrl, type BillingInterval } from "@/lib/billing";
 import { createCustomer, createFirstPayment } from "@/lib/mollie";
+import { isCheckoutFresh } from "@/lib/checkout-window";
+import {
+  FirstPaymentPaidError,
+  InvalidPayerError,
+  NoPendingPlanError,
+} from "@/lib/billing-errors";
 
 /**
  * Define a PENDING plan for a tenant without touching Mollie. Used by the admin
@@ -35,6 +41,17 @@ export async function defineTenantPlan(input: {
   payerUserId?: string | null;
   actorId: string;
 }) {
+  // "Exactly one of clientId / payerUserId" is the shape the rest of the system
+  // reads (the dashboard picks the partner CRM surface or the owner surface off
+  // it). It is a convention, not a DB constraint, so assert it where the row is
+  // written rather than discovering a two-headed plan from a rendering bug.
+  const payerRefs = [input.clientId, input.payerUserId].filter(Boolean).length;
+  if (payerRefs !== 1) {
+    throw new InvalidPayerError(
+      `a plan needs exactly one payer reference (clientId XOR payerUserId), got ${payerRefs}`,
+    );
+  }
+
   const billing = await db.$transaction(async (tx) => {
     const b = await tx.tenantBilling.create({
       data: {
@@ -66,24 +83,6 @@ export async function defineTenantPlan(input: {
   return billing;
 }
 
-/** No PENDING plan to pay for (already active, canceled, or never defined). */
-export class NoPendingPlanError extends Error {
-  constructor() {
-    super("no pending plan to start a payment for");
-    this.name = "NoPendingPlanError";
-  }
-}
-
-/** A first payment already succeeded; the plan is awaiting mandate validation +
- *  activation, NOT a new charge. Surfaced to the partner as "processing" —
- *  charging again here is the double-charge trap. */
-export class FirstPaymentPaidError extends Error {
-  constructor() {
-    super("first payment already paid — plan is awaiting activation");
-    this.name = "FirstPaymentPaidError";
-  }
-}
-
 /**
  * Start the first payment for a tenant's PENDING plan and return the hosted
  * checkout URL. Creates the Mollie customer on first use. Idempotent enough for
@@ -111,9 +110,19 @@ export async function startFirstPayment(input: { billingId: string; actorId: str
     throw new FirstPaymentPaidError();
   }
 
-  // Reuse a still-open first-payment checkout instead of creating a duplicate.
+  // Reuse a still-open first-payment checkout instead of creating a duplicate —
+  // but only a FRESH one. Mollie hosted-checkout URLs expire (~1h), and an
+  // expired one sends the payer to a Mollie error page with no way forward,
+  // which looks like a broken product rather than a stale link. Past the
+  // threshold we mint a new checkout; the old payment stays `open` and simply
+  // expires, so this cannot double-charge (a `paid` first payment is refused
+  // above, before this point).
   const openFirst = billing.payments.find(
-    (p) => p.sequenceType === "first" && (p.status === "open" || p.status === "pending") && p.checkoutUrl,
+    (p) =>
+      p.sequenceType === "first" &&
+      (p.status === "open" || p.status === "pending") &&
+      p.checkoutUrl &&
+      isCheckoutFresh(p.createdAt),
   );
   if (openFirst?.checkoutUrl) return { checkoutUrl: openFirst.checkoutUrl };
 
