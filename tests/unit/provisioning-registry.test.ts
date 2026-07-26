@@ -28,7 +28,7 @@ describe("buildTenantRegistryEntry", () => {
       db: "tenant_bistro-nova",
       db_role: "tenant_bistro-nova",
       compose_project: "tenant-bistro-nova",
-      backend_tag: "latest",
+      backend_tag: "staging",
       frontend_tag: "tenant-bistro-nova",
       currency: "EUR",
       languages: ["en", "nl"],
@@ -56,6 +56,27 @@ describe("buildTenantRegistryEntry", () => {
     expect(t.city).toBeUndefined();
     expect(t.box).toBe("prod");
     expect(t.template).toBe("classic");
+    // A prod-box tenant rides :latest...
+    expect(t.backend_tag).toBe("latest");
+  });
+
+  it("pins a staging-box tenant to :staging, not :latest", () => {
+    // ...while :latest means main/prod, so a staging tenant pinned to it would
+    // silently run production code instead of the develop build it showcases.
+    const t = asTenant(
+      buildTenantRegistryEntry({
+        slug: "onstaging",
+        name: "On Staging",
+        adminEmail: "a@b.co",
+        template: "craft",
+        currency: "EUR",
+        languages: ["en"],
+        modules: ["core"],
+      }),
+      "onstaging",
+    ) as Record<string, unknown>;
+    expect(t.box).toBe("staging"); // the default
+    expect(t.backend_tag).toBe("staging");
   });
 
   it("escapes YAML-special characters in free-text (no injection)", () => {
