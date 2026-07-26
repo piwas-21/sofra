@@ -470,6 +470,12 @@
         "overview": "Genel bakış",
         "signups": "Kayıtlar",
         "fleet": "Filo"
+      },
+      "groups": {
+        "pipeline": "Süreç",
+        "tenants": "Kiracılar",
+        "money": "Finans",
+        "system": "Sistem"
       }
     },
     "status": {
@@ -721,12 +727,17 @@
         "city": "Şehir (isteğe bağlı)",
         "template": "Şablon",
         "currency": "Para birimi (ör. EUR)",
-        "languages": "Diller (virgülle ayrılmış, ör. en, nl)",
-        "modules": "Modüller (virgülle ayrılmış, ör. core)",
+        "languages": "Diller",
+        "modules": "Modüller",
         "create": "Kayıt PR’si aç",
         "creating": "Açılıyor…",
         "created": "Kayıt PR’si açıldı — inceleyip birleştirin, sonra sağlayın:",
-        "nextSteps": "Birleştirmeden sonra: değişiklik bir sonraki dağıtım eşitlemesinde sunucuya eşitlenir, ardından bu kısa adla provision-tenant Action’ını çalıştırın."
+        "nextSteps": "Birleştirmeden sonra: değişiklik bir sonraki dağıtım eşitlemesinde sunucuya eşitlenir, ardından bu kısa adla provision-tenant Action’ını çalıştırın.",
+        "modulesCore": "Core (her zaman dahil)",
+        "languagesHint": "İngilizce her zaman gelir (tenant uygulamasının yedek dili). İngilizce + bir dilden fazlası için extra-languages eklentisi geçerlidir.",
+        "price": "Aylık liste fiyatı",
+        "priceBundle": "paket olarak",
+        "priceALaCarte": "tek tek"
       },
       "fleet": {
         "title": "Yazıcı filosu",

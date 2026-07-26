@@ -470,6 +470,12 @@
         "overview": "Aperçu",
         "signups": "Inscriptions",
         "fleet": "Parc"
+      },
+      "groups": {
+        "pipeline": "Pipeline",
+        "tenants": "Locataires",
+        "money": "Finances",
+        "system": "Système"
       }
     },
     "status": {
@@ -721,12 +727,17 @@
         "city": "Ville (facultatif)",
         "template": "Modèle",
         "currency": "Devise (ex. EUR)",
-        "languages": "Langues (séparées par des virgules, ex. en, nl)",
-        "modules": "Modules (séparés par des virgules, ex. core)",
+        "languages": "Langues",
+        "modules": "Modules",
         "create": "Ouvrir la PR de registre",
         "creating": "Ouverture…",
         "created": "PR de registre ouverte — révisez + fusionnez, puis provisionnez :",
-        "nextSteps": "Après la fusion : la modification se synchronise avec le serveur lors de la prochaine synchro de déploiement, puis lancez l’action provision-tenant avec cet identifiant."
+        "nextSteps": "Après la fusion : la modification se synchronise avec le serveur lors de la prochaine synchro de déploiement, puis lancez l’action provision-tenant avec cet identifiant.",
+        "modulesCore": "Core (toujours inclus)",
+        "languagesHint": "L'anglais est toujours livré (langue de repli de l'app tenant). Au-delà de l'anglais + une langue, l'option extra-languages s'applique.",
+        "price": "Prix catalogue mensuel",
+        "priceBundle": "en formule",
+        "priceALaCarte": "à la carte"
       },
       "fleet": {
         "title": "Parc d'imprimantes",
