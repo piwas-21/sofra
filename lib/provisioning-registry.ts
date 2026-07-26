@@ -60,3 +60,58 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): string {
     .map((line) => (line ? `  ${line}` : line))
     .join("\n");
 }
+
+// Close the quote, emit an escaped apostrophe, reopen: the only way to get a
+// literal ' inside a POSIX single-quoted argument.
+const SHELL_QUOTED_APOSTROPHE = String.raw`'\''`;
+
+/** Quote a value for a POSIX shell single-quoted argument. The tenant name is
+ *  free text and the founder copy-pastes these commands into a terminal, so an
+ *  apostrophe must not end the quoting. */
+const shq = (value: string): string =>
+  "'" + value.replaceAll("'", SHELL_QUOTED_APOSTROPHE) + "'";
+
+/**
+ * The PR body for a provisioning proposal: what is being added, then the exact
+ * post-merge commands in order. It is a checklist rather than prose because the
+ * step that is easy to forget — building the per-tenant frontend image — is a
+ * hard prerequisite: `NEXT_PUBLIC_*` are baked per domain, so provisioning
+ * without it dies at `docker compose pull` on an image that was never published.
+ */
+export function buildProvisioningPrBody(input: TenantProvisionInput): string {
+  const { slug } = input;
+  const domain = `${slug}.sofrapiwas.com`;
+  return [
+    `Adds the \`${slug}\` tenant to \`tenants/registry.yml\`, proposed by the control plane (sofra ADR-012).`,
+    "",
+    `- **domain** \`${domain}\` · **template** \`${input.template}\` · **currency** \`${input.currency}\``,
+    `- **languages** \`${input.languages.join(", ")}\` · **modules** \`${input.modules.join(", ")}\``,
+    `- **box** \`${input.box ?? "staging"}\` · status starts at \`provisioning\``,
+    "",
+    "Review the entry before merging — this is the human checkpoint before any box provisioning.",
+    "",
+    "### After merging, in order",
+    "",
+    "1. **Registry sync** — automatic: merging to `develop` fires `sync-registry-to-staging.yml`. Check it went green; the box reads the registry, so nothing below works until it has.",
+    "2. **Build the tenant frontend image** — required *before* provisioning (`NEXT_PUBLIC_*` are baked per domain):",
+    "",
+    "   ```bash",
+    "   gh workflow run build-tenant-image.yml --repo piwas-21/restaurant-app-frontend \\",
+    `     -f tenant_domain=${domain} \\`,
+    `     -f image_tag=tenant-${slug} \\`,
+    `     -f restaurant_name=${shq(input.name)} \\`,
+    `     -f template=${input.template} \\`,
+    `     -f currency=${input.currency}`,
+    "   ```",
+    "",
+    "3. **Provision on the box**:",
+    "",
+    "   ```bash",
+    `   gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=${slug}`,
+    "   ```",
+    "",
+    `4. **Verify** — \`./verify-env.sh https://${domain}\`, log in with the generated admin password from the tenant \`.env\` and change it, then flip this entry's \`status\` to \`active\` in a follow-up commit.`,
+    "",
+    "Full runbook: deploy repo `DEPLOYMENT.md` §Tenant provisioning.",
+  ].join("\n");
+}

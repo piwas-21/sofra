@@ -8,6 +8,8 @@ import {
   onboardSchema,
   partnerStatusSchema,
   PARTNER_STATUSES,
+  provisionSchema,
+  splitCsvLower,
   signupSchema,
   signupStatusSchema,
   SIGNUP_STATUSES,
@@ -255,5 +257,45 @@ describe("onboardSchema (partner onboarding)", () => {
 
   it("rejects a malformed partner email", () => {
     expect(onboardSchema.safeParse({ ...base, email: "nope" }).success).toBe(false);
+  });
+});
+
+describe("provisionSchema (ADR-012 tenant proposal)", () => {
+  const base = {
+    slug: "bistro-nova",
+    name: "Bistro Nova",
+    adminEmail: "owner@nova.example",
+    template: "craft",
+    currency: "EUR",
+    languages: "en, nl",
+    modules: "core, reservations",
+    city: "Rotterdam",
+  };
+
+  it("accepts a well-formed proposal", () => {
+    expect(provisionSchema.safeParse(base).success).toBe(true);
+  });
+
+  it("rejects a module that is not in the ADR-010 catalog", () => {
+    // The failure this prevents is silent: the registry would carry the typo,
+    // the tenant env would carry it too, and the customer would simply never
+    // get the module they are paying for.
+    const bad = provisionSchema.safeParse({ ...base, modules: "core, kitchen" });
+    expect(bad.success).toBe(false);
+    expect(bad.error?.issues[0]?.message).toContain("kitchen-board");
+  });
+
+  it("tolerates the spacing and casing the action would normalise anyway", () => {
+    expect(provisionSchema.safeParse({ ...base, modules: " Core ,  LOYALTY " }).success).toBe(true);
+  });
+
+  it("still rejects an empty module list", () => {
+    expect(provisionSchema.safeParse({ ...base, modules: "" }).success).toBe(false);
+  });
+});
+
+describe("splitCsvLower", () => {
+  it("trims, lowercases and drops empties", () => {
+    expect(splitCsvLower(" EN , nl ,, ")).toEqual(["en", "nl"]);
   });
 });

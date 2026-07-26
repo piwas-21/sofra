@@ -1,4 +1,13 @@
 import { z } from "zod";
+import { MODULE_IDS, unknownModuleIds } from "@/lib/module-catalog";
+
+/** Split a comma-separated form field into trimmed, lowercased, non-empty values.
+ *  Shared so the schema validates exactly the list the action goes on to send. */
+export const splitCsvLower = (raw: string): string[] =>
+  raw
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
 
 export const applySchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -118,6 +127,15 @@ export const provisionSchema = z.object({
   template: z.enum(["classic", "craft"]),
   currency: z.string().trim().regex(/^[A-Z]{3}$/, "3-letter ISO code, e.g. EUR"),
   languages: z.string().trim().min(1),
-  modules: z.string().trim().min(1),
+  // Validated against the ADR-010 catalog, not just non-empty: a typo here is
+  // silent — provision-tenant.sh writes whatever it is into the tenant env, and
+  // the tenant simply never gets the module they are paying for.
+  modules: z
+    .string()
+    .trim()
+    .min(1)
+    .refine((raw) => unknownModuleIds(splitCsvLower(raw)).length === 0, {
+      message: `unknown module — allowed: ${MODULE_IDS.join(", ")}`,
+    }),
   city: z.string().trim().max(200).optional().or(z.literal("")),
 });
