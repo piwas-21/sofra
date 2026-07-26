@@ -7,6 +7,7 @@ import {
   type ProvisionActionState,
 } from "@/lib/actions/provisioning-actions";
 import ActionError from "./ActionError";
+import ProvisionPicker from "./ProvisionPicker";
 
 /**
  * Admin form that proposes a new tenant (ADR-012): submits to the server action
@@ -75,21 +76,16 @@ export default function ProvisionForm({ disabled }: Readonly<{ disabled?: boolea
         aria-label={t("provision.currency")}
         className="input-primary"
       />
-      <input
-        name="languages"
-        required
-        defaultValue="en, nl"
-        placeholder={t("provision.languages")}
-        aria-label={t("provision.languages")}
-        className="input-primary"
-      />
-      <input
-        name="modules"
-        required
-        defaultValue="core"
-        placeholder={t("provision.modules")}
-        aria-label={t("provision.modules")}
-        className="input-primary"
+      <ProvisionPicker
+        labels={{
+          modules: t("provision.modules"),
+          modulesCore: t("provision.modulesCore"),
+          languages: t("provision.languages"),
+          languagesHint: t("provision.languagesHint"),
+          price: t("provision.price"),
+          priceBundle: t("provision.priceBundle"),
+          priceALaCarte: t("provision.priceALaCarte"),
+        }}
       />
       <div className="sm:col-span-2 flex flex-wrap items-center gap-4">
         <button type="submit" disabled={pending || disabled} className="btn-primary disabled:opacity-60">

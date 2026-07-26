@@ -18,6 +18,14 @@ import {
  *  GitHub API errors pass through raw. `prUrl` on success. */
 export type ProvisionActionState = { error?: string; ok?: boolean; prUrl?: string };
 
+/** Collapse a repeated (checkbox-group) form field into the comma list the
+ *  schema validates, dropping any non-string entry. */
+const csvField = (formData: FormData, name: string): string =>
+  formData
+    .getAll(name)
+    .filter((v): v is string => typeof v === "string")
+    .join(",");
+
 export async function openProvisioningPrAction(
   _prev: ProvisionActionState,
   formData: FormData,
@@ -31,8 +39,13 @@ export async function openProvisioningPrAction(
     adminEmail: formData.get("adminEmail"),
     template: formData.get("template"),
     currency: formData.get("currency"),
-    languages: formData.get("languages"),
-    modules: formData.get("modules"),
+    // Checkbox groups: several values under one name, so getAll + join — a
+    // plain get() would silently take the FIRST box and provision a tenant
+    // missing everything else that was ticked. getAll can also yield File
+    // entries on a crafted multipart POST, which would stringify to
+    // "[object Object]" and sail into the registry; keep strings only.
+    languages: csvField(formData, "languages"),
+    modules: csvField(formData, "modules"),
     city: formData.get("city"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "invalidInput" };

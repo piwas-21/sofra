@@ -470,6 +470,12 @@
         "overview": "Overzicht",
         "signups": "Aanmeldingen",
         "fleet": "Vloot"
+      },
+      "groups": {
+        "pipeline": "Pijplijn",
+        "tenants": "Tenants",
+        "money": "Financieel",
+        "system": "Systeem"
       }
     },
     "status": {
@@ -721,12 +727,17 @@
         "city": "Stad (optioneel)",
         "template": "Sjabloon",
         "currency": "Valuta (bijv. EUR)",
-        "languages": "Talen (komma-gescheiden, bijv. en, nl)",
-        "modules": "Modules (komma-gescheiden, bijv. core)",
+        "languages": "Talen",
+        "modules": "Modules",
         "create": "Registry-PR openen",
         "creating": "Bezig met openen…",
         "created": "Registry-PR geopend — beoordeel + voeg samen, richt dan in:",
-        "nextSteps": "Na samenvoegen: de wijziging synchroniseert naar de server bij de volgende deploy-sync, start dan de provision-tenant Action met deze slug."
+        "nextSteps": "Na samenvoegen: de wijziging synchroniseert naar de server bij de volgende deploy-sync, start dan de provision-tenant Action met deze slug.",
+        "modulesCore": "Core (altijd inbegrepen)",
+        "languagesHint": "Engels gaat altijd mee (de fallback van de tenant-app). Boven Engels + één taal geldt de add-on extra-languages.",
+        "price": "Maandelijkse adviesprijs",
+        "priceBundle": "als bundel",
+        "priceALaCarte": "los"
       },
       "fleet": {
         "title": "Printervloot",
