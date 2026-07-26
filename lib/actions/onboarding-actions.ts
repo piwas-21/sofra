@@ -19,42 +19,17 @@ import { craftEmail } from "@/lib/email-templates";
 import { createToken } from "@/lib/tokens";
 import { onboardSchema } from "@/lib/validation";
 import { defineTenantPlan } from "@/lib/billing-onboarding";
+import {
+  resolveOnboardFlow,
+  resolveOwnerUser,
+  resolvePartnerUser,
+  resolveTenantClient,
+} from "@/lib/onboarding-actors";
 import { type BillingInterval } from "@/lib/billing";
 
 /** `error` is a message key in `control.errors` (translated by <ActionError />);
  *  Zod issue messages pass through raw. */
 export type OnboardActionState = { error?: string; ok?: boolean; inviteLink?: string };
-
-/** Create the PARTNER user if new; reuse an existing partner (by email, so one
- *  partner can be given several tenants). Returns null on a non-partner email
- *  (e.g. an ADMIN) — never repurpose it. */
-async function resolvePartnerUser(email: string, name: string) {
-  const existing = await db.user.findUnique({ where: { email } });
-  if (existing) return existing.role === "PARTNER" ? existing : null;
-  return db.user.create({
-    data: { email, name, role: "PARTNER", status: "INVITED", profile: { create: {} } },
-  });
-}
-
-/** Create the OWNER user (direct self-serve, ADR-004) if new; reuse an existing
- *  OWNER (one owner may hold several tenants). Returns null if the email already
- *  belongs to a PARTNER/ADMIN — never repurpose another role. No PartnerProfile:
- *  that's reseller metadata and an owner isn't a partner. */
-async function resolveOwnerUser(email: string, name: string) {
-  const existing = await db.user.findUnique({ where: { email } });
-  if (existing) return existing.role === "OWNER" ? existing : null;
-  return db.user.create({ data: { email, name, role: "OWNER", status: "INVITED" } });
-}
-
-/** Create the tenant's CRM Client if new; reuse the partner's own. Returns null
- *  if the (unique) slug is already tied to a different partner. */
-async function resolveTenantClient(userId: string, tenantSlug: string, restaurantName: string) {
-  const existing = await db.client.findUnique({ where: { tenantSlug } });
-  if (existing) return existing.partnerId === userId ? existing : null;
-  return db.client.create({
-    data: { partnerId: userId, restaurantName, tenantSlug, status: "LIVE" },
-  });
-}
 
 /** Email the onboarding link — a set-password invite for a fresh INVITED
  *  account, or a plain login link for an already-ACTIVE one — and return it. */
@@ -128,30 +103,14 @@ export async function onboardPartnerAction(
   // to a valid Date (or null when omitted).
   const liveSince = input.liveSince ? new Date(`${input.liveSince}T00:00:00Z`) : null;
 
-  // A real signup lead behind this onboarding = the DIRECT-OWNER flow (the
-  // restaurant's own contact pays). Absent/unknown id = the RESELLER flow.
   const rawSignupId = formData.get("signupId");
-  const signup =
-    typeof rawSignupId === "string" && rawSignupId
-      ? await db.signupRequest.findUnique({ where: { id: rawSignupId } })
-      : null;
-  const ownerFlow = signup !== null;
-
-  // One billing anchor per tenant (unique tenantSlug). Refuse a re-onboard.
-  if (await db.tenantBilling.findUnique({ where: { tenantSlug } })) {
-    return { error: "tenantAlreadyOnboarded" };
-  }
-
-  // Pre-check tenant ownership BEFORE creating anything: a slug already held by
-  // a DIFFERENT partner must reject here, not after a fresh user is created (it
-  // would be left orphaned). The owner flow creates no Client, but this still
-  // guards against onboarding a slug an existing reseller Client already holds.
-  const slugOwner = await db.client.findUnique({ where: { tenantSlug }, include: { partner: true } });
-  // Case-insensitive: emails are, and `email` is already lowercased. (All
-  // current paths store lowercased, but don't depend on that here.)
-  if (slugOwner && slugOwner.partner.email.toLowerCase() !== email) {
-    return { error: "tenantAlreadyOnboarded" };
-  }
+  const flow = await resolveOnboardFlow({
+    signupId: typeof rawSignupId === "string" && rawSignupId ? rawSignupId : null,
+    tenantSlug,
+    email,
+  });
+  if (!flow.ok) return { error: flow.error };
+  const { signup, ownerFlow } = flow;
 
   const user = ownerFlow
     ? await resolveOwnerUser(email, input.name)
