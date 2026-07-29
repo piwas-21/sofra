@@ -5,6 +5,8 @@ import { craftEmail, detailRows } from "@/lib/email-templates";
 import { guardIntake } from "@/lib/intake";
 import { signupSchema } from "@/lib/validation";
 import { audit } from "@/lib/audit";
+import { sanitizeSignupConfiguration } from "@/lib/signup-configuration";
+import { eur } from "@/lib/format";
 
 /**
  * Public direct-restaurant signup intake (ADR-004 self-serve v1). Shares the
@@ -21,6 +23,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
   const data = parsed.data;
+  // Unknown ids are dropped and the price is recomputed from the catalog — the
+  // posted quotedCents is never stored. See lib/signup-configuration.
+  const config = sanitizeSignupConfiguration(data);
 
   const signup = await db.signupRequest.create({
     data: {
@@ -32,6 +37,7 @@ export async function POST(request: Request) {
       desiredSlug: data.desiredSlug || null,
       message: data.message || null,
       locale: data.locale,
+      ...config,
     },
   });
   await audit(null, "signup.requested", "SignupRequest", signup.id);
@@ -56,6 +62,13 @@ export async function POST(request: Request) {
           ["City", data.city || "—"],
           ["Desired slug", data.desiredSlug || "—"],
           ["Language", data.locale],
+          // The sanitized choices, so the founder reads what will actually be
+          // provisioned rather than what was posted.
+          ["Modules", config.modules ?? "—"],
+          ["Theme", config.template ?? "—"],
+          ["Tenant languages", config.languages ?? "—"],
+          ["Currency", config.currency ?? "—"],
+          ["Quoted", config.quotedCents === null ? "—" : `${eur(config.quotedCents)}/mo`],
         ])}${messageHtml}`,
         cta: { label: "Review in admin", url: `${siteUrl()}/admin` },
       }),

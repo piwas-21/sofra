@@ -715,7 +715,12 @@
         "convert": "Converteren",
         "decline": "Afwijzen",
         "openOnboarding": "Onboarding openen →",
-        "updatedNote": "Bijgewerkt."
+        "updatedNote": "Bijgewerkt.",
+        "chosenModules": "Modules",
+        "chosenTheme": "Stijl",
+        "chosenLanguages": "Talen",
+        "chosenCurrency": "Valuta",
+        "quoted": "Offerte"
       },
       "provision": {
         "title": "Een tenant inrichten",
@@ -859,6 +864,46 @@
       "error": "Er ging iets mis — probeer het over een minuut opnieuw.",
       "invalidEmail": "Voer een geldig e-mailadres in.",
       "invalidSlug": "Gebruik kleine letters, cijfers en koppeltekens (2–31 tekens)."
+    },
+    "configurator": {
+      "modules": "Wat heeft u nodig?",
+      "included": "inbegrepen bij elk pakket",
+      "theme": "Kies een stijl",
+      "languages": "Talen die uw gasten zien",
+      "languagesHint": "Engels is altijd inbegrepen. Vanaf een derde taal komt de extra-talen module erbij.",
+      "currency": "Valuta",
+      "perMonth": "per maand",
+      "priceHint": "Indicatieve prijs, maandelijks gefactureerd. Geen kaart nodig om te informeren.",
+      "bundleSaving": "Pakket «{bundle}» toegepast — u bespaart {saving}",
+      "module": {
+        "core": "Basis — QR-menu en online bestellen",
+        "kitchen-board": "Keukenscherm",
+        "cashier": "Kassa en Z-rapport",
+        "server": "Tafelbediening",
+        "reservations": "Reserveringen",
+        "loyalty": "Loyaliteitspunten",
+        "printing": "Bonnen printen"
+      },
+      "moduleHint": {
+        "kitchen-board": "Live besteloverzicht voor de keuken",
+        "cashier": "Kassa, betalingen en dagafsluiting",
+        "server": "Plattegrond en bestellen aan tafel",
+        "reservations": "Online reserveren en tafelbeheer",
+        "loyalty": "Punten, klantgroepen en kortingen",
+        "printing": "Companion-app voor thermische printers"
+      },
+      "template": {
+        "classic": "Klassiek",
+        "craft": "Ambachtelijk"
+      },
+      "templateHint": {
+        "classic": "Strak en modern, hoog contrast",
+        "craft": "Warm en handgemaakt, papiertextuur"
+      },
+      "bundle": {
+        "counter": "Toonbank",
+        "full-service": "Volledige bediening"
+      }
     }
   }
 }

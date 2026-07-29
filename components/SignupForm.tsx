@@ -2,6 +2,11 @@
 
 import { useTranslations } from "next-intl";
 import { useIntakeForm, looksLikeEmail } from "@/hooks/useIntakeForm";
+import SignupConfigurator from "./SignupConfigurator";
+
+// Checkbox groups — collected with getAll and joined, never Object.fromEntries,
+// which would keep only the last ticked box. See useIntakeForm.
+const MULTI_VALUE_FIELDS = ["modules", "languages"] as const;
 
 // Must mirror the registry grammar used by signupSchema (lib/validation.ts) so
 // the client rejects a bad slug with a field-level message instead of letting
@@ -10,14 +15,18 @@ const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,30}$/;
 
 export default function SignupForm() {
   const t = useTranslations("signup.form");
-  const { status, submit } = useIntakeForm("/api/signup", (data) => {
-    if (!looksLikeEmail(data.email)) return "invalidEmail";
-    const slug = data.desiredSlug.trim();
-    if (slug && !SLUG_RE.test(slug)) return "invalidSlug";
-    // Send the trimmed slug we validated (no client/server whitespace divergence).
-    data.desiredSlug = slug;
-    return null;
-  });
+  const { status, submit } = useIntakeForm(
+    "/api/signup",
+    (data) => {
+      if (!looksLikeEmail(data.email)) return "invalidEmail";
+      const slug = data.desiredSlug.trim();
+      if (slug && !SLUG_RE.test(slug)) return "invalidSlug";
+      // Send the trimmed slug we validated (no client/server whitespace divergence).
+      data.desiredSlug = slug;
+      return null;
+    },
+    MULTI_VALUE_FIELDS,
+  );
 
   if (status === "success") {
     return (
@@ -82,6 +91,7 @@ export default function SignupForm() {
           {t("desiredSlugHint")}
         </span>
       </div>
+      <SignupConfigurator />
       <textarea
         name="message"
         rows={4}

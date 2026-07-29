@@ -715,7 +715,12 @@
         "convert": "Convert",
         "decline": "Decline",
         "openOnboarding": "Open onboarding →",
-        "updatedNote": "Updated."
+        "updatedNote": "Updated.",
+        "chosenModules": "Modules",
+        "chosenTheme": "Theme",
+        "chosenLanguages": "Languages",
+        "chosenCurrency": "Currency",
+        "quoted": "Quoted"
       },
       "provision": {
         "title": "Provision a tenant",
@@ -859,6 +864,46 @@
       "error": "Something went wrong — please try again in a minute.",
       "invalidEmail": "Please enter a valid email address.",
       "invalidSlug": "Use lowercase letters, numbers and hyphens (2–31 characters)."
+    },
+    "configurator": {
+      "modules": "What do you need?",
+      "included": "included with every plan",
+      "theme": "Pick a look",
+      "languages": "Languages your guests see",
+      "languagesHint": "English is always included. A third language adds the extra-languages add-on.",
+      "currency": "Currency",
+      "perMonth": "per month",
+      "priceHint": "Indicative price, billed monthly. No card needed to enquire.",
+      "bundleSaving": "«{bundle}» bundle applied — you save {saving}",
+      "module": {
+        "core": "Core — QR menu & online ordering",
+        "kitchen-board": "Kitchen display",
+        "cashier": "Cashier & Z-report",
+        "server": "Table service",
+        "reservations": "Reservations",
+        "loyalty": "Loyalty points",
+        "printing": "Receipt printing"
+      },
+      "moduleHint": {
+        "kitchen-board": "Live order board for the kitchen",
+        "cashier": "Till, payments and end-of-day report",
+        "server": "Floor plan and waiter ordering",
+        "reservations": "Online booking and table management",
+        "loyalty": "Points, customer groups and discounts",
+        "printing": "Companion app for thermal printers"
+      },
+      "template": {
+        "classic": "Classic",
+        "craft": "Craft"
+      },
+      "templateHint": {
+        "classic": "Clean and modern, high contrast",
+        "craft": "Warm and handmade, paper textures"
+      },
+      "bundle": {
+        "counter": "Counter",
+        "full-service": "Full service"
+      }
     }
   }
 }

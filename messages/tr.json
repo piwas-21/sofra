@@ -715,7 +715,12 @@
         "convert": "Dönüştür",
         "decline": "Reddet",
         "openOnboarding": "Kurulumu aç →",
-        "updatedNote": "Güncellendi."
+        "updatedNote": "Güncellendi.",
+        "chosenModules": "Modüller",
+        "chosenTheme": "Tema",
+        "chosenLanguages": "Diller",
+        "chosenCurrency": "Para birimi",
+        "quoted": "Teklif"
       },
       "provision": {
         "title": "Kiracı sağla",
@@ -859,6 +864,46 @@
       "error": "Bir şeyler ters gitti — lütfen bir dakika sonra tekrar deneyin.",
       "invalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
       "invalidSlug": "Küçük harf, rakam ve tire kullanın (2–31 karakter)."
+    },
+    "configurator": {
+      "modules": "Neye ihtiyacınız var?",
+      "included": "her pakete dahil",
+      "theme": "Bir görünüm seçin",
+      "languages": "Misafirlerinizin göreceği diller",
+      "languagesHint": "İngilizce her zaman dahildir. Üçüncü dilden itibaren ek diller paketi eklenir.",
+      "currency": "Para birimi",
+      "perMonth": "aylık",
+      "priceHint": "Yaklaşık fiyat, aylık faturalandırılır. Bilgi almak için kart gerekmez.",
+      "bundleSaving": "«{bundle}» paketi uygulandı — {saving} tasarruf ediyorsunuz",
+      "module": {
+        "core": "Temel — QR menü ve çevrimiçi sipariş",
+        "kitchen-board": "Mutfak ekranı",
+        "cashier": "Kasa ve Z raporu",
+        "server": "Masa servisi",
+        "reservations": "Rezervasyonlar",
+        "loyalty": "Sadakat puanları",
+        "printing": "Fiş yazdırma"
+      },
+      "moduleHint": {
+        "kitchen-board": "Mutfak için canlı sipariş panosu",
+        "cashier": "Kasa, ödemeler ve gün sonu raporu",
+        "server": "Salon planı ve masada sipariş",
+        "reservations": "Çevrimiçi rezervasyon ve masa yönetimi",
+        "loyalty": "Puanlar, müşteri grupları ve indirimler",
+        "printing": "Termal yazıcılar için yardımcı uygulama"
+      },
+      "template": {
+        "classic": "Klasik",
+        "craft": "El yapımı"
+      },
+      "templateHint": {
+        "classic": "Sade ve modern, yüksek kontrast",
+        "craft": "Sıcak ve el yapımı, kağıt dokusu"
+      },
+      "bundle": {
+        "counter": "Tezgah",
+        "full-service": "Tam servis"
+      }
     }
   }
 }
