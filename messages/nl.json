@@ -720,7 +720,8 @@
         "chosenTheme": "Stijl",
         "chosenLanguages": "Talen",
         "chosenCurrency": "Valuta",
-        "quoted": "Offerte"
+        "quoted": "Offerte",
+        "openProvisioning": "Provisioning openen →"
       },
       "provision": {
         "title": "Een tenant inrichten",
@@ -742,7 +743,8 @@
         "languagesHint": "Engels gaat altijd mee (de fallback van de tenant-app). Boven Engels + één taal geldt de add-on extra-languages.",
         "price": "Maandelijkse adviesprijs",
         "priceBundle": "als bundel",
-        "priceALaCarte": "los"
+        "priceALaCarte": "los",
+        "fromSignup": "Tenant voor {restaurant} wordt voorgesteld vanuit zijn aanmelding — de velden hieronder zijn vooraf ingevuld. Controleer ze: de slug kan na provisioning niet meer worden gewijzigd."
       },
       "fleet": {
         "title": "Printervloot",

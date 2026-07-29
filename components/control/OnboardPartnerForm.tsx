@@ -128,7 +128,7 @@ export default function OnboardPartnerForm({
           <input
             name="tenantSlug"
             required
-            pattern="[a-z0-9][a-z0-9-]{1,30}"
+            pattern="[a-z0-9][a-z0-9\-]{1,30}"
             defaultValue={prefill?.tenantSlug}
             placeholder={t("onboard.slug")}
             aria-label={t("onboard.slug")}

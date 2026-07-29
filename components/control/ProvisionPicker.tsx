@@ -19,6 +19,8 @@ import { eur } from "@/lib/format";
  */
 export default function ProvisionPicker({
   labels,
+  initialModules,
+  initialLanguages,
 }: Readonly<{
   labels: {
     modules: string;
@@ -29,9 +31,29 @@ export default function ProvisionPicker({
     priceBundle: string;
     priceALaCarte: string;
   };
+  /** Module ids from a signup lead (SOFRA-ONBOARDING-PLAN O1). Empty/absent = a
+   *  blank form. Filtered below rather than by the caller, because which ids this
+   *  component actually manages is its own business. */
+  initialModules?: readonly ModuleId[];
+  /** Tenant locales from a signup lead. Empty/absent keeps the en+nl default. */
+  initialLanguages?: readonly string[];
 }>) {
-  const [modules, setModules] = useState<ModuleId[]>([]);
-  const [languages, setLanguages] = useState<string[]>(["en", "nl"]);
+  // `core` and `extra-languages` are excluded because this state models the
+  // CHECKBOXES only: core rides a hidden input and extra-languages is DERIVED
+  // from the language count below. Seeding either here would put a value in
+  // state that no rendered input corresponds to — harmless today (`quoteModules`
+  // dedupes, and neither id has a checkbox to desynchronise) but a latent trap
+  // the moment someone adds one. Keep the state and the inputs in step.
+  const [modules, setModules] = useState<ModuleId[]>(() =>
+    (initialModules ?? []).filter((m) => m !== "core" && m !== "extra-languages"),
+  );
+  // English always ships, so it is forced back in even if a stored list somehow
+  // lost it (the picker renders it disabled-and-checked and it must agree).
+  const [languages, setLanguages] = useState<string[]>(() =>
+    initialLanguages && initialLanguages.length > 0
+      ? ["en", ...initialLanguages.filter((l) => l !== "en")]
+      : ["en", "nl"],
+  );
 
   const toggle = <T extends string>(list: T[], value: T, on: boolean): T[] =>
     on ? [...list, value] : list.filter((v) => v !== value);

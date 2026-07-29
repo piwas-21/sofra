@@ -720,7 +720,8 @@
         "chosenTheme": "Design",
         "chosenLanguages": "Sprachen",
         "chosenCurrency": "Währung",
-        "quoted": "Angebot"
+        "quoted": "Angebot",
+        "openProvisioning": "Bereitstellung öffnen →"
       },
       "provision": {
         "title": "Mandanten bereitstellen",
@@ -742,7 +743,8 @@
         "languagesHint": "Englisch ist immer dabei (Fallback der Tenant-App). Über Englisch + eine Sprache hinaus greift das Add-on extra-languages.",
         "price": "Monatlicher Listenpreis",
         "priceBundle": "als Paket",
-        "priceALaCarte": "einzeln"
+        "priceALaCarte": "einzeln",
+        "fromSignup": "Mandant für {restaurant} wird aus seiner Anmeldung vorgeschlagen — die Felder unten sind vorausgefüllt. Bitte prüfen: der Slug lässt sich nach der Bereitstellung nicht mehr ändern."
       },
       "fleet": {
         "title": "Drucker-Flotte",

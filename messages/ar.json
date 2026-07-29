@@ -720,7 +720,8 @@
         "chosenTheme": "المظهر",
         "chosenLanguages": "اللغات",
         "chosenCurrency": "العملة",
-        "quoted": "عرض السعر"
+        "quoted": "عرض السعر",
+        "openProvisioning": "فتح التجهيز ←"
       },
       "provision": {
         "title": "تزويد مستأجر",
@@ -742,7 +743,8 @@
         "languagesHint": "الإنجليزية تُشحن دائمًا (اللغة الاحتياطية لتطبيق المستأجر). لما يزيد عن الإنجليزية + لغة واحدة تُطبَّق إضافة extra-languages.",
         "price": "سعر القائمة الشهري",
         "priceBundle": "كحزمة",
-        "priceALaCarte": "منفصلًا"
+        "priceALaCarte": "منفصلًا",
+        "fromSignup": "جارٍ اقتراح مستأجر لـ {restaurant} من طلب تسجيله — الحقول أدناه معبأة مسبقًا. تحقق منها: لا يمكن تغيير المُعرِّف (slug) بعد التجهيز."
       },
       "fleet": {
         "title": "أسطول الطابعات",
