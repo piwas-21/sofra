@@ -804,7 +804,8 @@
       "signupNotFound": "That signup no longer exists.",
       "provisioningNotConfigured": "Provisioning isn’t configured (missing GitHub token).",
       "provisionFailed": "Couldn’t open the provisioning PR. Check the logs.",
-      "slugReserved": "That tenant slug is reserved and cannot be used."
+      "slugReserved": "That tenant slug is reserved and cannot be used.",
+      "awaitingFirstPayment": "This tenant's plan has no settled first payment yet. A self-serve tenant is provisioned only after it has paid."
     },
     "plan": {
       "title": "Your plan",
@@ -830,7 +831,16 @@
         "month": "month",
         "quarter": "quarter",
         "year": "year"
-      }
+      },
+      "activating": {
+        "kicker": "Activating",
+        "title": "{restaurant} is being set up",
+        "stepPaid": "Your first payment went through — thank you.",
+        "stepMandate": "Your bank is confirming the monthly subscription. This usually takes a minute, occasionally longer.",
+        "stepProvision": "Then your restaurant's app is prepared and we send your login details.",
+        "noSecondPayment": "Nothing more to do, and nothing more to pay — this page updates itself."
+      },
+      "notLiveYet": "{restaurant} isn't set up yet — start your subscription and we'll prepare your app."
     }
   },
   "signup": {
@@ -851,8 +861,8 @@
         "text": "No call centre — the founder sets up your restaurant with you, one by one."
       },
       "noCard": {
-        "title": "No card needed",
-        "text": "Sign up first. Billing comes later, once your place is ready to go live."
+        "title": "You're in control",
+        "text": "Sign up, set your password, and start the subscription when you're ready. Cancel anytime."
       }
     },
     "loginHint": "Already have an account?",
@@ -863,16 +873,18 @@
       "email": "Email",
       "phone": "Phone (optional)",
       "city": "City (optional)",
-      "desiredSlug": "Preferred web address (optional)",
-      "desiredSlugHint": "Lowercase letters, numbers and hyphens — e.g. your-restaurant. We'll confirm availability.",
+      "desiredSlug": "Your web address",
+      "desiredSlugHint": "This becomes your-name.sofrapiwas.com — lowercase letters, numbers and hyphens. It cannot be changed later.",
       "message": "Anything you'd like us to know? (optional)",
       "submit": "Sign up",
       "sending": "Sending…",
-      "success": "Welcome aboard! We've got your details and will reach out shortly to set up your restaurant — afiyet olsun.",
+      "success": "Thanks! We've got your details and will reach out shortly to set up your restaurant — afiyet olsun.",
       "error": "Something went wrong — please try again in a minute.",
       "invalidEmail": "Please enter a valid email address.",
       "invalidSlug": "Use lowercase letters, numbers and hyphens (2–31 characters).",
-      "slugReserved": "That address is reserved — please choose another."
+      "slugReserved": "That address is reserved — please choose another.",
+      "slugTaken": "That address is already taken — please choose another.",
+      "successAccount": "Welcome aboard! Check your email to set your password — then you can start your subscription and we'll set up your restaurant. Afiyet olsun."
     },
     "configurator": {
       "modules": "What do you need?",

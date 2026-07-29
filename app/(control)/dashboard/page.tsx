@@ -3,10 +3,66 @@ import { requirePartnerOrOwner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
-import { intervalKeyOf, planState } from "@/lib/billing-display";
+import { intervalKeyOf, planState, type PlanState } from "@/lib/billing-display";
 import ClientForm from "@/components/control/ClientForm";
 import ClientStatusBadge from "@/components/control/ClientStatusBadge";
 import StartPaymentButton from "@/components/control/StartPaymentButton";
+import ActivatingPanel from "@/components/control/ActivatingPanel";
+
+/**
+ * Which "where is my restaurant" line the welcome hero shows — or none.
+ * Extracted so the choice reads as a decision instead of a nested ternary
+ * (Sonar S3358).
+ *
+ * Returns null for an owner who is already activating: `<ActivatingPanel />`
+ * says what is happening in full, and the hero's "start your subscription"
+ * nudge directly contradicts a panel that opens with "your first payment went
+ * through". A line that argues with the line below it is worse than no line.
+ */
+function liveSinceLine(
+  liveSince: Date | null,
+  restaurant: string,
+  isOwner: boolean,
+  activating: boolean,
+  tp: (key: string, values?: Record<string, string>) => string,
+): string | null {
+  if (liveSince) return tp("liveSince", { restaurant, date: shortDate(liveSince) });
+  if (!isOwner) return tp("liveSinceUnknown", { restaurant });
+  return activating ? null : tp("notLiveYet", { restaurant });
+}
+
+/**
+ * What the payer can do about this plan right now. Written as guard clauses
+ * rather than a chain of ternaries (Sonar S3358), mirroring `statusNode` in
+ * `/dashboard/billing`.
+ *
+ * `state` is only ever "pay" or "processing" here — the caller's filter admits
+ * exactly those two — so "processing" is the mandate-validation window. An owner
+ * gets it spelled out; a partner keeps the terse line, because a reseller reads
+ * this queue as a pipeline and is not the one who just watched money leave their
+ * account. Neither branch renders a pay button in that window: a second payment
+ * is the trap it sets.
+ */
+function planAction(args: {
+  state: PlanState;
+  billingId: string;
+  isOwner: boolean;
+  locale: string;
+  restaurant: string;
+  tp: (key: string) => string;
+}) {
+  const { state, billingId, isOwner, locale, restaurant, tp } = args;
+  if (state === "pay") {
+    return (
+      <div className="grid gap-2">
+        <StartPaymentButton billingId={billingId} />
+        <span className="font-label text-sm text-muted-foreground">{tp("firstChargeNote")}</span>
+      </div>
+    );
+  }
+  if (isOwner) return <ActivatingPanel locale={locale} restaurant={restaurant} />;
+  return <p className="font-label text-muted-foreground">{tp("processing")}</p>;
+}
 
 export default async function DashboardPage() {
   const user = await requirePartnerOrOwner();
@@ -53,6 +109,18 @@ export default async function DashboardPage() {
         // Owner billings carry no CRM client; the slug identifies the restaurant.
         const restaurant = b.client?.restaurantName ?? b.tenantSlug;
         const state = planState(sub, b.payments);
+        // `liveSince` is set by the founder at onboarding, so for a reseller plan
+        // (defined AFTER the tenant is live) its absence just means "date
+        // unknown" — the tenant is live either way. A self-serve owner is the
+        // opposite case: they signed up minutes ago and nothing has been
+        // provisioned, so telling them their restaurant "is live" is simply false.
+        const whereItStands = liveSinceLine(
+          b.liveSince,
+          restaurant,
+          isOwner,
+          state === "processing",
+          tp,
+        );
         return (
           <section key={b.id} className="hand-drawn-border bg-card p-6 sm:p-8 grid gap-4">
             <p className="font-label text-xs uppercase tracking-[0.15em] text-primary">
@@ -61,25 +129,21 @@ export default async function DashboardPage() {
             <h2 className="font-display font-bold text-4xl">
               {tp("welcomeTitle", { name: user.name })}
             </h2>
-            <p className="text-muted-foreground">
-              {b.liveSince
-                ? tp("liveSince", { restaurant, date: shortDate(b.liveSince) })
-                : tp("liveSinceUnknown", { restaurant })}
-            </p>
+            {whereItStands && <p className="text-muted-foreground">{whereItStands}</p>}
             <p className="font-hand text-3xl font-bold">
               {tp("amountLine", {
                 amount: eur(sub.amountCents),
                 interval: tp(`interval.${intervalKeyOf(sub.interval)}`),
               })}
             </p>
-            {state === "pay" ? (
-              <div className="grid gap-2">
-                <StartPaymentButton billingId={b.id} />
-                <span className="font-label text-sm text-muted-foreground">{tp("firstChargeNote")}</span>
-              </div>
-            ) : (
-              <p className="font-label text-muted-foreground">{tp("processing")}</p>
-            )}
+            {planAction({
+              state,
+              billingId: b.id,
+              isOwner,
+              locale,
+              restaurant,
+              tp,
+            })}
           </section>
         );
       })}

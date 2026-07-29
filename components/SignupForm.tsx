@@ -15,33 +15,46 @@ export default function SignupForm() {
     "/api/signup",
     (data) => {
       if (!looksLikeEmail(data.email)) return "invalidEmail";
-      // The slug is optional, so an empty one is fine — but a supplied one is
-      // checked against the shared grammar AND the reserved list here, where the
-      // customer is still at the keyboard. It is the most expensive field in the
-      // funnel to get wrong: it becomes the subdomain, database, DB role and
-      // compose project, none of which can be renamed later.
+      // The slug is checked against the shared grammar AND the reserved list here,
+      // where the customer is still at the keyboard. It is the most expensive
+      // field in the funnel to get wrong: it becomes the subdomain, database, DB
+      // role and compose project, none of which can be renamed later — and since
+      // O2 it is also the billing anchor of the plan created on submit.
       //
       // No taken-check on the client: that needs the registry, and shipping the
-      // tenant list to every visitor to save one round-trip is a bad trade. A
-      // taken slug is caught server-side at /admin/provision, before anything
-      // immutable exists.
+      // tenant list to every visitor to save one round-trip is a bad trade. The
+      // route answers 409 `slugTaken`, which lands in `interpretResponse` below.
       const slug = data.desiredSlug.trim();
-      if (slug) {
-        const verdict = checkSlug(slug);
-        if (verdict === "invalid") return "invalidSlug";
-        if (verdict === "reserved") return "slugReserved";
-      }
+      const verdict = checkSlug(slug);
+      if (verdict === "invalid") return "invalidSlug";
+      if (verdict === "reserved") return "slugReserved";
       // Send the trimmed slug we validated (no client/server whitespace divergence).
       data.desiredSlug = slug;
       return null;
     },
     MULTI_VALUE_FIELDS,
+    // Four outcomes, three of them not "error": the account was created, the lead
+    // was captured for the founder, or the address needs changing. Only an
+    // unrecognised answer falls through to the hook's generic error.
+    (res, body) => {
+      if (res.status === 409) {
+        // The server's `slugInvalid` maps to the client's own `invalidSlug` key —
+        // unreachable from a browser (client validation catches it first), but a
+        // name mismatch that silently collapsed to the generic error would be a
+        // trap for whoever next changes either side.
+        const reason = body?.reason;
+        if (reason === "slugTaken" || reason === "slugReserved") return reason;
+        return reason === "slugInvalid" ? "invalidSlug" : "error";
+      }
+      if (res.ok && body?.ok === true) return body.account === true ? "success" : "successLead";
+      return null;
+    },
   );
 
-  if (status === "success") {
+  if (status === "success" || status === "successLead") {
     return (
       <output className="block hand-drawn-border bg-card px-6 py-5 font-hand text-2xl text-craft-olive-text dark:text-craft-olive-dark">
-        {t("success")}
+        {t(status === "success" ? "successAccount" : "success")}
       </output>
     );
   }
@@ -89,9 +102,16 @@ export default function SignupForm() {
         className="input-primary"
       />
       <div className="flex flex-col gap-1">
+        {/* Required since O2: the slug is the plan's billing anchor, so a signup
+            without one cannot create an account. `pattern` is escaped as
+            `[a-z0-9\-]` — a trailing `-` inside the class is invalid under
+            Chrome's `v`-mode parser, which DISCARDS the whole attribute and
+            leaves the field with no validation at all (see #92). */}
         <input
           name="desiredSlug"
+          required
           inputMode="url"
+          pattern="[a-z0-9][a-z0-9\-]{1,30}"
           placeholder={t("desiredSlug")}
           aria-label={t("desiredSlug")}
           aria-describedby="desiredSlug-hint"
@@ -122,8 +142,10 @@ export default function SignupForm() {
         <button type="submit" disabled={status === "sending"} className="btn-primary disabled:opacity-60">
           {status === "sending" ? t("sending") : t("submit")}
         </button>
-        {(status === "invalidEmail" || status === "invalidSlug" ||
+        {(status === "invalidEmail" ||
+          status === "invalidSlug" ||
           status === "slugReserved" ||
+          status === "slugTaken" ||
           status === "error") && (
           <p role="alert" className="font-label text-destructive">
             {t(status)}
