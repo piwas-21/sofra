@@ -49,30 +49,36 @@ export default function SignupConfigurator() {
           <span className="font-bold">{t("module.core")}</span> · {t("included")}
         </p>
         <div className="grid gap-2 sm:grid-cols-2">
-          {optionalModules.map((m) => (
-            <label key={m.id} className="flex items-start gap-2 font-label text-sm">
-              <input
-                type="checkbox"
-                name="modules"
-                value={m.id}
-                checked={modules.includes(m.id)}
-                onChange={(e) => setModules((prev) => toggle(prev, m.id, e.target.checked))}
-                // Name and description split explicitly: the visible label is
-                // "name · price / hint", which a screen reader would otherwise
-                // announce as one run-on string.
-                aria-label={`${t(`module.${m.id}`)} · ${eur(m.priceCents)}`}
-                aria-describedby={`module-hint-${m.id}`}
-                className="mt-1 accent-primary"
-              />
-              <span>
-                <span className="font-bold">{t(`module.${m.id}`)}</span> · {eur(m.priceCents)}
-                <br />
-                <span id={`module-hint-${m.id}`} className="text-muted-foreground">
-                  {t(`moduleHint.${m.id}`)}
+          {optionalModules.map((m) => {
+            // Hoisted so the label text is written once and the aria-label needs
+            // no nested template literal (Sonar S4624).
+            const name = t(`module.${m.id}`);
+            const price = eur(m.priceCents);
+            return (
+              <label key={m.id} className="flex items-start gap-2 font-label text-sm">
+                <input
+                  type="checkbox"
+                  name="modules"
+                  value={m.id}
+                  checked={modules.includes(m.id)}
+                  onChange={(e) => setModules((prev) => toggle(prev, m.id, e.target.checked))}
+                  // Name and description split explicitly: the visible label is
+                  // "name · price / hint", which a screen reader would otherwise
+                  // announce as one run-on string.
+                  aria-label={`${name} · ${price}`}
+                  aria-describedby={`module-hint-${m.id}`}
+                  className="mt-1 accent-primary"
+                />
+                <span>
+                  <span className="font-bold">{name}</span> · {price}
+                  <br />
+                  <span id={`module-hint-${m.id}`} className="text-muted-foreground">
+                    {t(`moduleHint.${m.id}`)}
+                  </span>
                 </span>
-              </span>
-            </label>
-          ))}
+              </label>
+            );
+          })}
         </div>
       </fieldset>
 
