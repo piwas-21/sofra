@@ -3,7 +3,7 @@ import { requirePartnerOrOwner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
-import { intervalKeyOf, planState } from "@/lib/billing-display";
+import { intervalKeyOf, planState, type PlanState } from "@/lib/billing-display";
 import ClientForm from "@/components/control/ClientForm";
 import ClientStatusBadge from "@/components/control/ClientStatusBadge";
 import StartPaymentButton from "@/components/control/StartPaymentButton";
@@ -29,6 +29,39 @@ function liveSinceLine(
   if (liveSince) return tp("liveSince", { restaurant, date: shortDate(liveSince) });
   if (!isOwner) return tp("liveSinceUnknown", { restaurant });
   return activating ? null : tp("notLiveYet", { restaurant });
+}
+
+/**
+ * What the payer can do about this plan right now. Written as guard clauses
+ * rather than a chain of ternaries (Sonar S3358), mirroring `statusNode` in
+ * `/dashboard/billing`.
+ *
+ * `state` is only ever "pay" or "processing" here — the caller's filter admits
+ * exactly those two — so "processing" is the mandate-validation window. An owner
+ * gets it spelled out; a partner keeps the terse line, because a reseller reads
+ * this queue as a pipeline and is not the one who just watched money leave their
+ * account. Neither branch renders a pay button in that window: a second payment
+ * is the trap it sets.
+ */
+function planAction(args: {
+  state: PlanState;
+  billingId: string;
+  isOwner: boolean;
+  locale: string;
+  restaurant: string;
+  tp: (key: string) => string;
+}) {
+  const { state, billingId, isOwner, locale, restaurant, tp } = args;
+  if (state === "pay") {
+    return (
+      <div className="grid gap-2">
+        <StartPaymentButton billingId={billingId} />
+        <span className="font-label text-sm text-muted-foreground">{tp("firstChargeNote")}</span>
+      </div>
+    );
+  }
+  if (isOwner) return <ActivatingPanel locale={locale} restaurant={restaurant} />;
+  return <p className="font-label text-muted-foreground">{tp("processing")}</p>;
 }
 
 export default async function DashboardPage() {
@@ -103,23 +136,14 @@ export default async function DashboardPage() {
                 interval: tp(`interval.${intervalKeyOf(sub.interval)}`),
               })}
             </p>
-            {state === "pay" ? (
-              <div className="grid gap-2">
-                <StartPaymentButton billingId={b.id} />
-                <span className="font-label text-sm text-muted-foreground">{tp("firstChargeNote")}</span>
-              </div>
-            ) : (
-              // `state` can only be "processing" here (the filter above admits
-              // exactly "pay" and "processing"), i.e. the mandate-validation
-              // window. An owner gets it spelled out; a partner keeps the terse
-              // line, since a reseller reads this queue as a pipeline and is not
-              // the one who just watched money leave their account.
-              isOwner ? (
-                <ActivatingPanel locale={locale} restaurant={restaurant} />
-              ) : (
-                <p className="font-label text-muted-foreground">{tp("processing")}</p>
-              )
-            )}
+            {planAction({
+              state,
+              billingId: b.id,
+              isOwner,
+              locale,
+              restaurant,
+              tp,
+            })}
           </section>
         );
       })}

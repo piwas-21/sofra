@@ -14,6 +14,7 @@ import {
   type ExistingRole,
   type ExistingStatus,
   type SelfServeFallback,
+  type SelfServeOutcome,
 } from "@/lib/self-serve-signup";
 import { sendFounderSignupNotice, sendOwnerWelcome } from "@/lib/self-serve-email";
 
@@ -35,6 +36,60 @@ const FOUNDER_FALLBACK_NOTES: Record<SelfServeFallback, string> = {
   registryUnavailable:
     "No account: the tenant registry could not be read, so the requested web address could not be checked against live tenants. Check the registry bind-mount, then onboard by hand.",
 };
+
+/**
+ * Create the account + PENDING plan and say what happened, for the founder.
+ *
+ * Split out of the handler so the route reads as its flow (guard → validate →
+ * decide → mint → notify) and stays under the cognitive-complexity gate.
+ */
+async function mintAccount(
+  outcome: Extract<SelfServeOutcome, { kind: "account" }>,
+  who: { email: string; contactName: string; restaurantName: string },
+): Promise<{ account: boolean; founderOutcome: string }> {
+  let minted;
+  try {
+    minted = await createSelfServeAccount({
+      ...who,
+      slug: outcome.slug,
+      amountCents: outcome.amountCents,
+    });
+  } catch (e) {
+    if (!(e instanceof SlugRaceLostError)) throw e;
+    // Lost a same-second race for the subdomain. The lead is already saved, so
+    // report it as founder-handled rather than 409ing a row that now exists — a
+    // 409 here would invite a resubmit and a duplicate lead.
+    return {
+      account: false,
+      founderOutcome:
+        "No account: the requested web address was claimed by another signup moments earlier. Needs a new slug.",
+    };
+  }
+
+  // The welcome email is the customer's ONLY way into an account that has no
+  // password yet, so its failure has to reach the founder — who can still hand the
+  // invite over, which is what makes this recoverable at all. Both failure shapes
+  // are covered: `sendEmail` swallows a non-2xx into `{sent:false}`, while `fetch`
+  // itself REJECTS on a DNS/connect failure. Letting that reject escape would 500
+  // the route after the plan committed AND skip the founder notification — losing
+  // the backstop exactly when it is needed.
+  const welcome = await sendOwnerWelcome({
+    to: who.email,
+    contactName: who.contactName,
+    restaurantName: who.restaurantName,
+    slug: outcome.slug,
+    amountCents: outcome.amountCents,
+    inviteToken: minted.inviteToken,
+  }).catch(() => ({ sent: false }));
+
+  const plan = `${eur(outcome.amountCents)}/mo`;
+  return {
+    account: true,
+    founderOutcome: welcome.sent
+      ? `Account + PENDING plan created (${plan}). The owner pays from their own dashboard.`
+      : `Account + PENDING plan created (${plan}), but the WELCOME EMAIL FAILED — the owner has no password and no link. Send the invite by hand (/admin/onboard on the same email re-issues one), or tell them to use "Forgot password".`,
+  };
+}
 
 /**
  * Public direct-restaurant signup intake (ADR-004 self-serve; O2).
@@ -132,48 +187,14 @@ export async function POST(request: Request) {
   await audit(null, "signup.requested", "SignupRequest", signup.id);
 
   // ── Mint the account when the decision says so ──────────────────────────
-  let account = false;
-  let founderOutcome: string;
-  if (outcome.kind === "account") {
-    try {
-      const minted = await createSelfServeAccount({
-        email,
-        contactName: data.contactName,
-        restaurantName: data.restaurantName,
-        slug: outcome.slug,
-        amountCents: outcome.amountCents,
-      });
-      account = true;
-      // The welcome email is the customer's ONLY way into an account that has no
-      // password yet, so its failure has to reach the founder — who can still hand
-      // the invite over, and is the reason this is recoverable at all. Both failure
-      // shapes are covered: `sendEmail` swallows a non-2xx into `{sent:false}`,
-      // while `fetch` itself REJECTS on a DNS/connect failure. Letting that reject
-      // escape would 500 the route after the plan committed AND skip this
-      // notification — losing the backstop exactly when it is needed.
-      const welcome = await sendOwnerWelcome({
-        to: email,
-        contactName: data.contactName,
-        restaurantName: data.restaurantName,
-        slug: outcome.slug,
-        amountCents: outcome.amountCents,
-        inviteToken: minted.inviteToken,
-      }).catch(() => ({ sent: false }));
-      const plan = `${eur(outcome.amountCents)}/mo`;
-      founderOutcome = welcome.sent
-        ? `Account + PENDING plan created (${plan}). The owner pays from their own dashboard.`
-        : `Account + PENDING plan created (${plan}), but the WELCOME EMAIL FAILED — the owner has no password and no link. Send the invite by hand (/admin/onboard on the same email re-issues one), or tell them to use "Forgot password".`;
-    } catch (e) {
-      if (!(e instanceof SlugRaceLostError)) throw e;
-      // Lost a same-second race for the subdomain. The lead is already saved, so
-      // report it as founder-handled rather than 409ing a row that now exists —
-      // a 409 here would invite a resubmit and a duplicate lead.
-      founderOutcome =
-        "No account: the requested web address was claimed by another signup moments earlier. Needs a new slug.";
-    }
-  } else {
-    founderOutcome = FOUNDER_FALLBACK_NOTES[outcome.reason];
-  }
+  const { account, founderOutcome } =
+    outcome.kind === "account"
+      ? await mintAccount(outcome, {
+          email,
+          contactName: data.contactName,
+          restaurantName: data.restaurantName,
+        })
+      : { account: false, founderOutcome: FOUNDER_FALLBACK_NOTES[outcome.reason] };
 
   // ── Tell the founder what happened ─────────────────────────────────────
   // Also non-fatal. Everything the customer needs is already committed; failing
