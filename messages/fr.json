@@ -720,7 +720,8 @@
         "chosenTheme": "Thème",
         "chosenLanguages": "Langues",
         "chosenCurrency": "Devise",
-        "quoted": "Devis"
+        "quoted": "Devis",
+        "openProvisioning": "Ouvrir le provisionnement →"
       },
       "provision": {
         "title": "Provisionner un établissement",
@@ -742,7 +743,8 @@
         "languagesHint": "L'anglais est toujours livré (langue de repli de l'app tenant). Au-delà de l'anglais + une langue, l'option extra-languages s'applique.",
         "price": "Prix catalogue mensuel",
         "priceBundle": "en formule",
-        "priceALaCarte": "à la carte"
+        "priceALaCarte": "à la carte",
+        "fromSignup": "Proposition d’un locataire pour {restaurant} depuis sa demande d’inscription — les champs ci-dessous sont pré-remplis. Vérifiez-les : le slug ne peut plus être modifié après le provisionnement."
       },
       "fleet": {
         "title": "Parc d'imprimantes",

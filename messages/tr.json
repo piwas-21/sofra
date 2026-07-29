@@ -720,7 +720,8 @@
         "chosenTheme": "Tema",
         "chosenLanguages": "Diller",
         "chosenCurrency": "Para birimi",
-        "quoted": "Teklif"
+        "quoted": "Teklif",
+        "openProvisioning": "Kurulumu aç →"
       },
       "provision": {
         "title": "Kiracı sağla",
@@ -742,7 +743,8 @@
         "languagesHint": "İngilizce her zaman gelir (tenant uygulamasının yedek dili). İngilizce + bir dilden fazlası için extra-languages eklentisi geçerlidir.",
         "price": "Aylık liste fiyatı",
         "priceBundle": "paket olarak",
-        "priceALaCarte": "tek tek"
+        "priceALaCarte": "tek tek",
+        "fromSignup": "{restaurant} için kiracı, kaydından yola çıkılarak öneriliyor — aşağıdaki alanlar önceden dolduruldu. Kontrol edin: slug, kurulumdan sonra değiştirilemez."
       },
       "fleet": {
         "title": "Yazıcı filosu",

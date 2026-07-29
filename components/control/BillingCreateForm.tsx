@@ -18,7 +18,7 @@ export default function BillingCreateForm({ disabled }: { disabled?: boolean }) 
       <input
         name="tenantSlug"
         required
-        pattern="[a-z0-9][a-z0-9-]{1,30}"
+        pattern="[a-z0-9][a-z0-9\-]{1,30}"
         placeholder={t("billingForm.slug")}
         aria-label={t("billingForm.slugAria")}
         className="input-primary"

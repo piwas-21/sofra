@@ -720,7 +720,8 @@
         "chosenTheme": "Theme",
         "chosenLanguages": "Languages",
         "chosenCurrency": "Currency",
-        "quoted": "Quoted"
+        "quoted": "Quoted",
+        "openProvisioning": "Open provisioning →"
       },
       "provision": {
         "title": "Provision a tenant",
@@ -742,7 +743,8 @@
         "languagesHint": "English always ships (the tenant app's fallback). Beyond English + one, the extra-languages add-on applies.",
         "price": "Monthly list price",
         "priceBundle": "as bundle",
-        "priceALaCarte": "à la carte"
+        "priceALaCarte": "à la carte",
+        "fromSignup": "Proposing a tenant for {restaurant} from its signup — the fields below are pre-filled. Check them: the slug cannot be changed after provisioning."
       },
       "fleet": {
         "title": "Printer fleet",

@@ -55,7 +55,7 @@ export default function SetLiveForm({
         defaultValue={tenantSlug ?? ""}
         placeholder="tenant-slug"
         aria-label={t("slugAria")}
-        pattern="[a-z0-9][a-z0-9-]{1,60}"
+        pattern="[a-z0-9][a-z0-9\-]{1,60}"
         className="input-primary max-w-40 text-sm py-1.5"
       />
       <button type="submit" disabled={livePending} className="btn-secondary text-sm py-1.5 disabled:opacity-60">
