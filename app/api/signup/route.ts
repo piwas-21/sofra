@@ -34,6 +34,14 @@ export async function POST(request: Request) {
       email: data.email.toLowerCase(),
       phone: data.phone || null,
       city: data.city || null,
+      // The lead's WISH, recorded verbatim — deliberately not validated against
+      // the reserved list or the registry here. A signup is a sales opportunity
+      // and losing one over an unavailable subdomain would be a bad trade (the
+      // same reasoning as sanitizeSignupConfiguration's drop-don't-reject rule).
+      // The form already warns about reserved words while the customer is at the
+      // keyboard, /admin/signups shows the founder the verdict, and
+      // openProvisioningPrAction refuses an unusable slug before anything
+      // immutable exists. Rewriting the wish here would only hide it.
       desiredSlug: data.desiredSlug || null,
       message: data.message || null,
       locale: data.locale,

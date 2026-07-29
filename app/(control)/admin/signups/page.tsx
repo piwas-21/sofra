@@ -3,6 +3,8 @@ import { requireAdmin } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur } from "@/lib/format";
+import { loadTenantRegistry } from "@/lib/tenant-registry";
+import { checkSlug } from "@/lib/slug-availability";
 import SignupActions from "@/components/control/SignupActions";
 
 // Direct-restaurant signup pipeline (ADR-004). Leads land here via POST
@@ -16,6 +18,13 @@ export default async function AdminSignupsPage() {
   const signups = await db.signupRequest.findMany({
     orderBy: [{ status: "asc" }, { createdAt: "desc" }],
   });
+
+  // A lead's desiredSlug is a wish, stored verbatim. Judge it HERE, where the
+  // founder is about to act on it, rather than at intake where rejecting it would
+  // cost a lead. An unreadable registry still lets the reserved-word verdict
+  // through; only "taken" needs the tenant list.
+  const registry = await loadTenantRegistry();
+  const takenSlugs = registry.ok ? registry.tenants.map((r) => r.slug) : [];
 
   const fmtDate = (d: Date) =>
     new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(d);
@@ -40,6 +49,18 @@ export default async function AdminSignupsPage() {
                 {s.desiredSlug && (
                   <span className="font-label text-sm text-muted-foreground block">
                     {t("desiredSlug")}: <span className="font-mono">{s.desiredSlug}</span>
+                    {(() => {
+                      const verdict = checkSlug(s.desiredSlug, takenSlugs);
+                      // "available" is the expected case and needs no badge —
+                      // flagging every healthy lead would bury the two that need
+                      // a decision before provisioning.
+                      if (verdict === "available") return null;
+                      return (
+                        <span className="ml-2 font-mono text-craft-error-text">
+                          {t(`slugVerdict.${verdict}`)}
+                        </span>
+                      );
+                    })()}
                   </span>
                 )}
               </span>

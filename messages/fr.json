@@ -721,7 +721,12 @@
         "chosenLanguages": "Langues",
         "chosenCurrency": "Devise",
         "quoted": "Devis",
-        "openProvisioning": "Ouvrir le provisionnement →"
+        "openProvisioning": "Ouvrir le provisionnement →",
+        "slugVerdict": {
+          "invalid": "(invalide)",
+          "reserved": "(réservé)",
+          "taken": "(pris)"
+        }
       },
       "provision": {
         "title": "Provisionner un établissement",
@@ -798,7 +803,8 @@
       "paymentProcessing": "Votre paiement est en cours de traitement — inutile de payer à nouveau.",
       "signupNotFound": "Cette inscription n'existe plus.",
       "provisioningNotConfigured": "Le provisionnement n’est pas configuré (jeton GitHub manquant).",
-      "provisionFailed": "Impossible d’ouvrir la PR de provisionnement. Consultez les journaux."
+      "provisionFailed": "Impossible d’ouvrir la PR de provisionnement. Consultez les journaux.",
+      "slugReserved": "Ce slug de tenant est réservé et ne peut pas être utilisé."
     },
     "plan": {
       "title": "Votre abonnement",
@@ -865,7 +871,8 @@
       "success": "Bienvenue ! Nous avons vos informations et vous recontactons très vite pour configurer votre restaurant — afiyet olsun.",
       "error": "Une erreur s'est produite — veuillez réessayer dans une minute.",
       "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
-      "invalidSlug": "Utilisez des lettres minuscules, chiffres et tirets (2 à 31 caractères)."
+      "invalidSlug": "Utilisez des lettres minuscules, chiffres et tirets (2 à 31 caractères).",
+      "slugReserved": "Cette adresse est réservée — veuillez en choisir une autre."
     },
     "configurator": {
       "modules": "De quoi avez-vous besoin ?",

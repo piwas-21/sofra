@@ -721,7 +721,12 @@
         "chosenLanguages": "Talen",
         "chosenCurrency": "Valuta",
         "quoted": "Offerte",
-        "openProvisioning": "Provisioning openen →"
+        "openProvisioning": "Provisioning openen →",
+        "slugVerdict": {
+          "invalid": "(ongeldig)",
+          "reserved": "(gereserveerd)",
+          "taken": "(bezet)"
+        }
       },
       "provision": {
         "title": "Een tenant inrichten",
@@ -798,7 +803,8 @@
       "paymentProcessing": "Je betaling wordt verwerkt — je hoeft niet opnieuw te betalen.",
       "signupNotFound": "Deze aanmelding bestaat niet meer.",
       "provisioningNotConfigured": "Inrichten is niet geconfigureerd (GitHub-token ontbreekt).",
-      "provisionFailed": "Kon de inricht-PR niet openen. Controleer de logs."
+      "provisionFailed": "Kon de inricht-PR niet openen. Controleer de logs.",
+      "slugReserved": "Deze tenant-slug is gereserveerd en kan niet worden gebruikt."
     },
     "plan": {
       "title": "Jouw abonnement",
@@ -865,7 +871,8 @@
       "success": "Welkom aan boord! We hebben uw gegevens en nemen binnenkort contact op om uw restaurant in te stellen — afiyet olsun.",
       "error": "Er ging iets mis — probeer het over een minuut opnieuw.",
       "invalidEmail": "Voer een geldig e-mailadres in.",
-      "invalidSlug": "Gebruik kleine letters, cijfers en koppeltekens (2–31 tekens)."
+      "invalidSlug": "Gebruik kleine letters, cijfers en koppeltekens (2–31 tekens).",
+      "slugReserved": "Dit adres is gereserveerd — kies een ander."
     },
     "configurator": {
       "modules": "Wat heeft u nodig?",
