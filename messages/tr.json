@@ -720,7 +720,13 @@
         "chosenTheme": "Tema",
         "chosenLanguages": "Diller",
         "chosenCurrency": "Para birimi",
-        "quoted": "Teklif"
+        "quoted": "Teklif",
+        "openProvisioning": "Kurulumu aç →",
+        "slugVerdict": {
+          "invalid": "(geçersiz)",
+          "reserved": "(ayrılmış)",
+          "taken": "(kullanımda)"
+        }
       },
       "provision": {
         "title": "Kiracı sağla",
@@ -742,7 +748,8 @@
         "languagesHint": "İngilizce her zaman gelir (tenant uygulamasının yedek dili). İngilizce + bir dilden fazlası için extra-languages eklentisi geçerlidir.",
         "price": "Aylık liste fiyatı",
         "priceBundle": "paket olarak",
-        "priceALaCarte": "tek tek"
+        "priceALaCarte": "tek tek",
+        "fromSignup": "{restaurant} için kiracı, kaydından yola çıkılarak öneriliyor — aşağıdaki alanlar önceden dolduruldu. Kontrol edin: slug, kurulumdan sonra değiştirilemez."
       },
       "fleet": {
         "title": "Yazıcı filosu",
@@ -796,7 +803,8 @@
       "paymentProcessing": "Ödemeniz işleniyor — tekrar ödemenize gerek yok.",
       "signupNotFound": "Bu kayıt artık mevcut değil.",
       "provisioningNotConfigured": "Sağlama yapılandırılmamış (GitHub belirteci eksik).",
-      "provisionFailed": "Sağlama PR’si açılamadı. Günlükleri kontrol edin."
+      "provisionFailed": "Sağlama PR’si açılamadı. Günlükleri kontrol edin.",
+      "slugReserved": "Bu tenant slug'ı ayrılmıştır ve kullanılamaz."
     },
     "plan": {
       "title": "Aboneliğiniz",
@@ -863,7 +871,8 @@
       "success": "Aramıza hoş geldiniz! Bilgilerinizi aldık, restoranınızı kurmak için kısa süre içinde size ulaşacağız — afiyet olsun.",
       "error": "Bir şeyler ters gitti — lütfen bir dakika sonra tekrar deneyin.",
       "invalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
-      "invalidSlug": "Küçük harf, rakam ve tire kullanın (2–31 karakter)."
+      "invalidSlug": "Küçük harf, rakam ve tire kullanın (2–31 karakter).",
+      "slugReserved": "Bu adres ayrılmış — lütfen başka bir tane seçin."
     },
     "configurator": {
       "modules": "Neye ihtiyacınız var?",

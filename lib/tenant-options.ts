@@ -50,9 +50,19 @@ export function unknownLanguages(values: readonly string[]): string[] {
  * `NEXT_PUBLIC_TEMPLATE` — so this is a BUILD-TIME choice: changing it later
  * means rebuilding the tenant image, not flipping an env var.
  */
+/**
+ * `preview` is a real screenshot of the template, not an artist's impression:
+ * the nav+hero crop of the frontend repo's per-template screenshot BASELINE
+ * (S15 — `e2e/screenshots/__screenshots__/<template>/screenshots-desktop/
+ * home-light.png`). Regenerating it is therefore a copy-crop-convert of an asset
+ * CI already keeps honest, never a redraw — if a template's look changes, the
+ * baseline changes with it and the preview is one command behind rather than
+ * silently wrong. Cropped above the fold on purpose: it stops before the
+ * reference tenant's address and phone number.
+ */
 export const TEMPLATES = [
-  { id: "classic", swatch: "#7C8450" },
-  { id: "craft", swatch: "#A84B2F" },
+  { id: "classic", swatch: "#7C8450", preview: "/theme-previews/classic.webp" },
+  { id: "craft", swatch: "#A84B2F", preview: "/theme-previews/craft.webp" },
 ] as const;
 
 export type TemplateId = (typeof TEMPLATES)[number]["id"];

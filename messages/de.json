@@ -720,7 +720,13 @@
         "chosenTheme": "Design",
         "chosenLanguages": "Sprachen",
         "chosenCurrency": "Währung",
-        "quoted": "Angebot"
+        "quoted": "Angebot",
+        "openProvisioning": "Bereitstellung öffnen →",
+        "slugVerdict": {
+          "invalid": "(ungültig)",
+          "reserved": "(reserviert)",
+          "taken": "(vergeben)"
+        }
       },
       "provision": {
         "title": "Mandanten bereitstellen",
@@ -742,7 +748,8 @@
         "languagesHint": "Englisch ist immer dabei (Fallback der Tenant-App). Über Englisch + eine Sprache hinaus greift das Add-on extra-languages.",
         "price": "Monatlicher Listenpreis",
         "priceBundle": "als Paket",
-        "priceALaCarte": "einzeln"
+        "priceALaCarte": "einzeln",
+        "fromSignup": "Mandant für {restaurant} wird aus seiner Anmeldung vorgeschlagen — die Felder unten sind vorausgefüllt. Bitte prüfen: der Slug lässt sich nach der Bereitstellung nicht mehr ändern."
       },
       "fleet": {
         "title": "Drucker-Flotte",
@@ -796,7 +803,8 @@
       "paymentProcessing": "Ihre Zahlung wird verarbeitet — Sie müssen nicht erneut zahlen.",
       "signupNotFound": "Diese Anmeldung existiert nicht mehr.",
       "provisioningNotConfigured": "Bereitstellung ist nicht konfiguriert (GitHub-Token fehlt).",
-      "provisionFailed": "Bereitstellungs-PR konnte nicht geöffnet werden. Prüfen Sie die Protokolle."
+      "provisionFailed": "Bereitstellungs-PR konnte nicht geöffnet werden. Prüfen Sie die Protokolle.",
+      "slugReserved": "Dieser Tenant-Slug ist reserviert und kann nicht verwendet werden."
     },
     "plan": {
       "title": "Ihr Abo",
@@ -863,7 +871,8 @@
       "success": "Willkommen an Bord! Wir haben Ihre Angaben und melden uns in Kürze, um Ihr Restaurant einzurichten — afiyet olsun.",
       "error": "Etwas ist schiefgelaufen — bitte versuchen Sie es in einer Minute erneut.",
       "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-      "invalidSlug": "Verwenden Sie Kleinbuchstaben, Zahlen und Bindestriche (2–31 Zeichen)."
+      "invalidSlug": "Verwenden Sie Kleinbuchstaben, Zahlen und Bindestriche (2–31 Zeichen).",
+      "slugReserved": "Diese Adresse ist reserviert — bitte wähle eine andere."
     },
     "configurator": {
       "modules": "Was brauchen Sie?",

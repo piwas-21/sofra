@@ -28,6 +28,8 @@ export default defineConfig({
         "lib/validation.ts",
         "lib/tenant-registry.ts",
         "lib/onboard-tenants.ts",
+        "lib/provision-prefill.ts",
+        "lib/slug-availability.ts",
         "lib/provisioning-registry.ts",
         "lib/module-catalog.ts",
         "lib/tenant-options.ts",

@@ -92,14 +92,32 @@ export default function SignupConfigurator() {
                 name="template"
                 value={tpl.id}
                 defaultChecked={i === 0}
-                // The label's first child is the decorative swatch (aria-hidden),
-                // so name the control explicitly rather than leaving its
-                // accessible name to be inferred around a hidden element.
+                // The label's visible children are a decorative preview image and
+                // the swatch (both aria-hidden), so name the control explicitly
+                // rather than leaving its accessible name to be inferred around
+                // hidden elements.
                 aria-label={t(`template.${tpl.id}`)}
                 aria-describedby={`template-hint-${tpl.id}`}
                 className="mt-1 accent-primary"
               />
               <span>
+                {/* A real screenshot beats a colour dot: the choice is baked into
+                    the tenant's image at build time, so it is expensive to regret.
+                    Decorative — the adjacent name and hint already say which theme
+                    this is, and a screenshot has no text worth duplicating to a
+                    screen reader. Intrinsic size given so it reserves its space and
+                    does not shift the form as it loads. */}
+                {/* eslint-disable-next-line @next/next/no-img-element -- fixed-size static asset already optimised to ~15KB; next/image adds a request path for nothing */}
+                <img
+                  src={tpl.preview}
+                  alt=""
+                  aria-hidden="true"
+                  width={640}
+                  height={380}
+                  loading="lazy"
+                  decoding="async"
+                  className="mb-2 w-full h-auto rounded-craft border-2 border-border"
+                />
                 <span
                   aria-hidden="true"
                   className="inline-block w-3 h-3 rounded-full align-middle mr-1"

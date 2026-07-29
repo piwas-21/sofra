@@ -720,7 +720,13 @@
         "chosenTheme": "Theme",
         "chosenLanguages": "Languages",
         "chosenCurrency": "Currency",
-        "quoted": "Quoted"
+        "quoted": "Quoted",
+        "openProvisioning": "Open provisioning →",
+        "slugVerdict": {
+          "invalid": "(invalid)",
+          "reserved": "(reserved)",
+          "taken": "(taken)"
+        }
       },
       "provision": {
         "title": "Provision a tenant",
@@ -742,7 +748,8 @@
         "languagesHint": "English always ships (the tenant app's fallback). Beyond English + one, the extra-languages add-on applies.",
         "price": "Monthly list price",
         "priceBundle": "as bundle",
-        "priceALaCarte": "à la carte"
+        "priceALaCarte": "à la carte",
+        "fromSignup": "Proposing a tenant for {restaurant} from its signup — the fields below are pre-filled. Check them: the slug cannot be changed after provisioning."
       },
       "fleet": {
         "title": "Printer fleet",
@@ -796,7 +803,8 @@
       "paymentProcessing": "Your payment is being processed — no need to pay again.",
       "signupNotFound": "That signup no longer exists.",
       "provisioningNotConfigured": "Provisioning isn’t configured (missing GitHub token).",
-      "provisionFailed": "Couldn’t open the provisioning PR. Check the logs."
+      "provisionFailed": "Couldn’t open the provisioning PR. Check the logs.",
+      "slugReserved": "That tenant slug is reserved and cannot be used."
     },
     "plan": {
       "title": "Your plan",
@@ -863,7 +871,8 @@
       "success": "Welcome aboard! We've got your details and will reach out shortly to set up your restaurant — afiyet olsun.",
       "error": "Something went wrong — please try again in a minute.",
       "invalidEmail": "Please enter a valid email address.",
-      "invalidSlug": "Use lowercase letters, numbers and hyphens (2–31 characters)."
+      "invalidSlug": "Use lowercase letters, numbers and hyphens (2–31 characters).",
+      "slugReserved": "That address is reserved — please choose another."
     },
     "configurator": {
       "modules": "What do you need?",

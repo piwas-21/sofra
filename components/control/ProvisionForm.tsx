@@ -8,13 +8,20 @@ import {
 } from "@/lib/actions/provisioning-actions";
 import ActionError from "./ActionError";
 import ProvisionPicker from "./ProvisionPicker";
+import type { ProvisionPrefill } from "@/lib/provision-prefill";
 
 /**
  * Admin form that proposes a new tenant (ADR-012): submits to the server action
  * which opens a registry PR on the deploy repo and returns its URL. Slug-derived
  * fields (db/domain/compose_project) are computed server-side, not entered.
+ *
+ * `prefill` carries a signup lead's own answers (SOFRA-ONBOARDING-PLAN O1). The
+ * founder edits them; nothing is submitted that they did not see.
  */
-export default function ProvisionForm({ disabled }: Readonly<{ disabled?: boolean }>) {
+export default function ProvisionForm({
+  disabled,
+  prefill,
+}: Readonly<{ disabled?: boolean; prefill?: ProvisionPrefill }>) {
   const t = useTranslations("control.admin");
   const [state, action, pending] = useActionState<ProvisionActionState, FormData>(
     openProvisioningPrAction,
@@ -23,10 +30,14 @@ export default function ProvisionForm({ disabled }: Readonly<{ disabled?: boolea
 
   return (
     <form action={action} className="grid gap-3 sm:grid-cols-2">
+      {/* Traceability only — the action does not read it today, but a proposal
+          that cannot be tied back to its lead is a dead end for O3's automation. */}
+      {prefill && <input type="hidden" name="signupId" value={prefill.signupId} />}
       <input
         name="slug"
         required
-        pattern="[a-z0-9][a-z0-9-]{1,30}"
+        pattern="[a-z0-9][a-z0-9\-]{1,30}"
+        defaultValue={prefill?.slug}
         placeholder={t("provision.slug")}
         aria-label={t("provision.slug")}
         className="input-primary"
@@ -35,6 +46,7 @@ export default function ProvisionForm({ disabled }: Readonly<{ disabled?: boolea
         name="name"
         required
         maxLength={200}
+        defaultValue={prefill?.name}
         placeholder={t("provision.name")}
         aria-label={t("provision.name")}
         className="input-primary"
@@ -44,6 +56,7 @@ export default function ProvisionForm({ disabled }: Readonly<{ disabled?: boolea
         type="email"
         required
         maxLength={200}
+        defaultValue={prefill?.adminEmail}
         placeholder={t("provision.adminEmail")}
         aria-label={t("provision.adminEmail")}
         className="input-primary"
@@ -51,6 +64,7 @@ export default function ProvisionForm({ disabled }: Readonly<{ disabled?: boolea
       <input
         name="city"
         maxLength={200}
+        defaultValue={prefill?.city}
         placeholder={t("provision.city")}
         aria-label={t("provision.city")}
         className="input-primary"
@@ -59,7 +73,8 @@ export default function ProvisionForm({ disabled }: Readonly<{ disabled?: boolea
         {t("provision.template")}
         <select
           name="template"
-          defaultValue="craft"
+          // A lead who chose no template leaves the founder's default standing.
+          defaultValue={prefill?.template ?? "craft"}
           aria-label={t("provision.template")}
           className="input-primary"
         >
@@ -71,12 +86,14 @@ export default function ProvisionForm({ disabled }: Readonly<{ disabled?: boolea
         name="currency"
         required
         pattern="[A-Z]{3}"
-        defaultValue="EUR"
+        defaultValue={prefill?.currency ?? "EUR"}
         placeholder={t("provision.currency")}
         aria-label={t("provision.currency")}
         className="input-primary"
       />
       <ProvisionPicker
+        initialModules={prefill?.modules}
+        initialLanguages={prefill?.languages}
         labels={{
           modules: t("provision.modules"),
           modulesCore: t("provision.modulesCore"),

@@ -41,6 +41,11 @@ export default function SignupActions({ id }: Readonly<{ id: string }>) {
       <Link href={`/admin/onboard?from=${id}`} className="font-label text-sm underline">
         {t("openOnboarding")}
       </Link>
+      {/* The other half of the conversion: onboarding creates the billing anchor,
+          provisioning proposes the registry entry. Both read the same lead by id. */}
+      <Link href={`/admin/provision?from=${id}`} className="font-label text-sm underline">
+        {t("openProvisioning")}
+      </Link>
       <form action={submit}>
         <input type="hidden" name="id" value={id} />
         <input type="hidden" name="status" value="DECLINED" />
