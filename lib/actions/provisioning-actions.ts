@@ -7,6 +7,8 @@
 import { requireAdmin } from "@/lib/rbac";
 import { audit } from "@/lib/audit";
 import { provisionSchema, splitCsvLower } from "@/lib/validation";
+import { loadTenantRegistry } from "@/lib/tenant-registry";
+import { checkSlug } from "@/lib/slug-availability";
 import {
   openProvisioningPr,
   provisioningConfigured,
@@ -54,6 +56,29 @@ export async function openProvisioningPrAction(
   const languages = splitCsvLower(input.languages);
   const modules = splitCsvLower(input.modules);
   if (languages.length === 0 || modules.length === 0) return { error: "invalidInput" };
+
+  // Last gate before an IMMUTABLE identifier is proposed: the slug becomes the
+  // subdomain, database, DB role and compose project, so a wrong one costs a full
+  // re-provision (SOFRA-ONBOARDING-PLAN trap 3).
+  //
+  // `openProvisioningPr` also refuses a slug already merged into the registry,
+  // and that check stays — it is the authority, and it catches a still-open
+  // proposal this one cannot see. Checking here first is about WHICH answer the
+  // founder gets: a reserved word was previously accepted all the way into a
+  // merged registry entry, and a taken one only failed after a GitHub round-trip.
+  //
+  // An unreadable registry fails OPEN on `taken` (empty list) and closed on
+  // `reserved`, which is the right split: the reserved list is local knowledge
+  // that is always available, while "taken" has an authority one layer down that
+  // will still refuse it. Blocking all provisioning because the bind-mount is
+  // missing would be worse than deferring one check.
+  const registry = await loadTenantRegistry();
+  const taken = registry.ok ? registry.tenants.map((t) => t.slug) : [];
+  const verdict = checkSlug(input.slug, taken);
+  if (verdict === "reserved") return { error: "slugReserved" };
+  if (verdict === "taken") return { error: "slugTaken" };
+  // "invalid" is unreachable — provisionSchema already enforced the grammar — so
+  // it is deliberately not mapped to a message nobody would ever see.
 
   try {
     const { prUrl } = await openProvisioningPr({

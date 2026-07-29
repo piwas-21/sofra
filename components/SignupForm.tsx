@@ -2,16 +2,12 @@
 
 import { useTranslations } from "next-intl";
 import { useIntakeForm, looksLikeEmail } from "@/hooks/useIntakeForm";
+import { checkSlug } from "@/lib/slug-availability";
 import SignupConfigurator from "./SignupConfigurator";
 
 // Checkbox groups — collected with getAll and joined, never Object.fromEntries,
 // which would keep only the last ticked box. See useIntakeForm.
 const MULTI_VALUE_FIELDS = ["modules", "languages"] as const;
-
-// Must mirror the registry grammar used by signupSchema (lib/validation.ts) so
-// the client rejects a bad slug with a field-level message instead of letting
-// the API bounce the whole submission with a generic error.
-const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,30}$/;
 
 export default function SignupForm() {
   const t = useTranslations("signup.form");
@@ -19,8 +15,22 @@ export default function SignupForm() {
     "/api/signup",
     (data) => {
       if (!looksLikeEmail(data.email)) return "invalidEmail";
+      // The slug is optional, so an empty one is fine — but a supplied one is
+      // checked against the shared grammar AND the reserved list here, where the
+      // customer is still at the keyboard. It is the most expensive field in the
+      // funnel to get wrong: it becomes the subdomain, database, DB role and
+      // compose project, none of which can be renamed later.
+      //
+      // No taken-check on the client: that needs the registry, and shipping the
+      // tenant list to every visitor to save one round-trip is a bad trade. A
+      // taken slug is caught server-side at /admin/provision, before anything
+      // immutable exists.
       const slug = data.desiredSlug.trim();
-      if (slug && !SLUG_RE.test(slug)) return "invalidSlug";
+      if (slug) {
+        const verdict = checkSlug(slug);
+        if (verdict === "invalid") return "invalidSlug";
+        if (verdict === "reserved") return "slugReserved";
+      }
       // Send the trimmed slug we validated (no client/server whitespace divergence).
       data.desiredSlug = slug;
       return null;
@@ -112,7 +122,9 @@ export default function SignupForm() {
         <button type="submit" disabled={status === "sending"} className="btn-primary disabled:opacity-60">
           {status === "sending" ? t("sending") : t("submit")}
         </button>
-        {(status === "invalidEmail" || status === "invalidSlug" || status === "error") && (
+        {(status === "invalidEmail" || status === "invalidSlug" ||
+          status === "slugReserved" ||
+          status === "error") && (
           <p role="alert" className="font-label text-destructive">
             {t(status)}
           </p>
