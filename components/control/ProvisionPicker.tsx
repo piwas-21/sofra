@@ -1,14 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  BUNDLES,
-  MODULES,
-  TENANT_LANGUAGES,
-  extraLanguageCount,
-  quoteModules,
-  type ModuleId,
-} from "@/lib/module-catalog";
+import { BUNDLES, MODULES, extraLanguageCount, quoteModules, type ModuleId } from "@/lib/module-catalog";
+import { TENANT_LANGUAGES } from "@/lib/tenant-options";
 import { eur } from "@/lib/format";
 
 /**

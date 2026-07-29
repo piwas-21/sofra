@@ -36,6 +36,21 @@ export const signupSchema = z.object({
     .or(z.literal("")),
   message: z.string().trim().max(2000).optional().or(z.literal("")),
   locale: z.string().max(5).default("en"),
+
+  // --- Configurator answers (SOFRA-ONBOARDING-PLAN O1) ---
+  // Comma-separated, matching the registry grammar. Bounded so a crafted POST
+  // cannot stuff the column; the *contents* are validated against the catalog in
+  // the route, which is where an unknown id can be dropped rather than 400ing a
+  // real lead over a stale client bundle.
+  // All optional: a lead can submit the plain form (or an older cached bundle)
+  // with none of these, and still be a valid signup.
+  modules: z.string().trim().max(300).optional().or(z.literal("")),
+  languages: z.string().trim().max(100).optional().or(z.literal("")),
+  template: z.string().trim().max(30).optional().or(z.literal("")),
+  currency: z.string().trim().max(3).optional().or(z.literal("")),
+  // Coerced because it rides the form as a string. Never trusted — the route
+  // re-quotes from the catalog and stores its own number.
+  quotedCents: z.coerce.number().int().min(0).max(1_000_000).optional(),
 });
 
 export const clientSchema = z.object({

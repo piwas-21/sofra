@@ -9,6 +9,8 @@
 // Pure by design — no DB, no network, no env — so the numbers stay unit-testable
 // and identical everywhere they are quoted.
 
+import { isTenantLanguage } from "./tenant-options";
+
 /** Registry `modules:` vocabulary. These exact strings live in tenants/registry.yml. */
 export const MODULE_IDS = [
   "core",
@@ -141,40 +143,12 @@ export function quoteModules(selection: readonly string[]): Quote {
 }
 
 /**
- * Locales the TENANT app ships (frontend `src/i18n.ts` — 10 since the Dutch
- * addition, frontend #126). Not the same set as this control plane's six site
- * locales: a tenant can serve languages sofrapiwas.com does not.
+ * Languages billable as `extra-languages`: everything past English + one.
  *
- * Core includes English plus one; anything beyond that is the `extra-languages`
- * add-on. `en` is not optional — it is the fallback the tenant app falls back to.
+ * A PRICING rule, so it lives with the catalog rather than with the language
+ * vocabulary it reads — the add-on is per-tenant, not per-language, so one call
+ * decides whether the module is on at all.
  */
-export const TENANT_LANGUAGES = [
-  { code: "en", label: "English" },
-  { code: "nl", label: "Nederlands" },
-  { code: "fr", label: "Français" },
-  { code: "de", label: "Deutsch" },
-  { code: "it", label: "Italiano" },
-  { code: "es", label: "Español" },
-  { code: "tr", label: "Türkçe" },
-  { code: "ar", label: "العربية" },
-  { code: "ru", label: "Русский" },
-  { code: "zh", label: "中文" },
-] as const;
-
-export type TenantLanguage = (typeof TENANT_LANGUAGES)[number]["code"];
-
-const LANGUAGE_CODES = new Set<string>(TENANT_LANGUAGES.map((l) => l.code));
-
-export function isTenantLanguage(value: string): value is TenantLanguage {
-  return LANGUAGE_CODES.has(value);
-}
-
-/** The ids in `values` that the tenant app cannot serve — empty means all valid. */
-export function unknownLanguages(values: readonly string[]): string[] {
-  return values.filter((v) => !isTenantLanguage(v));
-}
-
-/** Languages billable as `extra-languages`: everything past English + one. */
 export function extraLanguageCount(codes: readonly string[]): number {
   return Math.max(0, new Set(codes.filter(isTenantLanguage)).size - 2);
 }
