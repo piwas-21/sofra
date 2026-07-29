@@ -14,8 +14,8 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/rbac";
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
-import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
-import { craftEmail } from "@/lib/email-templates";
+import { siteUrl } from "@/lib/email";
+import { sendInviteEmail } from "@/lib/self-serve-email";
 import { createToken } from "@/lib/tokens";
 import { onboardSchema } from "@/lib/validation";
 import { defineTenantPlan } from "@/lib/billing-onboarding";
@@ -32,7 +32,10 @@ import { type BillingInterval } from "@/lib/billing";
 export type OnboardActionState = { error?: string; ok?: boolean; inviteLink?: string };
 
 /** Email the onboarding link — a set-password invite for a fresh INVITED
- *  account, or a plain login link for an already-ACTIVE one — and return it. */
+ *  account, or a plain login link for an already-ACTIVE one — and return it. The
+ *  template is shared with the self-serve signup (`sendInviteEmail`); the link is
+ *  returned regardless of whether the send succeeded, because this flow's whole
+ *  point is that the founder can hand it over manually. */
 async function emailOnboardInvite(
   user: { id: string; name: string; status: string },
   email: string,
@@ -40,26 +43,15 @@ async function emailOnboardInvite(
   ownerFlow: boolean,
 ): Promise<string> {
   const needsPassword = user.status === "INVITED";
-  const link = needsPassword
-    ? `${siteUrl()}/invite/${await createToken(user.id, "invite")}`
-    : `${siteUrl()}/login`;
-  await sendEmail({
+  const inviteToken = needsPassword ? await createToken(user.id, "invite") : null;
+  await sendInviteEmail({
     to: email,
-    subject: needsPassword
-      ? "Welcome to SofraPiwas — set your password"
-      : `SofraPiwas — ${restaurantName} is ready for your subscription`,
-    html: craftEmail({
-      kicker: ownerFlow ? "Welcome to SofraPiwas" : "Partner program",
-      title: needsPassword ? "Welcome aboard 🎉" : "A new plan is waiting",
-      bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
-<p style="margin:0;">${escapeHtml(restaurantName)} is set up on SofraPiwas. ${
-        needsPassword ? "Set your password to open your dashboard" : "Sign in to your dashboard"
-      } and start the monthly subscription — afiyet olsun.</p>`,
-      cta: { label: needsPassword ? "Set your password" : "Open your dashboard", url: link },
-      footerNote: needsPassword ? "The link works once and expires in 24 hours." : undefined,
-    }),
+    name: user.name,
+    restaurantName,
+    inviteToken,
+    kicker: ownerFlow ? "Welcome to SofraPiwas" : "Partner program",
   });
-  return link;
+  return needsPassword ? `${siteUrl()}/invite/${inviteToken}` : `${siteUrl()}/login`;
 }
 
 /** Close the originating signup lead (ADR-004) once its onboard succeeds. No-op

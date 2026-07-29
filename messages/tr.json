@@ -804,7 +804,8 @@
       "signupNotFound": "Bu kayıt artık mevcut değil.",
       "provisioningNotConfigured": "Sağlama yapılandırılmamış (GitHub belirteci eksik).",
       "provisionFailed": "Sağlama PR’si açılamadı. Günlükleri kontrol edin.",
-      "slugReserved": "Bu tenant slug'ı ayrılmıştır ve kullanılamaz."
+      "slugReserved": "Bu tenant slug'ı ayrılmıştır ve kullanılamaz.",
+      "awaitingFirstPayment": "Bu kiracının planında henüz tamamlanmış bir ilk ödeme yok. Self servis kiracı yalnızca ödeme sonrası kurulur."
     },
     "plan": {
       "title": "Aboneliğiniz",
@@ -830,7 +831,16 @@
         "month": "ay",
         "quarter": "üç ay",
         "year": "yıl"
-      }
+      },
+      "activating": {
+        "kicker": "Etkinleştiriliyor",
+        "title": "{restaurant} kuruluyor",
+        "stepPaid": "İlk ödemeniz alındı — teşekkürler.",
+        "stepMandate": "Bankanız aylık aboneliği onaylıyor. Bu genellikle bir dakika, bazen daha uzun sürer.",
+        "stepProvision": "Ardından restoranınızın uygulaması hazırlanır ve giriş bilgilerinizi göndeririz.",
+        "noSecondPayment": "Yapacak başka bir şey yok, ödenecek başka bir tutar da yok — bu sayfa kendini günceller."
+      },
+      "notLiveYet": "{restaurant} henüz kurulmadı — aboneliğinizi başlatın, uygulamanızı hazırlayalım."
     }
   },
   "signup": {
@@ -851,8 +861,8 @@
         "text": "Çağrı merkezi yok — restoranınızı kurucu sizinle birlikte kurar."
       },
       "noCard": {
-        "title": "Kart gerekmez",
-        "text": "Önce kayıt olun. Faturalama, mekanınız yayına hazır olduğunda gelir."
+        "title": "Kontrol sizde",
+        "text": "Kaydolun, şifrenizi belirleyin ve hazır olduğunuzda aboneliği başlatın. Dilediğiniz zaman iptal edin."
       }
     },
     "loginHint": "Zaten hesabınız var mı?",
@@ -863,16 +873,18 @@
       "email": "E-posta",
       "phone": "Telefon (isteğe bağlı)",
       "city": "Şehir (isteğe bağlı)",
-      "desiredSlug": "Tercih edilen web adresi (isteğe bağlı)",
-      "desiredSlugHint": "Küçük harfler, rakamlar ve tireler — örn. restoraniniz. Uygunluğu teyit ederiz.",
+      "desiredSlug": "Web adresiniz",
+      "desiredSlugHint": "Bu adres adiniz.sofrapiwas.com olur — küçük harf, rakam ve tire. Sonradan değiştirilemez.",
       "message": "Bize iletmek istediğiniz bir şey var mı? (isteğe bağlı)",
       "submit": "Kayıt ol",
       "sending": "Gönderiliyor…",
-      "success": "Aramıza hoş geldiniz! Bilgilerinizi aldık, restoranınızı kurmak için kısa süre içinde size ulaşacağız — afiyet olsun.",
+      "success": "Teşekkürler! Bilgilerinizi aldık, restoranınızı kurmak için kısa süre içinde size ulaşacağız — afiyet olsun.",
       "error": "Bir şeyler ters gitti — lütfen bir dakika sonra tekrar deneyin.",
       "invalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
       "invalidSlug": "Küçük harf, rakam ve tire kullanın (2–31 karakter).",
-      "slugReserved": "Bu adres ayrılmış — lütfen başka bir tane seçin."
+      "slugReserved": "Bu adres ayrılmış — lütfen başka bir tane seçin.",
+      "slugTaken": "Bu adres zaten alınmış — lütfen başka bir tane seçin.",
+      "successAccount": "Hoş geldiniz! Şifrenizi belirlemek için e-postanıza bakın — ardından aboneliğinizi başlatabilirsiniz ve restoranınızı kurarız. Afiyet olsun."
     },
     "configurator": {
       "modules": "Neye ihtiyacınız var?",

@@ -804,7 +804,8 @@
       "signupNotFound": "Diese Anmeldung existiert nicht mehr.",
       "provisioningNotConfigured": "Bereitstellung ist nicht konfiguriert (GitHub-Token fehlt).",
       "provisionFailed": "Bereitstellungs-PR konnte nicht geöffnet werden. Prüfen Sie die Protokolle.",
-      "slugReserved": "Dieser Tenant-Slug ist reserviert und kann nicht verwendet werden."
+      "slugReserved": "Dieser Tenant-Slug ist reserviert und kann nicht verwendet werden.",
+      "awaitingFirstPayment": "Der Plan dieses Tenants hat noch keine abgeschlossene erste Zahlung. Ein Self-Service-Tenant wird erst nach Zahlung provisioniert."
     },
     "plan": {
       "title": "Ihr Abo",
@@ -830,7 +831,16 @@
         "month": "Monat",
         "quarter": "Quartal",
         "year": "Jahr"
-      }
+      },
+      "activating": {
+        "kicker": "Aktivierung",
+        "title": "{restaurant} wird eingerichtet",
+        "stepPaid": "Ihre erste Zahlung ist eingegangen — vielen Dank.",
+        "stepMandate": "Ihre Bank bestätigt das monatliche Abonnement. Das dauert meist eine Minute, gelegentlich länger.",
+        "stepProvision": "Danach wird die App Ihres Restaurants vorbereitet und wir senden Ihre Zugangsdaten.",
+        "noSecondPayment": "Sie müssen nichts weiter tun und nichts weiter zahlen — diese Seite aktualisiert sich selbst."
+      },
+      "notLiveYet": "{restaurant} ist noch nicht eingerichtet — starten Sie Ihr Abonnement und wir bereiten Ihre App vor."
     }
   },
   "signup": {
@@ -851,8 +861,8 @@
         "text": "Kein Callcenter — der Gründer richtet Ihr Restaurant gemeinsam mit Ihnen ein."
       },
       "noCard": {
-        "title": "Keine Karte nötig",
-        "text": "Erst registrieren. Die Abrechnung kommt später, sobald Ihr Lokal startklar ist."
+        "title": "Sie behalten die Kontrolle",
+        "text": "Registrieren, Passwort setzen und das Abonnement starten, wann Sie möchten. Jederzeit kündbar."
       }
     },
     "loginHint": "Sie haben bereits ein Konto?",
@@ -863,16 +873,18 @@
       "email": "E-Mail",
       "phone": "Telefon (optional)",
       "city": "Stadt (optional)",
-      "desiredSlug": "Gewünschte Webadresse (optional)",
-      "desiredSlugHint": "Kleinbuchstaben, Zahlen und Bindestriche — z. B. ihr-restaurant. Wir bestätigen die Verfügbarkeit.",
+      "desiredSlug": "Ihre Web-Adresse",
+      "desiredSlugHint": "Daraus wird ihr-name.sofrapiwas.com — Kleinbuchstaben, Zahlen und Bindestriche. Sie kann später nicht geändert werden.",
       "message": "Möchten Sie uns etwas mitteilen? (optional)",
       "submit": "Registrieren",
       "sending": "Wird gesendet…",
-      "success": "Willkommen an Bord! Wir haben Ihre Angaben und melden uns in Kürze, um Ihr Restaurant einzurichten — afiyet olsun.",
+      "success": "Danke! Wir haben Ihre Angaben und melden uns in Kürze, um Ihr Restaurant einzurichten — afiyet olsun.",
       "error": "Etwas ist schiefgelaufen — bitte versuchen Sie es in einer Minute erneut.",
       "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
       "invalidSlug": "Verwenden Sie Kleinbuchstaben, Zahlen und Bindestriche (2–31 Zeichen).",
-      "slugReserved": "Diese Adresse ist reserviert — bitte wähle eine andere."
+      "slugReserved": "Diese Adresse ist reserviert — bitte wähle eine andere.",
+      "slugTaken": "Diese Adresse ist schon vergeben — bitte wählen Sie eine andere.",
+      "successAccount": "Willkommen an Bord! Prüfen Sie Ihre E-Mails, um Ihr Passwort zu setzen — danach können Sie das Abonnement starten und wir richten Ihr Restaurant ein. Afiyet olsun."
     },
     "configurator": {
       "modules": "Was brauchen Sie?",

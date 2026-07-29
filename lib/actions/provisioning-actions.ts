@@ -5,7 +5,9 @@
 // the change syncs to the box, then the provision-tenant Action runs the script.
 
 import { requireAdmin } from "@/lib/rbac";
+import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
+import { provisionGate, type ProvisionGateVerdict } from "@/lib/provisioning-payment-gate";
 import { provisionSchema, splitCsvLower } from "@/lib/validation";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { checkSlug } from "@/lib/slug-availability";
@@ -19,6 +21,30 @@ import {
 /** `error` is a message key in `control.errors` (rendered by <ActionError />);
  *  GitHub API errors pass through raw. `prUrl` on success. */
 export type ProvisionActionState = { error?: string; ok?: boolean; prUrl?: string };
+
+/**
+ * Read this slug's billing facts and run the O2 payment gate over them.
+ *
+ * Kept next to its only caller rather than in the pure gate module, so the
+ * policy stays unit-testable without a database. Only `first` payments are
+ * fetched: a settled first payment is what the gate asks about, and the
+ * recurring history grows without bound.
+ */
+async function slugProvisionVerdict(slug: string): Promise<ProvisionGateVerdict> {
+  const billing = await db.tenantBilling.findUnique({
+    where: { tenantSlug: slug },
+    include: {
+      subscriptions: { select: { status: true } },
+      payments: { where: { sequenceType: "first" }, select: { status: true }, take: 20 },
+    },
+  });
+  if (!billing) return provisionGate(null);
+  return provisionGate({
+    selfServe: billing.payerUserId !== null,
+    firstPaymentSettled: billing.payments.some((p) => p.status === "paid"),
+    subscriptionActive: billing.subscriptions.some((s) => s.status === "ACTIVE"),
+  });
+}
 
 /** Collapse a repeated (checkbox-group) form field into the comma list the
  *  schema validates, dropping any non-string entry. */
@@ -79,6 +105,15 @@ export async function openProvisioningPrAction(
   if (verdict === "taken") return { error: "slugTaken" };
   // "invalid" is unreachable — provisionSchema already enforced the grammar — so
   // it is deliberately not mapped to a message nobody would ever see.
+
+  // The abuse gate (O2): a SELF-SERVE tenant gets no proposal until its first
+  // payment has settled. Anyone can now create an account and a plan without a
+  // human involved, and under O3 a merge will stand up real infrastructure — so
+  // the payment and the proposal stay coupled here. Founder-proposed tenants (no
+  // plan) and reseller plans are unaffected; see lib/provisioning-payment-gate.
+  if ((await slugProvisionVerdict(input.slug)) === "awaitingPayment") {
+    return { error: "awaitingFirstPayment" };
+  }
 
   try {
     const { prUrl } = await openProvisioningPr({
