@@ -15,6 +15,15 @@ export type IntakeStatus = "idle" | "sending" | "success" | "error" | (string & 
 export function useIntakeForm(
   endpoint: string,
   validate: (data: Record<string, string>) => string | null,
+  /**
+   * Fields rendered as a CHECKBOX GROUP (several inputs sharing one name).
+   * `Object.fromEntries` keeps only the LAST value of a repeated key, so without
+   * naming them here a group of ticked boxes silently collapses to one — the
+   * client-side twin of the `formData.get()` bug fixed in provisioning-actions.
+   * Listed fields are collected with `getAll` and joined into the comma-separated
+   * grammar the registry and the zod schemas already speak.
+   */
+  multiValueFields: readonly string[] = [],
 ) {
   const locale = useLocale();
   const [status, setStatus] = useState<IntakeStatus>("idle");
@@ -22,11 +31,18 @@ export function useIntakeForm(
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
+    const formData = new FormData(form);
     // FormData values are string | File; the intake forms are all text inputs,
     // so coerce to strings (avoids stringifying a stray File — Sonar S6551).
+    const asString = (v: FormDataEntryValue) => (typeof v === "string" ? v : "");
     const data = Object.fromEntries(
-      [...new FormData(form).entries()].map(([k, v]) => [k, typeof v === "string" ? v : ""]),
+      [...formData.entries()].map(([k, v]) => [k, asString(v)]),
     ) as Record<string, string>;
+    for (const field of multiValueFields) {
+      // Deduplicated: a mandatory value carried by BOTH a hidden input and a
+      // ticked checkbox (e.g. the always-on locale) would otherwise appear twice.
+      data[field] = [...new Set(formData.getAll(field).map(asString).filter(Boolean))].join(",");
+    }
 
     const invalid = validate(data);
     if (invalid) {

@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
+import { eur } from "@/lib/format";
 import SignupActions from "@/components/control/SignupActions";
 
 // Direct-restaurant signup pipeline (ADR-004). Leads land here via POST
@@ -47,6 +48,27 @@ export default async function AdminSignupsPage() {
                 {fmtDate(s.createdAt)} · {s.locale}
               </span>
             </div>
+            {/* Configurator answers (O1). Absent on leads captured before it
+                shipped, and on anyone who submitted without choosing — in both
+                cases the founder still picks at /admin/provision. */}
+            {s.modules && (
+              <dl className="font-label text-sm grid gap-1 sm:grid-cols-[auto_1fr] sm:gap-x-3">
+                <dt className="text-muted-foreground">{t("chosenModules")}</dt>
+                <dd className="font-mono">{s.modules}</dd>
+                <dt className="text-muted-foreground">{t("chosenTheme")}</dt>
+                <dd className="font-mono">{s.template ?? "—"}</dd>
+                <dt className="text-muted-foreground">{t("chosenLanguages")}</dt>
+                <dd className="font-mono">{s.languages ?? "—"}</dd>
+                <dt className="text-muted-foreground">{t("chosenCurrency")}</dt>
+                <dd className="font-mono">{s.currency ?? "—"}</dd>
+                {s.quotedCents !== null && (
+                  <>
+                    <dt className="text-muted-foreground">{t("quoted")}</dt>
+                    <dd className="font-bold">{eur(s.quotedCents)}</dd>
+                  </>
+                )}
+              </dl>
+            )}
             {s.message && (
               <p className="font-label text-sm text-muted-foreground whitespace-pre-wrap">
                 {s.message}

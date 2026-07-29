@@ -100,6 +100,21 @@ model SignupRequest {
   createdAt      DateTime     @default(now())
   decidedAt      DateTime?
 
+  // --- Product choices from the public configurator (SOFRA-ONBOARDING-PLAN O1) ---
+  // Stored as the SAME comma-separated grammar the registry and provision-tenant.sh
+  // already consume, so a lead's answers travel to the tenant env without a format
+  // change. Not text[]: these are opaque payload carried to the provisioner, never
+  // queried by element, and every consumer on the path speaks CSV.
+  // All nullable — leads captured before the configurator shipped have none, and a
+  // null here means "the founder still chooses", exactly as before.
+  modules        String?
+  languages      String?
+  template       String?
+  currency       String?
+  /// Monthly total in EUR integer cents as quoted at signup. A record of what they
+  /// were shown, NOT a price that binds — always re-quote at onboarding.
+  quotedCents    Int?
+
   @@index([status, createdAt])
 }
 

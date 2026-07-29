@@ -715,7 +715,12 @@
         "convert": "Konvertieren",
         "decline": "Ablehnen",
         "openOnboarding": "Onboarding öffnen →",
-        "updatedNote": "Aktualisiert."
+        "updatedNote": "Aktualisiert.",
+        "chosenModules": "Module",
+        "chosenTheme": "Design",
+        "chosenLanguages": "Sprachen",
+        "chosenCurrency": "Währung",
+        "quoted": "Angebot"
       },
       "provision": {
         "title": "Mandanten bereitstellen",
@@ -859,6 +864,46 @@
       "error": "Etwas ist schiefgelaufen — bitte versuchen Sie es in einer Minute erneut.",
       "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
       "invalidSlug": "Verwenden Sie Kleinbuchstaben, Zahlen und Bindestriche (2–31 Zeichen)."
+    },
+    "configurator": {
+      "modules": "Was brauchen Sie?",
+      "included": "in jedem Paket enthalten",
+      "theme": "Wählen Sie einen Look",
+      "languages": "Sprachen für Ihre Gäste",
+      "languagesHint": "Englisch ist immer enthalten. Ab der dritten Sprache kommt das Zusatzpaket Sprachen hinzu.",
+      "currency": "Währung",
+      "perMonth": "pro Monat",
+      "priceHint": "Richtpreis, monatliche Abrechnung. Für eine Anfrage ist keine Karte nötig.",
+      "bundleSaving": "Paket «{bundle}» angewendet — Sie sparen {saving}",
+      "module": {
+        "core": "Basis — QR-Karte und Online-Bestellung",
+        "kitchen-board": "Küchendisplay",
+        "cashier": "Kasse und Z-Bericht",
+        "server": "Tischservice",
+        "reservations": "Reservierungen",
+        "loyalty": "Treuepunkte",
+        "printing": "Bondruck"
+      },
+      "moduleHint": {
+        "kitchen-board": "Live-Bestelltafel für die Küche",
+        "cashier": "Kasse, Zahlungen und Tagesabschluss",
+        "server": "Tischplan und Bestellung am Tisch",
+        "reservations": "Online-Buchung und Tischverwaltung",
+        "loyalty": "Punkte, Kundengruppen und Rabatte",
+        "printing": "Begleit-App für Thermodrucker"
+      },
+      "template": {
+        "classic": "Klassisch",
+        "craft": "Handgemacht"
+      },
+      "templateHint": {
+        "classic": "Klar und modern, hoher Kontrast",
+        "craft": "Warm und handgemacht, Papierstruktur"
+      },
+      "bundle": {
+        "counter": "Theke",
+        "full-service": "Voller Service"
+      }
     }
   }
 }

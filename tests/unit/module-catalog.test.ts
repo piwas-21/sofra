@@ -3,13 +3,12 @@ import {
   BUNDLES,
   MODULES,
   MODULE_IDS,
-  TENANT_LANGUAGES,
   extraLanguageCount,
   isModuleId,
   quoteModules,
-  unknownLanguages,
   unknownModuleIds,
 } from "@/lib/module-catalog";
+import { TENANT_LANGUAGES, unknownLanguages } from "@/lib/tenant-options";
 
 describe("catalog shape", () => {
   it("prices every module id exactly once, in whole cents", () => {

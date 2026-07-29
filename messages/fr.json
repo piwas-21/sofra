@@ -715,7 +715,12 @@
         "convert": "Convertir",
         "decline": "Refuser",
         "openOnboarding": "Ouvrir l'intégration →",
-        "updatedNote": "Mis à jour."
+        "updatedNote": "Mis à jour.",
+        "chosenModules": "Modules",
+        "chosenTheme": "Thème",
+        "chosenLanguages": "Langues",
+        "chosenCurrency": "Devise",
+        "quoted": "Devis"
       },
       "provision": {
         "title": "Provisionner un établissement",
@@ -859,6 +864,46 @@
       "error": "Une erreur s'est produite — veuillez réessayer dans une minute.",
       "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
       "invalidSlug": "Utilisez des lettres minuscules, chiffres et tirets (2 à 31 caractères)."
+    },
+    "configurator": {
+      "modules": "De quoi avez-vous besoin ?",
+      "included": "inclus dans toutes les formules",
+      "theme": "Choisissez un style",
+      "languages": "Langues vues par vos clients",
+      "languagesHint": "L'anglais est toujours inclus. Une troisième langue ajoute l'option langues supplémentaires.",
+      "currency": "Devise",
+      "perMonth": "par mois",
+      "priceHint": "Prix indicatif, facturé mensuellement. Aucune carte requise pour une demande.",
+      "bundleSaving": "Formule «{bundle}» appliquée — vous économisez {saving}",
+      "module": {
+        "core": "Essentiel — menu QR et commande en ligne",
+        "kitchen-board": "Écran cuisine",
+        "cashier": "Caisse et rapport Z",
+        "server": "Service à table",
+        "reservations": "Réservations",
+        "loyalty": "Points de fidélité",
+        "printing": "Impression des tickets"
+      },
+      "moduleHint": {
+        "kitchen-board": "Tableau des commandes en direct pour la cuisine",
+        "cashier": "Caisse, paiements et rapport de fin de journée",
+        "server": "Plan de salle et prise de commande",
+        "reservations": "Réservation en ligne et gestion des tables",
+        "loyalty": "Points, groupes de clients et remises",
+        "printing": "Application compagnon pour imprimantes thermiques"
+      },
+      "template": {
+        "classic": "Classique",
+        "craft": "Artisanal"
+      },
+      "templateHint": {
+        "classic": "Épuré et moderne, fort contraste",
+        "craft": "Chaleureux et fait main, textures papier"
+      },
+      "bundle": {
+        "counter": "Comptoir",
+        "full-service": "Service complet"
+      }
     }
   }
 }
