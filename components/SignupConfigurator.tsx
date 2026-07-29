@@ -57,12 +57,19 @@ export default function SignupConfigurator() {
                 value={m.id}
                 checked={modules.includes(m.id)}
                 onChange={(e) => setModules((prev) => toggle(prev, m.id, e.target.checked))}
+                // Name and description split explicitly: the visible label is
+                // "name · price / hint", which a screen reader would otherwise
+                // announce as one run-on string.
+                aria-label={`${t(`module.${m.id}`)} · ${eur(m.priceCents)}`}
+                aria-describedby={`module-hint-${m.id}`}
                 className="mt-1 accent-primary"
               />
               <span>
                 <span className="font-bold">{t(`module.${m.id}`)}</span> · {eur(m.priceCents)}
                 <br />
-                <span className="text-muted-foreground">{t(`moduleHint.${m.id}`)}</span>
+                <span id={`module-hint-${m.id}`} className="text-muted-foreground">
+                  {t(`moduleHint.${m.id}`)}
+                </span>
               </span>
             </label>
           ))}
@@ -79,6 +86,11 @@ export default function SignupConfigurator() {
                 name="template"
                 value={tpl.id}
                 defaultChecked={i === 0}
+                // The label's first child is the decorative swatch (aria-hidden),
+                // so name the control explicitly rather than leaving its
+                // accessible name to be inferred around a hidden element.
+                aria-label={t(`template.${tpl.id}`)}
+                aria-describedby={`template-hint-${tpl.id}`}
                 className="mt-1 accent-primary"
               />
               <span>
@@ -89,7 +101,9 @@ export default function SignupConfigurator() {
                 />
                 <span className="font-bold">{t(`template.${tpl.id}`)}</span>
                 <br />
-                <span className="text-muted-foreground">{t(`templateHint.${tpl.id}`)}</span>
+                <span id={`template-hint-${tpl.id}`} className="text-muted-foreground">
+                  {t(`templateHint.${tpl.id}`)}
+                </span>
               </span>
             </label>
           ))}
