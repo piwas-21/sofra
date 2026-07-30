@@ -60,7 +60,7 @@ export function nextChargeDate(
   // subscription's own day-of-month instead of drifting to whenever the page was
   // loaded. Bounded by construction: each iteration advances at least one month, and
   // the loop stops the moment it passes `now`.
-  const next = new Date(startDate.getTime());
+  const next = new Date(startDate);
   while (next <= now) {
     next.setUTCMonth(next.getUTCMonth() + months);
   }
