@@ -894,7 +894,7 @@
       "languagesHint": "Englisch ist immer enthalten. Ab der dritten Sprache kommt das Zusatzpaket Sprachen hinzu.",
       "currency": "Währung",
       "perMonth": "pro Monat",
-      "priceHint": "Richtpreis, monatliche Abrechnung. Für eine Anfrage ist keine Karte nötig.",
+      "priceHint": "Das ist Ihr monatlicher Preis, berechnet ab dem Start Ihres Abonnements. Für die Registrierung ist keine Karte nötig — Sie starten es in Ihrem Dashboard, wenn Sie möchten.",
       "bundleSaving": "Paket «{bundle}» angewendet — Sie sparen {saving}",
       "module": {
         "core": "Basis — QR-Karte und Online-Bestellung",

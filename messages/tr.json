@@ -894,7 +894,7 @@
       "languagesHint": "İngilizce her zaman dahildir. Üçüncü dilden itibaren ek diller paketi eklenir.",
       "currency": "Para birimi",
       "perMonth": "aylık",
-      "priceHint": "Yaklaşık fiyat, aylık faturalandırılır. Bilgi almak için kart gerekmez.",
+      "priceHint": "Bu, aboneliğiniz başladığında faturalanacak aylık fiyatınızdır. Kaydolmak için kart gerekmez — hazır olduğunuzda kontrol panelinizden başlatırsınız.",
       "bundleSaving": "«{bundle}» paketi uygulandı — {saving} tasarruf ediyorsunuz",
       "module": {
         "core": "Temel — QR menü ve çevrimiçi sipariş",

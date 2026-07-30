@@ -894,7 +894,7 @@
       "languagesHint": "English is always included. A third language adds the extra-languages add-on.",
       "currency": "Currency",
       "perMonth": "per month",
-      "priceHint": "Indicative price, billed monthly. No card needed to enquire.",
+      "priceHint": "This is your monthly price, billed once your subscription starts. No card needed to sign up — you start it from your dashboard when you're ready.",
       "bundleSaving": "«{bundle}» bundle applied — you save {saving}",
       "module": {
         "core": "Core — QR menu & online ordering",
