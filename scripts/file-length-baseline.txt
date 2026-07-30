@@ -3,6 +3,9 @@
 # Remove a line once its file is refactored under the limit.
 #
 # lib/billing.ts — Mollie subscription state machine (PENDING→ACTIVATING→ACTIVE,
-#   atomic claim, idempotency, mandate-race 503). 285 LOC; live-billing code,
-#   splitting it is its own risk-managed PR, not this test-infra one.
+#   atomic claim, idempotency, mandate-race 503). ~304 LOC; live-billing code,
+#   splitting the state machine is its own risk-managed PR.
+#   O3 (2026-07-30) added the payment-triggered proposal here and took the founder
+#   EMAIL out (-> lib/billing-notify.ts) so the growth stayed in the machine rather
+#   than in prose about it. Keep new concerns out of this file.
 lib/billing.ts

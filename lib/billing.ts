@@ -14,9 +14,10 @@
 
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
-import { sendEmail, founderInbox, siteUrl } from "@/lib/email";
-import { craftEmail, detailRows } from "@/lib/email-templates";
-import { eur } from "@/lib/format";
+import { siteUrl } from "@/lib/email";
+import { autoProposeProvisioning } from "@/lib/auto-provision";
+import type { AutoProposeOutcome } from "@/lib/auto-provision-policy";
+import { notifyFounder } from "@/lib/billing-notify";
 import {
   createCustomer,
   createFirstPayment,
@@ -211,14 +212,25 @@ export async function recordPayment(payment: MolliePayment) {
     sequenceType: payment.sequenceType,
   });
 
+  let proposal: AutoProposeOutcome | null = null;
   if (payment.sequenceType === "first" && payment.status === "paid") {
+    // O3: propose the registry entry BEFORE activation, deliberately. Activation can
+    // throw MandateNotReadyError (-> webhook 503 -> Mollie retry) and that window runs
+    // ~80s typically but up to ~26h in the worst case. The customer has paid; making
+    // their tenant wait on a mandate would be waiting on the wrong thing. The payment
+    // gate treats a settled first payment as sufficient, so this agrees with it.
+    //
+    // It cannot throw (see lib/auto-provision.ts rule 1) — a GitHub outage must not turn
+    // a successful payment into a retry loop.
+    proposal = await autoProposeProvisioning(billing.id);
+
     // billing was located BY this customerId (guarded non-null above), so it is
     // the customer to activate against — pass it directly (the column is now
     // nullable for plans defined before their first payment).
     await activatePendingSubscriptions(billing.id, payment.customerId);
   }
 
-  await notifyFounder(billing.tenantSlug, payment, amountCents);
+  await notifyFounder(billing.tenantSlug, payment, amountCents, proposal);
 }
 
 /** Create the real Mollie subscription for every PENDING plan (idempotent). */
@@ -290,34 +302,3 @@ async function activatePendingSubscriptions(billingId: string, mollieCustomerId:
   }
 }
 
-/** Founder notification on money events — paid, or anything gone wrong. */
-async function notifyFounder(tenantSlug: string, payment: MolliePayment, amountCents: number) {
-  const interesting =
-    payment.status === "paid" ||
-    payment.status === "failed" ||
-    payment.status === "expired" ||
-    payment.status === "canceled";
-  if (!interesting) return;
-  const inbox = founderInbox();
-  if (!inbox) return;
-  const ok = payment.status === "paid";
-  await sendEmail({
-    to: inbox,
-    subject: `[SofraPiwas billing] ${tenantSlug}: ${payment.sequenceType} payment ${payment.status} (${eur(amountCents)})`,
-    html: craftEmail({
-      kicker: "Billing",
-      title: ok ? "Payment received" : `Payment ${payment.status}`,
-      // detailRows escapes both columns itself.
-      bodyHtml: detailRows([
-        ["Tenant", tenantSlug],
-        ["Amount", eur(amountCents)],
-        ["Type", payment.sequenceType],
-        ["Status", payment.status],
-        ["Mollie id", payment.id],
-      ]),
-      footerNote: ok
-        ? "Mirrored into the control plane automatically."
-        : "Check the Mollie dashboard — a failed recurring charge may need dunning.",
-    }),
-  });
-}

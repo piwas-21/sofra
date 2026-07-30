@@ -46,6 +46,7 @@ const FOUNDER_FALLBACK_NOTES: Record<SelfServeFallback, string> = {
 async function mintAccount(
   outcome: Extract<SelfServeOutcome, { kind: "account" }>,
   who: { email: string; contactName: string; restaurantName: string },
+  signupRequestId: string,
 ): Promise<{ account: boolean; founderOutcome: string }> {
   let minted;
   try {
@@ -53,6 +54,7 @@ async function mintAccount(
       ...who,
       slug: outcome.slug,
       amountCents: outcome.amountCents,
+      signupRequestId,
     });
   } catch (e) {
     if (!(e instanceof SlugRaceLostError)) throw e;
@@ -189,11 +191,11 @@ export async function POST(request: Request) {
   // ── Mint the account when the decision says so ──────────────────────────
   const { account, founderOutcome } =
     outcome.kind === "account"
-      ? await mintAccount(outcome, {
-          email,
-          contactName: data.contactName,
-          restaurantName: data.restaurantName,
-        })
+      ? await mintAccount(
+          outcome,
+          { email, contactName: data.contactName, restaurantName: data.restaurantName },
+          signup.id,
+        )
       : { account: false, founderOutcome: FOUNDER_FALLBACK_NOTES[outcome.reason] };
 
   // ── Tell the founder what happened ─────────────────────────────────────

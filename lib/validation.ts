@@ -9,6 +9,22 @@ export const splitCsvLower = (raw: string): string[] =>
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
 
+/** No line breaks or control characters.
+ *
+ *  A tenant's display name reaches three formats where a newline changes meaning: the
+ *  registry YAML (safe on its own — `yaml.stringify` quotes it), the provisioning PR body
+ *  (a newline breaks the fence around the fallback shell command), and — through the
+ *  registry — `build-tenant-image.yml`'s `build-args:`, which is a NEWLINE-DELIMITED list,
+ *  so a second line there injects a build arg into the tenant's own bundle.
+ *
+ *  It lived only on `provisionSchema` while the founder form was the only way in. O3's
+ *  payment-triggered proposal reaches `openProvisioningPr` from the PUBLIC intake without
+ *  passing through that form, so the guard has to be at the intake edge too or the
+ *  unattended path is the one place nothing checks. `trim()` is not enough — it strips
+ *  only the ends. */
+const noControlChars = <T extends z.ZodType<string>>(schema: T) =>
+  schema.refine((v) => !/[\u0000-\u001f\u007f]/.test(v), "no line breaks or control characters");
+
 export const applySchema = z.object({
   name: z.string().trim().min(1).max(200),
   email: z.string().trim().max(200).email(),
@@ -23,7 +39,8 @@ export const applySchema = z.object({
 // given, must match the registry grammar (same as billing/onboard) so we don't
 // capture garbage the founder then has to clean up.
 export const signupSchema = z.object({
-  restaurantName: z.string().trim().min(1).max(200),
+  // Guarded because this becomes the registry `name:` for a self-serve tenant (O3).
+  restaurantName: noControlChars(z.string().trim().min(1).max(200)),
   contactName: z.string().trim().min(1).max(200),
   email: z.string().trim().max(200).email(),
   phone: z.string().trim().max(50).optional().or(z.literal("")),
@@ -137,20 +154,7 @@ export const provisionSchema = z.object({
     .string()
     .trim()
     .regex(/^[a-z0-9][a-z0-9-]{1,30}$/, "lowercase slug, 2-31 chars"),
-  // No control characters. `trim()` strips only LEADING/TRAILING whitespace, so an
-  // interior newline survived — and the tenant name is free text that then flows into
-  // three formats where a newline changes meaning: the registry YAML (safe, via
-  // `yaml.stringify`), the provisioning PR body (a newline breaks the markdown fence
-  // around the fallback shell command), and — via that entry — build-tenant-image.yml's
-  // `build-args:`, which is a NEWLINE-DELIMITED list, so a second line there injects a
-  // build arg into the tenant's own bundle. Rejected at the edge rather than escaped
-  // three times downstream.
-  name: z
-    .string()
-    .trim()
-    .min(1)
-    .max(200)
-    .refine((v) => !/[\u0000-\u001f\u007f]/.test(v), "no line breaks or control characters"),
+  name: noControlChars(z.string().trim().min(1).max(200)),
   adminEmail: z.string().trim().max(200).email(),
   template: z.enum(["classic", "craft"]),
   currency: z.string().trim().regex(/^[A-Z]{3}$/, "3-letter ISO code, e.g. EUR"),
