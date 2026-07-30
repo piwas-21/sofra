@@ -181,8 +181,15 @@ test.describe("Mollie first payment and activation", () => {
     // against this same page while claiming to check a billing view the owner
     // cannot reach, on a `/active/i` match loose enough to hit "Not active."
     // and "Activating" too.
+    //
+    // Since O4 the owner sees the plan itself rather than the one-line "your
+    // subscription is active — nothing to do here right now" this used to assert.
+    // "Active — next charge on <date>" is the stronger check anyway: it can only
+    // render from an ACTIVE subscription that carries a real startDate, which is
+    // exactly what a completed Mollie activation writes.
     await page.goto("/dashboard");
-    await expect(page.getByText(/your subscription is active/i)).toBeVisible();
+    await expect(page.getByText(/active — next charge on/i)).toBeVisible();
+    await expect(page.getByText(/nothing to do here right now/i)).toHaveCount(0);
     await expect(page.getByRole("button", { name: /start auto-monthly payment/i })).toHaveCount(0);
     // The mandate-lag panel must be gone now that it really is active.
     await expect(page.getByText(/is being set up/i)).toHaveCount(0);

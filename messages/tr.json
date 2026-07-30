@@ -494,7 +494,6 @@
       "ownerIntro": "SofraPiwas planınız ve faturalandırmanız tek bir yerde.",
       "addClient": "Müşteri ekle",
       "empty": "Henüz müşteri yok — ilk restoranı yukarıdan ekleyin.",
-      "ownerAllSet": "Aboneliğiniz etkin — şu anda burada yapılacak bir şey yok.",
       "updated": "güncelleme: {date}"
     },
     "client": {
@@ -837,10 +836,35 @@
         "title": "{restaurant} kuruluyor",
         "stepPaid": "İlk ödemeniz alındı — teşekkürler.",
         "stepMandate": "Bankanız aylık aboneliği onaylıyor. Bu genellikle bir dakika, bazen daha uzun sürer.",
-        "stepProvision": "Ardından restoranınızın uygulaması hazırlanır ve giriş bilgilerinizi göndeririz.",
+        "stepProvision": "Ardından restoranınızın uygulaması hazırlanır ve bu sayfa yönetici parolanızı nasıl kendiniz belirleyeceğinizi gösterir.",
         "noSecondPayment": "Yapacak başka bir şey yok, ödenecek başka bir tutar da yok — bu sayfa kendini günceller."
       },
-      "notLiveYet": "{restaurant} henüz kurulmadı — aboneliğinizi başlatın, uygulamanızı hazırlayalım."
+      "sequence": {
+        "first": "ilk ödeme",
+        "recurring": "abonelik tahsilatı",
+        "oneoff": "tek seferlik ödeme"
+      },
+      "paymentStatus": {
+        "paid": "ödendi",
+        "pending": "beklemede",
+        "failed": "tamamlanmadı",
+        "other": "{status}"
+      }
+    },
+    "tenantReady": {
+      "readyKicker": "Uygulamanız hazır",
+      "readyTitle": "Restoranınızın uygulaması yayında",
+      "readyBody": "{domain} adresinde çalışıyor. İlk kez giriş yapmak için yönetici parolanızı belirleyin.",
+      "setPassword": "Yönetici parolanızı belirleyin",
+      "openApp": "{domain} adresini aç",
+      "setPasswordWhy": "Parolanızı hiçbir zaman görmeyiz ve size e-postayla göndermeyiz — onu kendi uygulamanızda kendiniz belirlersiniz.",
+      "waitingKicker": "Kuruluyor",
+      "preparingTitle": "Uygulamanızı hazırlıyoruz",
+      "preparingBody": "Ödemeniz alındı. Restoranınıza ait uygulamayı hazırlıyoruz — yayına girdiği anda bu sayfa size haber verecek.",
+      "settingUpTitle": "Uygulamanız oluşturuluyor",
+      "settingUpBody": "Yapılandırmanız son bir kontrol için sırada; ardından uygulamanız oluşturulup başlatılır. Bu genellikle on beş dakika kadar sürer.",
+      "almostReadyTitle": "Neredeyse hazır",
+      "almostReadyBody": "Uygulamanız başlatılıyor. Yanıt verdiği anda bu sayfa nasıl giriş yapacağınızı gösterecek."
     }
   },
   "signup": {
