@@ -220,3 +220,95 @@ export async function findFirstPayment(
     ? { molliePaymentId: r.mollie_payment_id, status: r.status, checkoutUrl: r.checkout_url }
     : null;
 }
+
+/**
+ * Put a plan into the steady state a paying customer lives in for years: an ACTIVE
+ * subscription that has already taken its first recurring charge.
+ *
+ * Like `arrangeMandateLag`, this ARRANGES a state rather than faking a behaviour — and
+ * getting that right matters more here than it looks. `startDate` is deliberately set
+ * in the PAST, because that is the only thing production can produce once a recurring
+ * charge exists: `subscriptionStartDate` writes it as activation + one interval and
+ * nothing ever advances it, so a plan with a `recurring` payment necessarily has a
+ * `startDate` behind it. An arrangement with a FUTURE `startDate` plus a recurring
+ * charge is a state no code path can reach, and a "next charge on <date>" assertion
+ * against it proves only that the helper's own date round-trips to the DOM — the whole
+ * point is that the app must DERIVE the next charge rather than print that column.
+ */
+export async function arrangeActivePlan(
+  tenantSlug: string,
+  opts: { firstChargeIso: string },
+): Promise<void> {
+  const updated = await query<{ id: string }>(
+    `UPDATE "BillingSubscription" s
+        SET status = 'ACTIVE',
+            "startDate" = $2::timestamptz,
+            "mollieSubscriptionId" = 'sub_e2e_' || substr(md5(random()::text), 1, 16)
+       FROM "TenantBilling" b
+      WHERE s."billingId" = b.id AND b."tenantSlug" = $1
+     RETURNING s.id`,
+    [tenantSlug, opts.firstChargeIso],
+  );
+  if (updated.length !== 1) {
+    throw new Error(`arrangeActivePlan: no subscription for slug "${tenantSlug}"`);
+  }
+  // A `first` payment (what planState reads) and a `recurring` one — which is what
+  // makes `startDate` stale, and what makes the history list more than a single row.
+  for (const [sequence, status] of [
+    ["first", "paid"],
+    ["recurring", "paid"],
+  ]) {
+    // Same reason arrangeMandateLag checks: INSERT…SELECT writes zero rows for an
+    // unknown slug and the caller would then fail on a visibility assertion, sending
+    // the reader to the dashboard instead of to the arrangement.
+    const inserted = await query<{ id: string }>(
+      `INSERT INTO "BillingPayment"
+         (id, "billingId", "molliePaymentId", "amountCents", currency, description,
+          status, "sequenceType", method, "paidAt", "createdAt", "updatedAt")
+       SELECT gen_random_uuid()::text, b.id, 'tr_e2e_' || substr(md5(random()::text), 1, 16),
+              COALESCE(s."amountCents", 0), 'EUR', 'E2E arranged payment',
+              $2, $3, 'ideal', now(), now(), now()
+         FROM "TenantBilling" b
+         LEFT JOIN "BillingSubscription" s ON s."billingId" = b.id
+        WHERE b."tenantSlug" = $1
+        LIMIT 1
+       RETURNING id`,
+      [tenantSlug, status, sequence],
+    );
+    if (inserted.length !== 1) {
+      throw new Error(`arrangeActivePlan: no billing row for slug "${tenantSlug}"`);
+    }
+  }
+}
+
+/**
+ * Move a plan onto a slug the registry fixture knows about.
+ *
+ * The signup refuses a taken slug (correctly), so a self-serve plan can never START
+ * life pointing at a registry entry — which is exactly the state the owner dashboard
+ * has to handle once the founder merges the entry. Repointing the row afterwards is
+ * the only way to reach it in a suite with no provisioning.
+ *
+ * `tenantSlug` is `@unique`, and the target is a fixed fixture slug, so a Playwright
+ * RETRY would otherwise hit a 23505 from the row its own first attempt left behind —
+ * a Postgres error masking whatever the original assertion failure was. Clearing the
+ * target first makes the helper idempotent across attempts. Safe only because this is
+ * a throwaway database whose rows exist for one test.
+ */
+export async function repointBillingSlug(fromSlug: string, toSlug: string): Promise<void> {
+  await query(`DELETE FROM "TenantBilling" WHERE "tenantSlug" = $1`, [toSlug]);
+  const rows = await query<{ id: string }>(
+    `UPDATE "TenantBilling" SET "tenantSlug" = $2 WHERE "tenantSlug" = $1 RETURNING id`,
+    [fromSlug, toSlug],
+  );
+  if (rows.length !== 1) throw new Error(`repointBillingSlug: no billing row for "${fromSlug}"`);
+}
+
+/** Record that a registry proposal was opened, without opening one. */
+export async function arrangeProposalOpened(tenantSlug: string, url: string): Promise<void> {
+  const rows = await query<{ id: string }>(
+    `UPDATE "TenantBilling" SET "provisioningPrUrl" = $2 WHERE "tenantSlug" = $1 RETURNING id`,
+    [tenantSlug, url],
+  );
+  if (rows.length !== 1) throw new Error(`arrangeProposalOpened: no billing row for "${tenantSlug}"`);
+}

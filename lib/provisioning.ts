@@ -33,10 +33,18 @@ export function provisioningConfigured(): boolean {
   return Boolean(process.env.PROVISION_GITHUB_TOKEN);
 }
 
+/** Per-call ceiling. Since O3 these calls sit in the Mollie webhook's critical path,
+ *  ahead of subscription activation — and a HANG there (not an error, a hang) would stall
+ *  activation on a dependency that has nothing to do with billing, until Mollie times the
+ *  delivery out and redelivers on top of the one still in flight. `fetch` has no default
+ *  timeout, so it needs an explicit one. */
+const GH_TIMEOUT_MS = 15_000;
+
 async function gh<T>(token: string, path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API}${path}`, {
     // Never serve a cached registry/ref read — a stale sha would 409 the commit.
     cache: "no-store",
+    signal: AbortSignal.timeout(GH_TIMEOUT_MS),
     ...init,
     headers: {
       Authorization: `Bearer ${token}`,

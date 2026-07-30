@@ -76,46 +76,107 @@ const SHELL_QUOTED_APOSTROPHE = String.raw`'\''`;
 const shq = (value: string): string =>
   "'" + value.replaceAll("'", SHELL_QUOTED_APOSTROPHE) + "'";
 
+/** Collapse anything that would break the markdown fence or the shell command this
+ *  body embeds. `provisionSchema` already refuses control characters in `name`, so in
+ *  practice this changes nothing — it is here so the function is safe on its own,
+ *  because a body builder that depends on a caller's validation is one refactor away
+ *  from emitting an unbalanced code fence built from public-form input. */
+const oneLine = (value: string): string => value.replace(/\s+/g, " ").trim();
+
 /**
- * The PR body for a provisioning proposal: what is being added, then the exact
- * post-merge commands in order. It is a checklist rather than prose because the
- * step that is easy to forget — building the per-tenant frontend image — is a
- * hard prerequisite: `NEXT_PUBLIC_*` are baked per domain, so provisioning
+ * The PR body for a provisioning proposal.
+ *
+ * **For a staging-box tenant, merging this PR provisions it** (SOFRA-ONBOARDING-PLAN §2
+ * option B, ADR-012 amendment 2026-07-30): the deploy repo's
+ * `provision-on-registry-merge.yml` chains the image build and `provision-tenant.sh` off
+ * the registry sync. So the body leads with what to CHECK before merging — the merge is
+ * the last reversible moment.
+ *
+ * That chain is **staging-only** (it follows `sync-registry-to-staging.yml` and inherits
+ * its narrowness), so a `box: prod` entry gets the opposite header: merging does nothing
+ * and the commands are required, not a fallback. Telling a prod entry "merging provisions
+ * this" would leave the founder waiting on a chain that never runs.
+ *
+ * The image-build command stays in the body either way, because that step is the one that
+ * is easy to skip and fatal to skip: `NEXT_PUBLIC_*` are baked per domain, so provisioning
  * without it dies at `docker compose pull` on an image that was never published.
  */
 export function buildProvisioningPrBody(input: TenantProvisionInput): string {
   const { slug } = input;
   const domain = `${slug}.sofrapiwas.com`;
+  const box = input.box ?? "staging";
+  const chained = box === "staging";
+
+  // `backend_tag` is pinned by box above, so the risk is NOT "a staging tenant might be
+  // on :latest" — that pairing cannot be generated. It is the reverse, and it is the one
+  // judgement no generator can make: every self-serve tenant lands on the staging box, so
+  // every self-serve tenant rides the DEVELOP build. Right for a showcase; a decision for
+  // someone paying.
+  const tagCheck = chained
+    ? `- [ ] **\`backend_tag: staging\`** is deliberate — a staging-box tenant rides the *develop* build, i.e. unreleased backend code. Correct for a showcase; for a paying customer, pin \`backend_tag: latest\` before merging`
+    : `- [ ] **\`backend_tag: latest\`** (prod box) — released code, which is what a prod tenant should ride`;
+
+  const header = chained
+    ? [
+        "### ⚠️ Merging this PR provisions the tenant",
+        "",
+        "`provision-on-registry-merge.yml` builds the per-tenant frontend image and then runs",
+        "`provision-tenant.sh` on the box — roughly 15 minutes, hands-off. **This is the human",
+        "checkpoint, and it is the last reversible moment.** Before you merge:",
+      ]
+    : [
+        `### Merging this PR does **not** provision — \`box: ${box}\``,
+        "",
+        "The post-merge chain is staging-only. This entry will be reported and skipped, so the",
+        "two commands below are **required**, not a fallback. Still check the entry first:",
+      ];
+
+  const after = chained
+    ? [
+        "The chain provisions **first-time only**, and reports back on this PR when it is done —",
+        "or opens an issue on the deploy repo if any stage fails, including the registry sync it",
+        "waits on. A tenant it has already finished is skipped, so re-merging or",
+        "reverting-and-remerging this PR will not provision twice. One it left part-way through is",
+        "*completed* rather than skipped, so a retry is always safe.",
+      ]
+    : [
+        "Merging still fires `sync-registry-to-staging.yml`, which copies the registry to the",
+        "**staging** box only. A prod-box tenant needs the prod box's own access (ADR-012",
+        "per-box boundary), so run the commands from a machine that has it.",
+      ];
+
   return [
     `Adds the \`${slug}\` tenant to \`tenants/registry.yml\`, proposed by the control plane (sofra ADR-012).`,
     "",
     `- **domain** \`${domain}\` · **template** \`${input.template}\` · **currency** \`${input.currency}\``,
     `- **languages** \`${input.languages.join(", ")}\` · **modules** \`${input.modules.join(", ")}\``,
-    `- **box** \`${input.box ?? "staging"}\` · status starts at \`provisioning\``,
+    `- **box** \`${box}\` · status starts at \`provisioning\``,
     "",
-    "Review the entry before merging — this is the human checkpoint before any box provisioning.",
+    ...header,
     "",
-    "### After merging, in order",
+    `- [ ] the **slug** \`${slug}\` is what the customer should live on forever — it is the subdomain, database, role and compose project, and changing it later is a full re-provision`,
+    `- [ ] **modules** \`${input.modules.join(", ")}\` match what they actually paid for — they are enforced at runtime now, so a missing id is a feature they bought and will not get`,
+    tagCheck,
+    `- [ ] **template** \`${input.template}\` and **currency** \`${input.currency}\` are right — the template is baked into the image at build time, so changing it later is a rebuild`,
     "",
-    "1. **Registry sync** — automatic: merging to `develop` fires `sync-registry-to-staging.yml`. Check it went green; the box reads the registry, so nothing below works until it has.",
-    "2. **Build the tenant frontend image** — required *before* provisioning (`NEXT_PUBLIC_*` are baked per domain):",
+    ...after,
     "",
-    "   ```bash",
-    "   gh workflow run build-tenant-image.yml --repo piwas-21/restaurant-app-frontend \\",
-    `     -f tenant_domain=${domain} \\`,
-    `     -f image_tag=tenant-${slug} \\`,
-    `     -f restaurant_name=${shq(input.name)} \\`,
-    `     -f template=${input.template} \\`,
-    `     -f currency=${input.currency}`,
-    "   ```",
+    `Afterwards: \`./verify-env.sh https://${domain}\`, hand over the generated admin password from the tenant \`.env\` (and have them change it), then flip this entry's \`status\` to \`active\` in a follow-up commit.`,
     "",
-    "3. **Provision on the box**:",
+    chained ? "### If the chain fails" : "### Run these after merging",
     "",
-    "   ```bash",
-    `   gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=${slug}`,
-    "   ```",
+    "Both are idempotent and safe to re-run:",
     "",
-    `4. **Verify** — \`./verify-env.sh https://${domain}\`, log in with the generated admin password from the tenant \`.env\` and change it, then flip this entry's \`status\` to \`active\` in a follow-up commit.`,
+    "```bash",
+    "gh workflow run build-tenant-image.yml --repo piwas-21/restaurant-app-frontend \\",
+    `  -f tenant_domain=${domain} \\`,
+    `  -f image_tag=tenant-${slug} \\`,
+    `  -f restaurant_name=${shq(oneLine(input.name))} \\`,
+    `  -f template=${input.template} \\`,
+    `  -f currency=${input.currency}`,
+    "",
+    `gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=${slug}`,
+    "```",
     "",
     "Full runbook: deploy repo `DEPLOYMENT.md` §Tenant provisioning.",
   ].join("\n");

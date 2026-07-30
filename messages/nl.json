@@ -494,7 +494,6 @@
       "ownerIntro": "Je SofraPiwas-abonnement en facturering op één plek.",
       "addClient": "Klant toevoegen",
       "empty": "Nog geen klanten — voeg hierboven het eerste restaurant toe.",
-      "ownerAllSet": "Je abonnement is actief — hier is nu niets te doen.",
       "updated": "bijgewerkt {date}"
     },
     "client": {
@@ -837,10 +836,35 @@
         "title": "{restaurant} wordt ingericht",
         "stepPaid": "Je eerste betaling is gelukt — bedankt.",
         "stepMandate": "Je bank bevestigt het maandabonnement. Dit duurt meestal een minuut, soms langer.",
-        "stepProvision": "Daarna wordt de app van je restaurant klaargezet en sturen we je inloggegevens.",
+        "stepProvision": "Daarna wordt de app van je restaurant klaargezet en laat deze pagina zien hoe je zelf je beheerderswachtwoord instelt.",
         "noSecondPayment": "Je hoeft niets meer te doen en niets extra te betalen — deze pagina werkt zichzelf bij."
       },
-      "notLiveYet": "{restaurant} is nog niet ingericht — start je abonnement en we zetten je app klaar."
+      "sequence": {
+        "first": "eerste betaling",
+        "recurring": "abonnementskosten",
+        "oneoff": "eenmalige betaling"
+      },
+      "paymentStatus": {
+        "paid": "betaald",
+        "pending": "in behandeling",
+        "failed": "niet voltooid",
+        "other": "{status}"
+      }
+    },
+    "tenantReady": {
+      "readyKicker": "Je app is klaar",
+      "readyTitle": "De app van je restaurant is live",
+      "readyBody": "Hij draait op {domain}. Stel je beheerderswachtwoord in om voor het eerst in te loggen.",
+      "setPassword": "Stel je beheerderswachtwoord in",
+      "openApp": "Open {domain}",
+      "setPasswordWhy": "Wij zien je wachtwoord nooit en mailen het je nooit — je stelt het zelf in, in je eigen app.",
+      "waitingKicker": "Wordt ingericht",
+      "preparingTitle": "We maken je app klaar",
+      "preparingBody": "Je betaling is binnen. We maken de eigen app van je restaurant gereed — deze pagina laat het weten zodra hij live is.",
+      "settingUpTitle": "Je app wordt gebouwd",
+      "settingUpBody": "Je configuratie staat klaar voor een laatste controle; daarna wordt je app gebouwd en gestart. Dit duurt meestal zo'n vijftien minuten.",
+      "almostReadyTitle": "Bijna klaar",
+      "almostReadyBody": "Je app wordt opgestart. Zodra hij antwoordt, laat deze pagina zien hoe je inlogt."
     }
   },
   "signup": {

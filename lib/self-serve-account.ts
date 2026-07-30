@@ -71,6 +71,10 @@ export async function createSelfServeAccount(input: {
   restaurantName: string;
   slug: string;
   amountCents: number;
+  /** The lead this plan is minted from. Carries the configurator answers that the
+   *  payment-triggered proposal reads (O3) — without it the only join back to them
+   *  is `desiredSlug`, which several leads can share. */
+  signupRequestId: string;
 }): Promise<SelfServeAccount> {
   try {
     const minted = await db.$transaction(async (tx) => {
@@ -103,6 +107,7 @@ export async function createSelfServeAccount(input: {
           // Owner flow: the payer IS the user, and there is no reseller Client
           // (the clientId XOR payerUserId shape `defineTenantPlan` asserts).
           payerUserId: user.id,
+          signupRequestId: input.signupRequestId,
         },
       });
 
