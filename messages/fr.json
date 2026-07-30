@@ -494,7 +494,6 @@
       "ownerIntro": "Votre offre SofraPiwas et votre facturation, au même endroit.",
       "addClient": "Ajouter un client",
       "empty": "Pas encore de clients — ajoutez le premier restaurant ci-dessus.",
-      "ownerAllSet": "Votre abonnement est actif — rien à faire ici pour le moment.",
       "updated": "mis à jour le {date}"
     },
     "client": {
@@ -837,10 +836,35 @@
         "title": "{restaurant} est en cours d'installation",
         "stepPaid": "Votre premier paiement a été accepté — merci.",
         "stepMandate": "Votre banque confirme l'abonnement mensuel. Cela prend généralement une minute, parfois un peu plus.",
-        "stepProvision": "Ensuite, l'application de votre restaurant est préparée et nous vous envoyons vos identifiants.",
+        "stepProvision": "Ensuite, l'application de votre restaurant est préparée, et cette page vous indique comment définir vous-même votre mot de passe administrateur.",
         "noSecondPayment": "Rien d'autre à faire, et rien de plus à payer — cette page se met à jour d'elle-même."
       },
-      "notLiveYet": "{restaurant} n'est pas encore installé — démarrez votre abonnement et nous préparerons votre application."
+      "sequence": {
+        "first": "premier paiement",
+        "recurring": "prélèvement d'abonnement",
+        "oneoff": "paiement unique"
+      },
+      "paymentStatus": {
+        "paid": "payé",
+        "pending": "en attente",
+        "failed": "non abouti",
+        "other": "{status}"
+      }
+    },
+    "tenantReady": {
+      "readyKicker": "Votre application est prête",
+      "readyTitle": "L'application de votre restaurant est en ligne",
+      "readyBody": "Elle fonctionne sur {domain}. Définissez votre mot de passe administrateur pour vous connecter la première fois.",
+      "setPassword": "Définir votre mot de passe administrateur",
+      "openApp": "Ouvrir {domain}",
+      "setPasswordWhy": "Nous ne voyons jamais votre mot de passe et ne vous en envoyons jamais par e-mail — vous le définissez vous-même, depuis votre propre application.",
+      "waitingKicker": "Installation en cours",
+      "preparingTitle": "Nous préparons votre application",
+      "preparingBody": "Votre paiement est bien arrivé. Nous préparons l'application de votre restaurant — cette page vous préviendra dès qu'elle sera en ligne.",
+      "settingUpTitle": "Votre application est en cours de création",
+      "settingUpBody": "Votre configuration attend une dernière vérification, puis votre application est créée et démarrée. Cela prend généralement une quinzaine de minutes.",
+      "almostReadyTitle": "Presque terminé",
+      "almostReadyBody": "Votre application démarre. Dès qu'elle répond, cette page vous indiquera comment vous connecter."
     }
   },
   "signup": {

@@ -494,7 +494,6 @@
       "ownerIntro": "Your SofraPiwas plan and billing, in one place.",
       "addClient": "Add a client",
       "empty": "No clients yet — add the first restaurant above.",
-      "ownerAllSet": "Your subscription is active — nothing to do here right now.",
       "updated": "updated {date}"
     },
     "client": {
@@ -837,10 +836,35 @@
         "title": "{restaurant} is being set up",
         "stepPaid": "Your first payment went through — thank you.",
         "stepMandate": "Your bank is confirming the monthly subscription. This usually takes a minute, occasionally longer.",
-        "stepProvision": "Then your restaurant's app is prepared and we send your login details.",
+        "stepProvision": "Then your restaurant's app is prepared, and this page shows you how to set your own admin password.",
         "noSecondPayment": "Nothing more to do, and nothing more to pay — this page updates itself."
       },
-      "notLiveYet": "{restaurant} isn't set up yet — start your subscription and we'll prepare your app."
+      "sequence": {
+        "first": "first payment",
+        "recurring": "subscription charge",
+        "oneoff": "one-off payment"
+      },
+      "paymentStatus": {
+        "paid": "paid",
+        "pending": "pending",
+        "failed": "not completed",
+        "other": "{status}"
+      }
+    },
+    "tenantReady": {
+      "readyKicker": "Your app is ready",
+      "readyTitle": "Your restaurant app is live",
+      "readyBody": "It is running at {domain}. Set your admin password to sign in for the first time.",
+      "setPassword": "Set your admin password",
+      "openApp": "Open {domain}",
+      "setPasswordWhy": "We never see your password and we never email you one — you set it yourself, on your own app.",
+      "waitingKicker": "Setting up",
+      "preparingTitle": "We are preparing your app",
+      "preparingBody": "Your payment is in. We are getting your restaurant's own app ready — this page will tell you the moment it is live.",
+      "settingUpTitle": "Your app is being built",
+      "settingUpBody": "Your setup is queued for a final check, then your app is built and started. This usually takes about fifteen minutes.",
+      "almostReadyTitle": "Almost there",
+      "almostReadyBody": "Your app is starting up. As soon as it answers, this page will show you how to sign in."
     }
   },
   "signup": {

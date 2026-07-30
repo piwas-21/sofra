@@ -3,7 +3,12 @@ import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
-import { intervalKeyOf, planState, type PlanState } from "@/lib/billing-display";
+import {
+  intervalKeyOf,
+  nextChargeDate,
+  planState,
+  type PlanState,
+} from "@/lib/billing-display";
 import StartPaymentButton from "@/components/control/StartPaymentButton";
 
 export default async function DashboardBillingPage() {
@@ -12,11 +17,17 @@ export default async function DashboardBillingPage() {
   const t = await getTranslations({ locale, namespace: "control.plan" });
 
   // Plan-status node via if/else (avoids a nested ternary — Sonar S3358).
-  const statusNode = (state: PlanState, startDate: Date | null, billingId: string) => {
+  //
+  // `nextChargeDate` rather than the raw `startDate` this used to print: that column is
+  // the FIRST recurring charge and is never advanced, so from month two onward it named
+  // a date in the past (see lib/billing-display.ts). Same defect, same fix, on both the
+  // reseller's page and the owner's card.
+  const statusNode = (sub: { startDate: Date | null; interval: string }, state: PlanState, billingId: string) => {
     if (state === "active") {
+      const next = nextChargeDate(sub.startDate, sub.interval, new Date());
       return (
         <p className="font-label text-craft-success-text dark:text-craft-success">
-          {startDate ? t("activeNextCharge", { date: shortDate(startDate) }) : t("active")}
+          {next ? t("activeNextCharge", { date: shortDate(next) }) : t("active")}
         </p>
       );
     }
@@ -78,7 +89,7 @@ export default async function DashboardBillingPage() {
                         interval: t(`interval.${intervalKeyOf(sub.interval)}`),
                       })}
                     </p>
-                    {statusNode(state, sub.startDate, b.id)}
+                    {statusNode(sub, state, b.id)}
                   </>
                 ) : (
                   <p className="font-label text-muted-foreground">{t("noPlan")}</p>

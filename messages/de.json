@@ -494,7 +494,6 @@
       "ownerIntro": "Ihr SofraPiwas-Tarif und Ihre Abrechnung an einem Ort.",
       "addClient": "Kunden hinzufügen",
       "empty": "Noch keine Kunden — fügen Sie oben das erste Restaurant hinzu.",
-      "ownerAllSet": "Ihr Abonnement ist aktiv — hier gibt es gerade nichts zu tun.",
       "updated": "aktualisiert am {date}"
     },
     "client": {
@@ -837,10 +836,35 @@
         "title": "{restaurant} wird eingerichtet",
         "stepPaid": "Ihre erste Zahlung ist eingegangen — vielen Dank.",
         "stepMandate": "Ihre Bank bestätigt das monatliche Abonnement. Das dauert meist eine Minute, gelegentlich länger.",
-        "stepProvision": "Danach wird die App Ihres Restaurants vorbereitet und wir senden Ihre Zugangsdaten.",
+        "stepProvision": "Danach wird die App Ihres Restaurants vorbereitet, und diese Seite zeigt Ihnen, wie Sie Ihr Administrator-Passwort selbst festlegen.",
         "noSecondPayment": "Sie müssen nichts weiter tun und nichts weiter zahlen — diese Seite aktualisiert sich selbst."
       },
-      "notLiveYet": "{restaurant} ist noch nicht eingerichtet — starten Sie Ihr Abonnement und wir bereiten Ihre App vor."
+      "sequence": {
+        "first": "Erste Zahlung",
+        "recurring": "Abo-Abbuchung",
+        "oneoff": "Einmalzahlung"
+      },
+      "paymentStatus": {
+        "paid": "bezahlt",
+        "pending": "ausstehend",
+        "failed": "nicht abgeschlossen",
+        "other": "{status}"
+      }
+    },
+    "tenantReady": {
+      "readyKicker": "Ihre App ist bereit",
+      "readyTitle": "Die App Ihres Restaurants ist live",
+      "readyBody": "Sie läuft unter {domain}. Legen Sie Ihr Administrator-Passwort fest, um sich zum ersten Mal anzumelden.",
+      "setPassword": "Administrator-Passwort festlegen",
+      "openApp": "{domain} öffnen",
+      "setPasswordWhy": "Wir sehen Ihr Passwort nie und senden es Ihnen nie per E-Mail — Sie legen es selbst fest, in Ihrer eigenen App.",
+      "waitingKicker": "Wird eingerichtet",
+      "preparingTitle": "Wir bereiten Ihre App vor",
+      "preparingBody": "Ihre Zahlung ist eingegangen. Wir bereiten die eigene App Ihres Restaurants vor — diese Seite meldet sich, sobald sie live ist.",
+      "settingUpTitle": "Ihre App wird erstellt",
+      "settingUpBody": "Ihre Konfiguration wartet auf eine letzte Prüfung, danach wird Ihre App erstellt und gestartet. Das dauert in der Regel etwa fünfzehn Minuten.",
+      "almostReadyTitle": "Fast geschafft",
+      "almostReadyBody": "Ihre App wird gestartet. Sobald sie antwortet, zeigt Ihnen diese Seite, wie Sie sich anmelden."
     }
   },
   "signup": {

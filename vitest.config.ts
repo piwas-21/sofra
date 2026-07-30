@@ -42,6 +42,7 @@ export default defineConfig({
         "lib/self-serve-signup.ts",
         "lib/provisioning-payment-gate.ts",
         "lib/auto-provision-policy.ts",
+        "lib/tenant-liveness.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial
