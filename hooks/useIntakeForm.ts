@@ -24,6 +24,20 @@ export function useIntakeForm(
    * grammar the registry and the zod schemas already speak.
    */
   multiValueFields: readonly string[] = [],
+  /**
+   * Turn the server's answer into a status, for intakes whose POST has more than
+   * two outcomes. Signup (O2) has four: account created, lead captured, or one of
+   * two fixable slug refusals — and a fixable refusal MUST NOT read as the
+   * generic "something went wrong", or the customer retries the same slug forever.
+   *
+   * Return a status string to use it, or null to fall back to the default
+   * (`ok` → "success", anything else → "error"). The body is null when the
+   * response carried no JSON.
+   */
+  interpretResponse?: (
+    res: Response,
+    body: Record<string, unknown> | null,
+  ) => IntakeStatus | null,
 ) {
   const locale = useLocale();
   const [status, setStatus] = useState<IntakeStatus>("idle");
@@ -57,6 +71,21 @@ export function useIntakeForm(
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, locale }),
       });
+
+      let body: Record<string, unknown> | null = null;
+      if (interpretResponse) {
+        // Only parsed when a caller can act on it — a body read that throws must
+        // not turn an otherwise-successful POST into an error.
+        body = await res.json().catch(() => null);
+        const interpreted = interpretResponse(res, body);
+        if (interpreted) {
+          // The form is deliberately NOT reset: a fixable refusal keeps every
+          // answer the customer typed so they only have to change the one field.
+          setStatus(interpreted);
+          return;
+        }
+      }
+
       if (!res.ok) throw new Error(`${endpoint} ${res.status}`);
       form.reset();
       setStatus("success");

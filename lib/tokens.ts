@@ -7,12 +7,20 @@ const TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
 
 const hash = (raw: string) => createHash("sha256").update(raw).digest("hex");
 
+/** The slice of the Prisma client this module needs, so a caller inside a
+ *  `$transaction` can pass its `tx` and have the token committed atomically with
+ *  whatever it is minting the token FOR (self-serve signup mints an account, a
+ *  plan and an invite as one unit — a token that survived a rolled-back account
+ *  would be a live link to nothing). */
+type TokenWriter = Pick<typeof db, "inviteToken">;
+
 export async function createToken(
   userId: string,
   purpose: "invite" | "reset",
+  client: TokenWriter = db,
 ): Promise<string> {
   const raw = randomBytes(32).toString("base64url");
-  await db.inviteToken.create({
+  await client.inviteToken.create({
     data: {
       userId,
       tokenHash: hash(raw),

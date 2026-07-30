@@ -39,6 +39,8 @@ export default defineConfig({
         "lib/retention-policy.ts",
         "lib/seo.ts",
         "lib/billing-display.ts",
+        "lib/self-serve-signup.ts",
+        "lib/provisioning-payment-gate.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial
