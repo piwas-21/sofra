@@ -112,31 +112,56 @@ describe("buildProvisioningPrBody", () => {
     city: "Rotterdam",
   };
 
-  it("carries the post-merge commands with the tenant's own values", () => {
+  it("tells a STAGING entry that merging provisions it", () => {
     const body = buildProvisioningPrBody(input);
-    // The image build is the step that is easy to skip and fatal to skip.
-    expect(body).toContain(
-      "gh workflow run build-tenant-image.yml --repo piwas-21/restaurant-app-frontend",
-    );
-    expect(body).toContain("-f tenant_domain=bistro-nova.sofrapiwas.com");
-    expect(body).toContain("-f image_tag=tenant-bistro-nova");
-    expect(body).toContain("-f template=craft");
-    expect(body).toContain("-f currency=EUR");
-    expect(body).toContain(
-      "gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=bistro-nova",
-    );
-    // Ordering is the point: build the image before provisioning.
-    expect(body.indexOf("build-tenant-image.yml")).toBeLessThan(
-      body.indexOf("provision-tenant.yml"),
-    );
+    expect(body).toContain("Merging this PR provisions the tenant");
+    // The slug is the one field that cannot be renegotiated afterwards, so the
+    // checklist has to name the actual value rather than talk about slugs.
+    expect(body).toContain("`bistro-nova` is what the customer should live on forever");
+    expect(body).toContain("### If the chain fails");
   });
 
-  it("summarises the proposed entry", () => {
-    const body = buildProvisioningPrBody(input);
-    expect(body).toContain("`bistro-nova.sofrapiwas.com`");
-    expect(body).toContain("`en, nl`");
-    expect(body).toContain("`core, reservations`");
-    expect(body).toContain("`staging`"); // default box
+  it("tells a PROD entry the opposite, because the chain is staging-only", () => {
+    // The chain follows sync-registry-to-staging and skips any other box. A prod body
+    // promising hands-off provisioning would leave the founder waiting on nothing.
+    const body = buildProvisioningPrBody({ ...input, box: "prod" });
+    expect(body).toContain("does **not** provision");
+    expect(body).not.toContain("Merging this PR provisions the tenant");
+    expect(body).not.toContain("hands-off");
+    // ...and the commands stop being a fallback.
+    expect(body).toContain("### Run these after merging");
+  });
+
+  it("flags the backend_tag risk that actually exists for each box", () => {
+    // buildTenantRegistryEntry pins backend_tag FROM the box, so "a staging tenant might
+    // be on :latest" is impossible by construction — warning about it would be an
+    // unfalsifiable checkbox on every real PR. The live risk is the reverse: a staging-box
+    // tenant rides the develop build, which is wrong for someone paying.
+    const staging = buildProvisioningPrBody(input);
+    expect(staging).toContain("rides the *develop* build");
+    expect(staging).toContain("unreleased backend code");
+    expect(staging).not.toContain("staging-box tenant on `:latest`");
+
+    const prod = buildProvisioningPrBody({ ...input, box: "prod" });
+    expect(prod).toContain("released code");
+    expect(prod).not.toContain("unreleased backend code");
+  });
+
+  it("keeps a newline in the tenant name from breaking the fence or the command", () => {
+    // provisionSchema refuses control characters, but this body is a pure function that
+    // embeds `name` inside a ``` fence AND a shell command. An interior newline would
+    // close the fence early, render the rest as prose, and hand the founder a command
+    // with an unterminated quote.
+    const body = buildProvisioningPrBody({ ...input, name: "Bistro\n```\n## PWNED" });
+    const lines = body.split("\n");
+    // Markdown only closes a fence at the START of a line, so counting every ``` in the
+    // document would fail on a harmless mid-line one. The invariant that matters is that
+    // the fence delimiters are exactly the two we wrote.
+    expect(lines.filter((l) => l.trimStart().startsWith("```"))).toEqual(["```bash", "```"]);
+    // ...and the whole command stays on one line, so it is still copy-pasteable.
+    expect(lines.filter((l) => l.includes("-f restaurant_name="))).toEqual([
+      "  -f restaurant_name='Bistro ``` ## PWNED' \\",
+    ]);
   });
 
   it("shell-quotes the tenant name so an apostrophe cannot break the command", () => {

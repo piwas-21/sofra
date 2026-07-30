@@ -292,6 +292,20 @@ describe("provisionSchema (ADR-012 tenant proposal)", () => {
   it("still rejects an empty module list", () => {
     expect(provisionSchema.safeParse({ ...base, modules: "" }).success).toBe(false);
   });
+
+  it("rejects a line break inside the tenant name", () => {
+    // `trim()` only strips the ENDS, so an interior newline used to survive — and the
+    // name is forwarded into build-tenant-image.yml's `build-args:`, which is a
+    // newline-delimited list. A second line there injects a build arg (e.g. a different
+    // NEXT_PUBLIC_API_URL) into the tenant's own bundle.
+    for (const name of ["Bistro\nNova", "Bistro\r\nNova", "Bistro\tNova", "Bistro\u0000Nova"]) {
+      expect(provisionSchema.safeParse({ ...base, name }).success).toBe(false);
+    }
+    // Ordinary names, including non-ASCII and punctuation, are untouched.
+    for (const name of ["Chez L'Ami", "Nova: Café — Bar", "北京饭店"]) {
+      expect(provisionSchema.safeParse({ ...base, name }).success).toBe(true);
+    }
+  });
 });
 
 describe("splitCsvLower", () => {

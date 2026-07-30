@@ -137,7 +137,20 @@ export const provisionSchema = z.object({
     .string()
     .trim()
     .regex(/^[a-z0-9][a-z0-9-]{1,30}$/, "lowercase slug, 2-31 chars"),
-  name: z.string().trim().min(1).max(200),
+  // No control characters. `trim()` strips only LEADING/TRAILING whitespace, so an
+  // interior newline survived — and the tenant name is free text that then flows into
+  // three formats where a newline changes meaning: the registry YAML (safe, via
+  // `yaml.stringify`), the provisioning PR body (a newline breaks the markdown fence
+  // around the fallback shell command), and — via that entry — build-tenant-image.yml's
+  // `build-args:`, which is a NEWLINE-DELIMITED list, so a second line there injects a
+  // build arg into the tenant's own bundle. Rejected at the edge rather than escaped
+  // three times downstream.
+  name: z
+    .string()
+    .trim()
+    .min(1)
+    .max(200)
+    .refine((v) => !/[\u0000-\u001f\u007f]/.test(v), "no line breaks or control characters"),
   adminEmail: z.string().trim().max(200).email(),
   template: z.enum(["classic", "craft"]),
   currency: z.string().trim().regex(/^[A-Z]{3}$/, "3-letter ISO code, e.g. EUR"),
