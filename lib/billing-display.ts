@@ -61,7 +61,7 @@ export function nextChargeDate(
   // loaded. Bounded by construction: each iteration advances at least one month, and
   // the loop stops the moment it passes `now`.
   const next = new Date(startDate.getTime());
-  while (next.getTime() <= now.getTime()) {
+  while (next <= now) {
     next.setUTCMonth(next.getUTCMonth() + months);
   }
   return next;
