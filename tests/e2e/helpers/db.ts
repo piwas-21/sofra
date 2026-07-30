@@ -74,9 +74,28 @@ export type PlanRow = {
   mollieSubscriptionId: string | null;
 };
 
+/** The columns the plan query selects, named as Postgres returns them. Declared
+ *  rather than read back through `Record<string, unknown>`: an `unknown` forced
+ *  through `String()` silently renders `[object Object]` if a type ever changes,
+ *  which in a test helper means an assertion comparing two pieces of nonsense. */
+type PlanQueryRow = {
+  billing_id: string;
+  tenant_slug: string;
+  email: string;
+  has_payer: boolean;
+  has_client: boolean;
+  has_mollie_customer: boolean;
+  mollie_customer_id: string | null;
+  amount_cents: number | null;
+  currency: string | null;
+  interval: string | null;
+  sub_status: string | null;
+  mollie_subscription_id: string | null;
+};
+
 /** The plan for a slug, joined to its newest subscription. */
 export async function findPlan(tenantSlug: string): Promise<PlanRow | null> {
-  const rows = await query<Record<string, unknown>>(
+  const rows = await query<PlanQueryRow>(
     `SELECT b.id                                   AS billing_id,
             b."tenantSlug"                         AS tenant_slug,
             b.email                                AS email,
@@ -99,19 +118,18 @@ export async function findPlan(tenantSlug: string): Promise<PlanRow | null> {
   const r = rows[0];
   if (!r) return null;
   return {
-    billingId: String(r.billing_id),
-    tenantSlug: String(r.tenant_slug),
-    email: String(r.email),
-    hasPayer: Boolean(r.has_payer),
-    hasClient: Boolean(r.has_client),
-    hasMollieCustomer: Boolean(r.has_mollie_customer),
-    mollieCustomerId: r.mollie_customer_id === null ? null : String(r.mollie_customer_id),
-    amountCents: r.amount_cents === null ? null : Number(r.amount_cents),
-    currency: r.currency === null ? null : String(r.currency),
-    interval: r.interval === null ? null : String(r.interval),
-    subStatus: r.sub_status === null ? null : String(r.sub_status),
-    mollieSubscriptionId:
-      r.mollie_subscription_id === null ? null : String(r.mollie_subscription_id),
+    billingId: r.billing_id,
+    tenantSlug: r.tenant_slug,
+    email: r.email,
+    hasPayer: r.has_payer,
+    hasClient: r.has_client,
+    hasMollieCustomer: r.has_mollie_customer,
+    mollieCustomerId: r.mollie_customer_id,
+    amountCents: r.amount_cents,
+    currency: r.currency,
+    interval: r.interval,
+    subStatus: r.sub_status,
+    mollieSubscriptionId: r.mollie_subscription_id,
   };
 }
 

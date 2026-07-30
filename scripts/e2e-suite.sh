@@ -89,11 +89,15 @@ export WAITLIST_TO="e2e-founder@example.test"
 export MOLLIE_WEBHOOK_URL="https://example.com/sofra-e2e-webhook-sink"
 
 echo "→ migrate + seed"
-npx prisma migrate deploy >/dev/null
+# `--no-install` on every npx below: plain `npx` will silently FETCH a missing
+# package and run its lifecycle scripts, so a typo'd or hijacked name becomes code
+# execution in a shell that holds a Mollie key. These binaries are devDependencies
+# and must already be installed; refuse rather than reach for the network.
+npx --no-install prisma migrate deploy >/dev/null
 node scripts/seed-e2e.mjs
 
 echo "→ build (without DATABASE_URL in scope — repo rule)"
 DATABASE_URL="" npm run build >/dev/null
 
 echo "→ playwright"
-npx playwright test ${1:+"$1"}
+npx --no-install playwright test ${1:+"$1"}

@@ -28,16 +28,32 @@ import { findFirstPayment, findPlan, findUser } from "./helpers/db";
 
 const mollieKey = process.env.MOLLIE_API_KEY ?? "";
 
-test.describe("Mollie first payment and activation", () => {
-  test.skip(
-    !mollieKey,
-    "MOLLIE_API_KEY is not set — export MOLLIE_API_KEY_TEST and run scripts/e2e-suite.sh",
-  );
-  test.skip(
-    !mollieKey.startsWith("test_"),
-    "MOLLIE_API_KEY is not a test_ key — refusing to exercise billing (CLAUDE.md §9)",
-  );
+/**
+ * Why this file may not run, or null when it may.
+ *
+ * Applied from INSIDE the test body rather than at describe scope. Both work, but
+ * a describe-level `test.skip(cond, reason)` reads to a static analyser as a
+ * permanently-disabled test ("remove this test or explain why it is ignored"),
+ * which is the opposite of what it is: a runtime decision that reports itself.
+ * Playwright still marks the run *skipped* — never passed — either way.
+ */
+const skipReason = (() => {
+  if (!mollieKey) {
+    return "MOLLIE_API_KEY is not set — export MOLLIE_API_KEY_TEST and run scripts/e2e-suite.sh";
+  }
+  if (!mollieKey.startsWith("test_")) {
+    return "MOLLIE_API_KEY is not a test_ key — refusing to exercise billing (CLAUDE.md §9)";
+  }
+  return null;
+})();
 
+/** A poll interval between webhook deliveries — deliberately not
+ *  `page.waitForTimeout`, which is a *page* wait and discouraged for good reason.
+ *  Nothing is happening in the browser here: we are waiting on Mollie's mandate to
+ *  go valid, which has no observable local condition to synchronise on. */
+const pollDelay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+test.describe("Mollie first payment and activation", () => {
   // The config's 30s default cannot hold this test, and the shortfall would hide
   // the very thing it exists to check: Mollie's sandbox usually validates the
   // mandate at once, but the lag observed on staging was ~80s and the retry
@@ -56,6 +72,7 @@ test.describe("Mollie first payment and activation", () => {
   // it reports what it cancelled.
   const created: Array<{ customerId: string; subscriptionId: string }> = [];
   test.afterAll(async () => {
+    if (skipReason !== null) return;
     for (const { customerId, subscriptionId } of created) {
       try {
         const res = await fetch(
@@ -76,6 +93,8 @@ test.describe("Mollie first payment and activation", () => {
     page,
     request,
   }) => {
+    test.skip(skipReason !== null, skipReason ?? "");
+
     const slug = uniq.slug("pay");
     const email = uniq.email("pay");
     const password = `e2e-pay-pass-${Date.now()}`;
@@ -134,12 +153,12 @@ test.describe("Mollie first payment and activation", () => {
         await expect(
           page.getByRole("button", { name: /start auto-monthly payment/i }),
         ).toHaveCount(0);
-        await page.waitForTimeout(5_000);
+        await pollDelay(5_000);
         continue;
       }
       expect(res.status(), "the webhook must answer 200 or 503, never 500").toBe(200);
       activated = (await findPlan(slug))!.subStatus === "ACTIVE";
-      if (!activated) await page.waitForTimeout(5_000);
+      if (!activated) await pollDelay(5_000);
     }
 
     const done = await findPlan(slug);
