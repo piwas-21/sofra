@@ -1,7 +1,9 @@
 # ADR-012 — Auto-provisioning trigger: how the control plane runs the tenant scripts
 
-**Status:** proposed 2026-07-18 (owner decision pending — this ADR frames the
-options; no code ships until a mechanism is chosen)
+**Status:** **accepted 2026-07-26** — **D + A** was chosen and shipped, and proven end
+to end (merged registry PR → live HTTPS tenant in ~12 min); **amended 2026-07-30** — the
+second half of the chain is now automatic: merging the registry PR builds the tenant
+image and provisions. See §Amendment.
 
 ## Context
 
@@ -69,7 +71,7 @@ via a contents-scoped GitHub token; `sync-to-*.yml` delivers it; a founder (or a
 preserves ADR-003/007 unchanged, is fully auditable/reversible (a reviewable PR),
 and adds **no box privilege** to the app — only repo-contents write.
 
-## Recommendation (proposed)
+## Recommendation — chosen and shipped
 
 **D + A, staged.** The app, on convert/provision, **opens a registry PR** via a
 narrowly-scoped GitHub token (contents write on the deploy repo only) — honoring
@@ -81,22 +83,94 @@ most defensible for a solo operator: every provision is a reviewable, revertable
 PR; the app holds only a repo-scoped token; and it composes from patterns already
 in the repo rather than a new privileged box listener.
 
-For **staging/demo** tenants the registry PR may auto-merge (trusted, low-stakes);
-**prod** provisioning keeps the human merge. Cross-box prod provisioning from the
-staging control plane stays out of scope (per-box boundary) until a prod-box CI
-leg exists.
+Cross-box prod provisioning from the staging control plane stays out of scope (per-box
+boundary) until a prod-box CI leg exists.
+
+**Auto-merge was not taken**, and the 2026-07-30 amendment is why it is not needed:
+automating the work *after* the merge gets the same hands-off result while keeping the one
+thing worth a human, which is reading the proposed entry. Auto-merging is the *onboarding
+plan's* option C (§2), explicitly rejected there — not to be confused with option C above.
 
 If CI-in-the-loop latency proves unacceptable, fall back to **B** (box listener) —
 it keeps the same privilege split without the git round-trip.
 
-## Decide at implementation
+## Decided at implementation
 
-- GitHub token scope + storage for the app (fine-grained, contents-write on the
-  deploy repo only; box `.env`, never committed).
-- Whether the registry PR carries the full computed entry (slug/db/domain/
-  languages/modules/currency/template from the signup + module choices, ADR-010) —
-  the app already reads the registry grammar (`lib/tenant-registry.ts`).
-- Idempotency + status reflection: the script is idempotent; the control plane
-  needs to surface provisioning state (the `Client.status='LIVE'` / registry
-  `status` flip) back to `/admin`.
-- Deprovision path (same trigger, `deprovision-tenant.sh`) — likely founder-only.
+- **Token scope + storage.** `PROVISION_GITHUB_TOKEN` — fine-grained, `piwas-21/restaurant-app-deploy`
+  only, Contents + Pull requests: write. Lives in `/opt/rumi/deploy/.env` on the box,
+  never committed. It can propose a tenant and nothing else. **Its expiry is silent**
+  (`/admin/provision` degrades to a "not configured" banner rather than erroring), so
+  the expiry is calendared — see the workspace runbook §0.
+- **The PR carries the full computed entry** (`lib/provisioning-registry.ts`):
+  slug-derived `db`/`db_role`/`compose_project`/`domain`/`frontend_tag`, plus
+  languages/modules/currency/template from the signup, `status: provisioning`,
+  `managed: scripts`, and a box-aware `backend_tag`.
+- **Deprovision stays founder-only** over SSH. Unchanged.
+- **Status reflection back to `/admin` is still open** — the registry `status` flip to
+  `active` remains a manual follow-up commit, and nothing automatic reads it.
+
+## Amendment — 2026-07-30: the merge chains build + provision
+
+> **Mind the option letters.** A–D above are this document's, and what shipped is
+> **D + A**. SOFRA-ONBOARDING-PLAN §2 re-uses A/B/C for a *different* question — how much
+> of the post-merge work to automate — and this amendment implements that plan's **option
+> B**. Same letters, different axis; the plan's B is not the box listener described above.
+
+Shipped as the deploy repo's `provision-on-registry-merge.yml`: merging the registry PR
+now chains `build-tenant-image.yml` (frontend repo) → `provision-tenant.sh` on the box.
+The founder merges; nothing else is theirs to do.
+
+**Why the invariants survive** — this is an amendment, not a violation:
+
+| Invariant | Still holds because |
+|---|---|
+| 1. registry stays git-first | the chain only **reads** the registry, after the entry is committed, reviewed and synced. Nothing writes it. |
+| 2. the public container stays unprivileged | unchanged. The box SSH key is still only in Actions secrets; `sofra` gained no capability. The chain's one new credential (`FRONTEND_DISPATCH_TOKEN`, Actions:write on the frontend repo) lives in the **deploy repo's** Actions secrets, not in the app. |
+| 3. a human review checkpoint before first live provisioning | the checkpoint **is the merge**. This ADR's own recommendation already allowed for it: *"a founder (or a `workflow_run`-chained Action) then runs the script."* Its value was a human reading the proposed YAML; it was never improved by that human also copying two `gh workflow run` commands. |
+
+What made this safe now and not at proposal time is **payment gating**
+(`lib/provisioning-payment-gate.ts`, O2): a self-serve tenant gets no proposal at all
+until its first payment settles. Without that, coupling an anonymous form to a merge
+that provisions would put spam one rubber-stamp away from a database.
+
+**Two properties the chain owes, and how it pays them:**
+
+- **Idempotent.** Selection is on state, never on the push diff — a diff-based trigger
+  cannot survive a revert-and-remerge, which reproduces the same diff. A slug is
+  **eligible** when the registry declares intent (`managed: scripts` + `box: staging` +
+  `status: provisioning`) and the chain has not already finished it. Eligible is not the
+  same as provisioned: the run still refuses the whole batch over a cap (2), and refuses
+  everything if `FRONTEND_DISPATCH_TOKEN` is missing — both reported, neither silent.
+
+  The completion marker is one the chain writes itself
+  (`/opt/rumi/tenants/<slug>/.chain-provisioned`), **not** the tenant's `.env`.
+  `provision-tenant.sh` renders `.env` early and then keeps going through
+  `docker compose pull`, `up -d` and a five-minute health wait, so `.env` means "the
+  script started". Keying on it would make the most likely failure this chain introduces —
+  provisioning against an image the build never published — permanently invisible: the
+  retry the failure notice recommends would find `.env`, skip, and report green. A tenant
+  with `.env` but no marker is therefore **completed**, not skipped.
+  Consequence, deliberate: **first provisioning only.** Re-provisioning a live tenant
+  (a module upsell) stays an explicit `provision-tenant.yml` dispatch, because an
+  unattended trigger that also re-applied would let an unrelated registry edit restart
+  every tenant on the box.
+- **Failure-visible.** Nobody watches a terminal now, so every outcome is reported to
+  where the founder already is: a comment on the registry PR they just merged, plus an
+  issue on the deploy repo when anything fails. A silent automatic chain would be worse
+  than a noisy manual one.
+
+  Two cases are easy to leave silent and are deliberately not. The **upstream registry
+  sync failing** is checked in a *step* rather than the job's `if:` — gating the job would
+  skip the workflow entirely, so the `if: always()` reporter would never run, and a failed
+  sync is exactly when the founder is wondering why their merge did nothing. And an entry
+  the chain **refuses** (a `box: prod` tenant, a malformed field) is reported too, not just
+  dropped: a merged tenant that will never be provisioned is the same silence in a
+  different costume.
+
+**Still founder-operated after this amendment:** credential handover. The generated
+admin password is read off the box by hand. The one-time-reveal replacement (never
+emailed, forced change at first login) is the remaining half of O3.
+
+**Scope unchanged:** staging box only — the chain follows `sync-registry-to-staging.yml`
+and inherits its narrowness. A `box: prod` entry is reported and never provisioned,
+per the per-box boundary above.
