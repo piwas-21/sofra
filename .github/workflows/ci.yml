@@ -295,6 +295,20 @@ jobs:
       AUTH_TRUST_HOST: "true"
       E2E_ADMIN_EMAIL: e2e-admin@example.com
       E2E_PARTNER_EMAIL: e2e-partner@example.com
+      # The suite's own registry, NOT the sibling deploy repo (which CI has no
+      # checkout of). An absent registry is not a neutral condition here: since O2
+      # an unreadable one makes the signup fail closed, so without this the
+      # self-serve specs would assert an account and correctly get a lead.
+      TENANT_REGISTRY_PATH: ${{ github.workspace }}/tests/e2e/fixtures/registry.yml
+      # Placeholder. The provisioning specs only observe the O2 payment gate, which
+      # refuses BEFORE the GitHub round-trip; when the gate passes a request the
+      # call fails on this value, and that failure is the proof it passed.
+      PROVISION_GITHUB_TOKEN: ghp_ci_placeholder_never_valid_000000000000
+      # No Resend key in CI, so sendEmail logs instead of calling out. Stated
+      # explicitly rather than relied on, since a leaked key here would mail real
+      # addresses from every signup the suite performs.
+      RESEND_API_KEY: ""
+      WAITLIST_TO: e2e-founder@example.com
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -333,5 +347,31 @@ jobs:
         env:
           DATABASE_URL: ""
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      # Same bar as scripts/e2e-suite.sh, which hard-exits on a non-test_ key. The
+      # spec's own test.skip only skips the BILLING file — it would leave a live_
+      # key in the environment of the running server, so the refusal belongs here
+      # too (CLAUDE.md §9).
+      - name: Refuse a non-test Mollie key
+        env:
+          MOLLIE_API_KEY: ${{ secrets.MOLLIE_API_KEY_TEST }}
+        run: |
+          case "$MOLLIE_API_KEY" in
+            ""|test_*) ;;
+            *) echo "MOLLIE_API_KEY_TEST is not a test_ key — refusing" >&2; exit 1 ;;
+          esac
       - name: Run smoke
+        # Billing E2E runs against the REAL Mollie API when a test_ key is
+        # available. Optional on purpose: with no secret the billing spec SKIPS
+        # with a stated reason (never silently passes) and the other 15 tests still
+        # run. Scoped to this step so the key is not in the environment of
+        # `npm ci` (which executes dependency lifecycle scripts) or the browser
+        # install. Fork PRs never receive it: the trigger is `pull_request`, not
+        # `pull_request_target`.
+        env:
+          MOLLIE_API_KEY: ${{ secrets.MOLLIE_API_KEY_TEST }}
+          # Mollie validates webhook reachability at payment creation and 422s a
+          # localhost URL, so real payments cannot be created from a runner without
+          # this. The spec POSTs the real payment id to the local handler itself;
+          # only the delivery hop is stood in for. See lib/billing.ts webhookUrl().
+          MOLLIE_WEBHOOK_URL: https://example.com/sofra-ci-webhook-sink
         run: npm run test:e2e

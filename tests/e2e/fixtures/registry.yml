@@ -1,0 +1,38 @@
+# Tenant registry fixture for the E2E suite (TENANT_REGISTRY_PATH points here).
+#
+# Why a fixture instead of the real deploy-repo file: the suite has to be able to
+# assert "this slug is TAKEN", which needs a known-occupied slug. Reading the
+# sibling deploy repo would make the assertion depend on a file another repo is
+# free to change, and CI has no deploy checkout at all — where an ABSENT registry
+# is not a neutral condition: since O2 an unreadable registry makes the signup
+# fail closed (leadOnly), so without this file the happy-path spec would assert
+# an account was created and correctly get a lead instead.
+#
+# Deliberately minimal — only the fields lib/tenant-registry.ts requires, plus
+# the two slugs the specs care about. Not a copy of production; nothing here is
+# provisioned by anything.
+version: 1
+tenants:
+  # Stands in for a live tenant, so `taken` has something to collide with.
+  e2e-occupied:
+    name: E2E Occupied Restaurant
+    status: active
+    managed: scripts
+    box: staging
+    domain: e2e-occupied.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_occupied
+    languages: [en]
+    modules: [core]
+    template: classic
+  # A retired entry, so a spec can tell "in the registry" from "selectable".
+  e2e-retired:
+    name: E2E Retired Restaurant
+    status: retired
+    managed: scripts
+    box: staging
+    domain: e2e-retired.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_retired
+    languages: [en]
+    modules: [core]

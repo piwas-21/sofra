@@ -45,8 +45,44 @@ export class MandateNotReadyError extends Error {
   }
 }
 
+/**
+ * Where Mollie should POST payment updates.
+ *
+ * Normally `${siteUrl()}/api/webhooks/mollie` — the deployed control plane.
+ *
+ * `MOLLIE_WEBHOOK_URL` overrides it, and exists for exactly one reason: Mollie
+ * **validates reachability when a payment is created** and answers
+ * `422 "The webhook URL is invalid because it is unreachable from Mollie's point
+ * of view"` for a localhost URL. Without an override, no real payment can be
+ * created from a developer machine at all, so the billing E2E suite could only
+ * ever have been written against a mock. It points at an inert public sink
+ * during those runs; the suite then POSTs the real `tr_` id to the local handler
+ * itself, which re-fetches from the real Mollie API — so fetch-and-verify is
+ * genuinely exercised and only the *delivery hop* is stood in for.
+ *
+ * **It refuses to work with a non-test key, by design.** If the override were
+ * honoured on a `live_` key, Mollie's retries would go to the override instead of
+ * the app and a real first payment would sit `paid` forever with its subscription
+ * stuck PENDING — a silent failure, since nothing else reports a webhook that
+ * never arrived. A `console.warn` cannot mitigate a failure it itself describes as
+ * unobservable, so this throws *before* the payment is created: a misconfigured
+ * box refuses to take money rather than taking it and stranding it.
+ *
+ * The key mode is the right discriminator, not `NODE_ENV` — the E2E suite runs
+ * `next start`, so it is `production` there too.
+ */
 export function webhookUrl() {
-  return `${siteUrl()}/api/webhooks/mollie`;
+  const override = process.env.MOLLIE_WEBHOOK_URL;
+  if (!override) return `${siteUrl()}/api/webhooks/mollie`;
+  if (!(process.env.MOLLIE_API_KEY ?? "").startsWith("test_")) {
+    throw new Error(
+      "MOLLIE_WEBHOOK_URL is a test-only override and must not be set alongside a non-test Mollie key — unset it so Mollie can reach the webhook",
+    );
+  }
+  console.warn(
+    "billing: MOLLIE_WEBHOOK_URL override in use — Mollie will NOT call this app. Test-only.",
+  );
+  return override;
 }
 
 /**
