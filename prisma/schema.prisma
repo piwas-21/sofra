@@ -56,15 +56,15 @@ model User {
   status       UserStatus @default(INVITED)
   createdAt    DateTime   @default(now())
 
-  profile      PartnerProfile?
-  clients      Client[]
-  notes        ClientNote[]
-  commissions  CommissionEntry[]   @relation("PartnerCommissions")
+  profile        PartnerProfile?
+  clients        Client[]
+  notes          ClientNote[]
+  commissions    CommissionEntry[] @relation("PartnerCommissions")
   createdEntries CommissionEntry[] @relation("EntryAuthor")
-  inviteTokens InviteToken[]
-  auditLogs    AuditLog[]
+  inviteTokens   InviteToken[]
+  auditLogs      AuditLog[]
   // Tenants this user pays for directly (OWNER self-serve; ADR-004).
-  billingsPaid TenantBilling[]     @relation("BillingPayer")
+  billingsPaid   TenantBilling[]   @relation("BillingPayer")
 }
 
 model PartnerApplication {
@@ -107,13 +107,17 @@ model SignupRequest {
   // queried by element, and every consumer on the path speaks CSV.
   // All nullable — leads captured before the configurator shipped have none, and a
   // null here means "the founder still chooses", exactly as before.
-  modules        String?
-  languages      String?
-  template       String?
-  currency       String?
+  modules     String?
+  languages   String?
+  template    String?
+  currency    String?
   /// Monthly total in EUR integer cents as quoted at signup. A record of what they
   /// were shown, NOT a price that binds — always re-quote at onboarding.
-  quotedCents    Int?
+  quotedCents Int?
+
+  // Back-reference for the O3 link. A list because Prisma requires it on the
+  // non-owning side; in practice at most one plan is minted per lead.
+  billing TenantBilling[]
 
   @@index([status, createdAt])
 }
@@ -198,33 +202,48 @@ enum SubscriptionStatus {
 }
 
 model TenantBilling {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   // Registry slug (deploy repo tenants/registry.yml) — the billing anchor;
   // not a FK on purpose (the registry graduates to a table only at >3
   // tenants, ADR-007).
-  tenantSlug       String   @unique
+  tenantSlug       String    @unique
   name             String
   email            String
   // Null until the payer starts the first payment: an admin can define a
   // PENDING plan (partner onboarding) before any Mollie customer exists. The
   // @unique still holds — Postgres allows multiple NULLs.
-  mollieCustomerId String?  @unique
-  clientId         String?  @unique
-  client           Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  mollieCustomerId String?   @unique
+  clientId         String?   @unique
+  client           Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
   // Explicit payer for the direct-owner flow (ADR-004): set when there is no
   // reseller Client. The reseller flow leaves this null and derives the payer
   // from client.partner. Exactly one of clientId / payerUserId is set in practice.
   payerUserId      String?
-  payer            User?    @relation("BillingPayer", fields: [payerUserId], references: [id], onDelete: SetNull)
+  payer            User?     @relation("BillingPayer", fields: [payerUserId], references: [id], onDelete: SetNull)
   // Display-only: when the tenant's app went live (admin-entered at
   // onboarding), shown on the partner's welcome panel.
   liveSince        DateTime?
-  createdAt        DateTime @default(now())
+  createdAt        DateTime  @default(now())
+
+  // The lead this plan was minted from (O3). Set only on the SELF-SERVE path, so
+  // null means founder-created — the same signal the payment gate already keys on.
+  // It exists because the configurator answers live on SignupRequest and the
+  // payment-triggered proposal needs them; the only alternative join
+  // (desiredSlug = tenantSlug) is soft and can select another lead's module list.
+  // Not unique on purpose — the state is unreachable and the constraint would only add
+  // a P2002 surface to the signup transaction. See the migration for the full reasoning.
+  signupRequestId   String?
+  signupRequest     SignupRequest? @relation(fields: [signupRequestId], references: [id], onDelete: SetNull)
+  // The registry proposal opened for this tenant. Also the auto-open's idempotency
+  // record: Mollie redelivers, so "already proposed?" must be answerable from our
+  // own rows, not only from GitHub refusing a duplicate branch.
+  provisioningPrUrl String?
 
   subscriptions BillingSubscription[]
   payments      BillingPayment[]
 
   @@index([payerUserId])
+  @@index([signupRequestId])
 }
 
 model BillingSubscription {
