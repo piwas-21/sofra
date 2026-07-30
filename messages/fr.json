@@ -894,7 +894,7 @@
       "languagesHint": "L'anglais est toujours inclus. Une troisième langue ajoute l'option langues supplémentaires.",
       "currency": "Devise",
       "perMonth": "par mois",
-      "priceHint": "Prix indicatif, facturé mensuellement. Aucune carte requise pour une demande.",
+      "priceHint": "Voici votre prix mensuel, facturé dès le démarrage de votre abonnement. Aucune carte n'est requise pour s'inscrire — vous le démarrez depuis votre tableau de bord quand vous le souhaitez.",
       "bundleSaving": "Formule «{bundle}» appliquée — vous économisez {saving}",
       "module": {
         "core": "Essentiel — menu QR et commande en ligne",
