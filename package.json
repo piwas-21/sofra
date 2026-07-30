@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "db:migrate": "prisma migrate dev",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "test:e2e:full": "bash scripts/e2e-suite.sh"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",

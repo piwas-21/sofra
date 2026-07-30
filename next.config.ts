@@ -45,9 +45,12 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  // upgrade-insecure-requests also fires on http://localhost (browsers upgrade
-  // the RSC fetches → SSL errors), so keep it out of dev. Local `next start`
-  // over http still carries it — expect exactly that error class there.
+  // Kept out of dev because some RSC fetches get upgraded and log
+  // ERR_SSL_PROTOCOL_ERROR. Local `next start` over http still carries it, so
+  // expect that error class there — but note it does NOT stop the page from
+  // hydrating: Chromium exempts http://localhost as potentially-trustworthy, the
+  // bundle loads, and the E2E suite's client-side assertions depend on that
+  // (tests/e2e/control-auth.spec.ts explains where the stronger claim came from).
   ...(isDev ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 

@@ -8,12 +8,22 @@ import { expect, type Page, test } from "@playwright/test";
 // — this suite logs in a few times total, well under the cap. Selectors are
 // name-based so they survive the control plane's cookie-driven locale.
 //
-// NOTE: next.config's production CSP emits `upgrade-insecure-requests`, and the
-// webServer serves the build over plain http, so `/_next/*` assets are upgraded
-// to https and don't load — the browser exercises the JS-less progressive-
-// enhancement path (which §3 mandates anyway). These assertions rely only on
-// SSR HTML + server redirects, so that's fine; a future assertion that needs
-// client hydration would flake here without an obvious cause.
+// NOTE, corrected 2026-07-30: this used to say `upgrade-insecure-requests` stops
+// `/_next/*` from loading over plain http, so the browser only ever exercises the
+// JS-less path and "a future assertion that needs client hydration would flake
+// here without an obvious cause."
+//
+// **That is not what happens, and acting on it would have cost a suite.** Chromium
+// treats `http://localhost` as a potentially-trustworthy origin (Secure Contexts)
+// and does NOT upgrade it, so the bundle loads and the page hydrates normally. The
+// O2 specs (tests/e2e/self-serve-signup.spec.ts) depend on that outright — the
+// public signup form is a fetch-based client component with no `action` attribute,
+// so without JS it would do nothing at all — and 12 of them pass.
+//
+// What IS true is the smaller claim in next.config.ts: some cross-origin/RSC
+// fetches do get upgraded and log `ERR_SSL_PROTOCOL_ERROR`. Harmless, and not the
+// same thing as "no JavaScript runs". Don't re-derive the stronger version from
+// those console errors.
 
 // Credentials come only from the environment — the same throwaway values
 // scripts/seed-e2e.mjs seeds (CI generates them per-run). No literals in source.
