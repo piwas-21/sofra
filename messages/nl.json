@@ -894,7 +894,7 @@
       "languagesHint": "Engels is altijd inbegrepen. Vanaf een derde taal komt de extra-talen module erbij.",
       "currency": "Valuta",
       "perMonth": "per maand",
-      "priceHint": "Indicatieve prijs, maandelijks gefactureerd. Geen kaart nodig om te informeren.",
+      "priceHint": "Dit is je maandprijs, gefactureerd zodra je abonnement start. Aanmelden kan zonder kaart — je start het zelf in je dashboard wanneer je wilt.",
       "bundleSaving": "Pakket «{bundle}» toegepast — u bespaart {saving}",
       "module": {
         "core": "Basis — QR-menu en online bestellen",
