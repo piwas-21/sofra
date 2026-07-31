@@ -72,6 +72,7 @@ jobs:
           # Same main-branch gate as the app image above (not {{is_default_branch}}).
           tags: |
             type=raw,value=migrate,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=migrate-staging,enable=${{ github.ref == 'refs/heads/develop' }}
             type=sha,format=long,prefix=migrate-
 
       - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
@@ -82,5 +83,52 @@ jobs:
           push: true
           tags: ${{ steps.meta-migrate.outputs.tags }}
           labels: ${{ steps.meta-migrate.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ── staging bake ──────────────────────────────────────────────────────────────
+  # A SEPARATE build, not just an extra tag on the one above: NEXT_PUBLIC_SITE_URL is a
+  # BUILD arg, so the same image cannot serve two hosts. Baked with the staging URL it
+  # emits staging canonicals — and, via lib/seo.ts IS_CANONICAL_SITE, a robots.txt that
+  # refuses every crawler. A staging twin of the marketing site left crawlable would
+  # compete with the real one for the citations the AEO work exists to win.
+  #
+  # develop only. `:staging` must never carry main's code, or rolling staging would
+  # silently deploy production build output to it.
+  build-staging:
+    name: build & push staging (GHCR)
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+      - uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta-staging
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          # `:staging` moves; `:staging-<sha>` is immutable, for rollback.
+          tags: |
+            type=raw,value=staging
+            type=sha,format=long,prefix=staging-
+
+      - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: ./Dockerfile
+          target: runner
+          push: true
+          build-args: |
+            NEXT_PUBLIC_SITE_URL=${{ vars.STAGING_SITE_URL || 'https://staging.sofrapiwas.com' }}
+          tags: ${{ steps.meta-staging.outputs.tags }}
+          labels: ${{ steps.meta-staging.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
