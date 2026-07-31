@@ -60,6 +60,19 @@ COPY --from=builder --chown=nextjs:nodejs /app/healthcheck.js ./healthcheck.js
 # sibling `migrate` target (published as ghcr.io/piwas-21/sofra:migrate),
 # keeping this runtime image slim. See DEPLOYMENT.md for the one-off commands.
 
+# Build identity, surfaced by /api/health. Read at request time, not compiled into the
+# bundle, so they can be overridden on the box if an image is ever re-tagged by hand.
+# Without them a deployed environment cannot be told apart from a months-old one — every
+# other health signal passes either way.
+#
+# Placed HERE, below every COPY, because BUILD_TIME changes on every single build: any
+# layer after it is rebuilt every time. Above the COPYs it would defeat `cache-from: gha`
+# for the whole runner stage — the npm removal, the user creation and all three COPYs.
+ARG BUILD_SHA=unknown
+ARG BUILD_TIME=unknown
+ENV BUILD_SHA=${BUILD_SHA}
+ENV BUILD_TIME=${BUILD_TIME}
+
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000

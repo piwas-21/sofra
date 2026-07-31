@@ -104,7 +104,12 @@ it keeps the same privilege split without the git round-trip.
 - **The PR carries the full computed entry** (`lib/provisioning-registry.ts`):
   slug-derived `db`/`db_role`/`compose_project`/`domain`/`frontend_tag`, plus
   languages/modules/currency/template from the signup, `status: provisioning`,
-  `managed: scripts`, and a box-aware `backend_tag`.
+  `managed: scripts`, and `backend_tag: latest` — released code, always. It was
+  derived from the *box* until 2026-07-31, which silently handed every self-serve
+  tenant the develop build, since every one of them lands on `box: staging` because
+  that is where the control plane runs. A develop-tracking showcase (`demo`) is a
+  hand-edit at the merge checkpoint, which is the one place a human already reads
+  the entry. Workspace `docs/plans/SOFRA-ONBOARDING-PLAN.md` §2b.
 - **Deprovision stays founder-only** over SSH. Unchanged.
 - **Status reflection back to `/admin` is still open** — the registry `status` flip to
   `active` remains a manual follow-up commit, and nothing automatic reads it.

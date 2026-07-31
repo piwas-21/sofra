@@ -1,0 +1,171 @@
+name: indexing monitor
+
+# Guards the INDEXING POSTURE of every public Sofra property: production must stay
+# crawlable, and every non-canonical copy must stay invisible.
+#
+# Why a monitor and not a test. This assertion used to live in the deployed-staging e2e
+# suite, which was the wrong home twice over. It only ran when someone happened to touch
+# staging — and the failure it guards against is a slow burn: a staging twin quietly
+# accumulating index coverage for weeks, competing with the real site for exactly the
+# citations the AEO work exists to win. It also turned a *production* fault red inside a
+# suite named for staging, which sends you to look at the wrong environment.
+#
+# `app/robots.ts` decides between allow-all and disallow-all from `NEXT_PUBLIC_SITE_URL`,
+# which is a BUILD arg (lib/seo.ts) — so `/robots.txt` is prerendered into each image and
+# both directions are one bake away from flipping. Nothing in CI can see it, because the
+# served value depends on which image landed on which host. Note the mechanism: it is not
+# a runtime env read, so this can NOT be corrected by editing the box `.env` — it takes a
+# rebuild. Someone debugging at 3am will try the env first.
+#
+# Daily, deliberately. This changes only when something is deployed, so the ~5-minute
+# cadence of uptime.yml would buy nothing and re-alert 288 times a day on one regression.
+#
+# Alerting reuses uptime.yml's secrets; it stays silent (with a warning) until both exist:
+#   gh secret set TELEGRAM_BOT_TOKEN -R piwas-21/sofra
+#   gh secret set TELEGRAM_CHAT_ID  -R piwas-21/sofra
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # daily ~06:17 UTC (off the hour — cron load is spiky on the hour)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexing-monitor
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    name: robots posture
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check robots posture and alert on regression
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -uo pipefail
+
+          problems=()
+          # Scratch files go in a temp dir, not the working directory: the runner has a
+          # clean workspace, but anyone running this body locally to debug it would
+          # otherwise drop prod.txt/hidden.txt into the repo root — where a `git add -A`
+          # sweeps them into a commit. That happened on this very PR.
+          work=$(mktemp -d)
+          trap 'rm -rf "$work"' EXIT
+
+          # Fetch to a file rather than piping into a matcher: on failure the body can be
+          # echoed into the log, which is the difference between "robots.txt is wrong" and
+          # "robots.txt is wrong AND here is what it actually said".
+          fetch() { # fetch <url> <outfile> -> prints http code
+            # `code=...; || code=000` rather than `|| echo 000`: curl PRINTS 000 on a
+            # connection failure AND exits non-zero, so appending would emit "000000" and the
+            # alert would read `HTTP 000000`. uptime.yml hit this and documents the same fix.
+            local code
+            code=$(curl -sS -o "$2" -w '%{http_code}' --max-time 20 \
+              --retry 2 --retry-delay 5 --retry-all-errors "$1" 2>/dev/null) || code=000
+            [ -z "$code" ] && code=000
+            echo "$code"
+          }
+
+          # `x-robots-tag: …` for a URL, or empty. Lowercased so the caller matches once.
+          robots_header() {
+            curl -sSI --max-time 20 "$1" 2>/dev/null | tr -d '\r' | tr 'A-Z' 'a-z' \
+              | grep '^x-robots-tag:' || true
+          }
+
+          # --- production MUST stay crawlable -------------------------------------------
+          code=$(fetch "https://sofrapiwas.com/robots.txt" "$work/prod.txt")
+          if [ "$code" != "200" ]; then
+            problems+=("production robots.txt unreachable — HTTP $code")
+          else
+            # `Allow: /` with a capital A: Next writes `Disallow: /` for the deny case, so a
+            # case-insensitive match would find the substring "allow: /" inside it and pass
+            # on precisely the regression this exists to catch.
+            grep -qE '^Allow:[[:space:]]*/' "$work/prod.txt" \
+              || problems+=("production robots.txt no longer allows crawling")
+            grep -q 'GPTBot' "$work/prod.txt" \
+              || problems+=("production robots.txt no longer invites AI crawlers (AEO)")
+          fi
+
+          # Production must ALSO carry no noindex header. Checked because robots.txt and the
+          # header are set in different places and can disagree: the Caddyfile's production
+          # and staging blocks are near-identical and sit ~15 lines apart, so copying the
+          # staging `header X-Robots-Tag "noindex, …"` line into the production block is a
+          # plausible edit. That deindexes the live site while robots.txt still says Allow —
+          # every content check above passes, and the monitor would report "crawlable ✅"
+          # while the site silently leaves every index. This is the revenue-costing direction.
+          prod_hdr=$(robots_header "https://sofrapiwas.com/en")
+          case "$prod_hdr" in
+            *noindex*|*none*) problems+=("production carries a de-indexing header: ${prod_hdr}") ;;
+          esac
+
+          # --- every non-canonical copy of THIS app MUST stay hidden ---------------------
+          # url|label. Scope is deliberate: copies of the sofra marketing site, which is what
+          # competes with sofrapiwas.com for citations. `staging.fooderist.com` is NOT here
+          # despite uptime.yml labelling it "Sofra staging" — that label is stale, the host
+          # serves the RUMI tenant frontend, and it has no robots.txt at all (404). Its
+          # indexing posture is a question for the frontend repo, not this one.
+          hidden=(
+            "https://staging.sofrapiwas.com|sofra staging"
+          )
+          for entry in "${hidden[@]}"; do
+            url="${entry%%|*}"; label="${entry##*|}"
+            code=$(fetch "$url/robots.txt" "$work/hidden.txt")
+            if [ "$code" != "200" ]; then
+              problems+=("$label robots.txt unreachable — HTTP $code")
+              continue
+            fi
+            if ! grep -qE '^Disallow:[[:space:]]*/[[:space:]]*$' "$work/hidden.txt"; then
+              problems+=("$label is INDEXABLE — robots.txt no longer disallows")
+              # Bounded, and `::` stripped: GitHub parses ::workflow commands from step
+              # stdout, and this is a remote response body we do not control.
+              echo "--- $label robots.txt ---"; head -c 2000 "$work/hidden.txt" | sed 's/^:://'
+            fi
+            grep -q 'GPTBot' "$work/hidden.txt" \
+              && problems+=("$label invites AI crawlers — it must not")
+
+            # The header too, for crawlers that never fetch robots.txt. Caddy adds it, so
+            # this catches a reverse-proxy regression the app itself cannot see.
+            hdr=$(robots_header "$url/en")
+            case "$hdr" in
+              *noindex*) ;;
+              *) problems+=("$label missing X-Robots-Tag: noindex (got: ${hdr:-none})") ;;
+            esac
+          done
+
+          {
+            echo "### Indexing posture"
+            if [ ${#problems[@]} -eq 0 ]; then
+              echo "Production crawlable, non-canonical copies hidden ✅"
+            else
+              echo "Problems:"; for p in "${problems[@]}"; do echo "- $p"; done
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ${#problems[@]} -eq 0 ]; then echo "Indexing posture correct."; exit 0; fi
+
+          for p in "${problems[@]}"; do echo "PROBLEM: $p"; done
+
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          msg=$'\xF0\x9F\x94\x8D Indexing posture regression:\n'
+          for p in "${problems[@]}"; do msg+="• ${p}"$'\n'; done
+          msg+=$'\n'"${run_url}"
+
+          if [ -z "${TELEGRAM_BOT_TOKEN}" ] || [ -z "${TELEGRAM_CHAT_ID}" ]; then
+            echo "::warning::Regression found but TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID not set — no alert sent."
+          else
+            curl -sS --max-time 20 \
+              -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=${msg}" \
+              -o /dev/null -w 'telegram sendMessage: %{http_code}\n' \
+              || echo "::warning::Telegram send failed"
+          fi
+
+          # Fail the run as well as alerting: the Actions UI is the durable record, and a
+          # green history next to a Telegram message nobody kept is worse than neither.
+          exit 1

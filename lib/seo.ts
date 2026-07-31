@@ -1,7 +1,19 @@
 import type { Metadata } from "next";
 import { routing } from "@/i18n/routing";
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sofrapiwas.com";
+/** The one host these pages are the canonical copy of. */
+export const CANONICAL_SITE_URL = "https://sofrapiwas.com";
+
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_SITE_URL;
+
+/**
+ * Is THIS deployment the canonical site?
+ *
+ * False on `staging.sofrapiwas.com` and on any local run, which is what makes `robots.ts`
+ * refuse crawlers without a separate flag anyone has to remember to set. Baked, because
+ * `NEXT_PUBLIC_SITE_URL` is a build arg — the staging image is its own bake.
+ */
+export const IS_CANONICAL_SITE = SITE_URL === CANONICAL_SITE_URL;
 
 /** The SofraPiwas open-graph / social share image (resolved against metadataBase). */
 export const OG_IMAGE = {

@@ -8,7 +8,10 @@ name: build-image
 
 on:
   push:
-    branches: [main]
+    # `develop` was added with the staging bake: the build-staging job below is gated on
+    # that ref, and a job gate is useless if the WORKFLOW never runs on the branch. The
+    # tag gating inside each meta step is what keeps :latest and :migrate main-only.
+    branches: [main, develop]
     tags: ['v*']
 
 concurrency:
@@ -22,6 +25,9 @@ permissions:
 jobs:
   build-push:
     name: build & push (GHCR)
+    # main + tags only. On develop the staging bake below is the one that runs; letting
+    # this job run too would publish a :sha and a migrate-<sha> image nothing pulls.
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -34,6 +40,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: stamp
+        # Wall-clock build time, stamped here rather than taken from a github.event
+        # field: the event payloads differ per trigger (push vs tag vs dispatch), and
+        # repository.updated_at answers "when did the repo change", which is not the
+        # question /api/health is asked.
+        run: echo "built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
 
       - id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
@@ -55,10 +68,31 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_SITE_URL=${{ vars.SITE_URL || 'https://sofrapiwas.com' }}
+            BUILD_SHA=${{ github.sha }}
+            BUILD_TIME=${{ steps.stamp.outputs.built_at }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Verify the build identity actually reached the image
+        # Without this, nothing in CI ever proves BUILD_SHA is wired: the Playwright smoke
+        # runs `next build` directly and never touches the Dockerfile, so `version` is always
+        # the "unknown" fallback there and the local spec's toHaveProperty passes regardless.
+        # Drop the build-arg during an unrelated edit and every gate stays green — the break
+        # would surface only when a human remembered to run the staging suite by hand.
+        # Reads the env straight out of the pushed image; no server boot needed.
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+        run: |
+          set -euo pipefail
+          got=$(docker run --rm --entrypoint node "$IMAGE" \
+                  -e 'process.stdout.write(process.env.BUILD_SHA || "MISSING")')
+          echo "image reports BUILD_SHA=$got"
+          [ "$got" = "${GITHUB_SHA}" ] || {
+            echo "::error::image BUILD_SHA is '$got', expected '${GITHUB_SHA}' — /api/health would misreport what is deployed"
+            exit 1
+          }
 
       # One-off DB tooling image (prisma migrate deploy + admin seed) — pulled
       # on the box only when a release ships migrations. See DEPLOYMENT.md.
@@ -82,5 +116,106 @@ jobs:
           push: true
           tags: ${{ steps.meta-migrate.outputs.tags }}
           labels: ${{ steps.meta-migrate.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ── staging bake ──────────────────────────────────────────────────────────────
+  # A SEPARATE build, not just an extra tag on the one above: NEXT_PUBLIC_SITE_URL is a
+  # BUILD arg, so the same image cannot serve two hosts. Baked with the staging URL it
+  # emits staging canonicals — and, via lib/seo.ts IS_CANONICAL_SITE, a robots.txt that
+  # refuses every crawler. A staging twin of the marketing site left crawlable would
+  # compete with the real one for the citations the AEO work exists to win.
+  #
+  # develop only. `:staging` must never carry main's code, or rolling staging would
+  # silently deploy production build output to it.
+  build-staging:
+    name: build & push staging (GHCR)
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+      - uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: stamp
+        # Wall-clock build time, stamped here rather than taken from a github.event
+        # field: the event payloads differ per trigger (push vs tag vs dispatch), and
+        # repository.updated_at answers "when did the repo change", which is not the
+        # question /api/health is asked.
+        run: echo "built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - id: meta-staging
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          # `:staging` moves; `:staging-<sha>` is immutable, for rollback.
+          tags: |
+            type=raw,value=staging
+            type=sha,format=long,prefix=staging-
+
+      - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: ./Dockerfile
+          target: runner
+          push: true
+          build-args: |
+            NEXT_PUBLIC_SITE_URL=${{ vars.STAGING_SITE_URL || 'https://staging.sofrapiwas.com' }}
+            BUILD_SHA=${{ github.sha }}
+            BUILD_TIME=${{ steps.stamp.outputs.built_at }}
+          tags: ${{ steps.meta-staging.outputs.tags }}
+          labels: ${{ steps.meta-staging.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify the build identity actually reached the image
+        # Without this, nothing in CI ever proves BUILD_SHA is wired: the Playwright smoke
+        # runs `next build` directly and never touches the Dockerfile, so `version` is always
+        # the "unknown" fallback there and the local spec's toHaveProperty passes regardless.
+        # Drop the build-arg during an unrelated edit and every gate stays green — the break
+        # would surface only when a human remembered to run the staging suite by hand.
+        # Reads the env straight out of the pushed image; no server boot needed.
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:staging-${{ github.sha }}
+        run: |
+          set -euo pipefail
+          got=$(docker run --rm --entrypoint node "$IMAGE" \
+                  -e 'process.stdout.write(process.env.BUILD_SHA || "MISSING")')
+          echo "image reports BUILD_SHA=$got"
+          [ "$got" = "${GITHUB_SHA}" ] || {
+            echo "::error::image BUILD_SHA is '$got', expected '${GITHUB_SHA}' — /api/health would misreport what is deployed"
+            exit 1
+          }
+
+      # The DB-tooling image for staging. It has to be built HERE, in the job that runs
+      # on develop — putting the tag on `build-push`'s meta-migrate step made it dead
+      # code the moment that job started skipping on develop, and the tag simply never
+      # existed. Found by pulling it on the box.
+      #
+      # Staging needs its own: the migrate image carries prisma/migrations, so main's
+      # copy would apply main's schema to a database that tracks develop.
+      - id: meta-migrate-staging
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=migrate-staging
+            type=sha,format=long,prefix=migrate-staging-
+
+      - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: ./Dockerfile
+          target: migrate
+          push: true
+          tags: ${{ steps.meta-migrate-staging.outputs.tags }}
+          labels: ${{ steps.meta-migrate-staging.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

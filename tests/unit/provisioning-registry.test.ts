@@ -28,7 +28,7 @@ describe("buildTenantRegistryEntry", () => {
       db: "tenant_bistro-nova",
       db_role: "tenant_bistro-nova",
       compose_project: "tenant-bistro-nova",
-      backend_tag: "staging",
+      backend_tag: "latest",
       frontend_tag: "tenant-bistro-nova",
       currency: "EUR",
       languages: ["en", "nl"],
@@ -56,13 +56,16 @@ describe("buildTenantRegistryEntry", () => {
     expect(t.city).toBeUndefined();
     expect(t.box).toBe("prod");
     expect(t.template).toBe("classic");
-    // A prod-box tenant rides :latest...
     expect(t.backend_tag).toBe("latest");
   });
 
-  it("pins a staging-box tenant to :staging, not :latest", () => {
-    // ...while :latest means main/prod, so a staging tenant pinned to it would
-    // silently run production code instead of the develop build it showcases.
+  it("pins :latest even on the staging box — the box no longer decides the tag", () => {
+    // The regression this exists for: `backend_tag` was derived from `box`, and every
+    // self-serve tenant lands on `box: staging` because that is where the control plane
+    // runs. So a paying customer was handed the develop build — and develop's EF
+    // migrations, on every backend develop merge — by a default nobody read. This is the
+    // ONLY test that distinguishes the two derivations, since the box is the input the
+    // old rule keyed on and `staging` is its default value.
     const t = asTenant(
       buildTenantRegistryEntry({
         slug: "onstaging",
@@ -75,8 +78,8 @@ describe("buildTenantRegistryEntry", () => {
       }),
       "onstaging",
     ) as Record<string, unknown>;
-    expect(t.box).toBe("staging"); // the default
-    expect(t.backend_tag).toBe("staging");
+    expect(t.box).toBe("staging"); // the default box is unchanged...
+    expect(t.backend_tag).toBe("latest"); // ...but it no longer implies the develop build
   });
 
   it("escapes YAML-special characters in free-text (no injection)", () => {
@@ -132,19 +135,26 @@ describe("buildProvisioningPrBody", () => {
     expect(body).toContain("### Run these after merging");
   });
 
-  it("flags the backend_tag risk that actually exists for each box", () => {
-    // buildTenantRegistryEntry pins backend_tag FROM the box, so "a staging tenant might
-    // be on :latest" is impossible by construction — warning about it would be an
-    // unfalsifiable checkbox on every real PR. The live risk is the reverse: a staging-box
-    // tenant rides the develop build, which is wrong for someone paying.
-    const staging = buildProvisioningPrBody(input);
-    expect(staging).toContain("rides the *develop* build");
-    expect(staging).toContain("unreleased backend code");
-    expect(staging).not.toContain("staging-box tenant on `:latest`");
+  it("names backend_tag as an editable field, not a box-dependent warning", () => {
+    // The checkbox has to name the risk THIS entry carries and a field the reader can
+    // actually see in Files changed, or it is an unfalsifiable box they learn to tick
+    // blind. Since the tag is now a constant, the line is the same on both boxes.
+    for (const body of [buildProvisioningPrBody(input), buildProvisioningPrBody({ ...input, box: "prod" })]) {
+      expect(body).toContain("**`backend_tag: latest`**");
+      expect(body).toContain("change it to `staging` in Files changed");
+      // The old, now-impossible warning must not survive anywhere in the body.
+      expect(body).not.toContain("rides the *develop* build");
+    }
+  });
 
-    const prod = buildProvisioningPrBody({ ...input, box: "prod" });
-    expect(prod).toContain("released code");
-    expect(prod).not.toContain("unreleased backend code");
+  it("agrees with the entry the same PR proposes", () => {
+    // The body and the entry are two independent literals; asserting each separately
+    // would let one drift. Read the tag out of the generated YAML and require the body
+    // to quote that exact value.
+    const tag = (
+      asTenant(buildTenantRegistryEntry(input), input.slug) as Record<string, unknown>
+    ).backend_tag;
+    expect(buildProvisioningPrBody(input)).toContain(`**\`backend_tag: ${tag}\`**`);
   });
 
   it("keeps a newline in the tenant name from breaking the fence or the command", () => {
