@@ -8,7 +8,10 @@ name: build-image
 
 on:
   push:
-    branches: [main]
+    # `develop` was added with the staging bake: the build-staging job below is gated on
+    # that ref, and a job gate is useless if the WORKFLOW never runs on the branch. The
+    # tag gating inside each meta step is what keeps :latest and :migrate main-only.
+    branches: [main, develop]
     tags: ['v*']
 
 concurrency:
@@ -22,6 +25,9 @@ permissions:
 jobs:
   build-push:
     name: build & push (GHCR)
+    # main + tags only. On develop the staging bake below is the one that runs; letting
+    # this job run too would publish a :sha and a migrate-<sha> image nothing pulls.
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
