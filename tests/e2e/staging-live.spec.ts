@@ -152,36 +152,56 @@ test.describe("the deployed staging control plane", () => {
       /^[0-9a-f]{40}$/,
     );
 
-    // Currency, judged against this clone rather than a wall-clock threshold — "how many days
-    // old is too old" is arbitrary, but "the deployed image is from a line of work this branch
-    // knows nothing about" never is.
+    // Currency is judged against `origin/develop` — the branch this environment tracks — and
+    // NOT against local HEAD. HEAD is the wrong reference in the normal case: the merge gate
+    // SQUASHES every feature PR, so right after your own change ships, local HEAD holds the
+    // unsquashed commits while the deployed image was built from the squash commit. Neither
+    // contains the other, so a HEAD-relative divergence test fails at the exact moment the
+    // deployment is correct and current — and a check that is red by default gets ignored,
+    // which costs the very signal this test exists to add. Any unrelated PR landing on
+    // develop while you sit on a feature branch does the same thing.
     const sha = body.version!;
     const git = (args: string[]): string | null => {
       try {
-        return execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+        const out = execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+        // Empty output is NOT success. `Number("")` is 0, so folding it into a count would
+        // make a failed comparison read as "0 behind, 0 ahead" — a confidently green currency
+        // check that compared nothing at all.
+        return out === "" ? null : out;
       } catch {
         return null;
       }
     };
 
-    // An unknown commit is a hard failure, not a skip: it means either the clone is stale or
-    // something was deployed from outside this repo, and both are things you want to hear.
-    expect(
-      git(["cat-file", "-e", `${sha}^{commit}`]) !== null,
-      `deployed commit ${sha.slice(0, 8)} is unknown to this clone — run \`git fetch\`, or find out what was deployed`,
-    ).toBe(true);
+    // Best-effort refresh: the deployed image can legitimately be NEWER than anything this
+    // clone has seen (someone else merged), and without this that reads as "unknown commit".
+    git(["fetch", "--quiet", "origin", "develop"]);
 
-    const behind = Number(git(["rev-list", "--count", `${sha}..HEAD`]) ?? "0");
-    const ahead = Number(git(["rev-list", "--count", `HEAD..${sha}`]) ?? "0");
+    // Reachability from origin/develop, not mere object existence. `cat-file -e` succeeds for
+    // any object still in the local store — a pre-squash commit or one from a force-pushed
+    // branch lingers there for weeks and would pass while being unreachable from any branch,
+    // which is precisely the "deployed from outside this repo" case the failure claims to catch.
+    const onDevelop = (() => {
+      try {
+        execFileSync("git", ["merge-base", "--is-ancestor", sha, "origin/develop"], { stdio: "ignore" });
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+
+    const behind = git(["rev-list", "--count", `${sha}..origin/develop`]);
     // Printed unconditionally, because a stale-but-linear deployment is legitimate (rollouts
-    // are manual) and the only real fix is making it VISIBLE rather than assumed current.
+    // are manual, CLAUDE.md §8) and the only real fix is making it VISIBLE rather than letting
+    // a green run imply it is current.
     console.log(
-      `deployed ${sha.slice(0, 8)} (built ${body.builtAt}) — ${behind} commit(s) behind this branch, ${ahead} ahead`,
+      `deployed ${sha.slice(0, 8)} (built ${body.builtAt}) — ${behind ?? "?"} commit(s) behind origin/develop`,
     );
     expect(
-      behind > 0 && ahead > 0,
-      `deployed image is from a DIVERGED line: ${behind} behind and ${ahead} ahead of this branch`,
-    ).toBe(false);
+      onDevelop,
+      `deployed commit ${sha.slice(0, 8)} is not on origin/develop — it was built from a line this repo does not track, or the clone could not be refreshed`,
+    ).toBe(true);
+    expect(behind, "could not measure drift against origin/develop — is this a shallow clone?").not.toBeNull();
   });
 
   // ONE login for all the authed assertions. `lib/auth.ts` allows 10 per email per 15
