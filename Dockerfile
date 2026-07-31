@@ -39,6 +39,16 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Build identity, surfaced by /api/health. In the RUNNER stage on purpose: these are read
+# at request time, not compiled into the bundle, so they cost no rebuild of the app layers
+# and can be overridden on the box if an image is ever re-tagged by hand. Without them a
+# deployed environment cannot be told apart from a months-old one — every other health
+# signal passes either way.
+ARG BUILD_SHA=unknown
+ARG BUILD_TIME=unknown
+ENV BUILD_SHA=${BUILD_SHA}
+ENV BUILD_TIME=${BUILD_TIME}
+
 # Drop the bundled npm CLI — runtime is `node server.js`; npm's transitive
 # deps only feed Trivy HIGH/CRITICAL noise (same rationale as the frontend).
 RUN rm -rf /usr/local/lib/node_modules/npm \
