@@ -36,10 +36,16 @@ export default defineConfig({
   },
   expect: { timeout: 15_000 },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  webServer: {
-    command: "npm run start",
-    url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  // Skip the local server when the run targets a DEPLOYED environment
+  // (E2E_REMOTE=1 with E2E_BASE_URL=https://staging.sofrapiwas.com). Without this,
+  // pointing baseURL at staging still runs `npm run start` and waits two minutes on a
+  // port nothing will answer. Mirrors the frontend repo's config.
+  webServer: process.env.E2E_REMOTE
+    ? undefined
+    : {
+        command: "npm run start",
+        url: baseURL,
+        reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
+      },
 });
