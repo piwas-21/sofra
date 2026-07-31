@@ -41,6 +41,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - id: stamp
+        # Wall-clock build time, stamped here rather than taken from a github.event
+        # field: the event payloads differ per trigger (push vs tag vs dispatch), and
+        # repository.updated_at answers "when did the repo change", which is not the
+        # question /api/health is asked.
+        run: echo "built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
@@ -61,10 +68,31 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_SITE_URL=${{ vars.SITE_URL || 'https://sofrapiwas.com' }}
+            BUILD_SHA=${{ github.sha }}
+            BUILD_TIME=${{ steps.stamp.outputs.built_at }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Verify the build identity actually reached the image
+        # Without this, nothing in CI ever proves BUILD_SHA is wired: the Playwright smoke
+        # runs `next build` directly and never touches the Dockerfile, so `version` is always
+        # the "unknown" fallback there and the local spec's toHaveProperty passes regardless.
+        # Drop the build-arg during an unrelated edit and every gate stays green — the break
+        # would surface only when a human remembered to run the staging suite by hand.
+        # Reads the env straight out of the pushed image; no server boot needed.
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+        run: |
+          set -euo pipefail
+          got=$(docker run --rm --entrypoint node "$IMAGE" \
+                  -e 'process.stdout.write(process.env.BUILD_SHA || "MISSING")')
+          echo "image reports BUILD_SHA=$got"
+          [ "$got" = "${GITHUB_SHA}" ] || {
+            echo "::error::image BUILD_SHA is '$got', expected '${GITHUB_SHA}' — /api/health would misreport what is deployed"
+            exit 1
+          }
 
       # One-off DB tooling image (prisma migrate deploy + admin seed) — pulled
       # on the box only when a release ships migrations. See DEPLOYMENT.md.
@@ -116,6 +144,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - id: stamp
+        # Wall-clock build time, stamped here rather than taken from a github.event
+        # field: the event payloads differ per trigger (push vs tag vs dispatch), and
+        # repository.updated_at answers "when did the repo change", which is not the
+        # question /api/health is asked.
+        run: echo "built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - id: meta-staging
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
@@ -133,10 +168,31 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_SITE_URL=${{ vars.STAGING_SITE_URL || 'https://staging.sofrapiwas.com' }}
+            BUILD_SHA=${{ github.sha }}
+            BUILD_TIME=${{ steps.stamp.outputs.built_at }}
           tags: ${{ steps.meta-staging.outputs.tags }}
           labels: ${{ steps.meta-staging.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Verify the build identity actually reached the image
+        # Without this, nothing in CI ever proves BUILD_SHA is wired: the Playwright smoke
+        # runs `next build` directly and never touches the Dockerfile, so `version` is always
+        # the "unknown" fallback there and the local spec's toHaveProperty passes regardless.
+        # Drop the build-arg during an unrelated edit and every gate stays green — the break
+        # would surface only when a human remembered to run the staging suite by hand.
+        # Reads the env straight out of the pushed image; no server boot needed.
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:staging-${{ github.sha }}
+        run: |
+          set -euo pipefail
+          got=$(docker run --rm --entrypoint node "$IMAGE" \
+                  -e 'process.stdout.write(process.env.BUILD_SHA || "MISSING")')
+          echo "image reports BUILD_SHA=$got"
+          [ "$got" = "${GITHUB_SHA}" ] || {
+            echo "::error::image BUILD_SHA is '$got', expected '${GITHUB_SHA}' — /api/health would misreport what is deployed"
+            exit 1
+          }
 
       # The DB-tooling image for staging. It has to be built HERE, in the job that runs
       # on develop — putting the tag on `build-push`'s meta-migrate step made it dead

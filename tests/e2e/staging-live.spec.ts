@@ -1,5 +1,6 @@
 import { expect, test } from "./helpers/fixtures";
 import { CANONICAL_SITE_URL } from "@/lib/seo";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 /**
@@ -20,13 +21,16 @@ import { readFileSync } from "node:fs";
  * could never fire, and a `:migrate-staging` tag that was dead code — both invisible until
  * something tried to pull the artifact.
  *
- * What this suite does NOT prove, so nobody reads more into a green run than is there:
- *   - that the deployed image is CURRENT. A months-old `:staging` bake passes everything
- *     here. There is no version or health endpoint to assert against; adding one is the
- *     fix, not a cleverer assertion.
- *   - that the Mollie key is a `test_` key rather than a `live_` one. `mollieConfigured()`
- *     reports only that SOME key is set and nothing surfaces the prefix — see the billing
- *     test, which is named for what it can actually establish.
+ * Image currency IS now checked — `/api/health` reports the commit the image was built
+ * from, and the check judges it against this clone rather than a wall-clock threshold.
+ * Production's own indexing posture is NOT checked here any more: it moved to the
+ * `indexing-monitor` workflow, because it only ran when someone happened to touch staging,
+ * and it turned a production fault red inside a suite named for staging.
+ *
+ * What this suite still does NOT prove, so nobody reads more into a green run than is
+ * there: that the Mollie key is a `test_` key rather than a `live_` one.
+ * `mollieConfigured()` reports only that SOME key is set and nothing surfaces the prefix —
+ * see the billing test, which is named for what it can actually establish.
  *
  * READ-ONLY BY CONSTRUCTION. It signs in and looks: no account, no payment, no row. There
  * is nothing to restore and no way for a failed run to leave the environment dirty. The
@@ -129,19 +133,75 @@ test.describe("the deployed staging control plane", () => {
     expect(res?.headers()["x-robots-tag"] ?? "", "X-Robots-Tag").toMatch(/noindex/i);
   });
 
-  test("PRODUCTION is still crawlable (fails here, but the fault is on sofrapiwas.com)", async ({ request }) => {
-    // Deliberately asserted from the staging suite: the same commit that flips staging to
-    // noindex could flip production, and `robots.ts` decides between them at RUNTIME from the
-    // deployment's own base URL. A staging suite that never looks at production reports
-    // all-clear either way. The title carries the attribution because a prod incident or a
-    // Caddy blip turns this red inside a describe named for staging, and the reflex is to go
-    // look at the wrong environment. This wants a scheduled monitor eventually; until one
-    // exists, an assertion that runs is worth more than a plan for one that would.
-    const res = await request.get(`${CANONICAL_SITE_URL}/robots.txt`);
-    expect(res.status()).toBe(200);
-    const prod = await res.text();
-    expect(prod, "production robots.txt must still allow crawling").toMatch(/^Allow:\s*\//m);
-    expect(prod, "production must still invite AI crawlers (AEO)").toMatch(/GPTBot/i);
+  test("the deployed image identifies itself, and is not from a diverged line", async ({ request }) => {
+    // Closes the hole this suite used to have to admit to: everything else here passes just
+    // as happily against a months-old bake, so a green run could certify an environment
+    // nobody had rolled since the change under test was written.
+    const res = await request.get(`${BASE}/api/health`);
+    expect(res.status(), "/api/health should serve").toBe(200);
+    const body = (await res.json()) as { status?: string; service?: string; version?: string; builtAt?: string };
+
+    expect(body.status).toBe("ok");
+    // Names the app, not just "healthy": a monitor or a suite pointed at the wrong host by a
+    // DNS or Caddy mistake would otherwise see a 200 and report all clear. The tenant backend
+    // answers its own probe with `service: "restaurant-system-api"`.
+    expect(body.service, "wrong service answered — check where this host actually points").toBe(
+      "sofra-control-plane",
+    );
+    expect(body.version, "image was built without BUILD_SHA — build-image.yml must pass it").toMatch(
+      /^[0-9a-f]{40}$/,
+    );
+
+    // Currency is judged against `origin/develop` — the branch this environment tracks — and
+    // NOT against local HEAD. HEAD is the wrong reference in the normal case: the merge gate
+    // SQUASHES every feature PR, so right after your own change ships, local HEAD holds the
+    // unsquashed commits while the deployed image was built from the squash commit. Neither
+    // contains the other, so a HEAD-relative divergence test fails at the exact moment the
+    // deployment is correct and current — and a check that is red by default gets ignored,
+    // which costs the very signal this test exists to add. Any unrelated PR landing on
+    // develop while you sit on a feature branch does the same thing.
+    const sha = body.version!;
+    const git = (args: string[]): string | null => {
+      try {
+        const out = execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+        // Empty output is NOT success. `Number("")` is 0, so folding it into a count would
+        // make a failed comparison read as "0 behind, 0 ahead" — a confidently green currency
+        // check that compared nothing at all.
+        return out === "" ? null : out;
+      } catch {
+        return null;
+      }
+    };
+
+    // Best-effort refresh: the deployed image can legitimately be NEWER than anything this
+    // clone has seen (someone else merged), and without this that reads as "unknown commit".
+    git(["fetch", "--quiet", "origin", "develop"]);
+
+    // Reachability from origin/develop, not mere object existence. `cat-file -e` succeeds for
+    // any object still in the local store — a pre-squash commit or one from a force-pushed
+    // branch lingers there for weeks and would pass while being unreachable from any branch,
+    // which is precisely the "deployed from outside this repo" case the failure claims to catch.
+    const onDevelop = (() => {
+      try {
+        execFileSync("git", ["merge-base", "--is-ancestor", sha, "origin/develop"], { stdio: "ignore" });
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+
+    const behind = git(["rev-list", "--count", `${sha}..origin/develop`]);
+    // Printed unconditionally, because a stale-but-linear deployment is legitimate (rollouts
+    // are manual, CLAUDE.md §8) and the only real fix is making it VISIBLE rather than letting
+    // a green run imply it is current.
+    console.log(
+      `deployed ${sha.slice(0, 8)} (built ${body.builtAt}) — ${behind ?? "?"} commit(s) behind origin/develop`,
+    );
+    expect(
+      onDevelop,
+      `deployed commit ${sha.slice(0, 8)} is not on origin/develop — it was built from a line this repo does not track, or the clone could not be refreshed`,
+    ).toBe(true);
+    expect(behind, "could not measure drift against origin/develop — is this a shallow clone?").not.toBeNull();
   });
 
   // ONE login for all the authed assertions. `lib/auth.ts` allows 10 per email per 15

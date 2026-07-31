@@ -1,4 +1,11 @@
 // Docker HEALTHCHECK probe — not imported by the app (see Dockerfile note).
+//
+// Deliberately probes a RENDERED page, not /api/health. /api/health is dependency-free
+// by design, so it answers 200 while every marketing page 500s on an i18n or
+// message-catalog regression — and since nothing declares `depends_on: service_healthy`
+// for this service, the only consumer of this probe is the STATUS column a human reads.
+// A cheaper probe that proves less is a bad trade there. /en proves the App Router
+// served HTML with messages resolved; the 5s timeout was never what a render failed.
 const http = require("http");
 
 const req = http.get(
