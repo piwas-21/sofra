@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
-    "test:e2e:full": "bash scripts/e2e-suite.sh"
+    "test:e2e:full": "bash scripts/e2e-suite.sh",
+    "test:e2e:staging": "E2E_REMOTE=1 E2E_BASE_URL=https://staging.sofrapiwas.com playwright test tests/e2e/staging-live.spec.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
