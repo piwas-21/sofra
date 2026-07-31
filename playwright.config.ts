@@ -10,8 +10,32 @@ import { defineConfig, devices } from "@playwright/test";
 
 const baseURL = process.env.E2E_BASE_URL ?? "http://localhost:3000";
 
+// E2E_REMOTE points the run at a DEPLOYED environment, and the split is enforced BOTH
+// ways: remote runs the staging spec and nothing else, local runs everything else and never
+// the staging spec.
+//
+// The remote direction is a safety interlock. Every other spec here MUTATES —
+// self-serve-signup writes User/Plan/SignupRequest rows, billing-mollie creates real
+// payments, owner-dashboard repoints billing records — and they reach their target through
+// relative `page.goto`, so `E2E_REMOTE=1 E2E_BASE_URL=https://staging… npx playwright test`
+// (the obvious generalisation of the npm script) would run all of them against the
+// long-lived shared environment, which has no throwaway database to drop. Their own
+// assertions would then fail against the wrong DATABASE_URL — but the writes would already
+// have landed.
+//
+// The local direction is not symmetry for its own sake: without it the staging spec joins
+// `test:e2e:full`, where it asserts deployment facts against `localhost` — robots is
+// allow-all there by design, and the staging admin account does not exist — and fails for
+// reasons that say nothing about the change under test. Enforcing it here rather than with a
+// `test.skip` inside the spec is what lets a missing credential be a hard ERROR when the
+// spec does run: a skipped authed half still exits 0, and reports success having verified
+// nothing behind the login.
+const REMOTE = Boolean(process.env.E2E_REMOTE);
+const STAGING_SPEC = /staging-live\.spec\.ts$/;
+
 export default defineConfig({
   testDir: "tests/e2e",
+  ...(REMOTE ? { testMatch: STAGING_SPEC } : { testIgnore: STAGING_SPEC }),
   timeout: 30_000,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
@@ -40,7 +64,7 @@ export default defineConfig({
   // (E2E_REMOTE=1 with E2E_BASE_URL=https://staging.sofrapiwas.com). Without this,
   // pointing baseURL at staging still runs `npm run start` and waits two minutes on a
   // port nothing will answer. Mirrors the frontend repo's config.
-  webServer: process.env.E2E_REMOTE
+  webServer: REMOTE
     ? undefined
     : {
         command: "npm run start",
