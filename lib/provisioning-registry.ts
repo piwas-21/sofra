@@ -44,11 +44,18 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): string {
       db: `tenant_${slug}`,
       db_role: `tenant_${slug}`,
       compose_project: `tenant-${slug}`,
-      // `:latest` means main/prod since the 2026-07-16 tag fix, so a staging-box
-      // tenant pinned to it would silently run production code instead of the
-      // develop build it exists to showcase. Found by hand-correcting the first
-      // generated entry (deploy #61).
-      backend_tag: box === "staging" ? "staging" : "latest",
+      // Always `:latest` — released code, published only from `main`. NOT derived from
+      // `box` (as it was until 2026-07-31): every self-serve tenant lands on
+      // `box: staging`, because that is where the control plane runs, so deriving from
+      // the box silently gave every paying customer the develop build — and, because the
+      // staging box's deploy re-pulls `:staging` tenants on every backend develop merge,
+      // applied develop's EF migrations to their database each time.
+      //
+      // A develop-tracking SHOWCASE (`demo`) still wants `:staging`, but that is a
+      // founder judgement about one tenant, not something the generator can infer — so it
+      // is a hand-edit to this field in the proposed PR, which is exactly the review
+      // checkpoint ADR-012 puts at the merge. The PR body says so.
+      backend_tag: "latest",
       frontend_tag: `tenant-${slug}`,
       currency: input.currency,
       languages: input.languages,
@@ -107,14 +114,11 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
   const box = input.box ?? "staging";
   const chained = box === "staging";
 
-  // `backend_tag` is pinned by box above, so the risk is NOT "a staging tenant might be
-  // on :latest" — that pairing cannot be generated. It is the reverse, and it is the one
-  // judgement no generator can make: every self-serve tenant lands on the staging box, so
-  // every self-serve tenant rides the DEVELOP build. Right for a showcase; a decision for
-  // someone paying.
-  const tagCheck = chained
-    ? `- [ ] **\`backend_tag: staging\`** is deliberate — a staging-box tenant rides the *develop* build, i.e. unreleased backend code. Correct for a showcase; for a paying customer, pin \`backend_tag: latest\` before merging`
-    : `- [ ] **\`backend_tag: latest\`** (prod box) — released code, which is what a prod tenant should ride`;
+  // One line, naming the one field in the diff the founder may need to change. It used to
+  // branch on the box and warn that a staging-box tenant rides develop; the generator no
+  // longer produces that entry, so warning about it would be an unfalsifiable checkbox.
+  const tagCheck =
+    "- [ ] **`backend_tag: latest`** — released code, published only from `main`. If this is a develop-tracking **showcase** rather than a customer, change it to `staging` in Files changed before merging; a customer should stay on `latest`, so their database is never migrated by unreleased code";
 
   const header = chained
     ? [
