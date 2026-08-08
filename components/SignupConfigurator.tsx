@@ -35,7 +35,7 @@ export default function SignupConfigurator() {
   const saving = quote.aLaCarteCents - quote.monthlyCents;
 
   const optionalModules = MODULES.filter(
-    (m) => m.id !== "core" && m.id !== "extra-languages",
+    (m) => m.id !== "core" && m.id !== "extra-languages" && m.sellable !== false,
   );
 
   return (

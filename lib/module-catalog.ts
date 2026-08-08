@@ -20,6 +20,7 @@ export const MODULE_IDS = [
   "reservations",
   "loyalty",
   "printing",
+  "online-payments",
   "extra-languages",
 ] as const;
 
@@ -31,6 +32,16 @@ export interface CatalogModule {
   priceCents: number;
   /** The RUMI surface this unlocks — kept next to the price so the two never drift. */
   surface: string;
+  /**
+   * Absent = sellable. `false` means the id is a VALID part of the registry vocabulary — a
+   * tenant entry carrying it provisions, and the backend recognises it — but it must not be
+   * offered for purchase yet, because the surface it unlocks is not finished. Selling a module
+   * nothing enforces is charging for a product that does not vary.
+   *
+   * Both purchase surfaces filter on this: the public SignupConfigurator and the founder's
+   * ProvisionPicker. Flip it (delete the line) in the slice that makes the module real.
+   */
+  sellable?: boolean;
 }
 
 /**
@@ -46,6 +57,16 @@ export const MODULES: readonly CatalogModule[] = [
   { id: "reservations", priceCents: 900, surface: "/reservations + admin management" },
   { id: "loyalty", priceCents: 900, surface: "fidelity points, customer groups, discounts" },
   { id: "printing", priceCents: 900, surface: "printer-app companion + printer feed" },
+  {
+    id: "online-payments",
+    priceCents: 1900,
+    surface: "card/TWINT at checkout, paid to the restaurant's own Stripe account",
+    // NOT YET SELLABLE. The vocabulary lands first (S10) so provisioning accepts the id and the
+    // registry can record a stripe_account; the endpoint that would honour it arrives in S4 and
+    // the customer-facing choice in S8. Until then this must not appear on the signup page or in
+    // the founder's provision picker. Remove this line in S9, when the flow works end to end.
+    sellable: false,
+  },
   { id: "extra-languages", priceCents: 500, surface: "beyond Core's en + 1, up to 10 locales" },
 ] as const;
 
