@@ -76,7 +76,7 @@ export default function ProvisionPicker({
           {labels.modulesCore} · {eur(MODULES.find((m) => m.id === "core")!.priceCents)}
         </p>
         <div className="grid gap-1 sm:grid-cols-2">
-          {MODULES.filter((m) => m.id !== "core" && m.id !== "extra-languages").map((m) => (
+          {MODULES.filter((m) => m.id !== "core" && m.id !== "extra-languages" && m.sellable !== false).map((m) => (
             <label key={m.id} className="flex items-start gap-2 font-label text-sm">
               <input
                 type="checkbox"
