@@ -221,7 +221,7 @@
       },
       "payments": {
         "q": "Can my guests pay online — including TWINT?",
-        "a": "Online payments are on the roadmap as an add-on module, with local payment methods like TWINT in Switzerland and iDEAL in the Netherlands planned alongside cards. Today, orders flow to your counter and you charge as you always have."
+        "a": "Yes — add the Online payments module and your guests pay by card, with local methods like TWINT in Switzerland and iDEAL in the Netherlands. The money goes straight into your own Stripe account and we take no commission. You complete Stripe's one-time verification before your first payment. You can always keep charging at the counter as well."
       },
       "languages": {
         "q": "Which languages does the menu support?",
@@ -368,7 +368,7 @@
         },
         "payments": {
           "label": "Online payments",
-          "sofra": "On the roadmap as an add-on module — local methods like TWINT and iDEAL planned alongside cards. Today you charge at the counter as usual.",
+          "sofra": "Add-on module at €19/month — card plus local methods like TWINT and iDEAL, paid straight into your own Stripe account. No commission.",
           "gf": "Available as a paid module — online / card payments at US$29/month."
         }
       }
@@ -927,7 +927,8 @@
         "server": "Table service",
         "reservations": "Reservations",
         "loyalty": "Loyalty points",
-        "printing": "Receipt printing"
+        "printing": "Receipt printing",
+        "online-payments": "Online payments"
       },
       "moduleHint": {
         "kitchen-board": "Live order board for the kitchen",
@@ -935,7 +936,8 @@
         "server": "Floor plan and waiter ordering",
         "reservations": "Online booking and table management",
         "loyalty": "Points, customer groups and discounts",
-        "printing": "Companion app for thermal printers"
+        "printing": "Companion app for thermal printers",
+        "online-payments": "Cards and local methods like TWINT or iDEAL, paid into your own Stripe account"
       },
       "template": {
         "classic": "Classic",
