@@ -61,11 +61,6 @@ export const MODULES: readonly CatalogModule[] = [
     id: "online-payments",
     priceCents: 1900,
     surface: "card/TWINT at checkout, paid to the restaurant's own Stripe account",
-    // NOT YET SELLABLE. The vocabulary lands first (S10) so provisioning accepts the id and the
-    // registry can record a stripe_account; the endpoint that would honour it arrives in S4 and
-    // the customer-facing choice in S8. Until then this must not appear on the signup page or in
-    // the founder's provision picker. Remove this line in S9, when the flow works end to end.
-    sellable: false,
   },
   { id: "extra-languages", priceCents: 500, surface: "beyond Core's en + 1, up to 10 locales" },
 ] as const;

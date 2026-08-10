@@ -221,7 +221,7 @@
       },
       "payments": {
         "q": "Kunnen mijn gasten online betalen — ook met iDEAL of TWINT?",
-        "a": "Online betalen staat op de roadmap als extra module, met lokale betaalmethoden zoals iDEAL in Nederland en TWINT in Zwitserland naast kaarten. Vandaag komen bestellingen binnen aan je balie en reken je af zoals je gewend bent."
+        "a": "Ja — met de module Online betalen betalen je gasten met kaart, plus lokale methoden zoals iDEAL in Nederland en TWINT in Zwitserland. Het geld komt direct op je eigen Stripe-account en wij nemen geen commissie. Vóór je eerste betaling doorloop je eenmalig de verificatie van Stripe. Afrekenen aan de balie blijft gewoon mogelijk."
       },
       "languages": {
         "q": "Welke talen ondersteunt de menukaart?",
@@ -368,7 +368,7 @@
         },
         "payments": {
           "label": "Online betalen",
-          "sofra": "Op de planning als optionele module — lokale methoden zoals iDEAL en TWINT gepland naast kaarten. Vandaag reken je af aan de balie zoals altijd.",
+          "sofra": "Extra module voor € 19/maand — kaart plus lokale methoden zoals iDEAL en TWINT, direct op je eigen Stripe-account. Geen commissie.",
           "gf": "Beschikbaar als betaalde module — online-/kaartbetalingen voor US$ 29/maand."
         }
       }
@@ -927,7 +927,8 @@
         "server": "Tafelbediening",
         "reservations": "Reserveringen",
         "loyalty": "Loyaliteitspunten",
-        "printing": "Bonnen printen"
+        "printing": "Bonnen printen",
+        "online-payments": "Online betalen"
       },
       "moduleHint": {
         "kitchen-board": "Live besteloverzicht voor de keuken",
@@ -935,7 +936,8 @@
         "server": "Plattegrond en bestellen aan tafel",
         "reservations": "Online reserveren en tafelbeheer",
         "loyalty": "Punten, klantgroepen en kortingen",
-        "printing": "Companion-app voor thermische printers"
+        "printing": "Companion-app voor thermische printers",
+        "online-payments": "Kaart en lokale methoden zoals iDEAL of TWINT, direct op je eigen Stripe-account"
       },
       "template": {
         "classic": "Klassiek",
