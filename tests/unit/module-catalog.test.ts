@@ -19,6 +19,24 @@ describe("catalog shape", () => {
     }
   });
 
+  it("never bundles a module that is not sellable yet", () => {
+    // A bundle is a purchase, so it must not smuggle in a module the à-la-carte surfaces
+    // deliberately hide. online-payments is in the vocabulary from S10 but has no working
+    // surface until S9 — putting it inside "full-service" would sell it anyway.
+    const notSellable = new Set(MODULES.filter((m) => m.sellable === false).map((m) => m.id));
+    for (const b of BUNDLES) {
+      expect(b.modules.filter((m) => notSellable.has(m))).toEqual([]);
+    }
+  });
+
+  it("keeps an unfinished module out of the vocabulary's sellable set", () => {
+    // The vocabulary and the price list are the same array, so adding an id to make
+    // provisioning accept it also makes it purchasable unless it is flagged. This is the
+    // assertion that catches that: online-payments must be KNOWN and NOT sellable.
+    expect(isModuleId("online-payments")).toBe(true);
+    expect(MODULES.find((m) => m.id === "online-payments")?.sellable).toBe(false);
+  });
+
   it("only bundles modules that exist, and always includes core", () => {
     for (const b of BUNDLES) {
       expect(unknownModuleIds([...b.modules])).toEqual([]);
