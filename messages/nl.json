@@ -470,7 +470,9 @@
         "overview": "Overzicht",
         "signups": "Aanmeldingen",
         "fleet": "Vloot",
-        "invoices": "Facturen"
+        "invoices": "Facturen",
+        "icp": "ICP",
+        "billingDetails": "Factuurgegevens"
       },
       "groups": {
         "pipeline": "Pijplijn",
@@ -809,7 +811,9 @@
           "checkedOn": "gecontroleerd op {date}"
         },
         "recheck": "Btw-nummer opnieuw controleren",
-        "rechecking": "Controleren…"
+        "rechecking": "Controleren…",
+        "payerIntro": "De rechtspersoon aan wie uw facturen zijn gericht. Nodig vóór uw eerste betaling.",
+        "backToPlan": "← Terug naar uw plan"
       },
       "invoices": {
         "title": "Facturen",
@@ -821,6 +825,21 @@
         "empty": "Nog geen facturen.",
         "issueNow": "Nu uitgeven",
         "issuing": "Uitgeven…"
+      },
+      "icp": {
+        "title": "Opgaaf ICP",
+        "intro": "Verlegde EU-leveringen in het kwartaal, gegroepeerd per btw-nummer van de klant. Nettobedragen — hier is geen btw berekend.",
+        "year": "Jaar",
+        "quarter": "Kwartaal",
+        "show": "Tonen",
+        "download": "CSV downloaden",
+        "country": "Land",
+        "vatNumber": "Btw-nummer",
+        "invoices": "Facturen",
+        "net": "Netto",
+        "total": "Totaal",
+        "empty": "Geen verlegde leveringen in dit kwartaal.",
+        "missingVat": "{count} verlegde factuur/facturen zonder btw-nummer staan er niet in — verleggen vereist er een, dus dit is een defect om uit te zoeken."
       }
     },
     "errors": {
@@ -865,7 +884,8 @@
         "alreadyIssued": "Er bestaat al een factuur voor deze betaling.",
         "noPlan": "Geen plan gevonden voor deze betaling.",
         "error": "Uitgeven mislukt. Bekijk de logs."
-      }
+      },
+      "billingDetailsRequired": "Vul eerst uw factuurgegevens in — zonder die kan er geen factuur worden uitgegeven."
     },
     "plan": {
       "title": "Jouw abonnement",

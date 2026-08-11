@@ -470,7 +470,9 @@
         "overview": "Übersicht",
         "signups": "Anmeldungen",
         "fleet": "Flotte",
-        "invoices": "Rechnungen"
+        "invoices": "Rechnungen",
+        "icp": "ICP",
+        "billingDetails": "Rechnungsdaten"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -809,7 +811,9 @@
           "checkedOn": "geprüft am {date}"
         },
         "recheck": "USt-IdNr. erneut prüfen",
-        "rechecking": "Wird geprüft…"
+        "rechecking": "Wird geprüft…",
+        "payerIntro": "Die juristische Person, an die Ihre Rechnungen gerichtet sind. Vor der ersten Zahlung erforderlich.",
+        "backToPlan": "← Zurück zu Ihrem Tarif"
       },
       "invoices": {
         "title": "Rechnungen",
@@ -821,6 +825,21 @@
         "empty": "Noch keine Rechnungen.",
         "issueNow": "Jetzt ausstellen",
         "issuing": "Wird ausgestellt…"
+      },
+      "icp": {
+        "title": "Zusammenfassende Meldung (ICP)",
+        "intro": "EU-Umsätze mit Reverse Charge im Quartal, gruppiert nach USt-IdNr. des Kunden. Nettobeträge — hier wurde keine USt. berechnet.",
+        "year": "Jahr",
+        "quarter": "Quartal",
+        "show": "Anzeigen",
+        "download": "CSV herunterladen",
+        "country": "Land",
+        "vatNumber": "USt-IdNr.",
+        "invoices": "Rechnungen",
+        "net": "Netto",
+        "total": "Gesamt",
+        "empty": "Keine Reverse-Charge-Umsätze in diesem Quartal.",
+        "missingVat": "{count} Reverse-Charge-Rechnung(en) ohne USt-IdNr. sind nicht gelistet — Reverse Charge setzt eine voraus, das ist also ein zu prüfender Fehler."
       }
     },
     "errors": {
@@ -865,7 +884,8 @@
         "alreadyIssued": "Für diese Zahlung existiert bereits eine Rechnung.",
         "noPlan": "Kein Tarif zu dieser Zahlung gefunden.",
         "error": "Ausstellung fehlgeschlagen. Logs prüfen."
-      }
+      },
+      "billingDetailsRequired": "Bitte zuerst Ihre Rechnungsdaten hinterlegen — ohne sie kann keine Rechnung ausgestellt werden."
     },
     "plan": {
       "title": "Ihr Abo",

@@ -470,7 +470,9 @@
         "overview": "Genel bakış",
         "signups": "Kayıtlar",
         "fleet": "Filo",
-        "invoices": "Faturalar"
+        "invoices": "Faturalar",
+        "icp": "ICP",
+        "billingDetails": "Fatura bilgileri"
       },
       "groups": {
         "pipeline": "Süreç",
@@ -809,7 +811,9 @@
           "checkedOn": "{date} tarihinde doğrulandı"
         },
         "recheck": "KDV numarasını yeniden doğrula",
-        "rechecking": "Doğrulanıyor…"
+        "rechecking": "Doğrulanıyor…",
+        "payerIntro": "Faturalarınızın düzenlendiği tüzel kişilik. İlk ödemenizden önce gereklidir.",
+        "backToPlan": "← Planınıza dön"
       },
       "invoices": {
         "title": "Faturalar",
@@ -821,6 +825,21 @@
         "empty": "Henüz fatura yok.",
         "issueNow": "Şimdi düzenle",
         "issuing": "Düzenleniyor…"
+      },
+      "icp": {
+        "title": "AB satış listesi (ICP)",
+        "intro": "Çeyrek için tersine tahakkuklu AB satışları, müşteri KDV numarasına göre gruplanmış. Net tutarlar — burada KDV tahsil edilmedi.",
+        "year": "Yıl",
+        "quarter": "Çeyrek",
+        "show": "Göster",
+        "download": "CSV indir",
+        "country": "Ülke",
+        "vatNumber": "KDV numarası",
+        "invoices": "Faturalar",
+        "net": "Net",
+        "total": "Toplam",
+        "empty": "Bu çeyrekte tersine tahakkuklu satış yok.",
+        "missingVat": "{count} tersine tahakkuklu fatura KDV numarası taşımıyor ve listelenmedi — tersine tahakkuk bunu gerektirir, bu nedenle araştırılması gereken bir kusur."
       }
     },
     "errors": {
@@ -865,7 +884,8 @@
         "alreadyIssued": "Bu ödeme için zaten bir fatura var.",
         "noPlan": "Bu ödeme için plan bulunamadı.",
         "error": "Düzenleme başarısız. Günlükleri kontrol edin."
-      }
+      },
+      "billingDetailsRequired": "Ödemeye başlamadan önce fatura bilgilerinizi ekleyin — bunlar olmadan fatura düzenlenemez."
     },
     "plan": {
       "title": "Aboneliğiniz",

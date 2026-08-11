@@ -470,7 +470,9 @@
         "overview": "Overview",
         "signups": "Signups",
         "fleet": "Fleet",
-        "invoices": "Invoices"
+        "invoices": "Invoices",
+        "icp": "ICP",
+        "billingDetails": "Billing details"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -809,7 +811,9 @@
           "checkedOn": "checked {date}"
         },
         "recheck": "Re-check VAT number",
-        "rechecking": "Checking…"
+        "rechecking": "Checking…",
+        "payerIntro": "The legal entity your invoices are addressed to. Needed before your first payment.",
+        "backToPlan": "← Back to your plan"
       },
       "invoices": {
         "title": "Invoices",
@@ -821,6 +825,21 @@
         "empty": "No invoices yet.",
         "issueNow": "Issue now",
         "issuing": "Issuing…"
+      },
+      "icp": {
+        "title": "EC Sales List (ICP)",
+        "intro": "Reverse-charged EU sales for the quarter, grouped by customer VAT number. Net amounts — no VAT was charged here.",
+        "year": "Year",
+        "quarter": "Quarter",
+        "show": "Show",
+        "download": "Download CSV",
+        "country": "Country",
+        "vatNumber": "VAT number",
+        "invoices": "Invoices",
+        "net": "Net",
+        "total": "Total",
+        "empty": "No reverse-charged sales in this quarter.",
+        "missingVat": "{count} reverse-charged invoice(s) carry no VAT number and are not listed — reverse charge requires one, so this is a defect to investigate."
       }
     },
     "errors": {
@@ -865,7 +884,8 @@
         "alreadyIssued": "An invoice already exists for this charge.",
         "noPlan": "No plan found for this charge.",
         "error": "Issuing failed. Check the logs."
-      }
+      },
+      "billingDetailsRequired": "Add your billing details before starting the payment — an invoice cannot be issued without them."
     },
     "plan": {
       "title": "Your plan",
