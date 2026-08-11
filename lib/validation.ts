@@ -170,4 +170,16 @@ export const provisionSchema = z.object({
       message: `unknown module — allowed: ${MODULE_IDS.join(", ")}`,
     }),
   city: z.string().trim().max(200).optional().or(z.literal("")),
+  // The tenant's Stripe connected account, when the founder already has it (runbook
+  // §2b creates it BEFORE proposing, precisely because provision-tenant.sh refuses the
+  // module without it). Optional: left empty, the generator defers `online-payments` to
+  // a second registry PR rather than emitting an entry that would be refused.
+  // Grammar-pinned rather than free text — this value reaches the tenant's Stripe env,
+  // where a typo means charges addressed to an account that does not exist.
+  stripeAccount: z
+    .string()
+    .trim()
+    .regex(/^acct_[A-Za-z0-9]{8,32}$/, "Stripe account id, e.g. acct_1AbCdEfGhIjKlMnO")
+    .optional()
+    .or(z.literal("")),
 });

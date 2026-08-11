@@ -6,6 +6,54 @@
 // so it stays unit-testable + free of the GitHub API / secrets.
 
 import { stringify } from "yaml";
+import type { ModuleId } from "./module-catalog";
+
+/**
+ * Modules `provision-tenant.sh` refuses unless the SAME entry also records a
+ * `stripe_account:`. That guard `exit 1`s *before* the database, the compose project
+ * and the image, so proposing the module without the account does not yield a tenant
+ * lacking card payment — it yields no tenant at all.
+ *
+ * Hence the pairing rule below: the module ships only alongside an account, never on
+ * its own. Which half is missing depends on the path in, and BOTH paths reach this one
+ * generator:
+ *
+ * - **Self-serve.** The buyer has no `acct_` and cannot be given one — only the
+ *   restaurant can create it, through Stripe's hosted onboarding, which cannot be
+ *   pre-filled (`oauth_not_supported` on a Standard account, SOFRA-PAYMENTS-PLAN §3).
+ *   So the module is deferred to a second registry PR and the PR body says so.
+ * - **Founder.** `docs/runbooks/signup-to-live-tenant.md` §2b has the founder create
+ *   the account BEFORE proposing, precisely because of this guard — so they arrive
+ *   holding the `acct_`, and the entry carries both halves in one shot.
+ *
+ * Deferring unconditionally would have been wrong for the second path: it would make
+ * the founder's documented order pointless and tell them, falsely, that no account can
+ * exist yet.
+ */
+const ACCOUNT_PAIRED_MODULE_IDS: readonly ModuleId[] = ["online-payments"];
+
+/**
+ * Split a purchased module list into what this entry may carry now and what must wait
+ * for a second registry PR. Pure and shared, so the entry and the PR body describing it
+ * cannot disagree about which is which.
+ *
+ * `stripeAccount` is the whole hinge: with one, nothing is deferred; without one, the
+ * account-paired ids are held back.
+ */
+export function splitDeferredModules(
+  modules: string[],
+  stripeAccount?: string,
+): { granted: string[]; deferred: string[] } {
+  // Whitespace-only is not an account: `provision-tenant.sh` tests `-z`, which a blank
+  // string passes and " " does not — so a stray space would sail past the guard here and
+  // then fail on the box, which is the one place this must never be discovered.
+  if (stripeAccount?.trim()) return { granted: modules, deferred: [] };
+  const isPaired = (id: string) => (ACCOUNT_PAIRED_MODULE_IDS as readonly string[]).includes(id);
+  return {
+    granted: modules.filter((id) => !isPaired(id)),
+    deferred: modules.filter(isPaired),
+  };
+}
 
 export interface TenantProvisionInput {
   /** Registry key + derivation seed. Must already match the slug grammar. */
@@ -16,6 +64,9 @@ export interface TenantProvisionInput {
   currency: string;
   languages: string[];
   modules: string[];
+  /** The tenant's Stripe connected account (`acct_…`), when they already have one.
+   *  Absent on the self-serve path; present when the founder followed runbook §2b. */
+  stripeAccount?: string;
   city?: string;
   /** Which box the tenant belongs on; provision-tenant.sh refuses a mismatch. */
   box?: string;
@@ -29,10 +80,20 @@ export interface TenantProvisionInput {
  * `legacy` — that guard protects tenant 1, ADR-006). String values are emitted via
  * `yaml.stringify`, so any special characters in name/city are safely escaped (no
  * YAML injection from free-text input).
+ *
+ * Returns the modules it had to DEFER alongside the block, rather than only the block:
+ * a caller that proposes this entry without saying what was stripped has silently sold
+ * a module and shipped an entry omitting it. Making the strip part of the return value
+ * is what stops the next caller doing that by omission.
  */
-export function buildTenantRegistryEntry(input: TenantProvisionInput): string {
+export function buildTenantRegistryEntry(input: TenantProvisionInput): {
+  entry: string;
+  deferred: string[];
+} {
   const { slug } = input;
   const box = input.box ?? "staging";
+  const stripeAccount = input.stripeAccount?.trim();
+  const { granted, deferred } = splitDeferredModules(input.modules, stripeAccount);
   const entry = {
     [slug]: {
       name: input.name,
@@ -59,129 +120,22 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): string {
       frontend_tag: `tenant-${slug}`,
       currency: input.currency,
       languages: input.languages,
-      modules: input.modules,
+      // NOT `input.modules` — see ACCOUNT_PAIRED_MODULE_IDS.
+      modules: granted,
       template: input.template,
       admin_email: input.adminEmail,
+      // Emitted only when there is one, and always together with the module that needs
+      // it — the two are written from the same `granted`/`stripeAccount` pair so the
+      // entry can never carry one half of the guard's condition.
+      ...(stripeAccount ? { stripe_account: stripeAccount } : {}),
       // Only emit city when set — the registry field is optional.
       ...(input.city ? { city: input.city } : {}),
     },
   };
-  return stringify(entry)
+  const block = stringify(entry)
     .trimEnd()
     .split("\n")
     .map((line) => (line ? `  ${line}` : line))
     .join("\n");
-}
-
-// Close the quote, emit an escaped apostrophe, reopen: the only way to get a
-// literal ' inside a POSIX single-quoted argument.
-const SHELL_QUOTED_APOSTROPHE = String.raw`'\''`;
-
-/** Quote a value for a POSIX shell single-quoted argument. The tenant name is
- *  free text and the founder copy-pastes these commands into a terminal, so an
- *  apostrophe must not end the quoting. */
-const shq = (value: string): string =>
-  "'" + value.replaceAll("'", SHELL_QUOTED_APOSTROPHE) + "'";
-
-/** Collapse anything that would break the markdown fence or the shell command this
- *  body embeds. `provisionSchema` already refuses control characters in `name`, so in
- *  practice this changes nothing — it is here so the function is safe on its own,
- *  because a body builder that depends on a caller's validation is one refactor away
- *  from emitting an unbalanced code fence built from public-form input. */
-const oneLine = (value: string): string => value.replace(/\s+/g, " ").trim();
-
-/**
- * The PR body for a provisioning proposal.
- *
- * **For a staging-box tenant, merging this PR provisions it** (SOFRA-ONBOARDING-PLAN §2
- * option B, ADR-012 amendment 2026-07-30): the deploy repo's
- * `provision-on-registry-merge.yml` chains the image build and `provision-tenant.sh` off
- * the registry sync. So the body leads with what to CHECK before merging — the merge is
- * the last reversible moment.
- *
- * That chain is **staging-only** (it follows `sync-registry-to-staging.yml` and inherits
- * its narrowness), so a `box: prod` entry gets the opposite header: merging does nothing
- * and the commands are required, not a fallback. Telling a prod entry "merging provisions
- * this" would leave the founder waiting on a chain that never runs.
- *
- * The image-build command stays in the body either way, because that step is the one that
- * is easy to skip and fatal to skip: `NEXT_PUBLIC_*` are baked per domain, so provisioning
- * without it dies at `docker compose pull` on an image that was never published.
- */
-export function buildProvisioningPrBody(input: TenantProvisionInput): string {
-  const { slug } = input;
-  const domain = `${slug}.sofrapiwas.com`;
-  const box = input.box ?? "staging";
-  const chained = box === "staging";
-
-  // One line, naming the one field in the diff the founder may need to change. It used to
-  // branch on the box and warn that a staging-box tenant rides develop; the generator no
-  // longer produces that entry, so warning about it would be an unfalsifiable checkbox.
-  const tagCheck =
-    "- [ ] **`backend_tag: latest`** — released code, published only from `main`. If this is a develop-tracking **showcase** rather than a customer, change it to `staging` in Files changed before merging; a customer should stay on `latest`, so their database is never migrated by unreleased code";
-
-  const header = chained
-    ? [
-        "### ⚠️ Merging this PR provisions the tenant",
-        "",
-        "`provision-on-registry-merge.yml` builds the per-tenant frontend image and then runs",
-        "`provision-tenant.sh` on the box — roughly 15 minutes, hands-off. **This is the human",
-        "checkpoint, and it is the last reversible moment.** Before you merge:",
-      ]
-    : [
-        `### Merging this PR does **not** provision — \`box: ${box}\``,
-        "",
-        "The post-merge chain is staging-only. This entry will be reported and skipped, so the",
-        "two commands below are **required**, not a fallback. Still check the entry first:",
-      ];
-
-  const after = chained
-    ? [
-        "The chain provisions **first-time only**, and reports back on this PR when it is done —",
-        "or opens an issue on the deploy repo if any stage fails, including the registry sync it",
-        "waits on. A tenant it has already finished is skipped, so re-merging or",
-        "reverting-and-remerging this PR will not provision twice. One it left part-way through is",
-        "*completed* rather than skipped, so a retry is always safe.",
-      ]
-    : [
-        "Merging still fires `sync-registry-to-staging.yml`, which copies the registry to the",
-        "**staging** box only. A prod-box tenant needs the prod box's own access (ADR-012",
-        "per-box boundary), so run the commands from a machine that has it.",
-      ];
-
-  return [
-    `Adds the \`${slug}\` tenant to \`tenants/registry.yml\`, proposed by the control plane (sofra ADR-012).`,
-    "",
-    `- **domain** \`${domain}\` · **template** \`${input.template}\` · **currency** \`${input.currency}\``,
-    `- **languages** \`${input.languages.join(", ")}\` · **modules** \`${input.modules.join(", ")}\``,
-    `- **box** \`${box}\` · status starts at \`provisioning\``,
-    "",
-    ...header,
-    "",
-    `- [ ] the **slug** \`${slug}\` is what the customer should live on forever — it is the subdomain, database, role and compose project, and changing it later is a full re-provision`,
-    `- [ ] **modules** \`${input.modules.join(", ")}\` match what they actually paid for — they are enforced at runtime now, so a missing id is a feature they bought and will not get`,
-    tagCheck,
-    `- [ ] **template** \`${input.template}\` and **currency** \`${input.currency}\` are right — the template is baked into the image at build time, so changing it later is a rebuild`,
-    "",
-    ...after,
-    "",
-    `Afterwards: \`./verify-env.sh https://${domain}\`, hand over the generated admin password from the tenant \`.env\` (and have them change it), then flip this entry's \`status\` to \`active\` in a follow-up commit.`,
-    "",
-    chained ? "### If the chain fails" : "### Run these after merging",
-    "",
-    "Both are idempotent and safe to re-run:",
-    "",
-    "```bash",
-    "gh workflow run build-tenant-image.yml --repo piwas-21/restaurant-app-frontend \\",
-    `  -f tenant_domain=${domain} \\`,
-    `  -f image_tag=tenant-${slug} \\`,
-    `  -f restaurant_name=${shq(oneLine(input.name))} \\`,
-    `  -f template=${input.template} \\`,
-    `  -f currency=${input.currency}`,
-    "",
-    `gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=${slug}`,
-    "```",
-    "",
-    "Full runbook: deploy repo `DEPLOYMENT.md` §Tenant provisioning.",
-  ].join("\n");
+  return { entry: block, deferred };
 }

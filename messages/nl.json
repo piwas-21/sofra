@@ -739,6 +739,8 @@
         "currency": "Valuta (bijv. EUR)",
         "languages": "Talen",
         "modules": "Modules",
+        "stripeAccount": "Stripe-account (acct_…, optioneel)",
+        "stripeAccountHint": "Alleen als ze online-payments hebben gekocht ÉN je hun gekoppelde account al hebt aangemaakt (runbook §2b). Leeg gelaten wordt de module achtergehouden en legt de PR uit hoe je die later toevoegt — provisioning weigert de module zonder account.",
         "create": "Registry-PR openen",
         "creating": "Bezig met openen…",
         "created": "Registry-PR geopend — beoordeel + voeg samen, richt dan in:",

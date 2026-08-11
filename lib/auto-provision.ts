@@ -85,7 +85,7 @@ export async function autoProposeProvisioning(billingId: string): Promise<AutoPr
       });
     }
 
-    const { prUrl } = await openProvisioningPr({
+    const { prUrl, deferred } = await openProvisioningPr({
       slug: billing.tenantSlug,
       name: lead.name,
       adminEmail: lead.adminEmail,
@@ -93,13 +93,19 @@ export async function autoProposeProvisioning(billingId: string): Promise<AutoPr
       currency: lead.currency,
       languages: lead.languages,
       modules: lead.modules,
+      // No `stripeAccount`: a self-serve buyer has none and cannot be given one, so a
+      // bought `online-payments` is always deferred on this path. See the generator.
       city: lead.city || undefined,
     });
     await db.tenantBilling.update({
       where: { id: billing.id },
       data: { provisioningPrUrl: prUrl },
     });
-    return finish(billing.tenantSlug, { kind: "opened", prUrl });
+    return finish(billing.tenantSlug, {
+      kind: "opened",
+      prUrl,
+      ...(deferred.length ? { deferred } : {}),
+    });
   } catch (e) {
     return finish(slugFor(billingId), await translate(billingId, e));
   }
@@ -181,6 +187,7 @@ async function finish(
     // actor null: this was a payment, not a person.
     await audit(null, `tenant.provision.auto.${outcome.kind}`, "Tenant", slug, {
       ...("prUrl" in outcome ? { prUrl: outcome.prUrl } : {}),
+      ...("deferred" in outcome && outcome.deferred?.length ? { deferred: outcome.deferred } : {}),
       ...("reason" in outcome ? { reason: outcome.reason } : {}),
       ...("detail" in outcome ? { detail: outcome.detail } : {}),
     });

@@ -739,6 +739,8 @@
         "currency": "Devise (ex. EUR)",
         "languages": "Langues",
         "modules": "Modules",
+        "stripeAccount": "Compte Stripe (acct_…, facultatif)",
+        "stripeAccountHint": "Uniquement s’ils ont acheté online-payments ET que vous avez déjà créé leur compte connecté (runbook §2b). Laissé vide, le module est mis de côté et la PR explique comment l’ajouter ensuite — le provisionnement refuse le module sans compte.",
         "create": "Ouvrir la PR de registre",
         "creating": "Ouverture…",
         "created": "PR de registre ouverte — révisez + fusionnez, puis provisionnez :",
