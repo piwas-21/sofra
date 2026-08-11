@@ -110,6 +110,15 @@ it keeps the same privilege split without the git round-trip.
   that is where the control plane runs. A develop-tracking showcase (`demo`) is a
   hand-edit at the merge checkpoint, which is the one place a human already reads
   the entry. Workspace `docs/plans/SOFRA-ONBOARDING-PLAN.md` §2b.
+- **`modules` is what the entry may carry, not simply what was bought.** `online-payments`
+  is emitted only alongside a `stripe_account:`, because `provision-tenant.sh` refuses that
+  pair's lone half and does so *before* the database, the compose project and the image —
+  so an entry with the module and no account yields no tenant at all, not a tenant lacking
+  card payment. The founder supplies the account on `/admin/provision` (runbook §2b creates
+  it first, so it is in hand), and the entry carries both in one shot. A self-serve buyer
+  has none and cannot be given one — only the restaurant can create it, through Stripe's
+  hosted onboarding — so their module is withheld, the PR body states what the second
+  registry PR must add, and `deferred` is recorded on the provisioning audit entry.
 - **Deprovision stays founder-only** over SSH. Unchanged.
 - **Status reflection back to `/admin` is still open** — the registry `status` flip to
   `active` remains a manual follow-up commit, and nothing automatic reads it.

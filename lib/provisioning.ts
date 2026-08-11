@@ -6,11 +6,8 @@
 // repo-scoped GitHub token (PROVISION_GITHUB_TOKEN) — never the box SSH key
 // (invariant 2).
 
-import {
-  buildProvisioningPrBody,
-  buildTenantRegistryEntry,
-  type TenantProvisionInput,
-} from "@/lib/provisioning-registry";
+import { buildProvisioningPrBody } from "@/lib/provisioning-pr-body";
+import { buildTenantRegistryEntry, type TenantProvisionInput } from "@/lib/provisioning-registry";
 
 const OWNER = "piwas-21";
 const REPO = "restaurant-app-deploy";
@@ -70,7 +67,9 @@ async function gh<T>(token: string, path: string, init?: RequestInit): Promise<T
  * the same slug is caught at branch creation with a clear message (the slug isn't
  * on BASE until its PR merges, so the up-front check can't see it).
  */
-export async function openProvisioningPr(input: TenantProvisionInput): Promise<{ prUrl: string }> {
+export async function openProvisioningPr(
+  input: TenantProvisionInput,
+): Promise<{ prUrl: string; deferred: string[] }> {
   const token = process.env.PROVISION_GITHUB_TOKEN;
   if (!token) throw new ProvisioningNotConfiguredError();
 
@@ -83,7 +82,11 @@ export async function openProvisioningPr(input: TenantProvisionInput): Promise<{
     throw new ProvisioningApiError(`registry already has a '${input.slug}' entry`);
   }
 
-  const entry = buildTenantRegistryEntry(input);
+  // `deferred` is returned to the caller rather than only rendered into the PR body: a
+  // deferral means a customer is being BILLED for a module their tenant will not have
+  // until a second registry PR lands, and a prose section in one PR is not a record
+  // anyone can query later. The callers put it in the audit trail.
+  const { entry, deferred } = buildTenantRegistryEntry(input);
   // trimEnd() (no regex) drops any trailing whitespace/newlines, then we re-add
   // exactly two — avoids the ReDoS-prone `\n*$`, and the blank line keeps the
   // new tenant from butting against the previous one's trailing comment, which
@@ -132,5 +135,5 @@ export async function openProvisioningPr(input: TenantProvisionInput): Promise<{
       body: buildProvisioningPrBody(input),
     }),
   });
-  return { prUrl: pr.html_url };
+  return { prUrl: pr.html_url, deferred };
 }

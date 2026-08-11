@@ -23,7 +23,13 @@ export type AutoProposePlan =
   | { kind: "skipped"; reason: AutoProposeSkip }
   | { kind: "failed"; detail: string };
 
-export type AutoProposeOutcome = Exclude<AutoProposePlan, { kind: "propose" }> | { kind: "opened"; prUrl: string };
+export type AutoProposeOutcome =
+  | Exclude<AutoProposePlan, { kind: "propose" }>
+  // `deferred` = modules the buyer PAID for that the proposed entry withholds, because
+  // provisioning refuses them without a Stripe account the self-serve buyer cannot have
+  // yet. Carried on the outcome so it reaches the audit trail: this is the only durable
+  // record that someone is being billed for a module their tenant does not yet have.
+  | { kind: "opened"; prUrl: string; deferred?: string[] };
 
 /** The already-validated configuration a lead recorded, plus the slug it must match. */
 export type AutoProposeConfig = {

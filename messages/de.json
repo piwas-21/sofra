@@ -739,6 +739,8 @@
         "currency": "Währung (z. B. EUR)",
         "languages": "Sprachen",
         "modules": "Module",
+        "stripeAccount": "Stripe-Konto (acct_…, optional)",
+        "stripeAccountHint": "Nur wenn online-payments gekauft wurde UND das verbundene Konto bereits angelegt ist (Runbook §2b). Leer gelassen, wird das Modul zurückgestellt und die PR erklärt, wie es später ergänzt wird — die Provisionierung lehnt das Modul ohne Konto ab.",
         "create": "Registry-PR öffnen",
         "creating": "Wird geöffnet…",
         "created": "Registry-PR geöffnet — prüfen + zusammenführen, dann bereitstellen:",

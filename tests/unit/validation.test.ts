@@ -293,6 +293,24 @@ describe("provisionSchema (ADR-012 tenant proposal)", () => {
     expect(provisionSchema.safeParse({ ...base, modules: "" }).success).toBe(false);
   });
 
+  it("accepts a Stripe account id, and treats absent/empty as 'not supplied'", () => {
+    // Optional by design: the self-serve path never has one, and the founder path only
+    // sometimes does. Empty must parse, because empty is the signal that makes the
+    // generator hold `online-payments` back rather than propose a refused entry.
+    expect(provisionSchema.safeParse({ ...base, stripeAccount: "acct_1AbCdEfGhIjKlMnO" }).success).toBe(true);
+    expect(provisionSchema.safeParse({ ...base, stripeAccount: "" }).success).toBe(true);
+    expect(provisionSchema.safeParse(base).success).toBe(true);
+  });
+
+  it("rejects a malformed Stripe account id rather than forwarding it", () => {
+    // This value reaches the tenant's Stripe env. A typo there is not a validation
+    // nicety: charges would be addressed to an account that does not exist, and the
+    // registry guard only checks that the field is NON-EMPTY, never that it is real.
+    for (const bad of ["acct", "acct_", "1AbCdEfGhIjKlMnO", "acct_short", "acct_has spaces"]) {
+      expect(provisionSchema.safeParse({ ...base, stripeAccount: bad }).success).toBe(false);
+    }
+  });
+
   it("rejects a line break inside the tenant name", () => {
     // `trim()` only strips the ENDS, so an interior newline used to survive — and the
     // name is forwarded into build-tenant-image.yml's `build-args:`, which is a

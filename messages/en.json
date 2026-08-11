@@ -739,6 +739,8 @@
         "currency": "Currency (e.g. EUR)",
         "languages": "Languages",
         "modules": "Modules",
+        "stripeAccount": "Stripe account (acct_…, optional)",
+        "stripeAccountHint": "Only if they bought online-payments AND you already created their connected account (runbook §2b). Left empty, the module is held back and the PR says how to add it later — provisioning refuses the module without an account.",
         "create": "Open registry PR",
         "creating": "Opening…",
         "created": "Registry PR opened — review + merge it, then provision:",

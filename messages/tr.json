@@ -739,6 +739,8 @@
         "currency": "Para birimi (ör. EUR)",
         "languages": "Diller",
         "modules": "Modüller",
+        "stripeAccount": "Stripe hesabı (acct_…, isteğe bağlı)",
+        "stripeAccountHint": "Yalnızca online-payments satın aldılarsa VE bağlı hesaplarını zaten oluşturduysanız (runbook §2b). Boş bırakılırsa modül beklemeye alınır ve PR sonradan nasıl ekleneceğini anlatır — hesap olmadan provisioning modülü reddeder.",
         "create": "Kayıt PR’si aç",
         "creating": "Açılıyor…",
         "created": "Kayıt PR’si açıldı — inceleyip birleştirin, sonra sağlayın:",
