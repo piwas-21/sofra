@@ -32,6 +32,20 @@ export type SellerIdentity = {
   series: string;
 };
 
+/**
+ * The address a customer can actually reach a human at.
+ *
+ * Its OWN function, separate from `sellerIdentity()`, because the imprint has to
+ * offer a contact route even when the rest of the identity is not published yet —
+ * and because it is the one field three separate obligations run through: the
+ * art. 3:15d imprint contact, the GDPR data-subject route, and "ask us for the
+ * terms". An address that bounces makes all three dead letters, so it is never
+ * hardcoded and never guessed.
+ */
+export function contactEmail(): string | null {
+  return env("SOFRA_LEGAL_EMAIL") || null;
+}
+
 const env = (name: string): string => process.env[name]?.trim() ?? "";
 
 /** Which required values are missing. Empty array = ready to invoice. */
@@ -44,6 +58,9 @@ export function sellerIdentityGaps(): string[] {
     "SOFRA_LEGAL_COUNTRY",
     "SOFRA_KVK",
     "SOFRA_VAT_NUMBER",
+    // Required for the same reason as the rest: an imprint with no working
+    // contact address satisfies neither art. 3:15d nor a data-subject request.
+    "SOFRA_LEGAL_EMAIL",
   ];
   const gaps = required.filter((name) => !env(name));
   // A malformed VAT number is a gap too, not a value: it would be printed on the

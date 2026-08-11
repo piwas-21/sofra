@@ -44,6 +44,13 @@ export default function Footer() {
           <Link href="/changelog" className="hover:text-primary transition-colors">
             {t("nav.changelog")}
           </Link>
+          {/* NL art. 3:15d: an online service provider must show its name,
+              address, email, KVK and VAT number. The site that takes the money
+              had none of it, while the tenant app has had a privacy policy and
+              terms all along. */}
+          <Link href="/legal" className="hover:text-primary transition-colors">
+            {t("nav.legal")}
+          </Link>
         </nav>
 
         <div className="text-sm text-muted-foreground">

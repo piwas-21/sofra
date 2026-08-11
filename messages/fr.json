@@ -202,7 +202,8 @@
       "faq": "FAQ",
       "caseStudy": "Étude de cas",
       "compare": "SofraPiwas vs GloriaFood",
-      "changelog": "Quoi de neuf"
+      "changelog": "Quoi de neuf",
+      "legal": "Légal"
     },
     "copyright": "© {year} SofraPiwas. Tous droits réservés."
   },
@@ -1045,6 +1046,62 @@
         "counter": "Comptoir",
         "full-service": "Service complet"
       }
+    }
+  },
+  "legal": {
+    "meta": {
+      "title": "Mentions légales et confidentialité · SofraPiwas",
+      "description": "Qui exploite SofraPiwas et comment nous traitons vos données."
+    },
+    "kicker": "Légal",
+    "title": "Mentions légales & confidentialité",
+    "imprint": {
+      "title": "Qui nous sommes",
+      "kvk": "Registre du commerce (KVK) : {value}",
+      "vat": "Numéro de TVA intracommunautaire : {value}",
+      "unset": "Nos informations d'immatriculation et notre adresse de contact ne sont pas encore publiées ici. Elles figurent sur toute facture que nous vous avons adressée.",
+      "contact": "E-mail"
+    },
+    "privacy": {
+      "title": "Confidentialité",
+      "updated": "Ce texte décrit ce que le service fait réellement aujourd'hui, et est mis à jour lorsque cela change.",
+      "controller": {
+        "title": "Qui est responsable",
+        "body": "La société nommée ci-dessus est responsable du traitement des données décrites ici — celles des clients et partenaires de SofraPiwas. Cette page ne couvre pas les convives d'un restaurant : leurs réservations et commandes résident dans l'installation propre à ce restaurant, qui publie sa propre politique de confidentialité à leur intention."
+      },
+      "what": {
+        "title": "Ce que nous collectons",
+        "body": "Pour les comptes : votre nom, votre adresse e-mail et une empreinte de mot de passe. Pour la facturation : la dénomination légale de votre société, son adresse, son numéro d'immatriculation, son numéro de TVA et l'e-mail de facturation, ainsi que les enregistrements de paiement de notre prestataire et la réponse du service de TVA lors de la vérification de votre numéro. Si vous nous écrivez ou postulez au programme partenaire : ce que vous saisissez dans le formulaire, y compris un téléphone et une ville si vous les indiquez. Pour un partenaire : les restaurants que vous présentez, leurs coordonnées et vos notes. Nous conservons des journaux de sécurité des tentatives de connexion, qui contiennent l'adresse e-mail saisie. Nous n'utilisons ni mesure d'audience ni traceur publicitaire."
+      },
+      "why": {
+        "title": "Pourquoi",
+        "body": "Pour vous fournir un compte, vous facturer et émettre les factures que la loi nous impose. Nous vérifions les numéros de TVA auprès du service VIES de la Commission européenne afin d'appliquer le bon régime fiscal, et nous conservons la référence de cette vérification comme preuve."
+      },
+      "keep": {
+        "title": "Durée de conservation",
+        "body": "Les factures, et les informations de facturation qui y figurent, sont conservées pendant la durée imposée par le droit fiscal néerlandais. Les journaux de connexion et d'administration sont conservés 18 mois. Une candidature de partenaire refusée est conservée 12 mois, puis supprimée. Les liens d'invitation expirent et sont supprimés après 30 jours. Les comptes et fiches CRM sont conservés le temps de la relation et supprimés sur demande — aucune échéance automatique ne s'y applique."
+      },
+      "rights": {
+        "title": "Vos droits",
+        "body": "Vous pouvez demander une copie de vos données, leur rectification ou leur suppression. Écrivez à l'adresse ci-dessus et nous répondrons. Certaines choses ne peuvent pas être supprimées sur demande, et il est plus honnête de le dire : une facture émise et les informations légales qui y figurent, parce que la loi nous impose de les conserver ; et les journaux de sécurité, jusqu'à l'échéance de leurs 18 mois."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "body": "Un cookie de session lorsque vous êtes connecté, et un cookie mémorisant votre langue. Votre préférence de thème clair ou sombre est stockée dans votre navigateur et ne nous est jamais transmise. Aucun cookie de mesure d'audience ni de publicité."
+      },
+      "processors": {
+        "title": "Qui d'autre y a accès",
+        "body": "Nous faisons appel à un petit nombre de prestataires, chacun ne recevant que ce dont sa mission a besoin. Nous vérifions également les numéros de TVA auprès du service VIES de la Commission européenne, ce qui implique de lui transmettre le numéro que vous nous avez communiqué.",
+        "hosting": "hébergement et bases de données",
+        "payments": "paiements par abonnement",
+        "email": "envoi des e-mails",
+        "source": "code source et compilations — et, pour chaque restaurant que nous mettons en place, son nom, sa ville et l'e-mail de son administrateur, enregistrés dans un dépôt privé",
+        "monitoring": "supervision des erreurs, pour savoir quand quelque chose casse"
+      }
+    },
+    "terms": {
+      "title": "Conditions",
+      "body": "Nous n'avons pas encore publié de conditions de service. En attendant, ce qui s'applique est ce que nous convenons par écrit avec vous — demandez-nous et nous vous le confirmerons."
     }
   }
 }

@@ -202,7 +202,8 @@
       "faq": "SSS",
       "caseStudy": "Vaka çalışması",
       "compare": "SofraPiwas vs GloriaFood",
-      "changelog": "Neler yeni"
+      "changelog": "Neler yeni",
+      "legal": "Hukuki"
     },
     "copyright": "© {year} SofraPiwas. Tüm hakları saklıdır."
   },
@@ -1045,6 +1046,62 @@
         "counter": "Tezgah",
         "full-service": "Tam servis"
       }
+    }
+  },
+  "legal": {
+    "meta": {
+      "title": "Künye ve gizlilik · SofraPiwas",
+      "description": "SofraPiwas'ı kimin işlettiği ve verilerinizi nasıl ele aldığımız."
+    },
+    "kicker": "Hukuki",
+    "title": "Künye & gizlilik",
+    "imprint": {
+      "title": "Biz kimiz",
+      "kvk": "Ticaret sicili (KVK): {value}",
+      "vat": "KDV kimlik numarası: {value}",
+      "unset": "Sicil ve iletişim bilgilerimiz burada henüz yayımlanmadı. Size gönderdiğimiz her faturada yer alır.",
+      "contact": "E-posta"
+    },
+    "privacy": {
+      "title": "Gizlilik",
+      "updated": "Bu metin hizmetin bugün gerçekte ne yaptığını anlatır ve değiştiğinde güncellenir.",
+      "controller": {
+        "title": "Kim sorumlu",
+        "body": "Yukarıda adı geçen şirket, burada anlatılan veriler — SofraPiwas'ın kendi müşteri ve partnerlerinin verileri — için veri sorumlusudur. Bu sayfa bir restoranın misafirlerini kapsamaz: onların rezervasyon ve siparişleri o restoranın kendi kurulumunda durur ve o restoran onlar için kendi gizlilik metnini yayımlar."
+      },
+      "what": {
+        "title": "Ne topluyoruz",
+        "body": "Hesaplar için: adınız, e-posta adresiniz ve parola özeti. Faturalama için: şirketinizin yasal unvanı, adresi, sicil numarası, KDV numarası ve fatura e-postası; ayrıca ödeme sağlayıcımızdan gelen ödeme kayıtları ve numaranızı doğrularken KDV servisinin verdiği yanıt. Bize yazarsanız veya partner programına başvurursanız: forma yazdıklarınız, verirseniz telefon ve şehir dahil. Partnerler için: tanıştırdığınız restoranlar, iletişim bilgileri ve notlarınız. Giriş denemelerine dair güvenlik kayıtları tutarız; bunlar denenen e-posta adresini içerir. Analitik veya reklam izleyici kullanmıyoruz."
+      },
+      "why": {
+        "title": "Neden",
+        "body": "Size hesap vermek, faturalandırmak ve yasanın zorunlu kıldığı faturaları düzenlemek için. KDV numaralarını doğru vergi işlemini uygulayabilmek adına Avrupa Komisyonu'nun VIES servisinde doğrularız ve bu sorgunun referansını kanıt olarak saklarız."
+      },
+      "keep": {
+        "title": "Ne kadar süre saklıyoruz",
+        "body": "Faturalar ve üzerlerindeki fatura bilgileri, Hollanda vergi mevzuatının öngördüğü süre boyunca saklanır. Giriş ve yönetim kayıtları 18 ay saklanır. Reddedilen bir partner başvurusu 12 ay saklanır, sonra silinir. Davet bağlantıları süresi dolunca 30 gün içinde silinir. Hesaplar ve CRM kayıtları ilişki sürdüğü sürece tutulur ve talep üzerine kaldırılır — bunlarda otomatik bir süre yoktur."
+      },
+      "rights": {
+        "title": "Haklarınız",
+        "body": "Verilerinizin kopyasını, düzeltilmesini veya silinmesini isteyebilirsiniz. Yukarıdaki adrese yazın, yanıtlayalım. Bazı şeyleri talep üzerine silemeyiz ve bunu söylemek daha dürüst: düzenlenmiş bir fatura ve üzerindeki yasal bilgiler, çünkü saklamakla yükümlüyüz; ve güvenlik kayıtları, 18 ayları dolana kadar."
+      },
+      "cookies": {
+        "title": "Çerezler",
+        "body": "Oturum açtığınızda bir oturum çerezi ve dilinizi hatırlayan bir çerez. Açık/koyu tercihiniz tarayıcınızda saklanır ve bize hiç gönderilmez. Analitik veya reklam çerezi yok."
+      },
+      "processors": {
+        "title": "Başka kimler görüyor",
+        "body": "Az sayıda tedarikçiyle çalışıyoruz; her biri yalnızca işinin gerektirdiğini alır. Ayrıca KDV numaralarını Avrupa Komisyonu'nun VIES servisinde doğrularız; bu, bize verdiğiniz numaranın oraya gönderilmesi demektir.",
+        "hosting": "barındırma ve veritabanları",
+        "payments": "abonelik ödemeleri",
+        "email": "e-posta gönderimi",
+        "source": "kaynak kod ve derlemeler — ayrıca kurduğumuz her restoran için adı, şehri ve yöneticisinin e-posta adresi, özel bir depoda kaydedilir",
+        "monitoring": "hata izleme, bir şey bozulduğunda haberimiz olsun diye"
+      }
+    },
+    "terms": {
+      "title": "Koşullar",
+      "body": "Henüz yayımlanmış hizmet koşullarımız yok. O zamana dek geçerli olan, sizinle yazılı olarak anlaştığımız şeydir — bize sorun, teyit edelim."
     }
   }
 }
