@@ -2,10 +2,7 @@
 
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
-import {
-  saveBillingIdentityAction,
-  type IdentityActionState,
-} from "@/lib/actions/billing-identity-actions";
+import { saveBillingIdentityAction, type IdentityActionState } from "@/lib/actions/billing-identity-actions";
 import ActionError from "./ActionError";
 import VatStatusBadge, { type VatStatusValue } from "./VatStatusBadge";
 
@@ -44,12 +41,18 @@ export type IdentityDefaults = {
 export default function BillingIdentityForm({
   billingId,
   defaults,
-}: Readonly<{ billingId: string; defaults?: IdentityDefaults }>) {
+  // The payer's own form (B5) submits the SAME fields to a different guard, so
+  // the action is a parameter rather than the component being copied. Copying it
+  // would eventually let the two surfaces disagree about the fields an invoice
+  // needs — and the one that drifted would be the customer-facing one.
+  saveAction = saveBillingIdentityAction,
+}: Readonly<{
+  billingId: string;
+  defaults?: IdentityDefaults;
+  saveAction?: (prev: IdentityActionState, formData: FormData) => Promise<IdentityActionState>;
+}>) {
   const t = useTranslations("control.admin.identity");
-  const [state, action, pending] = useActionState<IdentityActionState, FormData>(
-    saveBillingIdentityAction,
-    {},
-  );
+  const [state, action, pending] = useActionState<IdentityActionState, FormData>(saveAction, {});
 
   const field = (
     name: keyof IdentityDefaults,

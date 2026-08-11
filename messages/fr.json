@@ -470,7 +470,9 @@
         "overview": "Aperçu",
         "signups": "Inscriptions",
         "fleet": "Parc",
-        "invoices": "Factures"
+        "invoices": "Factures",
+        "icp": "ICP",
+        "billingDetails": "Infos de facturation"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -809,7 +811,9 @@
           "checkedOn": "vérifié le {date}"
         },
         "recheck": "Revérifier le numéro de TVA",
-        "rechecking": "Vérification…"
+        "rechecking": "Vérification…",
+        "payerIntro": "L'entité juridique à laquelle vos factures sont adressées. Requise avant votre premier paiement.",
+        "backToPlan": "← Retour à votre forfait"
       },
       "invoices": {
         "title": "Factures",
@@ -821,6 +825,21 @@
         "empty": "Aucune facture pour l'instant.",
         "issueNow": "Émettre",
         "issuing": "Émission…"
+      },
+      "icp": {
+        "title": "État récapitulatif (ICP)",
+        "intro": "Ventes UE en autoliquidation pour le trimestre, regroupées par numéro de TVA client. Montants HT — aucune TVA n'a été facturée ici.",
+        "year": "Année",
+        "quarter": "Trimestre",
+        "show": "Afficher",
+        "download": "Télécharger le CSV",
+        "country": "Pays",
+        "vatNumber": "Numéro de TVA",
+        "invoices": "Factures",
+        "net": "HT",
+        "total": "Total",
+        "empty": "Aucune vente en autoliquidation ce trimestre.",
+        "missingVat": "{count} facture(s) en autoliquidation sans numéro de TVA ne sont pas listées — l'autoliquidation en exige un, c'est donc une anomalie à examiner."
       }
     },
     "errors": {
@@ -865,7 +884,8 @@
         "alreadyIssued": "Une facture existe déjà pour ce paiement.",
         "noPlan": "Aucun forfait trouvé pour ce paiement.",
         "error": "Échec de l'émission. Consultez les journaux."
-      }
+      },
+      "billingDetailsRequired": "Renseignez vos informations de facturation avant de payer — aucune facture ne peut être émise sans elles."
     },
     "plan": {
       "title": "Votre abonnement",

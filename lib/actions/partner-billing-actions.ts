@@ -13,6 +13,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { startFirstPayment } from "@/lib/billing-onboarding";
 import { FirstPaymentPaidError, NoPendingPlanError } from "@/lib/billing-errors";
 import { mollieConfigured, MollieError } from "@/lib/mollie";
+import { isInvoiceable } from "@/lib/billing-identity";
+import { resolveIdentityForPlan } from "@/lib/identity-upsert";
 
 /** `error` is a message key in `control.errors` (translated by <ActionError />);
  *  Mollie API errors pass through raw. On success the action redirects to the
@@ -35,7 +37,7 @@ export async function startPaymentAction(
   const billingId = typeof rawBillingId === "string" ? rawBillingId : "";
   const billing = await db.tenantBilling.findUnique({
     where: { id: billingId },
-    include: { client: true, subscriptions: true },
+    include: { client: true, subscriptions: true, billingIdentity: true },
   });
   // Ownership: the caller is either the direct OWNER named as payerUserId, or the
   // reseller PARTNER behind the CRM client. A billing they own neither way is
@@ -43,6 +45,26 @@ export async function startPaymentAction(
   const owns = !!billing && (billing.payerUserId === user.id || billing.client?.partnerId === user.id);
   if (!billing || !owns) return { error: "planNotFound" };
   if (billing.subscriptions.some((s) => s.status === "ACTIVE")) return { error: "alreadyActive" };
+
+  // No charge may settle that cannot then be invoiced (B4/B5). This is the only
+  // point where that is cheap to enforce: afterwards the money has moved, the
+  // webhook has answered 200 and will never be redelivered, and the charge sits
+  // on /admin/invoices waiting for someone to notice.
+  //
+  // Deliberately placed AFTER the alreadyActive check, so it can only ever gate a
+  // NEW first payment. An existing ACTIVE subscription — RUMI's, and every plan
+  // that predates this programme — keeps charging untouched; retrofitting a
+  // precondition onto live subscriptions would be a different and much riskier
+  // change than requiring it of the next one.
+  // Resolved through the PARTY, not the plan link. A reseller who already has a
+  // complete, VIES-valid identity on file from their first tenant gets a SECOND
+  // plan with `billingIdentityId` null (that is how defineTenantPlan creates
+  // every plan), and reading the link alone would refuse a payment we have
+  // everything needed to invoice — pushing them at a blank form for a record
+  // that already exists.
+  if (!isInvoiceable(await resolveIdentityForPlan(billing))) {
+    return { error: "billingDetailsRequired" };
+  }
 
   let checkoutUrl: string | null = null;
   try {
