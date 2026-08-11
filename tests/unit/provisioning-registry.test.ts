@@ -1,10 +1,16 @@
+import { spawnSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
-import { buildProvisioningPrBody, buildTenantRegistryEntry } from "@/lib/provisioning-registry";
+import { buildProvisioningPrBody } from "@/lib/provisioning-pr-body";
+import { buildTenantRegistryEntry, splitDeferredModules } from "@/lib/provisioning-registry";
 
-// Parse a generated block back through the registry shape it will live in.
-const asTenant = (block: string, slug: string) =>
-  (parse(`version: 1\ntenants:\n${block}`) as { tenants: Record<string, unknown> }).tenants[slug];
+// Parse a generated block back through the registry shape it will live in. Takes the
+// builder's whole result, not just the block, so every assertion below reads the YAML
+// that was actually emitted rather than a hand-copied string.
+const asTenant = (built: { entry: string }, slug: string) =>
+  (parse(`version: 1\ntenants:\n${built.entry}`) as { tenants: Record<string, unknown> }).tenants[
+    slug
+  ];
 
 describe("buildTenantRegistryEntry", () => {
   it("derives slug-based fields and defaults status/managed/box", () => {
@@ -179,5 +185,206 @@ describe("buildProvisioningPrBody", () => {
     expect(body).toContain(`-f restaurant_name='Chez L'\\''Ami; rm -rf /'`);
     // No bare, unquoted occurrence that a shell would split or execute.
     expect(body).not.toContain("-f restaurant_name=Chez");
+  });
+});
+
+// P1 — a purchased `online-payments` must never reach the proposed entry.
+//
+// The failure this prevents is not "the tenant provisions without card payment". The
+// guard below runs BEFORE the database, the compose project and the image, and exits 1,
+// so the tenant would get no restaurant at all while a paid customer waits.
+describe("deferring online-payments out of the generated entry", () => {
+  const base = {
+    slug: "bistro-nova",
+    name: "Bistro Nova",
+    adminEmail: "owner@nova.example",
+    template: "craft" as const,
+    currency: "EUR",
+    languages: ["en", "nl"],
+    city: "Rotterdam",
+  };
+  const bought = ["core", "reservations", "online-payments"];
+
+  /**
+   * The refusal from `provision-tenant.sh` (deploy repo, the `online-payments` guard),
+   * verbatim, evaluated by a real bash. Copied text rather than an import because that
+   * script lives in another repo and is not on disk in this one — so the test pins the
+   * generator against the guard's OWN condition instead of against a paraphrase of it.
+   * If the guard is ever reworded, this string is what has to be re-copied.
+   */
+  const provisionRefuses = (modulesCsv: string, stripeAccount: string): boolean => {
+    const script = `
+      REG_MODULES=$1
+      REG_STRIPE_ACCOUNT=$2
+      if [[ " \${REG_MODULES//,/ } " == *" online-payments "* && -z "$REG_STRIPE_ACCOUNT" ]]; then
+        exit 0
+      fi
+      exit 1
+    `;
+    const res = spawnSync("bash", ["-c", script, "bash", modulesCsv, stripeAccount]);
+    if (res.error) throw res.error;
+    // 0 = the guard fired (refused), 1 = it did not. Anything else means the harness
+    // itself broke, and a broken harness must not read as "the guard stayed silent".
+    if (res.status !== 0 && res.status !== 1) {
+      throw new Error(`guard harness failed: status=${res.status} ${res.stderr}`);
+    }
+    return res.status === 0;
+  };
+
+  // Fields exactly as provision-tenant.sh would read them out of the merged registry.
+  const asRegistryFields = (t: Record<string, unknown>) => ({
+    modulesCsv: (t.modules as string[]).join(","),
+    stripeAccount: (t.stripe_account as string | undefined) ?? "",
+  });
+
+  it("emits an entry the guard ACCEPTS, where the pre-P1 entry was refused", () => {
+    const t = asTenant(
+      buildTenantRegistryEntry({ ...base, modules: bought }),
+      base.slug,
+    ) as Record<string, unknown>;
+    const { modulesCsv, stripeAccount } = asRegistryFields(t);
+
+    // The generator has never emitted stripe_account, so the guard's second conjunct is
+    // satisfied either way — which is precisely why the module list is the whole story.
+    expect(stripeAccount).toBe("");
+
+    // Two inputs, two answers, from the guard's own text.
+    expect(provisionRefuses(modulesCsv, stripeAccount)).toBe(false);
+    // Pre-P1 the entry carried `modules: input.modules` verbatim. Same guard, same
+    // account, same tenant — refused.
+    expect(provisionRefuses(bought.join(","), stripeAccount)).toBe(true);
+  });
+
+  it("grants the module in ONE shot when the account is already known", () => {
+    // The founder path. `signup-to-live-tenant.md` §2b has them create the connected
+    // account BEFORE proposing, precisely because of the guard above — so deferring
+    // unconditionally would make that documented order pointless and route them into a
+    // second PR they do not need.
+    const { entry, deferred } = buildTenantRegistryEntry({
+      ...base,
+      modules: bought,
+      stripeAccount: "acct_1AbCdEfGhIjKlMnO",
+    });
+    const t = asTenant({ entry }, base.slug) as Record<string, unknown>;
+    expect(t.modules).toEqual(bought);
+    expect(t.stripe_account).toBe("acct_1AbCdEfGhIjKlMnO");
+    expect(deferred).toEqual([]);
+
+    // Both halves present, so the same guard that refuses the pre-P1 entry accepts this.
+    const { modulesCsv, stripeAccount } = asRegistryFields(t);
+    expect(provisionRefuses(modulesCsv, stripeAccount)).toBe(false);
+
+    // ...and the body must not then warn about a deferral that did not happen.
+    const body = buildProvisioningPrBody({
+      ...base,
+      modules: bought,
+      stripeAccount: "acct_1AbCdEfGhIjKlMnO",
+    });
+    expect(body).not.toContain("Bought but deliberately NOT in this entry");
+  });
+
+  it("treats a whitespace-only account as no account", () => {
+    // `provision-tenant.sh` tests `-z "$REG_STRIPE_ACCOUNT"`, which a single space does
+    // NOT satisfy — so emitting " " would sail past this generator and then hand the box
+    // an entry whose Stripe env points at nothing. Deferring is the safe reading.
+    const { entry, deferred } = buildTenantRegistryEntry({
+      ...base,
+      modules: bought,
+      stripeAccount: "   ",
+    });
+    const t = asTenant({ entry }, base.slug) as Record<string, unknown>;
+    expect(deferred).toEqual(["online-payments"]);
+    expect(t.stripe_account).toBeUndefined();
+    expect(t.modules).toEqual(["core", "reservations"]);
+  });
+
+  it("never emits one half of the guard's condition", () => {
+    // The property that actually matters, over both shapes: an entry carries the module
+    // if and only if it carries an account. Anything else is the landmine, in one
+    // direction or the other.
+    for (const stripeAccount of [undefined, "", "  ", "acct_1AbCdEfGhIjKlMnO"]) {
+      const t = asTenant(
+        buildTenantRegistryEntry({ ...base, modules: bought, stripeAccount }),
+        base.slug,
+      ) as Record<string, unknown>;
+      const { modulesCsv, stripeAccount: emitted } = asRegistryFields(t);
+      expect(provisionRefuses(modulesCsv, emitted)).toBe(false);
+    }
+  });
+
+  it("keeps every other purchased module, in order", () => {
+    const { entry, deferred } = buildTenantRegistryEntry({ ...base, modules: bought });
+    const t = asTenant({ entry }, base.slug) as Record<string, unknown>;
+    expect(t.modules).toEqual(["core", "reservations"]);
+    expect(deferred).toEqual(["online-payments"]);
+  });
+
+  it("changes nothing for a tenant that did not buy it", () => {
+    // The strip must be surgical: a generator that quietly dropped ids would be the same
+    // class of bug pointed the other way.
+    const { entry, deferred } = buildTenantRegistryEntry({
+      ...base,
+      modules: ["core", "reservations", "loyalty", "printing"],
+    });
+    const t = asTenant({ entry }, base.slug) as Record<string, unknown>;
+    expect(t.modules).toEqual(["core", "reservations", "loyalty", "printing"]);
+    expect(deferred).toEqual([]);
+    expect(splitDeferredModules(["core"]).granted).toEqual(["core"]);
+  });
+
+  it("makes the PR body name the purchase, the reason and the exact follow-up", () => {
+    const body = buildProvisioningPrBody({ ...base, modules: bought });
+
+    // Named as bought, not silently absent.
+    expect(body).toContain("Bought but deliberately NOT in this entry: `online-payments`");
+    expect(body).toContain("no restaurant at all");
+    // The reason the founder cannot just add it now.
+    expect(body).toContain("only the restaurant can create it");
+    // The follow-up, with BOTH halves — an entry adding one without the other is the
+    // same landmine re-armed by hand.
+    expect(body).toContain("stripe_account: acct_");
+    expect(body).toContain("modules: [core, reservations, online-payments]");
+    expect(body).toContain("gh workflow run provision-tenant.yml");
+
+    // And the checklist must not still ask the founder to confirm the list matches the
+    // receipt — with a deferral that is false by construction.
+    expect(body).not.toContain(
+      "`core, reservations` match what they actually paid for",
+    );
+    expect(body).toContain("EXCEPT `online-payments`, which is held back on purpose");
+  });
+
+  it("says none of it when nothing was deferred", () => {
+    // A standing warning about a module nobody bought trains the founder to skim past
+    // the one that matters.
+    const body = buildProvisioningPrBody({ ...base, modules: ["core", "reservations"] });
+    expect(body).not.toContain("Bought but deliberately NOT in this entry");
+    expect(body).not.toContain("stripe_account");
+    expect(body).toContain("`core, reservations` match what they actually paid for");
+  });
+
+  it("keeps the markdown fences balanced once the block is present", () => {
+    // The deferral block adds a SECOND fenced snippet to a body that already embeds the
+    // tenant name in a shell fence. The existing fence test runs on a no-deferral input,
+    // so without this one the four-fence layout is never exercised at all.
+    const body = buildProvisioningPrBody({
+      ...base,
+      modules: bought,
+      name: "Bistro\n```\n## PWNED",
+    });
+    expect(
+      body.split("\n").filter((l) => l.trimStart().startsWith("```")),
+    ).toEqual(["```yaml", "```", "```bash", "```"]);
+  });
+
+  it("describes the same module list the entry actually carries", () => {
+    // The body and the entry are built by separate functions. Read the modules out of
+    // the generated YAML and require the body's summary line to quote that exact list,
+    // so the two cannot drift into describing different diffs.
+    const input = { ...base, modules: bought };
+    const t = asTenant(buildTenantRegistryEntry(input), base.slug) as Record<string, unknown>;
+    expect(buildProvisioningPrBody(input)).toContain(
+      `**modules** \`${(t.modules as string[]).join(", ")}\``,
+    );
   });
 });

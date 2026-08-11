@@ -92,7 +92,7 @@ export async function openProvisioningPrAction(
   }
 
   try {
-    const { prUrl } = await openProvisioningPr({
+    const { prUrl, deferred } = await openProvisioningPr({
       slug: input.slug,
       name: input.name,
       adminEmail: input.adminEmail.toLowerCase(),
@@ -100,6 +100,7 @@ export async function openProvisioningPrAction(
       currency: input.currency,
       languages,
       modules,
+      stripeAccount: input.stripeAccount || undefined,
       city: input.city || undefined,
     });
     // Record it on the billing row when there is one. The auto path reads this as its
@@ -109,7 +110,12 @@ export async function openProvisioningPrAction(
     await db.tenantBilling
       .update({ where: { tenantSlug: input.slug }, data: { provisioningPrUrl: prUrl } })
       .catch(() => undefined); // no plan for this slug: founder-proposed, nothing to record
-    await audit(admin.id, "tenant.provision.proposed", "Tenant", input.slug, { prUrl });
+    // `deferred` only when non-empty: an always-present `[]` reads as a field nobody set
+    // rather than as the absence of a withheld module.
+    await audit(admin.id, "tenant.provision.proposed", "Tenant", input.slug, {
+      prUrl,
+      ...(deferred.length ? { deferred } : {}),
+    });
     return { ok: true, prUrl };
   } catch (e) {
     if (e instanceof ProvisioningNotConfiguredError) return { error: "provisioningNotConfigured" };

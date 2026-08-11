@@ -220,8 +220,8 @@
         "a": "Erken erişim boyunca kurucu restoranlar hiçbir şey ödemez — kurulum ve destek ikramımızdır; normal fiyatlar geldiğinde kurucuların indirimi ömür boyu sürer. Planlar sade olacak: sabit aylık fiyat, isteğe bağlı ek modüller."
       },
       "payments": {
-        "q": "Misafirlerim online ödeyebilir mi — TWINT dahil?",
-        "a": "Online ödeme, ek modül olarak yol haritamızda; kartların yanında İsviçre'de TWINT, Hollanda'da iDEAL gibi yerel ödeme yöntemleri de planlandı. Bugün siparişler kasanıza düşer, her zamanki gibi tahsil edersiniz."
+        "q": "Misafirlerim online ödeme yapabilir mi — TWINT dahil?",
+        "a": "Evet — Online ödeme modülüyle misafirleriniz kartla, ayrıca İsviçre'de TWINT ve Hollanda'da iDEAL gibi yerel yöntemlerle ödeyebilir. Para doğrudan kendi Stripe hesabınıza geçer, biz komisyon almayız. İlk ödemeden önce Stripe'ın tek seferlik doğrulamasını tamamlarsınız. Kasada tahsil etmeye de devam edebilirsiniz."
       },
       "languages": {
         "q": "Menü hangi dilleri destekliyor?",
@@ -368,7 +368,7 @@
         },
         "payments": {
           "label": "Çevrim içi ödeme",
-          "sofra": "Yol haritasında isteğe bağlı modül olarak — kartların yanında TWINT ve iDEAL gibi yerel yöntemler planlı. Bugün her zamanki gibi kasada tahsil edersiniz.",
+          "sofra": "Ayda 19 € ek modül — kart ve TWINT, iDEAL gibi yerel yöntemler, doğrudan kendi Stripe hesabınıza. Komisyon yok.",
           "gf": "Ücretli modül olarak mevcut — çevrim içi/kartla ödeme 29 ABD$/ay."
         }
       }
@@ -739,6 +739,8 @@
         "currency": "Para birimi (ör. EUR)",
         "languages": "Diller",
         "modules": "Modüller",
+        "stripeAccount": "Stripe hesabı (acct_…, isteğe bağlı)",
+        "stripeAccountHint": "Yalnızca online-payments satın aldılarsa VE bağlı hesaplarını zaten oluşturduysanız (runbook §2b). Boş bırakılırsa modül beklemeye alınır ve PR sonradan nasıl ekleneceğini anlatır — hesap olmadan provisioning modülü reddeder.",
         "create": "Kayıt PR’si aç",
         "creating": "Açılıyor…",
         "created": "Kayıt PR’si açıldı — inceleyip birleştirin, sonra sağlayın:",
@@ -927,7 +929,8 @@
         "server": "Masa servisi",
         "reservations": "Rezervasyonlar",
         "loyalty": "Sadakat puanları",
-        "printing": "Fiş yazdırma"
+        "printing": "Fiş yazdırma",
+        "online-payments": "Online ödeme"
       },
       "moduleHint": {
         "kitchen-board": "Mutfak için canlı sipariş panosu",
@@ -935,7 +938,8 @@
         "server": "Salon planı ve masada sipariş",
         "reservations": "Çevrimiçi rezervasyon ve masa yönetimi",
         "loyalty": "Puanlar, müşteri grupları ve indirimler",
-        "printing": "Termal yazıcılar için yardımcı uygulama"
+        "printing": "Termal yazıcılar için yardımcı uygulama",
+        "online-payments": "Kart ve TWINT ya da iDEAL gibi yerel yöntemler, doğrudan kendi Stripe hesabınıza"
       },
       "template": {
         "classic": "Klasik",

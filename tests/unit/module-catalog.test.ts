@@ -9,6 +9,7 @@ import {
   unknownModuleIds,
 } from "@/lib/module-catalog";
 import { TENANT_LANGUAGES, unknownLanguages } from "@/lib/tenant-options";
+import en from "@/messages/en.json";
 
 describe("catalog shape", () => {
   it("prices every module id exactly once, in whole cents", () => {
@@ -21,20 +22,50 @@ describe("catalog shape", () => {
 
   it("never bundles a module that is not sellable yet", () => {
     // A bundle is a purchase, so it must not smuggle in a module the à-la-carte surfaces
-    // deliberately hide. online-payments is in the vocabulary from S10 but has no working
-    // surface until S9 — putting it inside "full-service" would sell it anyway.
+    // deliberately hide.
+    //
+    // VACUOUS TODAY, ON PURPOSE: online-payments was the only flagged module and the flag is
+    // gone, so `notSellable` is empty and this passes having examined nothing. Kept because the
+    // next unfinished module arrives the same way — the id must exist for provisioning to accept
+    // it before its surface is built — and this is what stops it being sold inside a bundle.
+    // Do not read a green run here as evidence about online-payments; the case below covers that.
     const notSellable = new Set(MODULES.filter((m) => m.sellable === false).map((m) => m.id));
     for (const b of BUNDLES) {
       expect(b.modules.filter((m) => notSellable.has(m))).toEqual([]);
     }
   });
 
-  it("keeps an unfinished module out of the vocabulary's sellable set", () => {
-    // The vocabulary and the price list are the same array, so adding an id to make
-    // provisioning accept it also makes it purchasable unless it is flagged. This is the
-    // assertion that catches that: online-payments must be KNOWN and NOT sellable.
+  it("offers online-payments for purchase, now that a tenant can be given it", () => {
+    // The inverse of the assertion this replaces. The flag outlived its original reason (the
+    // surface being unbuilt): what kept it false to the end was Connect being unconfirmed on the
+    // LIVE Stripe platform — `POST /v1/accounts` is provisioning's first call and refuses
+    // outright without it, so listing the module would have sold something provisioning could
+    // not deliver. Connect confirmed enabled on acct_1TpwTDCHzplJfkIy, 2026-08-10.
+    //
+    // `not.toBe(false)` rather than `toBeUndefined()`: absent is what the type means by sellable,
+    // and pinning the exact absence would fail a future `sellable: true` saying the same thing.
     expect(isModuleId("online-payments")).toBe(true);
-    expect(MODULES.find((m) => m.id === "online-payments")?.sellable).toBe(false);
+    expect(MODULES.find((m) => m.id === "online-payments")?.sellable).not.toBe(false);
+  });
+
+  it("names every sellable module in the configurator's messages", () => {
+    // The gate the parity check cannot be. `check-message-parity.mjs` diffs the five other
+    // locales AGAINST en.json, so a key missing from all six is "in parity" — which is exactly
+    // how online-payments reached the live signup page rendering the raw key
+    // `signup.configurator.module.online-payments`. Nothing else could have caught it either:
+    // SignupConfigurator builds both keys by template literal, so TypeScript never sees them.
+    //
+    // Anchored on en because parity carries the other five: en having it and the rest missing it
+    // is the one shape the parity script does fail on.
+    // The two exclusions mirror SignupConfigurator's own filter: extra-languages never appears
+    // as a checkbox (the language picker prices it), and core is a fixed line with no hint.
+    const { module: labels, moduleHint: hints } = en.signup.configurator;
+    for (const m of MODULES) {
+      if (m.sellable === false || m.id === "extra-languages") continue;
+      expect(labels, `label for ${m.id}`).toHaveProperty(m.id);
+      if (m.id === "core") continue;
+      expect(hints, `hint for ${m.id}`).toHaveProperty(m.id);
+    }
   });
 
   it("only bundles modules that exist, and always includes core", () => {

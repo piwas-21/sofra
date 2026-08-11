@@ -31,6 +31,11 @@ export default defineConfig({
         "lib/provision-prefill.ts",
         "lib/slug-availability.ts",
         "lib/provisioning-registry.ts",
+        // Split out of provisioning-registry.ts (P1) when the pair outgrew the LOC limit.
+        // Listed explicitly because this include list is explicit: leaving it off would
+        // have quietly moved already-covered code out of the floor's scope, which reads
+        // as a passing gate rather than as lost coverage.
+        "lib/provisioning-pr-body.ts",
         "lib/module-catalog.ts",
         "lib/tenant-options.ts",
         "lib/signup-configuration.ts",

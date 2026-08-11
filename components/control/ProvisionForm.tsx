@@ -91,6 +91,23 @@ export default function ProvisionForm({
         aria-label={t("provision.currency")}
         className="input-primary"
       />
+      {/* Optional, and deliberately NOT prefilled from a signup: a lead has no connected
+          account (only the restaurant can create one, via Stripe's hosted onboarding).
+          It is here for the founder path, where runbook §2b creates the account BEFORE
+          proposing — with it the entry carries `online-payments` in one shot, without it
+          the generator holds the module back rather than proposing an entry that
+          provision-tenant.sh refuses. */}
+      <label className="sm:col-span-2 grid gap-1 font-label text-sm text-muted-foreground">
+        <input
+          name="stripeAccount"
+          pattern="acct_[A-Za-z0-9]{8,32}"
+          defaultValue=""
+          placeholder={t("provision.stripeAccount")}
+          aria-label={t("provision.stripeAccount")}
+          className="input-primary"
+        />
+        <span>{t("provision.stripeAccountHint")}</span>
+      </label>
       <ProvisionPicker
         initialModules={prefill?.modules}
         initialLanguages={prefill?.languages}

@@ -221,7 +221,7 @@
       },
       "payments": {
         "q": "Können meine Gäste online bezahlen — auch mit TWINT?",
-        "a": "Online-Zahlungen stehen als Zusatzmodul auf der Roadmap, mit lokalen Zahlungsmitteln wie TWINT in der Schweiz und iDEAL in den Niederlanden neben Karten. Heute laufen Bestellungen an Ihre Theke und Sie kassieren wie gewohnt."
+        "a": "Ja — mit dem Modul Online-Zahlungen zahlen Ihre Gäste per Karte sowie mit lokalen Methoden wie TWINT in der Schweiz und iDEAL in den Niederlanden. Das Geld geht direkt auf Ihr eigenes Stripe-Konto, wir nehmen keine Provision. Vor der ersten Zahlung durchlaufen Sie einmalig die Verifizierung von Stripe. Am Tresen kassieren können Sie weiterhin."
       },
       "languages": {
         "q": "Welche Sprachen unterstützt die Karte?",
@@ -368,7 +368,7 @@
         },
         "payments": {
           "label": "Online-Zahlungen",
-          "sofra": "Auf der Roadmap als Zusatzmodul — lokale Methoden wie TWINT und iDEAL neben Karten geplant. Heute kassieren Sie am Tresen wie gewohnt.",
+          "sofra": "Zusatzmodul für 19 €/Monat — Karte plus lokale Methoden wie TWINT und iDEAL, direkt auf Ihr eigenes Stripe-Konto. Ohne Provision.",
           "gf": "Als bezahltes Modul verfügbar — Online-/Kartenzahlungen für 29 US$/Monat."
         }
       }
@@ -739,6 +739,8 @@
         "currency": "Währung (z. B. EUR)",
         "languages": "Sprachen",
         "modules": "Module",
+        "stripeAccount": "Stripe-Konto (acct_…, optional)",
+        "stripeAccountHint": "Nur wenn online-payments gekauft wurde UND das verbundene Konto bereits angelegt ist (Runbook §2b). Leer gelassen, wird das Modul zurückgestellt und die PR erklärt, wie es später ergänzt wird — die Provisionierung lehnt das Modul ohne Konto ab.",
         "create": "Registry-PR öffnen",
         "creating": "Wird geöffnet…",
         "created": "Registry-PR geöffnet — prüfen + zusammenführen, dann bereitstellen:",
@@ -927,7 +929,8 @@
         "server": "Tischservice",
         "reservations": "Reservierungen",
         "loyalty": "Treuepunkte",
-        "printing": "Bondruck"
+        "printing": "Bondruck",
+        "online-payments": "Online-Zahlungen"
       },
       "moduleHint": {
         "kitchen-board": "Live-Bestelltafel für die Küche",
@@ -935,7 +938,8 @@
         "server": "Tischplan und Bestellung am Tisch",
         "reservations": "Online-Buchung und Tischverwaltung",
         "loyalty": "Punkte, Kundengruppen und Rabatte",
-        "printing": "Begleit-App für Thermodrucker"
+        "printing": "Begleit-App für Thermodrucker",
+        "online-payments": "Karte und lokale Methoden wie TWINT oder iDEAL, direkt auf Ihr eigenes Stripe-Konto"
       },
       "template": {
         "classic": "Klassisch",
