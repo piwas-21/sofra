@@ -133,6 +133,45 @@ export async function findPlan(tenantSlug: string): Promise<PlanRow | null> {
   };
 }
 
+/**
+ * The invoice raised for a tenant's settled charge, if any.
+ *
+ * Exists so the billing spec can assert that a paid webhook actually produced a
+ * DOCUMENT. Without it the whole issuance path — the advisory-lock allocator, the
+ * MAX(seq) read, the JSON snapshot write — has no executed coverage anywhere,
+ * because `issueInvoiceForPayment` short-circuits on an unconfigured seller long
+ * before it opens a transaction, and the run still reports green.
+ */
+export async function findInvoice(
+  tenantSlug: string,
+): Promise<{ number: string; netCents: number; vatCents: number; grossCents: number; taxTreatment: string } | null> {
+  const rows = await query<{
+    number: string;
+    net_cents: number;
+    vat_cents: number;
+    gross_cents: number;
+    tax_treatment: string;
+  }>(
+    `SELECT number,
+            "netCents"     AS net_cents,
+            "vatCents"     AS vat_cents,
+            "grossCents"   AS gross_cents,
+            "taxTreatment" AS tax_treatment
+       FROM "Invoice" WHERE "tenantSlug" = $1 ORDER BY seq DESC LIMIT 1`,
+    [tenantSlug],
+  );
+  const r = rows[0];
+  return r
+    ? {
+        number: r.number,
+        netCents: r.net_cents,
+        vatCents: r.vat_cents,
+        grossCents: r.gross_cents,
+        taxTreatment: r.tax_treatment,
+      }
+    : null;
+}
+
 export async function countPlansFor(email: string): Promise<number> {
   const rows = await query<{ n: string }>(
     `SELECT count(*) AS n FROM "TenantBilling" WHERE lower(email) = lower($1)`,

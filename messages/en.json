@@ -469,7 +469,8 @@
         "plan": "Plan",
         "overview": "Overview",
         "signups": "Signups",
-        "fleet": "Fleet"
+        "fleet": "Fleet",
+        "invoices": "Invoices"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -809,6 +810,17 @@
         },
         "recheck": "Re-check VAT number",
         "rechecking": "Checking…"
+      },
+      "invoices": {
+        "title": "Invoices",
+        "intro": "Issued documents, and the settled charges that could not be invoiced.",
+        "sellerMissing": "No invoice can be issued until the company's own registration details are set: {gaps}.",
+        "blockedTitle": "Not invoiced",
+        "blockedIntro": "These charges settled but produced no document — usually a missing billing identity or a VAT number VIES has not confirmed. Fix the cause, then re-issue.",
+        "issuedTitle": "Issued",
+        "empty": "No invoices yet.",
+        "issueNow": "Issue now",
+        "issuing": "Issuing…"
       }
     },
     "errors": {
@@ -844,7 +856,16 @@
       "slugReserved": "That tenant slug is reserved and cannot be used.",
       "awaitingFirstPayment": "This tenant's plan has no settled first payment yet. A self-serve tenant is provisioned only after it has paid.",
       "identityNotFound": "That billing identity no longer exists.",
-      "noVatNumber": "There is no VAT number to check."
+      "noVatNumber": "There is no VAT number to check.",
+      "invoice": {
+        "sellerNotConfigured": "Still blocked: the company's own registration details are not set.",
+        "buyerNotInvoiceable": "Still blocked: this customer has no complete billing identity.",
+        "taxNeedsReview": "Still blocked: the VAT treatment needs a decision — usually a VAT number VIES has not confirmed.",
+        "nothingToInvoice": "Nothing to invoice — the charge is zero.",
+        "alreadyIssued": "An invoice already exists for this charge.",
+        "noPlan": "No plan found for this charge.",
+        "error": "Issuing failed. Check the logs."
+      }
     },
     "plan": {
       "title": "Your plan",
@@ -905,6 +926,19 @@
       "settingUpBody": "Your setup is queued for a final check, then your app is built and started. This usually takes about fifteen minutes.",
       "almostReadyTitle": "Almost there",
       "almostReadyBody": "Your app is starting up. As soon as it answers, this page will show you how to sign in."
+    },
+    "invoice": {
+      "title": "Invoice",
+      "billedTo": "Billed to",
+      "description": "Description",
+      "qty": "Qty",
+      "net": "Net",
+      "total": "Total",
+      "vatRate": "VAT {rate}%",
+      "reg": "Reg.",
+      "vat": "VAT",
+      "iban": "IBAN",
+      "service": "Service: {tenant}"
     }
   },
   "signup": {

@@ -7,7 +7,7 @@ import {
   submitSignup,
   uniq,
 } from "./helpers/flows";
-import { findFirstPayment, findPlan, findUser } from "./helpers/db";
+import { findFirstPayment, findInvoice, findPlan, findUser } from "./helpers/db";
 
 // The paid half of O2, against the REAL Mollie API on a test_ key. Nothing is
 // mocked: a real customer, a real first payment, Mollie's own hosted checkout
@@ -169,6 +169,22 @@ test.describe("Mollie first payment and activation", () => {
     expect(done!.mollieSubscriptionId, "an ACTIVE plan must carry its Mollie subscription id")
       .toMatch(/^sub_/);
     expect((await findFirstPayment(slug))!.status).toBe("paid");
+
+    // ── the settled charge produced a DOCUMENT ────────────────────────────
+    // The only place the invoicing path runs end to end. It is asserted here
+    // rather than unit-tested because everything interesting about it is in the
+    // database: the advisory-lock number allocation, the frozen snapshots, and
+    // the tax treatment derived from the buyer's country. `scripts/e2e-suite.sh`
+    // exports fixture SOFRA_* values precisely so this can reach the transaction
+    // instead of short-circuiting on an unconfigured seller.
+    const invoice = await findInvoice(slug);
+    expect(invoice, "a paid charge must produce an invoice").not.toBeNull();
+    expect(invoice!.number, "numbered in the configured series").toMatch(/^E2E-\d{4}-\d{4,}$/);
+    // net + VAT must reconcile to the money that actually moved — the property
+    // that matters at year end, checked here against a REAL Mollie payment
+    // rather than against a hand-built number.
+    expect(invoice!.netCents + invoice!.vatCents).toBe(invoice!.grossCents);
+    expect(invoice!.grossCents).toBe(done!.amountCents);
     // Hand the real Mollie resources to the teardown now that they exist.
     created.push({
       customerId: done!.mollieCustomerId!,

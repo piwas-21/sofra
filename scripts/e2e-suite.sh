@@ -67,6 +67,26 @@ E2E_PARTNER_PASSWORD="$(openssl rand -hex 12)"; export E2E_PARTNER_PASSWORD
 # known-occupied slug, and an ABSENT registry is not neutral — since O2 an
 # unreadable one makes the signup fail closed.
 export TENANT_REGISTRY_PATH="$PWD/tests/e2e/fixtures/registry.yml"
+
+# Seller identity for invoicing (SOFRA-BILLING-IDENTITY-PLAN B4). FIXTURE VALUES,
+# deliberately not the real company's — the plan requires that a test environment
+# never issue a document carrying the real identity.
+#
+# Without these, sellerIdentity() returns null and issueInvoiceForPayment
+# short-circuits on `sellerNotConfigured` BEFORE opening its transaction. That is
+# the correct production behaviour until the owner supplies the real values, but
+# in the suite it meant the advisory-lock allocator, the MAX(seq) read, the JSON
+# snapshot write and tx.invoice.create had ZERO executed coverage while the run
+# reported green — a gate failing open in the most deceptive way, because the
+# short-circuit is the expected state and nobody would read the pass as suspicious.
+export SOFRA_LEGAL_NAME="E2E Fixture BV"
+export SOFRA_LEGAL_ADDRESS="1 Fixture Street"
+export SOFRA_LEGAL_POSTAL="1000AA"
+export SOFRA_LEGAL_CITY="Amsterdam"
+export SOFRA_LEGAL_COUNTRY="NL"
+export SOFRA_KVK="00000000"
+export SOFRA_VAT_NUMBER="NL000000000B01"
+export SOFRA_INVOICE_SERIES="E2E"
 # A placeholder: the provisioning specs only observe the payment gate, which
 # refuses BEFORE the GitHub round-trip. When the gate passes a request, the call
 # fails on this value — and that failure is the proof it passed.
