@@ -1,10 +1,17 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { sellerIdentity } from "@/lib/seller-identity";
 import { SITE_URL } from "@/lib/seo";
 
 // Marketing routes per locale ("" = landing). Content-engine pages
 // (AEO plan §2) ship in every locale, same as the landing page.
-const PATHS = ["", "/signup", "/case/rumi", "/compare/gloriafood", "/changelog"] as const;
+const BASE_PATHS = ["", "/signup", "/case/rumi", "/compare/gloriafood", "/changelog"] as const;
+
+// /legal is listed only once the company's registration details are actually
+// published (SOFRA_LEGAL_* — see lib/seller-identity.ts). Until then the page
+// renders an honest "not published here yet", and indexing six URLs whose
+// description promises "who runs SofraPiwas" would advertise that emptiness.
+const PATHS = sellerIdentity() ? ([...BASE_PATHS, "/legal"] as const) : BASE_PATHS;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // One timestamp for the whole map (also keeps entries consistent) — Gemini, PR #42.

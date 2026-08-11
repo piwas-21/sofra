@@ -14,6 +14,7 @@
 
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
+import { issueInvoiceForPayment } from "@/lib/invoicing";
 import { siteUrl } from "@/lib/email";
 import { autoProposeProvisioning } from "@/lib/auto-provision";
 import type { AutoProposeOutcome } from "@/lib/auto-provision-policy";
@@ -211,6 +212,15 @@ export async function recordPayment(payment: MolliePayment) {
     tenantSlug: billing.tenantSlug,
     sequenceType: payment.sequenceType,
   });
+
+  // Invoice EVERY settled charge, not just the first: a recurring subscription
+  // payment is a supply that needs its own document just as much. Cannot throw
+  // (same rule as autoProposeProvisioning below) — a failure to invoice must not
+  // turn a successful payment into a Mollie retry loop, so it records a reason
+  // the founder can act on and the money stays settled.
+  if (payment.status === "paid") {
+    await issueInvoiceForPayment(payment.id);
+  }
 
   let proposal: AutoProposeOutcome | null = null;
   if (payment.sequenceType === "first" && payment.status === "paid") {

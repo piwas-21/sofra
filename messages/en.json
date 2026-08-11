@@ -202,7 +202,8 @@
       "faq": "FAQ",
       "caseStudy": "Case study",
       "compare": "SofraPiwas vs GloriaFood",
-      "changelog": "What's new"
+      "changelog": "What's new",
+      "legal": "Legal"
     },
     "copyright": "© {year} SofraPiwas. All rights reserved."
   },
@@ -469,7 +470,10 @@
         "plan": "Plan",
         "overview": "Overview",
         "signups": "Signups",
-        "fleet": "Fleet"
+        "fleet": "Fleet",
+        "invoices": "Invoices",
+        "icp": "ICP",
+        "billingDetails": "Billing details"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -698,7 +702,9 @@
         "onboardedBadge": "already onboarded",
         "liveSincePrefix": "live since",
         "noTenants": "No partner-free tenants available — toggle to show onboarded and retired ones.",
-        "registryUnavailable": "Tenant registry unavailable ({error}) — enter the tenant details manually below."
+        "registryUnavailable": "Tenant registry unavailable ({error}) — enter the tenant details manually below.",
+        "addIdentity": "Add billing details",
+        "addIdentityNote": "— required before this tenant can be invoiced."
       },
       "signups": {
         "title": "Restaurant signups",
@@ -773,6 +779,68 @@
           "missed": "{count} missed",
           "errors": "{count} errors"
         }
+      },
+      "identity": {
+        "title": "Billing identity",
+        "intro": "The legal entity this tenant's invoices are addressed to.",
+        "introEmpty": "No legal identity yet — this plan cannot be invoiced until one is recorded.",
+        "save": "Save identity",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "fields": {
+          "legalName": "Legal name (the person or company invoiced)",
+          "tradeName": "Trading name (optional)",
+          "legalForm": "Legal form (optional)",
+          "registrationNo": "Registration number (SIREN / KVK / CHE)",
+          "addressLine1": "Address",
+          "addressLine2": "Address line 2 (optional)",
+          "postalCode": "Postal code",
+          "city": "City",
+          "countryCode": "Country (2-letter code)",
+          "billingEmail": "Billing email",
+          "vatNumber": "VAT number (optional)"
+        },
+        "vat": {
+          "NONE": "No VAT number",
+          "UNCHECKED": "VAT number not checked",
+          "VALID": "VAT number valid in VIES",
+          "INVALID": "VAT number not registered in VIES",
+          "UNAVAILABLE": "VIES could not be reached — status unknown, try again later",
+          "notEu": "Not an EU VAT number — VIES does not cover it",
+          "unevidenced": "no consultation reference — set SOFRA_VAT_NUMBER",
+          "registeredAs": "registered as {registeredName}",
+          "checkedOn": "checked {date}"
+        },
+        "recheck": "Re-check VAT number",
+        "rechecking": "Checking…",
+        "payerIntro": "The legal entity your invoices are addressed to. Needed before your first payment.",
+        "backToPlan": "← Back to your plan"
+      },
+      "invoices": {
+        "title": "Invoices",
+        "intro": "Issued documents, and the settled charges that could not be invoiced.",
+        "sellerMissing": "No invoice can be issued until the company's own registration details are set: {gaps}.",
+        "blockedTitle": "Not invoiced",
+        "blockedIntro": "These charges settled but produced no document — usually a missing billing identity or a VAT number VIES has not confirmed. Fix the cause, then re-issue.",
+        "issuedTitle": "Issued",
+        "empty": "No invoices yet.",
+        "issueNow": "Issue now",
+        "issuing": "Issuing…"
+      },
+      "icp": {
+        "title": "EC Sales List (ICP)",
+        "intro": "Reverse-charged EU sales for the quarter, grouped by customer VAT number. Net amounts — no VAT was charged here.",
+        "year": "Year",
+        "quarter": "Quarter",
+        "show": "Show",
+        "download": "Download CSV",
+        "country": "Country",
+        "vatNumber": "VAT number",
+        "invoices": "Invoices",
+        "net": "Net",
+        "total": "Total",
+        "empty": "No reverse-charged sales in this quarter.",
+        "missingVat": "{count} reverse-charged invoice(s) carry no VAT number and are not listed — reverse charge requires one, so this is a defect to investigate."
       }
     },
     "errors": {
@@ -806,7 +874,19 @@
       "provisioningNotConfigured": "Provisioning isn’t configured (missing GitHub token).",
       "provisionFailed": "Couldn’t open the provisioning PR. Check the logs.",
       "slugReserved": "That tenant slug is reserved and cannot be used.",
-      "awaitingFirstPayment": "This tenant's plan has no settled first payment yet. A self-serve tenant is provisioned only after it has paid."
+      "awaitingFirstPayment": "This tenant's plan has no settled first payment yet. A self-serve tenant is provisioned only after it has paid.",
+      "identityNotFound": "That billing identity no longer exists.",
+      "noVatNumber": "There is no VAT number to check.",
+      "invoice": {
+        "sellerNotConfigured": "Still blocked: the company's own registration details are not set.",
+        "buyerNotInvoiceable": "Still blocked: this customer has no complete billing identity.",
+        "taxNeedsReview": "Still blocked: the VAT treatment needs a decision — usually a VAT number VIES has not confirmed.",
+        "nothingToInvoice": "Nothing to invoice — the charge is zero.",
+        "alreadyIssued": "An invoice already exists for this charge.",
+        "noPlan": "No plan found for this charge.",
+        "error": "Issuing failed. Check the logs."
+      },
+      "billingDetailsRequired": "Add your billing details before starting the payment — an invoice cannot be issued without them."
     },
     "plan": {
       "title": "Your plan",
@@ -867,6 +947,19 @@
       "settingUpBody": "Your setup is queued for a final check, then your app is built and started. This usually takes about fifteen minutes.",
       "almostReadyTitle": "Almost there",
       "almostReadyBody": "Your app is starting up. As soon as it answers, this page will show you how to sign in."
+    },
+    "invoice": {
+      "title": "Invoice",
+      "billedTo": "Billed to",
+      "description": "Description",
+      "qty": "Qty",
+      "net": "Net",
+      "total": "Total",
+      "vatRate": "VAT {rate}%",
+      "reg": "Reg.",
+      "vat": "VAT",
+      "iban": "IBAN",
+      "service": "Service: {tenant}"
     }
   },
   "signup": {
@@ -953,6 +1046,62 @@
         "counter": "Counter",
         "full-service": "Full service"
       }
+    }
+  },
+  "legal": {
+    "meta": {
+      "title": "Legal — imprint and privacy · SofraPiwas",
+      "description": "Who runs SofraPiwas, and how we handle your data."
+    },
+    "kicker": "Legal",
+    "title": "Imprint & privacy",
+    "imprint": {
+      "title": "Who we are",
+      "kvk": "Chamber of Commerce (KVK): {value}",
+      "vat": "VAT identification number: {value}",
+      "unset": "Our registration details and contact address are not published here yet. They are on any invoice we have sent you.",
+      "contact": "Email"
+    },
+    "privacy": {
+      "title": "Privacy",
+      "updated": "This describes what the service actually does today, and is updated when that changes.",
+      "controller": {
+        "title": "Who is responsible",
+        "body": "The company named above is the controller for the data described here — the data of SofraPiwas's own customers and partners. This page does not cover a restaurant's own guests: their bookings and orders live in that restaurant's own installation, and that restaurant publishes its own privacy policy for them."
+      },
+      "what": {
+        "title": "What we collect",
+        "body": "For accounts: your name, email address and a password hash. For billing: your company's legal name, address, registration number, VAT number and billing email, together with payment records from our payment provider and what the VAT service returned when we checked your number. If you contact us or apply to the partner programme, whatever you write in the form, including a phone number and city if you give them. For a partner: the restaurants you introduce, their contact details and your notes on them. We keep security logs of sign-in attempts, which include the email address that was tried. We run no analytics and no advertising trackers."
+      },
+      "why": {
+        "title": "Why",
+        "body": "To give you an account, to bill you, and to issue the invoices the law requires us to issue. We check VAT numbers against the European Commission's VIES service so we can apply the right tax treatment, and we keep the reference of that check as evidence."
+      },
+      "keep": {
+        "title": "How long we keep it",
+        "body": "Invoices, and the billing details printed on them, are kept for the period Dutch tax law requires. Sign-in and administrative logs are kept for 18 months. A partner application we turned down is kept for 12 months, then deleted. Sign-up invitation links expire and are deleted after 30 days. Accounts and CRM records are kept while the relationship lasts, and we remove them on request — there is no automatic clock on those."
+      },
+      "rights": {
+        "title": "Your rights",
+        "body": "You can ask for a copy of your data, ask us to correct it, or ask us to delete it. Write to the address above and we will answer. Some things we cannot delete on request, and it is fairer to say so: an issued invoice and the legal details printed on it, because we are required to keep them; and security logs, until their 18 months are up."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "body": "A session cookie when you are signed in, and a cookie remembering your language. Your light or dark preference is stored in your browser and never sent to us. No analytics or advertising cookies."
+      },
+      "processors": {
+        "title": "Who else sees it",
+        "body": "We use a small number of suppliers, and each receives only what its job needs. We also check VAT numbers against the European Commission's VIES service, which means sending it the number you gave us.",
+        "hosting": "hosting and databases",
+        "payments": "subscription payments",
+        "email": "sending email",
+        "source": "source code and builds — and, for each restaurant we set up, its name, city and administrator's email address, which are recorded in a private repository",
+        "monitoring": "error monitoring, so we find out when something breaks"
+      }
+    },
+    "terms": {
+      "title": "Terms",
+      "body": "We have no published terms of service yet. Until we do, what applies is what we agree with you in writing — ask us and we will confirm it."
     }
   }
 }

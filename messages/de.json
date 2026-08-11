@@ -202,7 +202,8 @@
       "faq": "FAQ",
       "caseStudy": "Fallstudie",
       "compare": "SofraPiwas vs GloriaFood",
-      "changelog": "Was gibt's Neues"
+      "changelog": "Was gibt's Neues",
+      "legal": "Rechtliches"
     },
     "copyright": "© {year} SofraPiwas. Alle Rechte vorbehalten."
   },
@@ -469,7 +470,10 @@
         "plan": "Abo",
         "overview": "Übersicht",
         "signups": "Anmeldungen",
-        "fleet": "Flotte"
+        "fleet": "Flotte",
+        "invoices": "Rechnungen",
+        "icp": "ICP",
+        "billingDetails": "Rechnungsdaten"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -698,7 +702,9 @@
         "onboardedBadge": "bereits onboardet",
         "liveSincePrefix": "live seit",
         "noTenants": "Keine partnerfreien Tenants verfügbar — Schalter aktivieren, um onboardete und stillgelegte anzuzeigen.",
-        "registryUnavailable": "Tenant-Registry nicht verfügbar ({error}) — Tenant-Daten unten manuell eingeben."
+        "registryUnavailable": "Tenant-Registry nicht verfügbar ({error}) — Tenant-Daten unten manuell eingeben.",
+        "addIdentity": "Rechnungsdaten hinzufügen",
+        "addIdentityNote": "— erforderlich, bevor dieser Mandant abgerechnet werden kann."
       },
       "signups": {
         "title": "Restaurant-Anmeldungen",
@@ -773,6 +779,68 @@
           "missed": "{count} verpasst",
           "errors": "{count} Fehler"
         }
+      },
+      "identity": {
+        "title": "Rechnungsidentität",
+        "intro": "Die juristische Person, an die die Rechnungen dieses Mandanten gerichtet sind.",
+        "introEmpty": "Noch keine juristische Identität — dieser Tarif kann erst nach Erfassung abgerechnet werden.",
+        "save": "Identität speichern",
+        "saving": "Wird gespeichert…",
+        "saved": "Gespeichert.",
+        "fields": {
+          "legalName": "Rechtlicher Name (Person oder Firma auf der Rechnung)",
+          "tradeName": "Handelsname (optional)",
+          "legalForm": "Rechtsform (optional)",
+          "registrationNo": "Registernummer (SIREN / KVK / CHE)",
+          "addressLine1": "Adresse",
+          "addressLine2": "Adresszusatz (optional)",
+          "postalCode": "Postleitzahl",
+          "city": "Stadt",
+          "countryCode": "Land (2-Buchstaben-Code)",
+          "billingEmail": "Rechnungs-E-Mail",
+          "vatNumber": "USt-IdNr. (optional)"
+        },
+        "vat": {
+          "NONE": "Keine USt-IdNr.",
+          "UNCHECKED": "USt-IdNr. nicht geprüft",
+          "VALID": "USt-IdNr. in VIES gültig",
+          "INVALID": "USt-IdNr. nicht in VIES registriert",
+          "UNAVAILABLE": "VIES nicht erreichbar — Status unbekannt, später erneut versuchen",
+          "notEu": "Keine EU-USt-IdNr. — von VIES nicht abgedeckt",
+          "unevidenced": "keine Abfragenummer — SOFRA_VAT_NUMBER setzen",
+          "registeredAs": "registriert als {registeredName}",
+          "checkedOn": "geprüft am {date}"
+        },
+        "recheck": "USt-IdNr. erneut prüfen",
+        "rechecking": "Wird geprüft…",
+        "payerIntro": "Die juristische Person, an die Ihre Rechnungen gerichtet sind. Vor der ersten Zahlung erforderlich.",
+        "backToPlan": "← Zurück zu Ihrem Tarif"
+      },
+      "invoices": {
+        "title": "Rechnungen",
+        "intro": "Ausgestellte Dokumente und die bezahlten Beträge, die nicht abgerechnet werden konnten.",
+        "sellerMissing": "Es kann keine Rechnung ausgestellt werden, solange die Registrierungsdaten des Unternehmens fehlen: {gaps}.",
+        "blockedTitle": "Nicht abgerechnet",
+        "blockedIntro": "Diese Zahlungen wurden ausgeführt, haben aber kein Dokument erzeugt — meist eine fehlende Rechnungsidentität oder eine von VIES nicht bestätigte USt-IdNr. Ursache beheben, dann erneut ausstellen.",
+        "issuedTitle": "Ausgestellt",
+        "empty": "Noch keine Rechnungen.",
+        "issueNow": "Jetzt ausstellen",
+        "issuing": "Wird ausgestellt…"
+      },
+      "icp": {
+        "title": "Zusammenfassende Meldung (ICP)",
+        "intro": "EU-Umsätze mit Reverse Charge im Quartal, gruppiert nach USt-IdNr. des Kunden. Nettobeträge — hier wurde keine USt. berechnet.",
+        "year": "Jahr",
+        "quarter": "Quartal",
+        "show": "Anzeigen",
+        "download": "CSV herunterladen",
+        "country": "Land",
+        "vatNumber": "USt-IdNr.",
+        "invoices": "Rechnungen",
+        "net": "Netto",
+        "total": "Gesamt",
+        "empty": "Keine Reverse-Charge-Umsätze in diesem Quartal.",
+        "missingVat": "{count} Reverse-Charge-Rechnung(en) ohne USt-IdNr. sind nicht gelistet — Reverse Charge setzt eine voraus, das ist also ein zu prüfender Fehler."
       }
     },
     "errors": {
@@ -806,7 +874,19 @@
       "provisioningNotConfigured": "Bereitstellung ist nicht konfiguriert (GitHub-Token fehlt).",
       "provisionFailed": "Bereitstellungs-PR konnte nicht geöffnet werden. Prüfen Sie die Protokolle.",
       "slugReserved": "Dieser Tenant-Slug ist reserviert und kann nicht verwendet werden.",
-      "awaitingFirstPayment": "Der Plan dieses Tenants hat noch keine abgeschlossene erste Zahlung. Ein Self-Service-Tenant wird erst nach Zahlung provisioniert."
+      "awaitingFirstPayment": "Der Plan dieses Tenants hat noch keine abgeschlossene erste Zahlung. Ein Self-Service-Tenant wird erst nach Zahlung provisioniert.",
+      "identityNotFound": "Diese Rechnungsidentität existiert nicht mehr.",
+      "noVatNumber": "Es gibt keine USt-IdNr. zum Prüfen.",
+      "invoice": {
+        "sellerNotConfigured": "Weiterhin blockiert: die Registrierungsdaten des Unternehmens fehlen.",
+        "buyerNotInvoiceable": "Weiterhin blockiert: dieser Kunde hat keine vollständige Rechnungsidentität.",
+        "taxNeedsReview": "Weiterhin blockiert: die USt-Behandlung erfordert eine Entscheidung — meist eine von VIES nicht bestätigte USt-IdNr.",
+        "nothingToInvoice": "Nichts abzurechnen — der Betrag ist null.",
+        "alreadyIssued": "Für diese Zahlung existiert bereits eine Rechnung.",
+        "noPlan": "Kein Tarif zu dieser Zahlung gefunden.",
+        "error": "Ausstellung fehlgeschlagen. Logs prüfen."
+      },
+      "billingDetailsRequired": "Bitte zuerst Ihre Rechnungsdaten hinterlegen — ohne sie kann keine Rechnung ausgestellt werden."
     },
     "plan": {
       "title": "Ihr Abo",
@@ -867,6 +947,19 @@
       "settingUpBody": "Ihre Konfiguration wartet auf eine letzte Prüfung, danach wird Ihre App erstellt und gestartet. Das dauert in der Regel etwa fünfzehn Minuten.",
       "almostReadyTitle": "Fast geschafft",
       "almostReadyBody": "Ihre App wird gestartet. Sobald sie antwortet, zeigt Ihnen diese Seite, wie Sie sich anmelden."
+    },
+    "invoice": {
+      "title": "Rechnung",
+      "billedTo": "Rechnung an",
+      "description": "Beschreibung",
+      "qty": "Menge",
+      "net": "Netto",
+      "total": "Gesamt",
+      "vatRate": "USt. {rate} %",
+      "reg": "Reg.-Nr.",
+      "vat": "USt-IdNr.",
+      "iban": "IBAN",
+      "service": "Leistung: {tenant}"
     }
   },
   "signup": {
@@ -953,6 +1046,62 @@
         "counter": "Theke",
         "full-service": "Voller Service"
       }
+    }
+  },
+  "legal": {
+    "meta": {
+      "title": "Impressum und Datenschutz · SofraPiwas",
+      "description": "Wer SofraPiwas betreibt und wie wir mit Ihren Daten umgehen."
+    },
+    "kicker": "Rechtliches",
+    "title": "Impressum & Datenschutz",
+    "imprint": {
+      "title": "Wer wir sind",
+      "kvk": "Handelsregister (KVK): {value}",
+      "vat": "USt-Identifikationsnummer: {value}",
+      "unset": "Unsere Registrierungs- und Kontaktdaten sind hier noch nicht veröffentlicht. Sie stehen auf jeder Rechnung, die wir Ihnen gesendet haben.",
+      "contact": "E-Mail"
+    },
+    "privacy": {
+      "title": "Datenschutz",
+      "updated": "Dieser Text beschreibt, was der Dienst heute tatsächlich tut, und wird bei Änderungen angepasst.",
+      "controller": {
+        "title": "Wer verantwortlich ist",
+        "body": "Das oben genannte Unternehmen ist Verantwortlicher für die hier beschriebenen Daten — die Daten der Kunden und Partner von SofraPiwas. Diese Seite gilt nicht für die Gäste eines Restaurants: deren Reservierungen und Bestellungen liegen in der eigenen Installation dieses Restaurants, das dafür seine eigene Datenschutzerklärung veröffentlicht."
+      },
+      "what": {
+        "title": "Was wir erheben",
+        "body": "Für Konten: Ihren Namen, Ihre E-Mail-Adresse und einen Passwort-Hash. Für die Abrechnung: den rechtlichen Namen Ihres Unternehmens, Anschrift, Registernummer, USt-IdNr. und Rechnungs-E-Mail sowie Zahlungsdaten unseres Zahlungsdienstleisters und die Antwort des USt-Prüfdienstes zu Ihrer Nummer. Wenn Sie uns schreiben oder sich für das Partnerprogramm bewerben: was Sie ins Formular eintragen, einschließlich Telefonnummer und Ort, sofern angegeben. Für Partner: die vermittelten Restaurants, deren Kontaktdaten und Ihre Notizen. Wir führen Sicherheitsprotokolle über Anmeldeversuche, die die eingegebene E-Mail-Adresse enthalten. Wir setzen keine Analyse- oder Werbe-Tracker ein."
+      },
+      "why": {
+        "title": "Warum",
+        "body": "Um Ihnen ein Konto bereitzustellen, abzurechnen und die gesetzlich vorgeschriebenen Rechnungen auszustellen. USt-IdNrn. prüfen wir über den VIES-Dienst der Europäischen Kommission, um die richtige steuerliche Behandlung anzuwenden, und bewahren die Abfragenummer als Nachweis auf."
+      },
+      "keep": {
+        "title": "Wie lange wir sie speichern",
+        "body": "Rechnungen und die darauf gedruckten Abrechnungsdaten werden für die im niederländischen Steuerrecht vorgeschriebene Frist aufbewahrt. Anmelde- und Administrationsprotokolle werden 18 Monate aufbewahrt. Eine abgelehnte Partnerbewerbung wird 12 Monate aufbewahrt und dann gelöscht. Einladungslinks verfallen und werden nach 30 Tagen gelöscht. Konten und CRM-Einträge bleiben für die Dauer der Geschäftsbeziehung und werden auf Wunsch entfernt — dafür gibt es keine automatische Frist."
+      },
+      "rights": {
+        "title": "Ihre Rechte",
+        "body": "Sie können eine Kopie Ihrer Daten, deren Berichtigung oder Löschung verlangen. Schreiben Sie an die oben genannte Adresse, wir antworten. Einiges können wir auf Wunsch nicht löschen, und es ist ehrlicher, das zu sagen: eine ausgestellte Rechnung und die darauf gedruckten rechtlichen Angaben, weil wir sie aufbewahren müssen; und Sicherheitsprotokolle, bis ihre 18 Monate abgelaufen sind."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "body": "Ein Sitzungs-Cookie, wenn Sie angemeldet sind, und ein Cookie für Ihre Sprachwahl. Ihre Hell-/Dunkel-Einstellung wird in Ihrem Browser gespeichert und nie an uns übertragen. Keine Analyse- oder Werbe-Cookies."
+      },
+      "processors": {
+        "title": "Wer sonst Zugriff hat",
+        "body": "Wir arbeiten mit wenigen Dienstleistern; jeder erhält nur, was seine Aufgabe erfordert. Außerdem prüfen wir USt-IdNrn. über den VIES-Dienst der Europäischen Kommission, wozu die von Ihnen angegebene Nummer dorthin übermittelt wird.",
+        "hosting": "Hosting und Datenbanken",
+        "payments": "Abonnementzahlungen",
+        "email": "E-Mail-Versand",
+        "source": "Quellcode und Builds — sowie, für jedes von uns eingerichtete Restaurant, dessen Name, Ort und Administrator-E-Mail-Adresse, die in einem privaten Repository abgelegt werden",
+        "monitoring": "Fehlerüberwachung, damit wir merken, wenn etwas kaputtgeht"
+      }
+    },
+    "terms": {
+      "title": "Bedingungen",
+      "body": "Wir haben noch keine veröffentlichten Nutzungsbedingungen. Bis dahin gilt, was wir mit Ihnen schriftlich vereinbaren — fragen Sie uns, wir bestätigen es."
     }
   }
 }

@@ -17,9 +17,10 @@
 
 | When | Read |
 |---|---|
-| Any architectural question | `docs/adr/` — ADRs 001–011 (tenancy, provisioning, control plane, partner model, modules, billing split) |
+| Any architectural question | `docs/adr/` — ADRs 001–013 (tenancy, provisioning, control plane, partner model, modules, billing split, **billing identity + VAT + invoicing**) |
 | Partner program / CRM semantics | ADR-009 + workspace `docs/plans/SOFRA-PARTNER-PLAN.md` (Client = CRM row; Tenant = registry entry; joined only by `tenantSlug`) |
 | Billing work | ADR-005/ADR-011 + `lib/billing.ts` (fetch-and-verify, ACTIVATING claim, idempotency) |
+| **Anything about VAT, invoices, or a customer's legal details** | **ADR-013** + workspace `docs/plans/SOFRA-BILLING-IDENTITY-PLAN.md`. Three rules that are easy to break by accident: a VAT status belongs to the **number it was proven for** and an outage (`UNAVAILABLE`) must never overwrite a `VALID`; every reader resolves an identity through **`resolveIdentityForPlan`**, never `plan.billingIdentity`, or a form will overwrite a record it never displayed; and invoicing runs inside the Mollie webhook, so **it may never throw** — refusals are recorded and re-issued from `/admin/invoices`. Seller identity is env (`SOFRA_LEGAL_*`), and its absence blocks every invoice on purpose |
 | Deploy/migrate/ops | deploy repo `DEPLOYMENT.md` §Sofra control plane + the `operating-rumi-infra` skill |
 | Manual QA logins | workspace `docs/runbooks/sofra-test-accounts.md` (ADMIN + PARTNER test accounts; **never run billing flows from them** — the key is live) |
 

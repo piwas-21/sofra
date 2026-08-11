@@ -8,6 +8,10 @@ import { eur, shortDate } from "@/lib/format";
 import { BILLING_INTERVALS } from "@/lib/billing";
 import CancelSubscriptionButton from "@/components/control/CancelSubscriptionButton";
 import CopyField from "@/components/control/CopyField";
+import BillingIdentityForm from "@/components/control/BillingIdentityForm";
+import RecheckVatButton from "@/components/control/RecheckVatButton";
+import { isInvoiceable } from "@/lib/billing-identity";
+import { resolveIdentityForPlan } from "@/lib/identity-upsert";
 
 // Mollie interval string → control.admin.intervals key (display only).
 const intervalKey = (mollie: string) =>
@@ -32,9 +36,14 @@ export default async function AdminBillingDetailPage({
       client: { include: { partner: true } },
       subscriptions: { orderBy: { createdAt: "desc" } },
       payments: { orderBy: { createdAt: "desc" } },
+      billingIdentity: true,
     },
   });
   if (!billing) notFound();
+
+  // Same resolver the write uses: a plan with a null link still shows the PARTY's
+  // identity, so the form can never overwrite a record it did not display.
+  const identity = await resolveIdentityForPlan(billing);
 
   const openCheckout = billing.payments.find(
     (p) => p.checkoutUrl && (p.status === "open" || p.status === "pending"),
@@ -70,6 +79,29 @@ export default async function AdminBillingDetailPage({
           </div>
         </section>
       )}
+
+      <section className="hand-drawn-border bg-card p-5">
+        <h2 className="font-hand text-2xl font-bold">{t("identity.title")}</h2>
+        {/* `isInvoiceable`, not mere existence: a row can be present and still be
+            missing a field an invoice must carry, and "there is a record" is not
+            the question the founder needs answered here. */}
+        <p className="mt-1 font-label text-sm text-muted-foreground">
+          {isInvoiceable(identity) ? t("identity.intro") : t("identity.introEmpty")}
+        </p>
+        <div className="mt-4">
+          <BillingIdentityForm
+            billingId={billing.id}
+            defaults={identity ?? undefined}
+          />
+        </div>
+        {/* Outside the form on purpose — its own POST, and nesting forms is
+            invalid HTML. This is the only exit from an UNAVAILABLE check. */}
+        {identity?.vatNumber && (
+          <div className="mt-3">
+            <RecheckVatButton identityId={identity.id} />
+          </div>
+        )}
+      </section>
 
       <section>
         <h2 className="font-hand text-3xl font-bold">{t("billingDetail.subscriptions")}</h2>

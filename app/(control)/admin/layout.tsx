@@ -38,7 +38,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         },
         {
           label: t("groups.money"),
-          items: [{ href: "/admin/billing", label: t("nav.billing") }],
+          items: [
+            { href: "/admin/billing", label: t("nav.billing") },
+            { href: "/admin/invoices", label: t("nav.invoices") },
+            { href: "/admin/icp", label: t("nav.icp") },
+          ],
         },
         {
           label: t("groups.system"),

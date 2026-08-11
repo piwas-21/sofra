@@ -30,6 +30,23 @@ enum ApplicationStatus {
   REJECTED
 }
 
+// Where a party's VAT identification number stands with VIES
+// (SOFRA-BILLING-IDENTITY-PLAN B1/B2). Mirrors lib/vies-result.ts's tri-valued
+// outcome plus the two "nothing to check" states.
+//
+// UNAVAILABLE is NOT a synonym for INVALID and must never be written over a
+// VALID: VIES answers `valid:false` for its own outages too (the French node
+// throttled 5 of 8 calls during the plan's research while reporting itself
+// Available), so collapsing the two turns a busy member state into a rejected
+// customer — and silently retracts a reverse charge substantiated last quarter.
+enum VatStatus {
+  NONE // no number supplied
+  UNCHECKED // supplied, never checked
+  VALID // VIES said valid — vatCheckRef is the consultation reference
+  INVALID // a real member-state verdict
+  UNAVAILABLE // VIES could not answer; ask again, decide nothing
+}
+
 enum SignupStatus {
   NEW
   CONTACTED
@@ -65,6 +82,9 @@ model User {
   auditLogs      AuditLog[]
   // Tenants this user pays for directly (OWNER self-serve; ADR-004).
   billingsPaid   TenantBilling[]   @relation("BillingPayer")
+  // The legal entity this user is invoiced as (B1). One per user: a party has
+  // one set of registration details at a time.
+  billingIdentity BillingIdentity?
 }
 
 model PartnerApplication {
@@ -120,6 +140,140 @@ model SignupRequest {
   billing TenantBilling[]
 
   @@index([status, createdAt])
+}
+
+// The legal entity an invoice is addressed to (SOFRA-BILLING-IDENTITY-PLAN B1).
+//
+// Attached to the PARTY, not to the subscription, and that is the whole design
+// decision: one partner can hold several tenants (`resolvePartnerUser` reuses an
+// existing ACTIVE partner by design), so legal fields on TenantBilling would be
+// duplicated per tenant and drift. TenantBilling points here instead.
+//
+// `userId` is nullable so the founder can record an identity for a tenant that
+// has no login yet — RUMI's case, which predates every account in this table.
+//
+// NOT stored, deliberately: the raw VIES response body. The evidence that
+// matters is the consultation reference plus the date it was issued, which are
+// their own columns; a JSON blob of the whole answer would only invite keeping
+// more third-party data than the audit needs (D7 minimization).
+model BillingIdentity {
+  id     String  @id @default(cuid())
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  /// The name that goes on the invoice. For a sole trader this is the PERSON,
+  /// not the brand they trade under — the trade name is a separate field below.
+  legalName      String
+  tradeName      String?
+  legalForm      String?
+  /// Whatever the country issues: SIREN (FR), KVK (NL), CHE/UID (CH).
+  registrationNo String?
+  addressLine1   String
+  addressLine2   String?
+  postalCode     String
+  city           String
+  /// ISO 3166-1 alpha-2, UPPERCASE. Drives the entire tax matrix
+  /// (lib/tax-treatment.ts) — the single most load-bearing field here.
+  countryCode    String
+  billingEmail   String
+
+  /// Normalized: uppercase, no separators, WITH the country prefix.
+  vatNumber      String?
+  vatStatus      VatStatus @default(NONE)
+  vatCheckedAt   DateTime?
+  /// VIES consultation reference — THE audit evidence, and it only exists when
+  /// the check identified us as requester (see lib/vies.ts). Null on a VALID row
+  /// means "checked, but we cannot prove it", which is a different thing from
+  /// unchecked and is why it is stored separately from the status.
+  vatCheckRef    String?
+  /// The error VIES named, when it named one. Kept for operator diagnosis.
+  vatCheckDetail String?
+  /// The registered name the member state holds, when it returns one. Worth
+  /// keeping beside `legalName` — a mismatch is a signal, not an error.
+  vatCheckName   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  billings TenantBilling[]
+  invoices Invoice[]
+
+  // Drives the ICP listing (B7): reverse-charged EU sales, grouped by country.
+  @@index([countryCode, vatStatus])
+}
+
+// An issued invoice (SOFRA-BILLING-IDENTITY-PLAN B4). Immutable once written:
+// nothing in the app updates one, and a correction is a credit note (not built).
+model Invoice {
+  id     String @id @default(cuid())
+  /// Gapless within (series, year) — allocated under a transaction-scoped
+  /// advisory lock, never by counting rows outside one. See lib/invoicing.ts.
+  number String @unique
+  series String @default("SP")
+  year   Int
+  seq    Int
+
+  issuedAt DateTime @default(now())
+
+  /// IMMUTABLE SNAPSHOTS of both parties, copied in at issue time and never
+  /// joined at render time. An invoice must not silently change when the
+  /// customer edits their address, or when Sofra moves office — the document
+  /// records what was true on the day it was issued, which is the whole point of
+  /// keeping one.
+  sellerSnapshot Json
+  buyerSnapshot  Json
+
+  /// Kept as a real relation as well, so the ICP export can group by party
+  /// without parsing JSON. RESTRICT, unlike everywhere else in this schema: an
+  /// identity with invoices against it must not be deletable, because the
+  /// invoice would lose the party it is addressed to.
+  billingIdentityId String
+  billingIdentity   BillingIdentity @relation(fields: [billingIdentityId], references: [id], onDelete: Restrict)
+
+  tenantSlug String
+
+  currency   String @default("EUR")
+  netCents   Int
+  vatCents   Int
+  grossCents Int
+  /// Basis points: 2100 = 21%, 0 = reverse charge or outside scope.
+  vatRateBps Int
+  /// The lib/tax-treatment.ts verdict, stored as the string it decided.
+  taxTreatment String
+  /// The exact sentence printed on the document, e.g. "BTW verlegd …". Stored
+  /// rather than re-derived so a later wording change cannot rewrite history.
+  taxNote      String?
+
+  /// The Mollie payment this invoices. UNIQUE, and that is the idempotency
+  /// anchor: Mollie redelivers webhooks, so "have I already invoiced this
+  /// charge?" must be answerable from our own rows.
+  molliePaymentId String? @unique
+
+  lines     InvoiceLine[]
+  createdAt DateTime      @default(now())
+
+  /// The backstop for the allocator: a lost race becomes a refused write rather
+  /// than a silent duplicate number.
+  @@unique([series, year, seq])
+  @@index([billingIdentityId, issuedAt])
+  @@index([tenantSlug, issuedAt])
+  // The ICP listing is "everything reverse-charged in this quarter".
+  @@index([taxTreatment, issuedAt])
+}
+
+model InvoiceLine {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int     @default(1)
+  unitCents   Int
+  netCents    Int
+  /// The service period this line covers, when it is a subscription charge.
+  periodStart DateTime?
+  periodEnd   DateTime?
+
+  @@index([invoiceId])
 }
 
 model PartnerProfile {
@@ -234,6 +388,13 @@ model TenantBilling {
   // a P2002 surface to the signup transaction. See the migration for the full reasoning.
   signupRequestId   String?
   signupRequest     SignupRequest? @relation(fields: [signupRequestId], references: [id], onDelete: SetNull)
+  // Who this subscription is INVOICED to (B1). Nullable because every row that
+  // existed before this column has no identity and none can be invented for it —
+  // an absent identity is the honest state, and it is what blocks invoicing.
+  // Several plans can share one identity: a reseller partner holding three
+  // tenants is one legal entity with three subscriptions.
+  billingIdentityId String?
+  billingIdentity   BillingIdentity? @relation(fields: [billingIdentityId], references: [id], onDelete: SetNull)
   // The registry proposal opened for this tenant. Also the auto-open's idempotency
   // record: Mollie redelivers, so "already proposed?" must be answerable from our
   // own rows, not only from GitHub refusing a duplicate branch.
@@ -244,6 +405,7 @@ model TenantBilling {
 
   @@index([payerUserId])
   @@index([signupRequestId])
+  @@index([billingIdentityId])
 }
 
 model BillingSubscription {

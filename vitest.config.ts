@@ -48,6 +48,17 @@ export default defineConfig({
         "lib/provisioning-payment-gate.ts",
         "lib/auto-provision-policy.ts",
         "lib/tenant-liveness.ts",
+        // Billing identity / VAT (SOFRA-BILLING-IDENTITY-PLAN B2+B3). The pure
+        // halves only: `lib/vies.ts` owns the fetch and stays out of scope, which
+        // is exactly why the judgement it depends on was split into
+        // `vies-result.ts` — the part that is easy to get wrong is measurable here.
+        "lib/vat-number.ts",
+        "lib/vies-result.ts",
+        "lib/vies-retry.ts",
+        "lib/tax-treatment.ts",
+        "lib/billing-identity.ts",
+        "lib/invoice-rules.ts",
+        "lib/icp.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

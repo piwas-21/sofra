@@ -17,7 +17,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
         title={t("owner")}
         userLabel={user.name}
         signOutLabel={t("signOut")}
-        nav={[{ href: "/dashboard", label: t("nav.overview") }]}
+        nav={[
+          { href: "/dashboard", label: t("nav.overview") },
+          // Reachable for an OWNER even though /dashboard/billing is not: that
+          // page is requirePartner() and would bounce them, while the details
+          // page is requirePartnerOrOwner precisely so a direct owner can supply
+          // the identity their own first payment is gated on (B5).
+          { href: "/dashboard/billing/details", label: t("nav.billingDetails") },
+        ]}
       >
         {children}
       </ControlShell>
@@ -36,7 +43,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const hasCommissions = commissionCount > 0;
 
   const nav = [{ href: "/dashboard", label: t("nav.clients") }];
-  if (hasBilling) nav.push({ href: "/dashboard/billing", label: t("nav.plan") });
+  if (hasBilling) {
+    nav.push({ href: "/dashboard/billing", label: t("nav.plan") });
+    nav.push({ href: "/dashboard/billing/details", label: t("nav.billingDetails") });
+  }
   if (hasCommissions || !hasBilling) nav.push({ href: "/dashboard/ledger", label: t("nav.ledger") });
 
   return (
