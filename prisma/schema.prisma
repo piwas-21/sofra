@@ -196,9 +196,84 @@ model BillingIdentity {
   updatedAt DateTime @updatedAt
 
   billings TenantBilling[]
+  invoices Invoice[]
 
   // Drives the ICP listing (B7): reverse-charged EU sales, grouped by country.
   @@index([countryCode, vatStatus])
+}
+
+// An issued invoice (SOFRA-BILLING-IDENTITY-PLAN B4). Immutable once written:
+// nothing in the app updates one, and a correction is a credit note (not built).
+model Invoice {
+  id     String @id @default(cuid())
+  /// Gapless within (series, year) — allocated under a transaction-scoped
+  /// advisory lock, never by counting rows outside one. See lib/invoicing.ts.
+  number String @unique
+  series String @default("SP")
+  year   Int
+  seq    Int
+
+  issuedAt DateTime @default(now())
+
+  /// IMMUTABLE SNAPSHOTS of both parties, copied in at issue time and never
+  /// joined at render time. An invoice must not silently change when the
+  /// customer edits their address, or when Sofra moves office — the document
+  /// records what was true on the day it was issued, which is the whole point of
+  /// keeping one.
+  sellerSnapshot Json
+  buyerSnapshot  Json
+
+  /// Kept as a real relation as well, so the ICP export can group by party
+  /// without parsing JSON. RESTRICT, unlike everywhere else in this schema: an
+  /// identity with invoices against it must not be deletable, because the
+  /// invoice would lose the party it is addressed to.
+  billingIdentityId String
+  billingIdentity   BillingIdentity @relation(fields: [billingIdentityId], references: [id], onDelete: Restrict)
+
+  tenantSlug String
+
+  currency   String @default("EUR")
+  netCents   Int
+  vatCents   Int
+  grossCents Int
+  /// Basis points: 2100 = 21%, 0 = reverse charge or outside scope.
+  vatRateBps Int
+  /// The lib/tax-treatment.ts verdict, stored as the string it decided.
+  taxTreatment String
+  /// The exact sentence printed on the document, e.g. "BTW verlegd …". Stored
+  /// rather than re-derived so a later wording change cannot rewrite history.
+  taxNote      String?
+
+  /// The Mollie payment this invoices. UNIQUE, and that is the idempotency
+  /// anchor: Mollie redelivers webhooks, so "have I already invoiced this
+  /// charge?" must be answerable from our own rows.
+  molliePaymentId String? @unique
+
+  lines     InvoiceLine[]
+  createdAt DateTime      @default(now())
+
+  /// The backstop for the allocator: a lost race becomes a refused write rather
+  /// than a silent duplicate number.
+  @@unique([series, year, seq])
+  @@index([billingIdentityId, issuedAt])
+  @@index([tenantSlug, issuedAt])
+  // The ICP listing is "everything reverse-charged in this quarter".
+  @@index([taxTreatment, issuedAt])
+}
+
+model InvoiceLine {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int     @default(1)
+  unitCents   Int
+  netCents    Int
+  /// The service period this line covers, when it is a subscription charge.
+  periodStart DateTime?
+  periodEnd   DateTime?
+
+  @@index([invoiceId])
 }
 
 model PartnerProfile {

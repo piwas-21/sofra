@@ -469,7 +469,8 @@
         "plan": "Abonnement",
         "overview": "Aperçu",
         "signups": "Inscriptions",
-        "fleet": "Parc"
+        "fleet": "Parc",
+        "invoices": "Factures"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -809,6 +810,17 @@
         },
         "recheck": "Revérifier le numéro de TVA",
         "rechecking": "Vérification…"
+      },
+      "invoices": {
+        "title": "Factures",
+        "intro": "Documents émis, et les paiements réglés qui n'ont pas pu être facturés.",
+        "sellerMissing": "Aucune facture ne peut être émise tant que les informations d'immatriculation de la société ne sont pas renseignées : {gaps}.",
+        "blockedTitle": "Non facturé",
+        "blockedIntro": "Ces paiements ont été réglés mais n'ont produit aucun document — généralement une identité de facturation manquante ou un numéro de TVA non confirmé par VIES. Corrigez la cause, puis réémettez.",
+        "issuedTitle": "Émises",
+        "empty": "Aucune facture pour l'instant.",
+        "issueNow": "Émettre",
+        "issuing": "Émission…"
       }
     },
     "errors": {
@@ -844,7 +856,16 @@
       "slugReserved": "Ce slug de tenant est réservé et ne peut pas être utilisé.",
       "awaitingFirstPayment": "Le plan de ce tenant n'a pas encore de premier paiement encaissé. Un tenant en libre-service n'est provisionné qu'après paiement.",
       "identityNotFound": "Cette identité de facturation n'existe plus.",
-      "noVatNumber": "Aucun numéro de TVA à vérifier."
+      "noVatNumber": "Aucun numéro de TVA à vérifier.",
+      "invoice": {
+        "sellerNotConfigured": "Toujours bloqué : les informations d'immatriculation de la société ne sont pas renseignées.",
+        "buyerNotInvoiceable": "Toujours bloqué : ce client n'a pas d'identité de facturation complète.",
+        "taxNeedsReview": "Toujours bloqué : le régime de TVA demande une décision — généralement un numéro de TVA non confirmé par VIES.",
+        "nothingToInvoice": "Rien à facturer — le montant est nul.",
+        "alreadyIssued": "Une facture existe déjà pour ce paiement.",
+        "noPlan": "Aucun forfait trouvé pour ce paiement.",
+        "error": "Échec de l'émission. Consultez les journaux."
+      }
     },
     "plan": {
       "title": "Votre abonnement",
@@ -905,6 +926,19 @@
       "settingUpBody": "Votre configuration attend une dernière vérification, puis votre application est créée et démarrée. Cela prend généralement une quinzaine de minutes.",
       "almostReadyTitle": "Presque terminé",
       "almostReadyBody": "Votre application démarre. Dès qu'elle répond, cette page vous indiquera comment vous connecter."
+    },
+    "invoice": {
+      "title": "Facture",
+      "billedTo": "Facturé à",
+      "description": "Description",
+      "qty": "Qté",
+      "net": "HT",
+      "total": "Total",
+      "vatRate": "TVA {rate} %",
+      "reg": "SIREN",
+      "vat": "TVA",
+      "iban": "IBAN",
+      "service": "Service : {tenant}"
     }
   },
   "signup": {

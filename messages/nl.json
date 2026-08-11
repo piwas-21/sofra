@@ -469,7 +469,8 @@
         "plan": "Abonnement",
         "overview": "Overzicht",
         "signups": "Aanmeldingen",
-        "fleet": "Vloot"
+        "fleet": "Vloot",
+        "invoices": "Facturen"
       },
       "groups": {
         "pipeline": "Pijplijn",
@@ -809,6 +810,17 @@
         },
         "recheck": "Btw-nummer opnieuw controleren",
         "rechecking": "Controleren…"
+      },
+      "invoices": {
+        "title": "Facturen",
+        "intro": "Uitgegeven documenten, en de betaalde bedragen die niet gefactureerd konden worden.",
+        "sellerMissing": "Er kan geen factuur worden uitgegeven zolang de registratiegegevens van het bedrijf ontbreken: {gaps}.",
+        "blockedTitle": "Niet gefactureerd",
+        "blockedIntro": "Deze betalingen zijn voldaan maar leverden geen document op — meestal een ontbrekende facturatie-identiteit of een btw-nummer dat VIES niet heeft bevestigd. Los de oorzaak op en geef opnieuw uit.",
+        "issuedTitle": "Uitgegeven",
+        "empty": "Nog geen facturen.",
+        "issueNow": "Nu uitgeven",
+        "issuing": "Uitgeven…"
       }
     },
     "errors": {
@@ -844,7 +856,16 @@
       "slugReserved": "Deze tenant-slug is gereserveerd en kan niet worden gebruikt.",
       "awaitingFirstPayment": "Het plan van deze tenant heeft nog geen voltooide eerste betaling. Een selfservice-tenant wordt pas na betaling geprovisioneerd.",
       "identityNotFound": "Deze facturatie-identiteit bestaat niet meer.",
-      "noVatNumber": "Er is geen btw-nummer om te controleren."
+      "noVatNumber": "Er is geen btw-nummer om te controleren.",
+      "invoice": {
+        "sellerNotConfigured": "Nog steeds geblokkeerd: de registratiegegevens van het bedrijf ontbreken.",
+        "buyerNotInvoiceable": "Nog steeds geblokkeerd: deze klant heeft geen volledige facturatie-identiteit.",
+        "taxNeedsReview": "Nog steeds geblokkeerd: de btw-behandeling vraagt een beslissing — meestal een btw-nummer dat VIES niet heeft bevestigd.",
+        "nothingToInvoice": "Niets te factureren — het bedrag is nul.",
+        "alreadyIssued": "Er bestaat al een factuur voor deze betaling.",
+        "noPlan": "Geen plan gevonden voor deze betaling.",
+        "error": "Uitgeven mislukt. Bekijk de logs."
+      }
     },
     "plan": {
       "title": "Jouw abonnement",
@@ -905,6 +926,19 @@
       "settingUpBody": "Je configuratie staat klaar voor een laatste controle; daarna wordt je app gebouwd en gestart. Dit duurt meestal zo'n vijftien minuten.",
       "almostReadyTitle": "Bijna klaar",
       "almostReadyBody": "Je app wordt opgestart. Zodra hij antwoordt, laat deze pagina zien hoe je inlogt."
+    },
+    "invoice": {
+      "title": "Factuur",
+      "billedTo": "Gefactureerd aan",
+      "description": "Omschrijving",
+      "qty": "Aantal",
+      "net": "Netto",
+      "total": "Totaal",
+      "vatRate": "Btw {rate}%",
+      "reg": "KvK",
+      "vat": "Btw",
+      "iban": "IBAN",
+      "service": "Dienst: {tenant}"
     }
   },
   "signup": {

@@ -469,7 +469,8 @@
         "plan": "Abo",
         "overview": "Übersicht",
         "signups": "Anmeldungen",
-        "fleet": "Flotte"
+        "fleet": "Flotte",
+        "invoices": "Rechnungen"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -809,6 +810,17 @@
         },
         "recheck": "USt-IdNr. erneut prüfen",
         "rechecking": "Wird geprüft…"
+      },
+      "invoices": {
+        "title": "Rechnungen",
+        "intro": "Ausgestellte Dokumente und die bezahlten Beträge, die nicht abgerechnet werden konnten.",
+        "sellerMissing": "Es kann keine Rechnung ausgestellt werden, solange die Registrierungsdaten des Unternehmens fehlen: {gaps}.",
+        "blockedTitle": "Nicht abgerechnet",
+        "blockedIntro": "Diese Zahlungen wurden ausgeführt, haben aber kein Dokument erzeugt — meist eine fehlende Rechnungsidentität oder eine von VIES nicht bestätigte USt-IdNr. Ursache beheben, dann erneut ausstellen.",
+        "issuedTitle": "Ausgestellt",
+        "empty": "Noch keine Rechnungen.",
+        "issueNow": "Jetzt ausstellen",
+        "issuing": "Wird ausgestellt…"
       }
     },
     "errors": {
@@ -844,7 +856,16 @@
       "slugReserved": "Dieser Tenant-Slug ist reserviert und kann nicht verwendet werden.",
       "awaitingFirstPayment": "Der Plan dieses Tenants hat noch keine abgeschlossene erste Zahlung. Ein Self-Service-Tenant wird erst nach Zahlung provisioniert.",
       "identityNotFound": "Diese Rechnungsidentität existiert nicht mehr.",
-      "noVatNumber": "Es gibt keine USt-IdNr. zum Prüfen."
+      "noVatNumber": "Es gibt keine USt-IdNr. zum Prüfen.",
+      "invoice": {
+        "sellerNotConfigured": "Weiterhin blockiert: die Registrierungsdaten des Unternehmens fehlen.",
+        "buyerNotInvoiceable": "Weiterhin blockiert: dieser Kunde hat keine vollständige Rechnungsidentität.",
+        "taxNeedsReview": "Weiterhin blockiert: die USt-Behandlung erfordert eine Entscheidung — meist eine von VIES nicht bestätigte USt-IdNr.",
+        "nothingToInvoice": "Nichts abzurechnen — der Betrag ist null.",
+        "alreadyIssued": "Für diese Zahlung existiert bereits eine Rechnung.",
+        "noPlan": "Kein Tarif zu dieser Zahlung gefunden.",
+        "error": "Ausstellung fehlgeschlagen. Logs prüfen."
+      }
     },
     "plan": {
       "title": "Ihr Abo",
@@ -905,6 +926,19 @@
       "settingUpBody": "Ihre Konfiguration wartet auf eine letzte Prüfung, danach wird Ihre App erstellt und gestartet. Das dauert in der Regel etwa fünfzehn Minuten.",
       "almostReadyTitle": "Fast geschafft",
       "almostReadyBody": "Ihre App wird gestartet. Sobald sie antwortet, zeigt Ihnen diese Seite, wie Sie sich anmelden."
+    },
+    "invoice": {
+      "title": "Rechnung",
+      "billedTo": "Rechnung an",
+      "description": "Beschreibung",
+      "qty": "Menge",
+      "net": "Netto",
+      "total": "Gesamt",
+      "vatRate": "USt. {rate} %",
+      "reg": "Reg.-Nr.",
+      "vat": "USt-IdNr.",
+      "iban": "IBAN",
+      "service": "Leistung: {tenant}"
     }
   },
   "signup": {

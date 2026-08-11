@@ -469,7 +469,8 @@
         "plan": "Abonelik",
         "overview": "Genel bakış",
         "signups": "Kayıtlar",
-        "fleet": "Filo"
+        "fleet": "Filo",
+        "invoices": "Faturalar"
       },
       "groups": {
         "pipeline": "Süreç",
@@ -809,6 +810,17 @@
         },
         "recheck": "KDV numarasını yeniden doğrula",
         "rechecking": "Doğrulanıyor…"
+      },
+      "invoices": {
+        "title": "Faturalar",
+        "intro": "Düzenlenen belgeler ve faturalandırılamayan tahsil edilmiş ödemeler.",
+        "sellerMissing": "Şirketin kendi sicil bilgileri girilmeden fatura düzenlenemez: {gaps}.",
+        "blockedTitle": "Faturalandırılmadı",
+        "blockedIntro": "Bu ödemeler tahsil edildi ancak belge oluşturmadı — genellikle eksik fatura kimliği veya VIES'in doğrulamadığı bir KDV numarası. Nedenini düzeltip yeniden düzenleyin.",
+        "issuedTitle": "Düzenlenenler",
+        "empty": "Henüz fatura yok.",
+        "issueNow": "Şimdi düzenle",
+        "issuing": "Düzenleniyor…"
       }
     },
     "errors": {
@@ -844,7 +856,16 @@
       "slugReserved": "Bu tenant slug'ı ayrılmıştır ve kullanılamaz.",
       "awaitingFirstPayment": "Bu kiracının planında henüz tamamlanmış bir ilk ödeme yok. Self servis kiracı yalnızca ödeme sonrası kurulur.",
       "identityNotFound": "Bu fatura kimliği artık mevcut değil.",
-      "noVatNumber": "Doğrulanacak KDV numarası yok."
+      "noVatNumber": "Doğrulanacak KDV numarası yok.",
+      "invoice": {
+        "sellerNotConfigured": "Hâlâ engelli: şirketin sicil bilgileri girilmemiş.",
+        "buyerNotInvoiceable": "Hâlâ engelli: bu müşterinin eksiksiz fatura kimliği yok.",
+        "taxNeedsReview": "Hâlâ engelli: KDV işlemi karar gerektiriyor — genellikle VIES'in doğrulamadığı bir KDV numarası.",
+        "nothingToInvoice": "Faturalanacak bir şey yok — tutar sıfır.",
+        "alreadyIssued": "Bu ödeme için zaten bir fatura var.",
+        "noPlan": "Bu ödeme için plan bulunamadı.",
+        "error": "Düzenleme başarısız. Günlükleri kontrol edin."
+      }
     },
     "plan": {
       "title": "Aboneliğiniz",
@@ -905,6 +926,19 @@
       "settingUpBody": "Yapılandırmanız son bir kontrol için sırada; ardından uygulamanız oluşturulup başlatılır. Bu genellikle on beş dakika kadar sürer.",
       "almostReadyTitle": "Neredeyse hazır",
       "almostReadyBody": "Uygulamanız başlatılıyor. Yanıt verdiği anda bu sayfa nasıl giriş yapacağınızı gösterecek."
+    },
+    "invoice": {
+      "title": "Fatura",
+      "billedTo": "Fatura adresi",
+      "description": "Açıklama",
+      "qty": "Adet",
+      "net": "Net",
+      "total": "Toplam",
+      "vatRate": "KDV %{rate}",
+      "reg": "Sicil no",
+      "vat": "KDV",
+      "iban": "IBAN",
+      "service": "Hizmet: {tenant}"
     }
   },
   "signup": {
