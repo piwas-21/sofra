@@ -190,6 +190,18 @@ export default function OnboardPartnerForm({
           </span>
           {state.inviteLink && <CopyField value={state.inviteLink} />}
           <span className="font-label text-sm text-muted-foreground">{t("onboard.inviteNote")}</span>
+          {/* The plan exists but has no legal identity yet, so it cannot be
+              invoiced. Say so here and link straight to the form — the founder
+              has the customer's details in hand at exactly this moment, and the
+              alternative is discovering the gap a month later at invoicing. */}
+          {state.billingId && (
+            <span className="font-label text-sm">
+              <a href={`/admin/billing/${state.billingId}`} className="underline">
+                {t("onboard.addIdentity")}
+              </a>{" "}
+              <span className="text-muted-foreground">{t("onboard.addIdentityNote")}</span>
+            </span>
+          )}
         </div>
       )}
     </form>

@@ -698,7 +698,9 @@
         "onboardedBadge": "déjà intégré",
         "liveSincePrefix": "en ligne depuis",
         "noTenants": "Aucun tenant sans partenaire disponible — activez l'option pour afficher les tenants intégrés et retirés.",
-        "registryUnavailable": "Registre des tenants indisponible ({error}) — saisissez les détails du tenant manuellement ci-dessous."
+        "registryUnavailable": "Registre des tenants indisponible ({error}) — saisissez les détails du tenant manuellement ci-dessous.",
+        "addIdentity": "Ajouter les informations de facturation",
+        "addIdentityNote": "— requis avant de pouvoir facturer ce locataire."
       },
       "signups": {
         "title": "Inscriptions de restaurants",
@@ -773,6 +775,40 @@
           "missed": "{count} manquées",
           "errors": "{count} erreurs"
         }
+      },
+      "identity": {
+        "title": "Identité de facturation",
+        "intro": "L'entité juridique à laquelle les factures de ce locataire sont adressées.",
+        "introEmpty": "Aucune identité juridique — ce forfait ne peut pas être facturé tant qu'elle n'est pas enregistrée.",
+        "save": "Enregistrer l'identité",
+        "saving": "Enregistrement…",
+        "saved": "Enregistré.",
+        "fields": {
+          "legalName": "Dénomination légale (personne ou société facturée)",
+          "tradeName": "Nom commercial (facultatif)",
+          "legalForm": "Forme juridique (facultatif)",
+          "registrationNo": "Numéro d'immatriculation (SIREN / KVK / CHE)",
+          "addressLine1": "Adresse",
+          "addressLine2": "Complément d'adresse (facultatif)",
+          "postalCode": "Code postal",
+          "city": "Ville",
+          "countryCode": "Pays (code à 2 lettres)",
+          "billingEmail": "E-mail de facturation",
+          "vatNumber": "Numéro de TVA (facultatif)"
+        },
+        "vat": {
+          "NONE": "Pas de numéro de TVA",
+          "UNCHECKED": "Numéro de TVA non vérifié",
+          "VALID": "Numéro de TVA valide dans VIES",
+          "INVALID": "Numéro de TVA non enregistré dans VIES",
+          "UNAVAILABLE": "VIES injoignable — statut inconnu, réessayez plus tard",
+          "notEu": "Numéro de TVA hors UE — non couvert par VIES",
+          "unevidenced": "aucune référence de consultation — définissez SOFRA_VAT_NUMBER",
+          "registeredAs": "enregistré sous {registeredName}",
+          "checkedOn": "vérifié le {date}"
+        },
+        "recheck": "Revérifier le numéro de TVA",
+        "rechecking": "Vérification…"
       }
     },
     "errors": {
@@ -806,7 +842,9 @@
       "provisioningNotConfigured": "Le provisionnement n’est pas configuré (jeton GitHub manquant).",
       "provisionFailed": "Impossible d’ouvrir la PR de provisionnement. Consultez les journaux.",
       "slugReserved": "Ce slug de tenant est réservé et ne peut pas être utilisé.",
-      "awaitingFirstPayment": "Le plan de ce tenant n'a pas encore de premier paiement encaissé. Un tenant en libre-service n'est provisionné qu'après paiement."
+      "awaitingFirstPayment": "Le plan de ce tenant n'a pas encore de premier paiement encaissé. Un tenant en libre-service n'est provisionné qu'après paiement.",
+      "identityNotFound": "Cette identité de facturation n'existe plus.",
+      "noVatNumber": "Aucun numéro de TVA à vérifier."
     },
     "plan": {
       "title": "Votre abonnement",

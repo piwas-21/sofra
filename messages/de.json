@@ -698,7 +698,9 @@
         "onboardedBadge": "bereits onboardet",
         "liveSincePrefix": "live seit",
         "noTenants": "Keine partnerfreien Tenants verfügbar — Schalter aktivieren, um onboardete und stillgelegte anzuzeigen.",
-        "registryUnavailable": "Tenant-Registry nicht verfügbar ({error}) — Tenant-Daten unten manuell eingeben."
+        "registryUnavailable": "Tenant-Registry nicht verfügbar ({error}) — Tenant-Daten unten manuell eingeben.",
+        "addIdentity": "Rechnungsdaten hinzufügen",
+        "addIdentityNote": "— erforderlich, bevor dieser Mandant abgerechnet werden kann."
       },
       "signups": {
         "title": "Restaurant-Anmeldungen",
@@ -773,6 +775,40 @@
           "missed": "{count} verpasst",
           "errors": "{count} Fehler"
         }
+      },
+      "identity": {
+        "title": "Rechnungsidentität",
+        "intro": "Die juristische Person, an die die Rechnungen dieses Mandanten gerichtet sind.",
+        "introEmpty": "Noch keine juristische Identität — dieser Tarif kann erst nach Erfassung abgerechnet werden.",
+        "save": "Identität speichern",
+        "saving": "Wird gespeichert…",
+        "saved": "Gespeichert.",
+        "fields": {
+          "legalName": "Rechtlicher Name (Person oder Firma auf der Rechnung)",
+          "tradeName": "Handelsname (optional)",
+          "legalForm": "Rechtsform (optional)",
+          "registrationNo": "Registernummer (SIREN / KVK / CHE)",
+          "addressLine1": "Adresse",
+          "addressLine2": "Adresszusatz (optional)",
+          "postalCode": "Postleitzahl",
+          "city": "Stadt",
+          "countryCode": "Land (2-Buchstaben-Code)",
+          "billingEmail": "Rechnungs-E-Mail",
+          "vatNumber": "USt-IdNr. (optional)"
+        },
+        "vat": {
+          "NONE": "Keine USt-IdNr.",
+          "UNCHECKED": "USt-IdNr. nicht geprüft",
+          "VALID": "USt-IdNr. in VIES gültig",
+          "INVALID": "USt-IdNr. nicht in VIES registriert",
+          "UNAVAILABLE": "VIES nicht erreichbar — Status unbekannt, später erneut versuchen",
+          "notEu": "Keine EU-USt-IdNr. — von VIES nicht abgedeckt",
+          "unevidenced": "keine Abfragenummer — SOFRA_VAT_NUMBER setzen",
+          "registeredAs": "registriert als {registeredName}",
+          "checkedOn": "geprüft am {date}"
+        },
+        "recheck": "USt-IdNr. erneut prüfen",
+        "rechecking": "Wird geprüft…"
       }
     },
     "errors": {
@@ -806,7 +842,9 @@
       "provisioningNotConfigured": "Bereitstellung ist nicht konfiguriert (GitHub-Token fehlt).",
       "provisionFailed": "Bereitstellungs-PR konnte nicht geöffnet werden. Prüfen Sie die Protokolle.",
       "slugReserved": "Dieser Tenant-Slug ist reserviert und kann nicht verwendet werden.",
-      "awaitingFirstPayment": "Der Plan dieses Tenants hat noch keine abgeschlossene erste Zahlung. Ein Self-Service-Tenant wird erst nach Zahlung provisioniert."
+      "awaitingFirstPayment": "Der Plan dieses Tenants hat noch keine abgeschlossene erste Zahlung. Ein Self-Service-Tenant wird erst nach Zahlung provisioniert.",
+      "identityNotFound": "Diese Rechnungsidentität existiert nicht mehr.",
+      "noVatNumber": "Es gibt keine USt-IdNr. zum Prüfen."
     },
     "plan": {
       "title": "Ihr Abo",
