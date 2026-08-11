@@ -698,7 +698,9 @@
         "onboardedBadge": "already onboarded",
         "liveSincePrefix": "live since",
         "noTenants": "No partner-free tenants available — toggle to show onboarded and retired ones.",
-        "registryUnavailable": "Tenant registry unavailable ({error}) — enter the tenant details manually below."
+        "registryUnavailable": "Tenant registry unavailable ({error}) — enter the tenant details manually below.",
+        "addIdentity": "Add billing details",
+        "addIdentityNote": "— required before this tenant can be invoiced."
       },
       "signups": {
         "title": "Restaurant signups",
@@ -773,6 +775,40 @@
           "missed": "{count} missed",
           "errors": "{count} errors"
         }
+      },
+      "identity": {
+        "title": "Billing identity",
+        "intro": "The legal entity this tenant's invoices are addressed to.",
+        "introEmpty": "No legal identity yet — this plan cannot be invoiced until one is recorded.",
+        "save": "Save identity",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "fields": {
+          "legalName": "Legal name (the person or company invoiced)",
+          "tradeName": "Trading name (optional)",
+          "legalForm": "Legal form (optional)",
+          "registrationNo": "Registration number (SIREN / KVK / CHE)",
+          "addressLine1": "Address",
+          "addressLine2": "Address line 2 (optional)",
+          "postalCode": "Postal code",
+          "city": "City",
+          "countryCode": "Country (2-letter code)",
+          "billingEmail": "Billing email",
+          "vatNumber": "VAT number (optional)"
+        },
+        "vat": {
+          "NONE": "No VAT number",
+          "UNCHECKED": "VAT number not checked",
+          "VALID": "VAT number valid in VIES",
+          "INVALID": "VAT number not registered in VIES",
+          "UNAVAILABLE": "VIES could not be reached — status unknown, try again later",
+          "notEu": "Not an EU VAT number — VIES does not cover it",
+          "unevidenced": "no consultation reference — set SOFRA_VAT_NUMBER",
+          "registeredAs": "registered as {registeredName}",
+          "checkedOn": "checked {date}"
+        },
+        "recheck": "Re-check VAT number",
+        "rechecking": "Checking…"
       }
     },
     "errors": {
@@ -806,7 +842,9 @@
       "provisioningNotConfigured": "Provisioning isn’t configured (missing GitHub token).",
       "provisionFailed": "Couldn’t open the provisioning PR. Check the logs.",
       "slugReserved": "That tenant slug is reserved and cannot be used.",
-      "awaitingFirstPayment": "This tenant's plan has no settled first payment yet. A self-serve tenant is provisioned only after it has paid."
+      "awaitingFirstPayment": "This tenant's plan has no settled first payment yet. A self-serve tenant is provisioned only after it has paid.",
+      "identityNotFound": "That billing identity no longer exists.",
+      "noVatNumber": "There is no VAT number to check."
     },
     "plan": {
       "title": "Your plan",

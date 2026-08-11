@@ -698,7 +698,9 @@
         "onboardedBadge": "zaten kaydedildi",
         "liveSincePrefix": "yayında olduğu tarih",
         "noTenants": "Uygun (iş ortağı atanmamış) kiracı yok — kaydı yapılmış ve kullanımdan kaldırılmışları görmek için düğmeyi açın.",
-        "registryUnavailable": "Tenant kaydına ulaşılamıyor ({error}) — kiracı bilgilerini aşağıya elle girin."
+        "registryUnavailable": "Tenant kaydına ulaşılamıyor ({error}) — kiracı bilgilerini aşağıya elle girin.",
+        "addIdentity": "Fatura bilgilerini ekle",
+        "addIdentityNote": "— bu kiracıya fatura kesilmeden önce gerekli."
       },
       "signups": {
         "title": "Restoran kayıtları",
@@ -773,6 +775,40 @@
           "missed": "{count} kaçırıldı",
           "errors": "{count} hata"
         }
+      },
+      "identity": {
+        "title": "Fatura kimliği",
+        "intro": "Bu kiracının faturalarının düzenlendiği tüzel kişilik.",
+        "introEmpty": "Henüz tüzel kimlik yok — kaydedilmeden bu plan faturalandırılamaz.",
+        "save": "Kimliği kaydet",
+        "saving": "Kaydediliyor…",
+        "saved": "Kaydedildi.",
+        "fields": {
+          "legalName": "Yasal unvan (faturadaki kişi veya şirket)",
+          "tradeName": "Ticari ad (isteğe bağlı)",
+          "legalForm": "Hukuki yapı (isteğe bağlı)",
+          "registrationNo": "Sicil numarası (SIREN / KVK / CHE)",
+          "addressLine1": "Adres",
+          "addressLine2": "Adres satırı 2 (isteğe bağlı)",
+          "postalCode": "Posta kodu",
+          "city": "Şehir",
+          "countryCode": "Ülke (2 harfli kod)",
+          "billingEmail": "Fatura e-postası",
+          "vatNumber": "KDV numarası (isteğe bağlı)"
+        },
+        "vat": {
+          "NONE": "KDV numarası yok",
+          "UNCHECKED": "KDV numarası doğrulanmadı",
+          "VALID": "KDV numarası VIES'te geçerli",
+          "INVALID": "KDV numarası VIES'te kayıtlı değil",
+          "UNAVAILABLE": "VIES'e ulaşılamadı — durum bilinmiyor, sonra tekrar deneyin",
+          "notEu": "AB KDV numarası değil — VIES kapsamı dışında",
+          "unevidenced": "sorgu referansı yok — SOFRA_VAT_NUMBER tanımlayın",
+          "registeredAs": "{registeredName} olarak kayıtlı",
+          "checkedOn": "{date} tarihinde doğrulandı"
+        },
+        "recheck": "KDV numarasını yeniden doğrula",
+        "rechecking": "Doğrulanıyor…"
       }
     },
     "errors": {
@@ -806,7 +842,9 @@
       "provisioningNotConfigured": "Sağlama yapılandırılmamış (GitHub belirteci eksik).",
       "provisionFailed": "Sağlama PR’si açılamadı. Günlükleri kontrol edin.",
       "slugReserved": "Bu tenant slug'ı ayrılmıştır ve kullanılamaz.",
-      "awaitingFirstPayment": "Bu kiracının planında henüz tamamlanmış bir ilk ödeme yok. Self servis kiracı yalnızca ödeme sonrası kurulur."
+      "awaitingFirstPayment": "Bu kiracının planında henüz tamamlanmış bir ilk ödeme yok. Self servis kiracı yalnızca ödeme sonrası kurulur.",
+      "identityNotFound": "Bu fatura kimliği artık mevcut değil.",
+      "noVatNumber": "Doğrulanacak KDV numarası yok."
     },
     "plan": {
       "title": "Aboneliğiniz",

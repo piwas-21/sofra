@@ -29,7 +29,15 @@ import { type BillingInterval } from "@/lib/billing";
 
 /** `error` is a message key in `control.errors` (translated by <ActionError />);
  *  Zod issue messages pass through raw. */
-export type OnboardActionState = { error?: string; ok?: boolean; inviteLink?: string };
+export type OnboardActionState = {
+  error?: string;
+  ok?: boolean;
+  inviteLink?: string;
+  /** The plan just created. Returned so the form can send the founder straight to
+   *  its billing-identity form (B1/B6): a plan with no legal identity cannot be
+   *  invoiced, and this is the moment the founder has the details in hand. */
+  billingId?: string;
+};
 
 /** Email the onboarding link — a set-password invite for a fresh INVITED
  *  account, or a plain login link for an already-ACTIVE one — and return it. The
@@ -117,7 +125,7 @@ export async function onboardPartnerAction(
     clientId = client.id;
   }
 
-  await defineTenantPlan({
+  const billing = await defineTenantPlan({
     tenantSlug,
     name: input.name,
     email,
@@ -141,5 +149,5 @@ export async function onboardPartnerAction(
     revalidatePath("/admin/signups");
   }
   revalidatePath("/admin/onboard");
-  return { ok: true, inviteLink };
+  return { ok: true, inviteLink, billingId: billing.id };
 }
