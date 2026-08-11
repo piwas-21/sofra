@@ -73,6 +73,29 @@ Surfaced by onboarding the first partner who is a foreign registered business.
    prices explicitly ex-VAT is a change to what is CHARGED, not to this
    arithmetic.
 
+## Addendum (2026-08-11, same day) — runtime config on a prerendered page is inert
+
+Decision 5 says the seller identity comes from env and also renders the public
+imprint. Shipped, that page was **statically generated**, so `sellerIdentity()`
+was evaluated at BUILD time and the details could never appear however they were
+set on the box. Measured exactly that way: values set in the box `.env`, the
+container recreated and reporting them in `printenv`, and the page still saying
+"not published here yet" — because the HTML had been decided hours earlier.
+
+Two things were needed, and the second is the non-obvious one:
+`export const dynamic = "force-dynamic"`, **and** dropping `setRequestLocale()`,
+which is next-intl's explicit opt-in to static rendering and silently defeats the
+directive. Every sibling marketing page calls it correctly, because their content
+is build-time constant; this page's is not.
+
+Note the build output still labels the route `●` (SSG). That label is not the
+behaviour — the fix was verified by building WITHOUT the identity and serving
+WITH it, and watching the real values render.
+
+The invoicing half was never affected: server actions and the webhook read
+`process.env` per request, which is why invoicing unblocked the moment the env
+landed while the imprint stayed blank.
+
 ## Consequences
 
 - Two new tables (`BillingIdentity`, `Invoice`/`InvoiceLine`), all additive.
