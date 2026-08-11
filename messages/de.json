@@ -202,7 +202,8 @@
       "faq": "FAQ",
       "caseStudy": "Fallstudie",
       "compare": "SofraPiwas vs GloriaFood",
-      "changelog": "Was gibt's Neues"
+      "changelog": "Was gibt's Neues",
+      "legal": "Rechtliches"
     },
     "copyright": "© {year} SofraPiwas. Alle Rechte vorbehalten."
   },
@@ -1045,6 +1046,62 @@
         "counter": "Theke",
         "full-service": "Voller Service"
       }
+    }
+  },
+  "legal": {
+    "meta": {
+      "title": "Impressum und Datenschutz · SofraPiwas",
+      "description": "Wer SofraPiwas betreibt und wie wir mit Ihren Daten umgehen."
+    },
+    "kicker": "Rechtliches",
+    "title": "Impressum & Datenschutz",
+    "imprint": {
+      "title": "Wer wir sind",
+      "kvk": "Handelsregister (KVK): {value}",
+      "vat": "USt-Identifikationsnummer: {value}",
+      "unset": "Unsere Registrierungs- und Kontaktdaten sind hier noch nicht veröffentlicht. Sie stehen auf jeder Rechnung, die wir Ihnen gesendet haben.",
+      "contact": "E-Mail"
+    },
+    "privacy": {
+      "title": "Datenschutz",
+      "updated": "Dieser Text beschreibt, was der Dienst heute tatsächlich tut, und wird bei Änderungen angepasst.",
+      "controller": {
+        "title": "Wer verantwortlich ist",
+        "body": "Das oben genannte Unternehmen ist Verantwortlicher für die hier beschriebenen Daten — die Daten der Kunden und Partner von SofraPiwas. Diese Seite gilt nicht für die Gäste eines Restaurants: deren Reservierungen und Bestellungen liegen in der eigenen Installation dieses Restaurants, das dafür seine eigene Datenschutzerklärung veröffentlicht."
+      },
+      "what": {
+        "title": "Was wir erheben",
+        "body": "Für Konten: Ihren Namen, Ihre E-Mail-Adresse und einen Passwort-Hash. Für die Abrechnung: den rechtlichen Namen Ihres Unternehmens, Anschrift, Registernummer, USt-IdNr. und Rechnungs-E-Mail sowie Zahlungsdaten unseres Zahlungsdienstleisters und die Antwort des USt-Prüfdienstes zu Ihrer Nummer. Wenn Sie uns schreiben oder sich für das Partnerprogramm bewerben: was Sie ins Formular eintragen, einschließlich Telefonnummer und Ort, sofern angegeben. Für Partner: die vermittelten Restaurants, deren Kontaktdaten und Ihre Notizen. Wir führen Sicherheitsprotokolle über Anmeldeversuche, die die eingegebene E-Mail-Adresse enthalten. Wir setzen keine Analyse- oder Werbe-Tracker ein."
+      },
+      "why": {
+        "title": "Warum",
+        "body": "Um Ihnen ein Konto bereitzustellen, abzurechnen und die gesetzlich vorgeschriebenen Rechnungen auszustellen. USt-IdNrn. prüfen wir über den VIES-Dienst der Europäischen Kommission, um die richtige steuerliche Behandlung anzuwenden, und bewahren die Abfragenummer als Nachweis auf."
+      },
+      "keep": {
+        "title": "Wie lange wir sie speichern",
+        "body": "Rechnungen und die darauf gedruckten Abrechnungsdaten werden für die im niederländischen Steuerrecht vorgeschriebene Frist aufbewahrt. Anmelde- und Administrationsprotokolle werden 18 Monate aufbewahrt. Eine abgelehnte Partnerbewerbung wird 12 Monate aufbewahrt und dann gelöscht. Einladungslinks verfallen und werden nach 30 Tagen gelöscht. Konten und CRM-Einträge bleiben für die Dauer der Geschäftsbeziehung und werden auf Wunsch entfernt — dafür gibt es keine automatische Frist."
+      },
+      "rights": {
+        "title": "Ihre Rechte",
+        "body": "Sie können eine Kopie Ihrer Daten, deren Berichtigung oder Löschung verlangen. Schreiben Sie an die oben genannte Adresse, wir antworten. Einiges können wir auf Wunsch nicht löschen, und es ist ehrlicher, das zu sagen: eine ausgestellte Rechnung und die darauf gedruckten rechtlichen Angaben, weil wir sie aufbewahren müssen; und Sicherheitsprotokolle, bis ihre 18 Monate abgelaufen sind."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "body": "Ein Sitzungs-Cookie, wenn Sie angemeldet sind, und ein Cookie für Ihre Sprachwahl. Ihre Hell-/Dunkel-Einstellung wird in Ihrem Browser gespeichert und nie an uns übertragen. Keine Analyse- oder Werbe-Cookies."
+      },
+      "processors": {
+        "title": "Wer sonst Zugriff hat",
+        "body": "Wir arbeiten mit wenigen Dienstleistern; jeder erhält nur, was seine Aufgabe erfordert. Außerdem prüfen wir USt-IdNrn. über den VIES-Dienst der Europäischen Kommission, wozu die von Ihnen angegebene Nummer dorthin übermittelt wird.",
+        "hosting": "Hosting und Datenbanken",
+        "payments": "Abonnementzahlungen",
+        "email": "E-Mail-Versand",
+        "source": "Quellcode und Builds — sowie, für jedes von uns eingerichtete Restaurant, dessen Name, Ort und Administrator-E-Mail-Adresse, die in einem privaten Repository abgelegt werden",
+        "monitoring": "Fehlerüberwachung, damit wir merken, wenn etwas kaputtgeht"
+      }
+    },
+    "terms": {
+      "title": "Bedingungen",
+      "body": "Wir haben noch keine veröffentlichten Nutzungsbedingungen. Bis dahin gilt, was wir mit Ihnen schriftlich vereinbaren — fragen Sie uns, wir bestätigen es."
     }
   }
 }

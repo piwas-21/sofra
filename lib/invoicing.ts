@@ -15,6 +15,7 @@ import { determineTaxTreatment, type BuyerVatStatus } from "@/lib/tax-treatment"
 import { formatInvoiceNumber, issueBlocker, splitGross, type IssueBlocker } from "@/lib/invoice-rules";
 import { sellerIdentity } from "@/lib/seller-identity";
 import { buyerSnapshot, sellerSnapshot } from "@/lib/invoice-snapshot";
+import { resolveIdentityForPlan } from "@/lib/identity-upsert";
 import type { Prisma } from "@/lib/generated/prisma/client";
 
 export type IssueResult =
@@ -73,12 +74,22 @@ export async function issueInvoiceForPayment(molliePaymentId: string): Promise<I
 
     const payment = await db.billingPayment.findUnique({
       where: { molliePaymentId },
-      include: { billing: { include: { billingIdentity: true } } },
+      include: {
+        billing: {
+          include: { billingIdentity: true, client: { select: { partnerId: true } } },
+        },
+      },
     });
     if (!payment) return { issued: false, reason: "noPlan" };
 
     const seller = sellerIdentity();
-    const buyer = payment.billing.billingIdentity;
+    // Through the resolver, NOT `billing.billingIdentity`. A reseller's second
+    // plan has a null link, so reading it directly refused an invoice for a
+    // customer whose identity is fully on file — after the payment gate had
+    // already let the charge through on the resolver's answer. The two must
+    // agree, or money settles that can never be invoiced and the re-issue
+    // button (same code path) can never clear it.
+    const buyer = await resolveIdentityForPlan(payment.billing);
     const tax = determineTaxTreatment({
       sellerCountry: seller?.countryCode ?? "",
       buyerCountry: buyer?.countryCode ?? "",

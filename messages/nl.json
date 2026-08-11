@@ -202,7 +202,8 @@
       "faq": "FAQ",
       "caseStudy": "Casestudy",
       "compare": "SofraPiwas vs GloriaFood",
-      "changelog": "Wat is er nieuw"
+      "changelog": "Wat is er nieuw",
+      "legal": "Juridisch"
     },
     "copyright": "© {year} SofraPiwas. Alle rechten voorbehouden."
   },
@@ -1045,6 +1046,62 @@
         "counter": "Toonbank",
         "full-service": "Volledige bediening"
       }
+    }
+  },
+  "legal": {
+    "meta": {
+      "title": "Colofon en privacy · SofraPiwas",
+      "description": "Wie SofraPiwas exploiteert en hoe wij met uw gegevens omgaan."
+    },
+    "kicker": "Juridisch",
+    "title": "Colofon & privacy",
+    "imprint": {
+      "title": "Wie wij zijn",
+      "kvk": "KvK-nummer: {value}",
+      "vat": "Btw-identificatienummer: {value}",
+      "unset": "Onze registratie- en contactgegevens staan hier nog niet. Ze staan op elke factuur die wij u hebben gestuurd.",
+      "contact": "E-mail"
+    },
+    "privacy": {
+      "title": "Privacy",
+      "updated": "Dit beschrijft wat de dienst vandaag daadwerkelijk doet, en wordt bijgewerkt als dat verandert.",
+      "controller": {
+        "title": "Wie verantwoordelijk is",
+        "body": "Het hierboven genoemde bedrijf is verwerkingsverantwoordelijke voor de hier beschreven gegevens — die van de klanten en partners van SofraPiwas. Deze pagina gaat niet over de gasten van een restaurant: hun reserveringen en bestellingen staan in de eigen installatie van dat restaurant, dat daarvoor zijn eigen privacyverklaring publiceert."
+      },
+      "what": {
+        "title": "Wat wij verzamelen",
+        "body": "Voor accounts: uw naam, e-mailadres en een wachtwoord-hash. Voor facturatie: de juridische naam van uw bedrijf, het adres, registratienummer, btw-nummer en factuur-e-mailadres, samen met betaalgegevens van onze betaaldienstverlener en wat de btw-dienst terugmeldde bij de controle van uw nummer. Schrijft u ons of meldt u zich aan voor het partnerprogramma: wat u in het formulier invult, inclusief telefoonnummer en plaats als u die opgeeft. Voor partners: de restaurants die u aanbrengt, hun contactgegevens en uw notities. Wij houden beveiligingslogs bij van inlogpogingen, met daarin het gebruikte e-mailadres. Wij gebruiken geen analytics en geen advertentietrackers."
+      },
+      "why": {
+        "title": "Waarom",
+        "body": "Om u een account te geven, u te factureren en de facturen uit te geven die de wet van ons verlangt. Btw-nummers controleren wij bij de VIES-dienst van de Europese Commissie zodat wij de juiste btw-behandeling toepassen, en wij bewaren het raadplegingsnummer als bewijs."
+      },
+      "keep": {
+        "title": "Hoe lang wij het bewaren",
+        "body": "Facturen en de factuurgegevens daarop bewaren wij gedurende de termijn uit de Nederlandse belastingwetgeving. Inlog- en beheerlogs bewaren wij 18 maanden. Een afgewezen partneraanmelding bewaren wij 12 maanden en verwijderen wij daarna. Uitnodigingslinks verlopen en worden na 30 dagen verwijderd. Accounts en CRM-gegevens bewaren wij zolang de relatie duurt en verwijderen wij op verzoek — daar staat geen automatische klok op."
+      },
+      "rights": {
+        "title": "Uw rechten",
+        "body": "U kunt een kopie van uw gegevens vragen, om correctie vragen of om verwijdering. Schrijf naar het adres hierboven en wij reageren. Sommige dingen kunnen wij niet op verzoek verwijderen, en het is eerlijker dat te zeggen: een uitgegeven factuur en de juridische gegevens daarop, omdat wij die moeten bewaren; en beveiligingslogs, tot hun 18 maanden om zijn."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "body": "Een sessiecookie wanneer u bent ingelogd, en een cookie die uw taal onthoudt. Uw licht- of donkervoorkeur staat in uw browser en wordt nooit naar ons gestuurd. Geen analytics- of advertentiecookies."
+      },
+      "processors": {
+        "title": "Wie er nog meer bij kan",
+        "body": "Wij werken met een klein aantal leveranciers; elk ontvangt alleen wat zijn taak vereist. Daarnaast controleren wij btw-nummers bij de VIES-dienst van de Europese Commissie, waarbij het door u opgegeven nummer daarheen wordt gestuurd.",
+        "hosting": "hosting en databases",
+        "payments": "abonnementsbetalingen",
+        "email": "e-mail versturen",
+        "source": "broncode en builds — en, voor elk restaurant dat wij inrichten, de naam, plaats en het e-mailadres van de beheerder, vastgelegd in een privérepository",
+        "monitoring": "foutmonitoring, zodat wij merken wanneer er iets stukgaat"
+      }
+    },
+    "terms": {
+      "title": "Voorwaarden",
+      "body": "Wij hebben nog geen gepubliceerde voorwaarden. Tot die er zijn geldt wat wij schriftelijk met u afspreken — vraag het ons en wij bevestigen het."
     }
   }
 }
