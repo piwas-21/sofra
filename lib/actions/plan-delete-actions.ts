@@ -22,8 +22,14 @@ export async function deleteBillingPlanAction(
 ): Promise<DeletePlanState> {
   const admin = await requireAdmin();
 
-  const billingId = String(formData.get("billingId") ?? "");
-  const typedSlug = String(formData.get("confirmSlug") ?? "").trim();
+  // `typeof === "string"`, not String(): FormData entries are `string | File`, and
+  // String(File) is "[object File]". Both would fail safe here (an unknown id
+  // finds no plan; "[object File]" never equals a slug) but the pattern is wrong,
+  // and it is the one every sibling action already uses.
+  const rawBillingId = formData.get("billingId");
+  const rawSlug = formData.get("confirmSlug");
+  const billingId = typeof rawBillingId === "string" ? rawBillingId : "";
+  const typedSlug = typeof rawSlug === "string" ? rawSlug.trim() : "";
 
   const billing = await db.tenantBilling.findUnique({
     where: { id: billingId },

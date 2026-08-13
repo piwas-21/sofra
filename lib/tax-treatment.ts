@@ -23,11 +23,11 @@
 // `nlVat` — rather than a guess or a permanent stall. See it below.
 
 import { isEuVatPrefix } from "@/lib/vat-number";
-import { EU_NO_VAT_NOTE, OUTSIDE_SCOPE_NOTE, REVERSE_CHARGE_NOTE } from "@/lib/tax-notes";
+import { OUTSIDE_SCOPE_NOTE, REVERSE_CHARGE_NOTE } from "@/lib/tax-notes";
 import { euUnverifiedTreatment } from "@/lib/eu-no-vat";
 
 // Re-exported so callers keep one import for "the treatment and what it prints".
-export { EU_NO_VAT_NOTE, OUTSIDE_SCOPE_NOTE, REVERSE_CHARGE_NOTE };
+export { EU_NO_VAT_NOTE, OUTSIDE_SCOPE_NOTE, REVERSE_CHARGE_NOTE } from "@/lib/tax-notes";
 
 export type TaxTreatment =
   /** Dutch customer: ordinary domestic VAT. */
