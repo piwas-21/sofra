@@ -3,6 +3,11 @@ import { routing } from "@/i18n/routing";
 import { sellerIdentity } from "@/lib/seller-identity";
 import { SITE_URL } from "@/lib/seo";
 
+// Same reason as the legal page: this file calls `sellerIdentity()`, so a static
+// sitemap would decide at BUILD time whether /legal is listed and could never
+// change its mind once the owner supplies the details.
+export const dynamic = "force-dynamic";
+
 // Marketing routes per locale ("" = landing). Content-engine pages
 // (AEO plan §2) ship in every locale, same as the landing page.
 const BASE_PATHS = ["", "/signup", "/case/rumi", "/compare/gloriafood", "/changelog"] as const;

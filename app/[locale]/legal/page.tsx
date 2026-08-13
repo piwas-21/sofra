@@ -1,10 +1,26 @@
 import type { Metadata } from "next";
-import { setRequestLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SectionLabel from "@/components/SectionLabel";
 import { marketingPageMetadata } from "@/lib/seo";
 import { contactEmail, sellerIdentity } from "@/lib/seller-identity";
+
+// RUNTIME, not prerendered — and this is load-bearing rather than a preference.
+//
+// The imprint reads `sellerIdentity()`, which reads `process.env`. Statically
+// generated, that call is evaluated at BUILD time, so the page bakes in whatever
+// the identity was when the image was built and NO amount of setting the values
+// on the box can ever change it. Measured exactly that way: the details were set
+// in the box .env, the container was recreated and reported them in `printenv`,
+// and the page still rendered "not published here yet" — because the HTML had
+// been decided hours earlier.
+//
+// It is the same shape as `robots.txt` in this repo (CLAUDE.md §7: "baked, not
+// runtime — a wrong posture takes a rebuild, not a box .env edit"). The
+// difference is that robots.txt is *documented* as build-time and this page's
+// whole purpose is to publish runtime configuration, so here it is a defect.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -48,7 +64,10 @@ export default async function LegalPage({
   params,
 }: Readonly<{ params: Promise<{ locale: string }> }>) {
   const { locale } = await params;
-  setRequestLocale(locale);
+  // NOT setRequestLocale(locale) — that is next-intl's explicit opt-in to STATIC
+  // rendering, and it silently defeats `force-dynamic` above. Every sibling
+  // marketing page calls it, correctly, because their content is build-time
+  // constant. This one's is not.
   const t = await getTranslations({ locale, namespace: "legal" });
   const seller = sellerIdentity();
   const email = contactEmail();
