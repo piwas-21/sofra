@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { eur, shortDate } from "@/lib/format";
 import {
@@ -42,6 +43,11 @@ export interface OwnerPlanCardProps {
   readonly liveSince: Date | null;
   readonly stage: TenantStage;
   readonly tenantDomain: string | null;
+  /** Whether this plan has the legal details an invoice needs (B5). False sends
+   *  the owner to the form INSTEAD of a pay button — `startPaymentAction` refuses
+   *  without them, so offering the button here would be a control that only ever
+   *  errors. */
+  readonly invoiceable: boolean;
 }
 
 /**
@@ -55,9 +61,27 @@ function planAction(args: {
   locale: string;
   restaurant: string;
   nextCharge: Date | null;
+  invoiceable: boolean;
   t: (key: string, values?: Record<string, string>) => string;
 }) {
-  const { state, billingId, locale, restaurant, nextCharge, t } = args;
+  const { state, billingId, locale, restaurant, nextCharge, invoiceable, t } = args;
+  // Before the pay button, not instead of the gate. `startPaymentAction` refuses
+  // a plan with no billing identity, because no charge may settle that cannot
+  // then be invoiced — so without this branch a self-serve owner meets a pay
+  // button that only ever returns an error, with no hint of what to do. Ask for
+  // the details first and the same click works.
+  if (state === "pay" && !invoiceable) {
+    return (
+      <div className="grid gap-2">
+        <Link href="/dashboard/billing/details" className="btn-primary w-fit">
+          {t("addBillingDetails")}
+        </Link>
+        <span className="font-label text-sm text-muted-foreground">
+          {t("billingDetailsFirst")}
+        </span>
+      </div>
+    );
+  }
   if (state === "pay") {
     return (
       <div className="grid gap-2">
@@ -112,6 +136,7 @@ export default async function OwnerPlanCard(props: OwnerPlanCardProps) {
             locale,
             restaurant,
             nextCharge: nextChargeDate(subscription.startDate, subscription.interval, new Date()),
+            invoiceable: props.invoiceable,
             t,
           })}
         </>

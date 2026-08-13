@@ -954,7 +954,9 @@
         "pending": "beklemede",
         "failed": "tamamlanmadı",
         "other": "{status}"
-      }
+      },
+      "addBillingDetails": "Fatura bilgilerinizi ekleyin",
+      "billingDetailsFirst": "Ödemeyi almadan önce faturanızın düzenleneceği şirketi bilmemiz gerekiyor — bir dakika sürer."
     },
     "tenantReady": {
       "readyKicker": "Uygulamanız hazır",

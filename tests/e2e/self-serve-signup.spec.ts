@@ -103,7 +103,12 @@ test.describe("the public signup creates a payable account", () => {
 
     // The figure they were quoted, re-quoted from the catalog, on their own page.
     await expect(page.getByText("€ 43,00")).toBeVisible();
-    await expect(page.getByRole("button", { name: /start auto-monthly payment/i })).toBeVisible();
+    // A fresh self-serve owner has no billing identity yet, so the dashboard
+    // offers the DETAILS FORM rather than a pay button — `startPaymentAction`
+    // refuses without one (no charge may settle that cannot then be invoiced),
+    // and a button that only errors is worse than a link that works.
+    await expect(page.getByRole("link", { name: /add your billing details/i })).toBeVisible();
+    await expect(page.getByRole("button", { name: /start auto-monthly payment/i })).toHaveCount(0);
     // An owner is not a reseller: no CRM surface.
     await expect(page.getByText(/add a client/i)).toHaveCount(0);
     // And it must NOT claim the restaurant is live — nothing is provisioned yet.
@@ -127,8 +132,9 @@ test.describe("the mandate-lag window never invites a second payment", () => {
     await expect(page.getByText(/check your email/i)).toBeVisible();
     const user = await findUser(email);
     await activateAndLogin(page, { inviteLink: await mintInviteLink(user!.id), email, password });
-    // Before: they have not paid, so they SHOULD be asked to.
-    await expect(page.getByRole("button", { name: /start auto-monthly payment/i })).toBeVisible();
+    // Before: they have not paid, so they SHOULD be asked for something — the
+    // billing details that must precede a charge (see the note above).
+    await expect(page.getByRole("link", { name: /add your billing details/i })).toBeVisible();
 
     // Arrange the window Mollie's mandate lag produces — a `paid` first payment
     // while the subscription is still PENDING. This is a database state, not a

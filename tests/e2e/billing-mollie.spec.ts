@@ -109,7 +109,29 @@ test.describe("Mollie first payment and activation", () => {
     expect(before!.subStatus).toBe("PENDING");
     expect(before!.hasMollieCustomer, "no Mollie customer until payment starts").toBe(false);
 
+    // ── billing details come BEFORE the pay button ────────────────────────
+    // Not scaffolding around the gate — this IS the flow. `startPaymentAction`
+    // refuses a plan with no billing identity (no charge may settle that cannot
+    // then be invoiced), so a fresh self-serve owner is shown the details form
+    // instead of a pay button. Walking it here is what proves the two agree:
+    // when this spec was first run after the gate landed, the dashboard still
+    // offered the button and the click went nowhere.
+    await expect(
+      page.getByRole("link", { name: /add your billing details/i }),
+      "a plan with no identity must offer the form, not a pay button",
+    ).toBeVisible();
+    await page.goto("/dashboard/billing/details");
+    await page.getByPlaceholder(/legal name/i).fill("E2E Buyer BV");
+    await page.getByPlaceholder(/^address$/i).fill("1 Test Street");
+    await page.getByPlaceholder(/postal code/i).fill("1000AA");
+    await page.getByPlaceholder(/^city$/i).fill("Amsterdam");
+    await page.getByPlaceholder(/country/i).fill("NL");
+    await page.getByPlaceholder(/billing email/i).fill(email);
+    await page.getByRole("button", { name: /save identity/i }).click();
+    await expect(page.getByText(/saved/i)).toBeVisible({ timeout: 30_000 });
+
     // ── clicking pay reaches Mollie's own hosted checkout ──────────────────
+    await page.goto("/dashboard");
     await page.getByRole("button", { name: /start auto-monthly payment/i }).click();
     await page.waitForURL(/mollie\.com/, { timeout: 45_000 });
     expect(page.url()).toContain("mollie.com");

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
@@ -10,6 +11,8 @@ import {
   type PlanState,
 } from "@/lib/billing-display";
 import StartPaymentButton from "@/components/control/StartPaymentButton";
+import { isInvoiceable } from "@/lib/billing-identity";
+import { resolveIdentityForPlan } from "@/lib/identity-upsert";
 
 export default async function DashboardBillingPage() {
   const partner = await requirePartner();
@@ -22,7 +25,12 @@ export default async function DashboardBillingPage() {
   // the FIRST recurring charge and is never advanced, so from month two onward it named
   // a date in the past (see lib/billing-display.ts). Same defect, same fix, on both the
   // reseller's page and the owner's card.
-  const statusNode = (sub: { startDate: Date | null; interval: string }, state: PlanState, billingId: string) => {
+  const statusNode = (
+    sub: { startDate: Date | null; interval: string },
+    state: PlanState,
+    billingId: string,
+    invoiceable: boolean,
+  ) => {
     if (state === "active") {
       const next = nextChargeDate(sub.startDate, sub.interval, new Date());
       return (
@@ -32,6 +40,19 @@ export default async function DashboardBillingPage() {
       );
     }
     if (state === "pay") {
+      // Same rule as the owner card: `startPaymentAction` refuses a plan with no
+      // billing identity, so offering the button here would be a control that
+      // only ever errors. Send them to the form instead.
+      if (!invoiceable) {
+        return (
+          <div className="grid gap-2">
+            <Link href="/dashboard/billing/details" className="btn-primary w-fit">
+              {t("addBillingDetails")}
+            </Link>
+            <p className="font-label text-sm text-muted-foreground">{t("billingDetailsFirst")}</p>
+          </div>
+        );
+      }
       return (
         <div className="grid gap-2">
           <p className="font-label text-muted-foreground">{t("awaitingPayment")}</p>
@@ -49,11 +70,24 @@ export default async function DashboardBillingPage() {
     where: { client: { partnerId: partner.id } },
     include: {
       client: true,
+      billingIdentity: true,
       subscriptions: { orderBy: { createdAt: "desc" } },
       payments: { orderBy: { createdAt: "desc" }, take: 10 },
     },
     orderBy: { createdAt: "desc" },
   });
+
+  // Resolved through the same path as the gate and the write — see OwnerDashboard.
+  // Sequential rather than Promise.all on purpose: a reseller's plans all belong
+  // to ONE party, so `resolveIdentityForPlan` returns the same row for every
+  // unsaved plan. Run concurrently they would be N identical queries; run in
+  // order, the first result is reused for the rest.
+  const invoiceableByPlan = new Map<string, boolean>();
+  let partyIdentity: Awaited<ReturnType<typeof resolveIdentityForPlan>> | undefined;
+  for (const b of billings) {
+    const identity = b.billingIdentity ?? (partyIdentity ??= await resolveIdentityForPlan(b));
+    invoiceableByPlan.set(b.id, isInvoiceable(identity));
+  }
 
   return (
     <div className="grid gap-10">
@@ -89,7 +123,7 @@ export default async function DashboardBillingPage() {
                         interval: t(`interval.${intervalKeyOf(sub.interval)}`),
                       })}
                     </p>
-                    {statusNode(sub, state, b.id)}
+                    {statusNode(sub, state, b.id, invoiceableByPlan.get(b.id) ?? false)}
                   </>
                 ) : (
                   <p className="font-label text-muted-foreground">{t("noPlan")}</p>

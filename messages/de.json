@@ -954,7 +954,9 @@
         "pending": "ausstehend",
         "failed": "nicht abgeschlossen",
         "other": "{status}"
-      }
+      },
+      "addBillingDetails": "Rechnungsdaten hinzufügen",
+      "billingDetailsFirst": "Wir brauchen das Unternehmen, an das Ihre Rechnung gehen soll, bevor wir abbuchen — das dauert eine Minute."
     },
     "tenantReady": {
       "readyKicker": "Ihre App ist bereit",
