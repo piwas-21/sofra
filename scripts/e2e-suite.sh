@@ -84,6 +84,11 @@ export SOFRA_LEGAL_ADDRESS="1 Fixture Street"
 export SOFRA_LEGAL_POSTAL="1000AA"
 export SOFRA_LEGAL_CITY="Amsterdam"
 export SOFRA_LEGAL_COUNTRY="NL"
+# Required since the imprint shipped — sellerIdentityGaps() lists it, so without
+# it the seller is "not configured" and EVERY invoice short-circuits before the
+# transaction. That is how it broke: the var became required in a later PR and
+# nothing re-read this fixture, so the suite went green while issuing nothing.
+export SOFRA_LEGAL_EMAIL="e2e@example.test"
 export SOFRA_KVK="00000000"
 export SOFRA_VAT_NUMBER="NL000000000B01"
 export SOFRA_INVOICE_SERIES="E2E"

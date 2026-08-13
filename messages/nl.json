@@ -954,7 +954,9 @@
         "pending": "in behandeling",
         "failed": "niet voltooid",
         "other": "{status}"
-      }
+      },
+      "addBillingDetails": "Vul uw factuurgegevens in",
+      "billingDetailsFirst": "We hebben het bedrijf nodig waaraan uw factuur gericht moet worden voordat we incasseren — het kost een minuut."
     },
     "tenantReady": {
       "readyKicker": "Je app is klaar",

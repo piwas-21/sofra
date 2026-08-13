@@ -954,7 +954,9 @@
         "pending": "pending",
         "failed": "not completed",
         "other": "{status}"
-      }
+      },
+      "addBillingDetails": "Add your billing details",
+      "billingDetailsFirst": "We need the company your invoice should be addressed to before taking payment — it takes a minute."
     },
     "tenantReady": {
       "readyKicker": "Your app is ready",

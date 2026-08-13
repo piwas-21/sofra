@@ -28,6 +28,10 @@ export default async function DashboardPage() {
     where: isOwner ? { payerUserId: user.id } : { client: { partnerId: user.id } },
     include: {
       client: true,
+      // Needed to resolve whether this plan can be invoiced yet — the same
+      // question `startPaymentAction` gates on, so the dashboard can offer the
+      // details form instead of a pay button that would only error.
+      billingIdentity: true,
       subscriptions: { orderBy: { createdAt: "desc" } },
       // Only first payments distinguish "pay" from "processing" (planState); scope +
       // bound so the unboundedly-growing recurring history is never pulled into this

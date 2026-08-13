@@ -4,6 +4,9 @@ import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { tenantStage } from "@/lib/tenant-liveness";
 import { probeTenantHealthy } from "@/lib/tenant-health";
 import OwnerPlanCard from "./OwnerPlanCard";
+import { isInvoiceable } from "@/lib/billing-identity";
+import { resolveIdentityForPlan } from "@/lib/identity-upsert";
+import type { BillingIdentity } from "@/lib/generated/prisma/client";
 
 /**
  * The restaurant owner's dashboard (SOFRA-ONBOARDING-PLAN O4).
@@ -28,7 +31,12 @@ type OwnerBilling = {
   tenantSlug: string;
   liveSince: Date | null;
   provisioningPrUrl: string | null;
-  client: { restaurantName: string } | null;
+  // The three `resolveIdentityForPlan` reads, so invoiceability is decided the
+  // same way here as in the gate and the write.
+  billingIdentityId: string | null;
+  payerUserId: string | null;
+  billingIdentity: BillingIdentity | null;
+  client: ({ restaurantName: string } & { partnerId: string }) | null;
   subscriptions: { status: string; amountCents: number; interval: string; startDate: Date | null }[];
   payments: { sequenceType: string; status: string }[];
 };
@@ -111,6 +119,21 @@ export default async function OwnerDashboard({
   // queries should not add round-trips on top of it.
   const historyByBilling = await paymentHistory(billings.map((b) => b.id));
 
+  // Whether each plan has the legal details an invoice needs. Resolved through
+  // `resolveIdentityForPlan` — the SAME path the payment gate and the write use,
+  // so the card cannot offer a pay button the gate will refuse.
+  //
+  // Short-circuits on the identity already loaded by the query, and resolves the
+  // party at most once: every plan of one payer resolves to the same row, so a
+  // per-plan lookup would be N identical queries. Same shape as the other two
+  // payment surfaces.
+  const invoiceableByPlan = new Map<string, boolean>();
+  let partyIdentity: Awaited<ReturnType<typeof resolveIdentityForPlan>> | undefined;
+  for (const b of billings) {
+    const identity = b.billingIdentity ?? (partyIdentity ??= await resolveIdentityForPlan(b));
+    invoiceableByPlan.set(b.id, isInvoiceable(identity));
+  }
+
   const cards = await Promise.all(
     billings.map(async (b) => {
       const domain = domains.get(b.tenantSlug) ?? null;
@@ -153,6 +176,7 @@ export default async function OwnerDashboard({
             firstPayments={billing.payments}
             history={history}
             liveSince={billing.liveSince}
+            invoiceable={invoiceableByPlan.get(billing.id) ?? false}
             stage={stage}
             tenantDomain={domain}
           />
