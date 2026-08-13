@@ -841,6 +841,23 @@
         "total": "Toplam",
         "empty": "Bu çeyrekte tersine tahakkuklu satış yok.",
         "missingVat": "{count} tersine tahakkuklu fatura KDV numarası taşımıyor ve listelenmedi — tersine tahakkuk bunu gerektirir, bu nedenle araştırılması gereken bir kusur."
+      },
+      "planDelete": {
+        "title": "Bu planı sil",
+        "intro": "Yalnızca test planları için. Bir fatura, tahsil edilmiş para veya etkin bir abonelik bağlıysa reddedilir — bu kayıtlar her temizlikten sonra da durmalıdır.",
+        "reveal": "Bu planı sil…",
+        "warning": "Bu geri alınamaz. Plan, abonelikleri ve ödeme kayıtları kaldırılır.",
+        "confirmLabel": "Onaylamak için {slug} yazın",
+        "confirm": "Kalıcı olarak sil",
+        "deleting": "Siliniyor…",
+        "cancel": "Vazgeç",
+        "deleted": "{slug} silindi.",
+        "orphanMollieCustomer": "Not: Mollie müşterisi {id} Mollie tarafında kalır ve bununla silinmez.",
+        "blocked": {
+          "hasInvoices": "Silinemez: düzenlenmiş bir fatura bu kiracıyı adlandırıyor ve bir fatura artık var olmayan bir plana yazılı kalmamalıdır.",
+          "hasPaidPayments": "Silinemez: bu planda para tahsil edilmiş ve ödeme kaydı denetim izidir.",
+          "hasLiveSubscription": "Silinemez: bir abonelikten hâlâ tahsilat yapılabilir. Önce iptal edin, aksi hâlde Mollie bu sistemin artık tanımadığı bir müşteriyi faturalamaya devam eder."
+        }
       }
     },
     "errors": {
@@ -886,7 +903,13 @@
         "noPlan": "Bu ödeme için plan bulunamadı.",
         "error": "Düzenleme başarısız. Günlükleri kontrol edin."
       },
-      "billingDetailsRequired": "Ödemeye başlamadan önce fatura bilgilerinizi ekleyin — bunlar olmadan fatura düzenlenemez."
+      "billingDetailsRequired": "Ödemeye başlamadan önce fatura bilgilerinizi ekleyin — bunlar olmadan fatura düzenlenemez.",
+      "confirmSlugMismatch": "Bu, bu kiracının adı değil — hiçbir şey silinmedi.",
+      "planDelete": {
+        "hasInvoices": "Silinemez: düzenlenmiş bir fatura bu kiracıyı adlandırıyor ve bir fatura artık var olmayan bir plana yazılı kalmamalıdır.",
+        "hasPaidPayments": "Silinemez: bu planda para tahsil edilmiş ve ödeme kaydı denetim izidir.",
+        "hasLiveSubscription": "Silinemez: bir abonelikten hâlâ tahsilat yapılabilir. Önce iptal edin, aksi hâlde Mollie bu sistemin artık tanımadığı bir müşteriyi faturalamaya devam eder."
+      }
     },
     "plan": {
       "title": "Aboneliğiniz",

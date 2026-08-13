@@ -841,6 +841,23 @@
         "total": "Total",
         "empty": "No reverse-charged sales in this quarter.",
         "missingVat": "{count} reverse-charged invoice(s) carry no VAT number and are not listed — reverse charge requires one, so this is a defect to investigate."
+      },
+      "planDelete": {
+        "title": "Delete this plan",
+        "intro": "For test plans only. Refused whenever an invoice, settled money or a live subscription is attached — those records must outlive any tidying-up.",
+        "reveal": "Delete this plan…",
+        "warning": "This cannot be undone. The plan, its subscriptions and its payment records are removed.",
+        "confirmLabel": "Type {slug} to confirm",
+        "confirm": "Delete permanently",
+        "deleting": "Deleting…",
+        "cancel": "Cancel",
+        "deleted": "Deleted {slug}.",
+        "orphanMollieCustomer": "Note: Mollie customer {id} will remain at Mollie and is not removed by this.",
+        "blocked": {
+          "hasInvoices": "Cannot delete: an issued invoice names this tenant, and an invoice must not be left addressed to a plan that no longer exists.",
+          "hasPaidPayments": "Cannot delete: money settled on this plan, and the payment record is the audit trail.",
+          "hasLiveSubscription": "Cannot delete: a subscription can still be charged. Cancel it first, or Mollie keeps billing a customer this system no longer knows."
+        }
       }
     },
     "errors": {
@@ -886,7 +903,13 @@
         "noPlan": "No plan found for this charge.",
         "error": "Issuing failed. Check the logs."
       },
-      "billingDetailsRequired": "Add your billing details before starting the payment — an invoice cannot be issued without them."
+      "billingDetailsRequired": "Add your billing details before starting the payment — an invoice cannot be issued without them.",
+      "confirmSlugMismatch": "That is not this tenant's name — nothing was deleted.",
+      "planDelete": {
+        "hasInvoices": "Cannot delete: an issued invoice names this tenant, and an invoice must not be left addressed to a plan that no longer exists.",
+        "hasPaidPayments": "Cannot delete: money settled on this plan, and the payment record is the audit trail.",
+        "hasLiveSubscription": "Cannot delete: a subscription can still be charged. Cancel it first, or Mollie keeps billing a customer this system no longer knows."
+      }
     },
     "plan": {
       "title": "Your plan",

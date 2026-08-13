@@ -12,6 +12,8 @@ import BillingIdentityForm from "@/components/control/BillingIdentityForm";
 import RecheckVatButton from "@/components/control/RecheckVatButton";
 import { isInvoiceable } from "@/lib/billing-identity";
 import { resolveIdentityForPlan } from "@/lib/identity-upsert";
+import { planDeletionVerdict, settledOrInFlight } from "@/lib/plan-deletion";
+import DeletePlanForm from "@/components/control/DeletePlanForm";
 
 // Mollie interval string → control.admin.intervals key (display only).
 const intervalKey = (mollie: string) =>
@@ -44,6 +46,18 @@ export default async function AdminBillingDetailPage({
   // Same resolver the write uses: a plan with a null link still shows the PARTY's
   // identity, so the form can never overwrite a record it did not display.
   const identity = await resolveIdentityForPlan(billing);
+
+  // Invoices are found by SLUG — `Invoice` has no FK to TenantBilling, so nothing
+  // in the database would stop a delete from orphaning one.
+  const invoiceCount = await db.invoice.count({ where: { tenantSlug: billing.tenantSlug } });
+  const deletion = planDeletionVerdict({
+    invoiceCount,
+    liveOrSettledPaymentCount: billing.payments.filter((p) => settledOrInFlight(p.status)).length,
+    liveSubscriptionCount: billing.subscriptions.filter((s) =>
+      ["PENDING", "ACTIVATING", "ACTIVE"].includes(s.status),
+    ).length,
+    hasMollieCustomer: Boolean(billing.mollieCustomerId),
+  });
 
   const openCheckout = billing.payments.find(
     (p) => p.checkoutUrl && (p.status === "open" || p.status === "pending"),
@@ -134,6 +148,23 @@ export default async function AdminBillingDetailPage({
             </li>
           )}
         </ul>
+      </section>
+
+      <section className="hand-drawn-border bg-card p-5">
+        <h2 className="font-hand text-2xl font-bold">{t("planDelete.title")}</h2>
+        <p className="mt-1 font-label text-sm text-muted-foreground">{t("planDelete.intro")}</p>
+        {deletion.deletable && deletion.warnings.includes("orphanMollieCustomer") && (
+          <p className="mt-2 font-label text-sm text-muted-foreground">
+            {t("planDelete.orphanMollieCustomer", { id: billing.mollieCustomerId ?? "" })}
+          </p>
+        )}
+        <div className="mt-3">
+          <DeletePlanForm
+            billingId={billing.id}
+            tenantSlug={billing.tenantSlug}
+            blockedReason={deletion.deletable ? undefined : deletion.blocker}
+          />
+        </div>
       </section>
 
       <section>
