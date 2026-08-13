@@ -954,7 +954,9 @@
         "pending": "en attente",
         "failed": "non abouti",
         "other": "{status}"
-      }
+      },
+      "addBillingDetails": "Ajouter vos informations de facturation",
+      "billingDetailsFirst": "Nous avons besoin de la société à laquelle adresser votre facture avant d'encaisser — cela prend une minute."
     },
     "tenantReady": {
       "readyKicker": "Votre application est prête",

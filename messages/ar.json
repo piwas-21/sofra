@@ -954,7 +954,9 @@
         "pending": "قيد المعالجة",
         "failed": "لم تكتمل",
         "other": "{status}"
-      }
+      },
+      "addBillingDetails": "أضف بيانات الفوترة",
+      "billingDetailsFirst": "نحتاج إلى الشركة التي ستُوجَّه إليها فاتورتك قبل تحصيل الدفع — يستغرق ذلك دقيقة."
     },
     "tenantReady": {
       "readyKicker": "تطبيقك جاهز",

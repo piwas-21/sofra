@@ -1,6 +1,10 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { eur, shortDate } from "@/lib/format";
 import { intervalKeyOf, planState, type PlanState } from "@/lib/billing-display";
+import { isInvoiceable } from "@/lib/billing-identity";
+import { resolveIdentityForPlan } from "@/lib/identity-upsert";
+import type { BillingIdentity } from "@/lib/generated/prisma/client";
 import ClientForm from "./ClientForm";
 import ClientStatusBadge from "./ClientStatusBadge";
 import StartPaymentButton from "./StartPaymentButton";
@@ -14,7 +18,12 @@ type PartnerBilling = {
   id: string;
   tenantSlug: string;
   liveSince: Date | null;
-  client: { restaurantName: string } | null;
+  // The three `resolveIdentityForPlan` reads — the reseller's landing page is a
+  // payment surface too, and it must not offer a button the gate would refuse.
+  billingIdentityId: string | null;
+  payerUserId: string | null;
+  billingIdentity: BillingIdentity | null;
+  client: { restaurantName: string; partnerId: string } | null;
   subscriptions: { amountCents: number; interval: string; status: string }[];
   payments: { sequenceType: string; status: string }[];
 };
@@ -38,8 +47,29 @@ type PartnerClient = {
  * money leave their own account (the owner gets `<ActivatingPanel />` instead). Neither
  * branch renders a pay button in that window: a second payment is the trap it sets.
  */
-function planAction(args: { state: PlanState; billingId: string; tp: (key: string) => string }) {
-  const { state, billingId, tp } = args;
+function planAction(args: {
+  state: PlanState;
+  billingId: string;
+  invoiceable: boolean;
+  tp: (key: string) => string;
+}) {
+  const { state, billingId, invoiceable, tp } = args;
+  // Same rule as the owner card and the Plan page: `startPaymentAction` refuses a
+  // plan with no billing identity, so a button here would only ever error. This
+  // is the RESELLER's landing page — /login sends every non-admin to /dashboard,
+  // so it is the most prominent of the three payment surfaces, not the least.
+  if (state === "pay" && !invoiceable) {
+    return (
+      <div className="grid gap-2">
+        <Link href="/dashboard/billing/details" className="btn-primary w-fit">
+          {tp("addBillingDetails")}
+        </Link>
+        <span className="font-label text-sm text-muted-foreground">
+          {tp("billingDetailsFirst")}
+        </span>
+      </div>
+    );
+  }
   if (state === "pay") {
     return (
       <div className="grid gap-2">
@@ -64,6 +94,20 @@ export default async function PartnerDashboard({
 }) {
   const t = await getTranslations({ locale, namespace: "control.dashboard" });
   const tp = await getTranslations({ locale, namespace: "control.plan" });
+
+  // Resolved through the SAME path as the gate and the write.
+  //
+  // Sequential, and reusing one lookup: a reseller's plans all belong to ONE
+  // party, so `resolveIdentityForPlan` returns the same row for every plan whose
+  // own link is null. Mapped concurrently it would be N identical queries against
+  // a list that grows with every tenant they onboard. Same shape as
+  // /dashboard/billing.
+  const invoiceableByPlan = new Map<string, boolean>();
+  let partyIdentity: Awaited<ReturnType<typeof resolveIdentityForPlan>> | undefined;
+  for (const b of billings) {
+    const identity = b.billingIdentity ?? (partyIdentity ??= await resolveIdentityForPlan(b));
+    invoiceableByPlan.set(b.id, isInvoiceable(identity));
+  }
 
   // Plans that still need the payer's attention: awaiting a payment, or a payment
   // being processed.
@@ -104,7 +148,12 @@ export default async function PartnerDashboard({
                 interval: tp(`interval.${intervalKeyOf(sub.interval)}`),
               })}
             </p>
-            {planAction({ state: planState(sub, b.payments), billingId: b.id, tp })}
+            {planAction({
+              state: planState(sub, b.payments),
+              billingId: b.id,
+              invoiceable: invoiceableByPlan.get(b.id) ?? false,
+              tp,
+            })}
           </section>
         );
       })}
