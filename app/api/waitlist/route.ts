@@ -11,7 +11,9 @@ import { craftEmail, detailRows } from "@/lib/email-templates";
  * Env (all server-side):
  *   RESEND_API_KEY — required to actually send
  *   WAITLIST_TO    — destination inbox
- *   WAITLIST_FROM  — verified sender (falls back to Resend's onboarding sender)
+ *   WAITLIST_FROM  — sender on a Resend-VERIFIED domain. REQUIRED: there is no
+ *                    sandbox fallback, because that sender reaches only the Resend
+ *                    account owner and 403s everyone else. Unset = nothing sends.
  */
 const INTENTS: Record<string, { subject: string; kicker: string; title: string }> = {
   demo: { subject: "Demo request", kicker: "New request", title: "Someone wants a demo" },

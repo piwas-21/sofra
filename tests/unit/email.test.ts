@@ -1,10 +1,16 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { escapeHtml, founderInbox, siteUrl } from "@/lib/email";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { escapeHtml, founderInbox, sendEmail, siteUrl } from "@/lib/email";
 
 // Pure helpers only — sendEmail() is network (Resend fetch) and is deliberately
 // out of unit scope (no mocks, LIVE key). siteUrl/founderInbox read env, so we
 // snapshot and restore process.env around each case (same pattern as
 // tenant-registry.test.ts / mollie.test.ts).
+//
+// The ONE exception is sendEmail's config guards below: they return before the
+// fetch, so they are reachable without a network and without mocking a live key.
+// They are worth pinning precisely because the bug they prevent is invisible —
+// a sandbox-sender fallback delivers happily to the account owner (the only
+// person who would test it) and 403s every real customer.
 
 describe("escapeHtml", () => {
   it("escapes &, <, and >", () => {
@@ -53,6 +59,53 @@ describe("siteUrl (env fallback chain)", () => {
 
   it("defaults to localhost when neither is set", () => {
     expect(siteUrl()).toBe("http://localhost:3000");
+  });
+});
+
+describe("sendEmail config guards (no network — both return before fetch)", () => {
+  const savedKey = process.env.RESEND_API_KEY;
+  const savedFrom = process.env.WAITLIST_FROM;
+  let fetchSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    // Fail loudly if a guard ever stops short-circuiting: these tests must never
+    // reach the network, so the spy throws rather than returning a stub response.
+    fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(() => {
+      throw new Error("sendEmail reached the network in a unit test");
+    });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    if (savedKey === undefined) delete process.env.RESEND_API_KEY;
+    else process.env.RESEND_API_KEY = savedKey;
+    if (savedFrom === undefined) delete process.env.WAITLIST_FROM;
+    else process.env.WAITLIST_FROM = savedFrom;
+  });
+
+  const msg = { to: "guest@example.com", subject: "s", html: "<p>h</p>" };
+
+  it("refuses to send when WAITLIST_FROM is unset, rather than using a sandbox sender", async () => {
+    process.env.RESEND_API_KEY = "re_test_key";
+    delete process.env.WAITLIST_FROM;
+    await expect(sendEmail(msg)).resolves.toEqual({ sent: false });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("REFUSES rather than throws — billing-notify runs it inside the Mollie webhook", async () => {
+    process.env.RESEND_API_KEY = "re_test_key";
+    delete process.env.WAITLIST_FROM;
+    // A throw here would fail a payment that has already settled.
+    await expect(sendEmail(msg)).resolves.not.toThrow();
+  });
+
+  it("refuses when RESEND_API_KEY is unset", async () => {
+    delete process.env.RESEND_API_KEY;
+    process.env.WAITLIST_FROM = "Sofra <sofra@send.sofrapiwas.com>";
+    await expect(sendEmail(msg)).resolves.toEqual({ sent: false });
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
 
