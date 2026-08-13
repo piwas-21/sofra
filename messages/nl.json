@@ -841,6 +841,23 @@
         "total": "Totaal",
         "empty": "Geen verlegde leveringen in dit kwartaal.",
         "missingVat": "{count} verlegde factuur/facturen zonder btw-nummer staan er niet in — verleggen vereist er een, dus dit is een defect om uit te zoeken."
+      },
+      "planDelete": {
+        "title": "Dit plan verwijderen",
+        "intro": "Alleen voor testplannen. Wordt geweigerd zodra er een factuur, ontvangen geld of een lopend abonnement aan hangt — die vastleggingen moeten elk opruimen overleven.",
+        "reveal": "Dit plan verwijderen…",
+        "warning": "Dit kan niet ongedaan worden gemaakt. Het plan, de abonnementen en de betaalgegevens worden verwijderd.",
+        "confirmLabel": "Typ {slug} om te bevestigen",
+        "confirm": "Definitief verwijderen",
+        "deleting": "Verwijderen…",
+        "cancel": "Annuleren",
+        "deleted": "{slug} verwijderd.",
+        "orphanMollieCustomer": "Let op: Mollie-klant {id} blijft bij Mollie bestaan en wordt hiermee niet verwijderd.",
+        "blocked": {
+          "hasInvoices": "Verwijderen niet mogelijk: een uitgegeven factuur noemt deze tenant, en een factuur mag niet gericht blijven aan een plan dat niet meer bestaat.",
+          "hasPaidPayments": "Verwijderen niet mogelijk: er is geld ontvangen op dit plan, en de betaalregistratie is de audittrail.",
+          "hasLiveSubscription": "Verwijderen niet mogelijk: een abonnement kan nog geïncasseerd worden. Zeg het eerst op, anders blijft Mollie een klant belasten die dit systeem niet meer kent."
+        }
       }
     },
     "errors": {
@@ -886,7 +903,13 @@
         "noPlan": "Geen plan gevonden voor deze betaling.",
         "error": "Uitgeven mislukt. Bekijk de logs."
       },
-      "billingDetailsRequired": "Vul eerst uw factuurgegevens in — zonder die kan er geen factuur worden uitgegeven."
+      "billingDetailsRequired": "Vul eerst uw factuurgegevens in — zonder die kan er geen factuur worden uitgegeven.",
+      "confirmSlugMismatch": "Dat is niet de naam van deze tenant — er is niets verwijderd.",
+      "planDelete": {
+        "hasInvoices": "Verwijderen niet mogelijk: een uitgegeven factuur noemt deze tenant, en een factuur mag niet gericht blijven aan een plan dat niet meer bestaat.",
+        "hasPaidPayments": "Verwijderen niet mogelijk: er is geld ontvangen op dit plan, en de betaalregistratie is de audittrail.",
+        "hasLiveSubscription": "Verwijderen niet mogelijk: een abonnement kan nog geïncasseerd worden. Zeg het eerst op, anders blijft Mollie een klant belasten die dit systeem niet meer kent."
+      }
     },
     "plan": {
       "title": "Jouw abonnement",

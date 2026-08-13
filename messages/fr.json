@@ -841,6 +841,23 @@
         "total": "Total",
         "empty": "Aucune vente en autoliquidation ce trimestre.",
         "missingVat": "{count} facture(s) en autoliquidation sans numéro de TVA ne sont pas listées — l'autoliquidation en exige un, c'est donc une anomalie à examiner."
+      },
+      "planDelete": {
+        "title": "Supprimer ce forfait",
+        "intro": "Réservé aux forfaits de test. Refusé dès qu'une facture, un paiement encaissé ou un abonnement actif y est rattaché — ces enregistrements doivent survivre à tout nettoyage.",
+        "reveal": "Supprimer ce forfait…",
+        "warning": "Action irréversible. Le forfait, ses abonnements et ses enregistrements de paiement sont supprimés.",
+        "confirmLabel": "Saisissez {slug} pour confirmer",
+        "confirm": "Supprimer définitivement",
+        "deleting": "Suppression…",
+        "cancel": "Annuler",
+        "deleted": "{slug} supprimé.",
+        "orphanMollieCustomer": "Remarque : le client Mollie {id} subsistera chez Mollie et n'est pas supprimé ici.",
+        "blocked": {
+          "hasInvoices": "Suppression impossible : une facture émise nomme ce locataire, et une facture ne doit pas rester adressée à un forfait qui n'existe plus.",
+          "hasPaidPayments": "Suppression impossible : des paiements ont été encaissés, et cet enregistrement constitue la piste d'audit.",
+          "hasLiveSubscription": "Suppression impossible : un abonnement peut encore être prélevé. Annulez-le d'abord, sinon Mollie continue de facturer un client que ce système ne connaît plus."
+        }
       }
     },
     "errors": {
@@ -886,7 +903,13 @@
         "noPlan": "Aucun forfait trouvé pour ce paiement.",
         "error": "Échec de l'émission. Consultez les journaux."
       },
-      "billingDetailsRequired": "Renseignez vos informations de facturation avant de payer — aucune facture ne peut être émise sans elles."
+      "billingDetailsRequired": "Renseignez vos informations de facturation avant de payer — aucune facture ne peut être émise sans elles.",
+      "confirmSlugMismatch": "Ce n'est pas le nom de ce locataire — rien n'a été supprimé.",
+      "planDelete": {
+        "hasInvoices": "Suppression impossible : une facture émise nomme ce locataire, et une facture ne doit pas rester adressée à un forfait qui n'existe plus.",
+        "hasPaidPayments": "Suppression impossible : des paiements ont été encaissés, et cet enregistrement constitue la piste d'audit.",
+        "hasLiveSubscription": "Suppression impossible : un abonnement peut encore être prélevé. Annulez-le d'abord, sinon Mollie continue de facturer un client que ce système ne connaît plus."
+      }
     },
     "plan": {
       "title": "Votre abonnement",

@@ -15,6 +15,7 @@
 // owner can set them without a deploy.
 
 import { checkVatFormat } from "@/lib/vat-number";
+import type { EuNoVatFallback } from "@/lib/tax-treatment";
 
 export type SellerIdentity = {
   legalName: string;
@@ -47,6 +48,21 @@ export function contactEmail(): string | null {
 }
 
 const env = (name: string): string => process.env[name]?.trim() ?? "";
+
+/**
+ * How to treat an EU buyer whose VAT number we cannot verify.
+ *
+ * `nlVat` (default) issues the invoice at 21%; `hold` refuses and waits for a
+ * human. It lives in env rather than in code because it is a business decision
+ * the accountant may want changed without a deploy — and it is read HERE, beside
+ * the rest of the company's tax configuration, so there is one place to look.
+ *
+ * Anything unrecognised falls back to `nlVat` rather than silently holding every
+ * invoice: a typo in an env var must not quietly stop the billing of a business.
+ */
+export function euNoVatFallback(): EuNoVatFallback {
+  return env("SOFRA_EU_NO_VAT_FALLBACK").toLowerCase() === "hold" ? "hold" : "nlVat";
+}
 
 /** Which required values are missing. Empty array = ready to invoice. */
 export function sellerIdentityGaps(): string[] {

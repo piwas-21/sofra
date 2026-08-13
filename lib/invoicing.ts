@@ -13,9 +13,11 @@ import { audit } from "@/lib/audit";
 import { isInvoiceable } from "@/lib/billing-identity";
 import { determineTaxTreatment, type BuyerVatStatus } from "@/lib/tax-treatment";
 import { formatInvoiceNumber, issueBlocker, splitGross, type IssueBlocker } from "@/lib/invoice-rules";
-import { sellerIdentity } from "@/lib/seller-identity";
+import { euNoVatFallback, sellerIdentity } from "@/lib/seller-identity";
 import { buyerSnapshot, sellerSnapshot } from "@/lib/invoice-snapshot";
 import { resolveIdentityForPlan } from "@/lib/identity-upsert";
+import { sendInvoiceIssued } from "@/lib/invoice-email";
+import { recordBlockedInvoice } from "@/lib/invoice-blocked";
 import type { Prisma } from "@/lib/generated/prisma/client";
 
 export type IssueResult =
@@ -94,6 +96,7 @@ export async function issueInvoiceForPayment(molliePaymentId: string): Promise<I
       sellerCountry: seller?.countryCode ?? "",
       buyerCountry: buyer?.countryCode ?? "",
       buyerVatStatus: (buyer?.vatStatus ?? "NONE") as BuyerVatStatus,
+      euNoVatFallback: euNoVatFallback(),
     });
 
     const blocker = issueBlocker({
@@ -103,14 +106,15 @@ export async function issueInvoiceForPayment(molliePaymentId: string): Promise<I
       grossCents: payment.amountCents,
     });
     if (blocker || !seller || !buyer || tax.rateBps === null) {
-      // Recorded, not thrown: the payment succeeded and must stay succeeded. The
-      // founder sees this on /admin/invoices and fixes the cause (usually a
-      // missing identity or an unactivated VAT number), then re-issues.
-      await audit(null, "billing.invoice.blocked", "BillingPayment", molliePaymentId, {
+      const reason = blocker ?? "taxNeedsReview";
+      await recordBlockedInvoice({
+        molliePaymentId,
+        reason,
         tenantSlug: payment.billing.tenantSlug,
-        reason: blocker ?? "taxNeedsReview",
+        payerEmail: payment.billing.email,
+        grossCents: payment.amountCents,
       });
-      return { issued: false, reason: blocker ?? "taxNeedsReview" };
+      return { issued: false, reason };
     }
 
     const totals = splitGross(payment.amountCents, tax.rateBps);
@@ -151,10 +155,25 @@ export async function issueInvoiceForPayment(molliePaymentId: string): Promise<I
       });
     });
 
+    // Same best-effort contract: the invoice is committed and numbered, so a
+    // failed send must not undo it or reach the webhook. The audit records
+    // whether it went, because an unsent invoice needs a human to forward it.
+    const emailed = (
+      await sendInvoiceIssued({
+        to: buyer.billingEmail,
+        invoiceId: invoice.id,
+        number: invoice.number,
+        tenantSlug: payment.billing.tenantSlug,
+        grossCents: invoice.grossCents,
+        taxNote: invoice.taxNote,
+      }).catch(() => ({ sent: false }))
+    ).sent;
+
     await audit(null, "billing.invoice.issued", "Invoice", invoice.id, {
       tenantSlug: payment.billing.tenantSlug,
       number: invoice.number,
       treatment: tax.treatment,
+      emailed,
     });
     return { issued: true, invoiceId: invoice.id, number: invoice.number };
   } catch (e) {

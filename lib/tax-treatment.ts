@@ -11,12 +11,23 @@
 // hold the number AND can evidence that we checked it (lib/vies.ts stores the
 // consultation reference for exactly this).
 //
-// Where the law is genuinely a judgement call, this returns NEEDS_REVIEW with no
-// rate rather than picking one. An invoice that cannot be determined must stop
-// and wait for a human — a plausible wrong rate is far more expensive than a
-// blocked invoice, because it is only discovered at audit.
+// Where the law leaves NO defensible answer, this returns NEEDS_REVIEW with no
+// rate rather than picking one: an invoice that cannot be determined must stop
+// and wait for a human, because a plausible wrong rate is far more expensive
+// than a blocked one — it is only discovered at audit.
+//
+// Where the law leaves TWO defensible answers, that is a different situation and
+// blocking is the wrong response. An EU buyer with no verifiable VAT number is
+// the live case: Dutch VAT (business we cannot verify) and OSS (consumer) are
+// both arguable, so the choice is a stated POLICY — `euNoVatFallback`, default
+// `nlVat` — rather than a guess or a permanent stall. See it below.
 
 import { isEuVatPrefix } from "@/lib/vat-number";
+import { OUTSIDE_SCOPE_NOTE, REVERSE_CHARGE_NOTE } from "@/lib/tax-notes";
+import { euUnverifiedTreatment } from "@/lib/eu-no-vat";
+
+// Re-exported so callers keep one import for "the treatment and what it prints".
+export { EU_NO_VAT_NOTE, OUTSIDE_SCOPE_NOTE, REVERSE_CHARGE_NOTE } from "@/lib/tax-notes";
 
 export type TaxTreatment =
   /** Dutch customer: ordinary domestic VAT. */
@@ -33,12 +44,23 @@ export type TaxTreatment =
 /** The stored VAT-check state of the buyer (mirrors Prisma `VatStatus`). */
 export type BuyerVatStatus = "NONE" | "UNCHECKED" | "VALID" | "INVALID" | "UNAVAILABLE";
 
+/**
+ * What to do about an EU buyer we cannot substantiate a reverse charge for.
+ *
+ * A stated policy rather than a guess, because both answers are defensible and
+ * only the business can choose. `nlVat` issues at 21%; `hold` refuses to invoice
+ * and waits for a human. Set with `SOFRA_EU_NO_VAT_FALLBACK`.
+ */
+export type EuNoVatFallback = "nlVat" | "hold";
+
 export type TaxTreatmentInput = {
   /** ISO-3166-1 alpha-2, uppercase. Sofra's own country of establishment. */
   sellerCountry: string;
   /** ISO-3166-1 alpha-2, uppercase. Where the buyer is established. */
   buyerCountry: string;
   buyerVatStatus: BuyerVatStatus;
+  /** Defaults to `nlVat` — see `EuNoVatFallback`. */
+  euNoVatFallback?: EuNoVatFallback;
 };
 
 export type TaxTreatmentResult = {
@@ -56,20 +78,6 @@ export type TaxTreatmentResult = {
 
 /** The Dutch standard rate, in basis points. */
 export const NL_STANDARD_RATE_BPS = 2100;
-
-/**
- * The exact wording for a reverse-charged supply.
- *
- * It says "reverse-charged" and it does NOT say "0%". Writing `BTW 0%` on the
- * line is the classic Dutch error: a zero RATE is a different thing in law from a
- * TRANSFER of liability, and an invoice claiming the former for the latter is
- * wrong even though both show no money. The invoice must also carry both parties'
- * VAT numbers and no VAT amount at all.
- */
-export const REVERSE_CHARGE_NOTE = "BTW verlegd / VAT reverse-charged — art. 196 Directive 2006/112/EC";
-
-/** Non-EU supply of a service: outside the scope of EU VAT entirely. */
-export const OUTSIDE_SCOPE_NOTE = "VAT not applicable — service supplied outside the EU (art. 44)";
 
 const needsReview = (reason: string): TaxTreatmentResult => ({
   treatment: "NEEDS_REVIEW",
@@ -100,6 +108,7 @@ const needsReview = (reason: string): TaxTreatmentResult => ({
 export function determineTaxTreatment(input: TaxTreatmentInput): TaxTreatmentResult {
   const seller = input.sellerCountry.toUpperCase();
   const buyer = input.buyerCountry.toUpperCase();
+  const fallback: EuNoVatFallback = input.euNoVatFallback ?? "nlVat";
 
   // Only an NL establishment is modelled. If Sofra's seat ever moves, the whole
   // matrix changes — better to stop than to keep applying Dutch rules silently.
@@ -145,24 +154,7 @@ export function determineTaxTreatment(input: TaxTreatmentInput): TaxTreatmentRes
     };
   }
 
-  // Every remaining EU case is a judgement call the code must not make.
-  // UNAVAILABLE is included on purpose — "we could not reach VIES" is not
-  // evidence of anything, and substantiating a reverse charge on it is exactly
-  // what an audit looks for.
-  //
-  // The reason names BOTH candidate treatments rather than only the cause,
-  // because the two live rows behind this one state need different answers
-  // (Dutch VAT for a business we cannot verify; the buyer's own country rate
-  // under OSS for a consumer) and a reason that says only "no VAT number
-  // supplied" quietly points a reader at the first.
-  const why: Record<Exclude<BuyerVatStatus, "VALID">, string> = {
-    NONE: "no VAT number supplied",
-    UNCHECKED: "VAT number never checked against VIES",
-    INVALID: "VAT number rejected by VIES",
-    UNAVAILABLE: "VIES could not be reached — status unproven",
-  };
-  return needsReview(
-    `EU buyer in ${buyer}: ${why[input.buyerVatStatus]}. Decide per customer — ` +
-      "Dutch VAT if they are a business we cannot verify, or their own country's rate under OSS if a consumer.",
-  );
+  // Everything left is an EU buyer we cannot substantiate a reverse charge for.
+  // That is a stated policy rather than a verdict — see lib/eu-no-vat.ts.
+  return euUnverifiedTreatment(buyer, input.buyerVatStatus, fallback);
 }

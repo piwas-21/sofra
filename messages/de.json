@@ -841,6 +841,23 @@
         "total": "Gesamt",
         "empty": "Keine Reverse-Charge-Umsätze in diesem Quartal.",
         "missingVat": "{count} Reverse-Charge-Rechnung(en) ohne USt-IdNr. sind nicht gelistet — Reverse Charge setzt eine voraus, das ist also ein zu prüfender Fehler."
+      },
+      "planDelete": {
+        "title": "Diesen Tarif löschen",
+        "intro": "Nur für Testtarife. Wird abgelehnt, sobald eine Rechnung, verbuchtes Geld oder ein aktives Abonnement daranhängt — diese Aufzeichnungen müssen jedes Aufräumen überdauern.",
+        "reveal": "Diesen Tarif löschen…",
+        "warning": "Das lässt sich nicht rückgängig machen. Tarif, Abonnements und Zahlungsdaten werden entfernt.",
+        "confirmLabel": "Zum Bestätigen {slug} eingeben",
+        "confirm": "Endgültig löschen",
+        "deleting": "Wird gelöscht…",
+        "cancel": "Abbrechen",
+        "deleted": "{slug} gelöscht.",
+        "orphanMollieCustomer": "Hinweis: Der Mollie-Kunde {id} bleibt bei Mollie bestehen und wird hierdurch nicht entfernt.",
+        "blocked": {
+          "hasInvoices": "Löschen nicht möglich: Eine ausgestellte Rechnung nennt diesen Mandanten, und eine Rechnung darf nicht an einen Tarif adressiert bleiben, den es nicht mehr gibt.",
+          "hasPaidPayments": "Löschen nicht möglich: Auf diesem Tarif wurde Geld verbucht, und der Zahlungsdatensatz ist der Prüfpfad.",
+          "hasLiveSubscription": "Löschen nicht möglich: Ein Abonnement kann noch belastet werden. Zuerst kündigen, sonst berechnet Mollie weiter einem Kunden, den dieses System nicht mehr kennt."
+        }
       }
     },
     "errors": {
@@ -886,7 +903,13 @@
         "noPlan": "Kein Tarif zu dieser Zahlung gefunden.",
         "error": "Ausstellung fehlgeschlagen. Logs prüfen."
       },
-      "billingDetailsRequired": "Bitte zuerst Ihre Rechnungsdaten hinterlegen — ohne sie kann keine Rechnung ausgestellt werden."
+      "billingDetailsRequired": "Bitte zuerst Ihre Rechnungsdaten hinterlegen — ohne sie kann keine Rechnung ausgestellt werden.",
+      "confirmSlugMismatch": "Das ist nicht der Name dieses Mandanten — es wurde nichts gelöscht.",
+      "planDelete": {
+        "hasInvoices": "Löschen nicht möglich: Eine ausgestellte Rechnung nennt diesen Mandanten, und eine Rechnung darf nicht an einen Tarif adressiert bleiben, den es nicht mehr gibt.",
+        "hasPaidPayments": "Löschen nicht möglich: Auf diesem Tarif wurde Geld verbucht, und der Zahlungsdatensatz ist der Prüfpfad.",
+        "hasLiveSubscription": "Löschen nicht möglich: Ein Abonnement kann noch belastet werden. Zuerst kündigen, sonst berechnet Mollie weiter einem Kunden, den dieses System nicht mehr kennt."
+      }
     },
     "plan": {
       "title": "Ihr Abo",

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   determineTaxTreatment,
   NL_STANDARD_RATE_BPS,
+  EU_NO_VAT_NOTE,
   OUTSIDE_SCOPE_NOTE,
   REVERSE_CHARGE_NOTE,
   type BuyerVatStatus,
@@ -45,28 +46,71 @@ describe("determineTaxTreatment — the four rows of the §4 matrix", () => {
     );
   });
 
-  it("holds an EU sale that cannot be substantiated, rather than guessing a rate", () => {
-    const held: Exclude<BuyerVatStatus, "VALID">[] = [
+  it("charges Dutch VAT on an unsubstantiated EU sale, under the default policy", () => {
+    // Two readings are defensible here (Dutch VAT for an unverified business, the
+    // buyer's own rate under OSS for a consumer), so this is a stated POLICY, not
+    // a guess — and `nlVat` is the conservative one: 21% is collected and
+    // remitted, so the sale can never turn out to have been under-declared.
+    // UNAVAILABLE is deliberately NOT in this list — see the test below.
+    const unverified: Exclude<BuyerVatStatus, "VALID" | "UNAVAILABLE">[] = [
       "NONE",
       "UNCHECKED",
       "INVALID",
-      "UNAVAILABLE",
     ];
-    for (const status of held) {
+    for (const status of unverified) {
       const result = determineTaxTreatment(sale({ buyerVatStatus: status }));
+      expect(result.treatment, status).toBe("NL_STANDARD");
+      expect(result.rateBps, status).toBe(NL_STANDARD_RATE_BPS);
+      // NEVER on the ICP: nothing was reverse-charged, so listing it would report
+      // an intra-EU supply that did not happen.
+      expect(result.icpReportable, status).toBe(false);
+      expect(result.invoiceNote, status).toBe(EU_NO_VAT_NOTE);
+    }
+  });
+
+  it("HOLDS an unreachable VIES under EITHER policy — an outage is not a verdict", () => {
+    // The costly case, and the one the fallback must never swallow. UNAVAILABLE
+    // is "we have not finished asking", and it self-clears — while VIES throttled
+    // 5 of 8 calls on the French node, so it is the MODAL state, not an edge.
+    //
+    // Issuing on it is one-directional: the invoice is immutable and credit notes
+    // are not built, so a recheck returning VALID an hour later cannot undo a 21%
+    // document. Gross is fixed, so that 21% comes out of Sofra's own margin —
+    // €11.98 of every €69 — for a buyer who was entitled to a reverse charge.
+    for (const euNoVatFallback of ["nlVat", "hold"] as const) {
+      const r = determineTaxTreatment(sale({ buyerVatStatus: "UNAVAILABLE", euNoVatFallback }));
+      expect(r.treatment, euNoVatFallback).toBe("NEEDS_REVIEW");
+      expect(r.rateBps, euNoVatFallback).toBeNull();
+    }
+  });
+
+  it("still HOLDS when the policy says so, and holds with no rate at all", () => {
+    for (const status of ["NONE", "UNCHECKED", "INVALID"] as const) {
+      const result = determineTaxTreatment(
+        sale({ buyerVatStatus: status, euNoVatFallback: "hold" }),
+      );
       expect(result.treatment, status).toBe("NEEDS_REVIEW");
       // `null`, not 0 and not 21%: an undetermined rate must be impossible to
       // mistake for a determined one, so nothing can auto-issue on it.
       expect(result.rateBps, status).toBeNull();
-      expect(result.icpReportable, status).toBe(false);
+    }
+  });
+
+  it("a VALID number still reverse-charges — the policy only covers the unverified", () => {
+    for (const euNoVatFallback of ["nlVat", "hold"] as const) {
+      expect(determineTaxTreatment(sale({ euNoVatFallback })).treatment).toBe(
+        "EU_REVERSE_CHARGE",
+      );
     }
   });
 });
 
 describe("determineTaxTreatment — the partner's actual situation", () => {
-  it("holds the invoice today: the number is real but VIES rejects it", () => {
+  it("invoices at Dutch VAT today: the number is real but VIES rejects it", () => {
     const result = determineTaxTreatment(sale({ buyerCountry: "FR", buyerVatStatus: "INVALID" }));
-    expect(result.treatment).toBe("NEEDS_REVIEW");
+    expect(result.treatment).toBe("NL_STANDARD");
+    // The cause survives into the reason even though the sale now proceeds — an
+    // operator reading the invoice must still be able to see WHY it was 21%.
     expect(result.reason).toContain("rejected by VIES");
   });
 
@@ -76,12 +120,17 @@ describe("determineTaxTreatment — the partner's actual situation", () => {
     );
   });
 
-  it("refuses to substantiate a reverse charge on an unreachable VIES", () => {
-    // The audit-facing case: "we could not check" is not evidence, and a busy
-    // member state must never widen into a 0% invoice.
-    const result = determineTaxTreatment(sale({ buyerVatStatus: "UNAVAILABLE" }));
-    expect(result.treatment).toBe("NEEDS_REVIEW");
-    expect(result.reason).toContain("VIES could not be reached");
+  it("neither charges nor zero-rates an unreachable VIES — it stops", () => {
+    // Asserted POSITIVELY. An earlier version of this test said only
+    // `not.toBe("EU_REVERSE_CHARGE")`, which NL_STANDARD satisfies — so it went
+    // on passing while the behaviour it is named after regressed underneath it.
+    for (const euNoVatFallback of ["nlVat", "hold"] as const) {
+      const result = determineTaxTreatment(sale({ buyerVatStatus: "UNAVAILABLE", euNoVatFallback }));
+      expect(result.treatment, euNoVatFallback).toBe("NEEDS_REVIEW");
+      expect(result.rateBps, euNoVatFallback).toBeNull();
+      expect(result.icpReportable, euNoVatFallback).toBe(false);
+      expect(result.reason).toContain("VIES could not be reached");
+    }
   });
 });
 
