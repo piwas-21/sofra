@@ -59,6 +59,8 @@ export default defineConfig({
         "lib/billing-identity.ts",
         "lib/invoice-rules.ts",
         "lib/icp.ts",
+        "lib/plan-deletion.ts",
+        "lib/tax-notes.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial
