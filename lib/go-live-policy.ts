@@ -19,6 +19,19 @@ export type GoLiveFacts = {
   /** When this tenant's first payment settled, or null if none has. */
   firstPaidAt: Date | null;
   /**
+   * The plan is held by a reseller CLIENT rather than a direct owner
+   * (`TenantBilling.clientId` set; ADR-004's clientId XOR payerUserId).
+   *
+   * Those tenants are NOT ours to write to. The partner owns the customer
+   * relationship — that is what white-label resale means — and they run the
+   * handover themselves. Measured on the live data, `TenantBilling.email` for a
+   * reseller plan is the PARTNER's address, not the restaurant's (tenant 1's
+   * restaurant has no address on file at all), so "your restaurant is live, set
+   * your admin password" would be sent to the wrong person about someone else's
+   * customer, in a voice the partner never agreed to.
+   */
+  partnerManaged: boolean;
+  /**
    * NO RETROACTIVE ANNOUNCEMENTS. Tenants that went live before this feature
    * existed were handed over by the old manual path and must never be "announced".
    *
@@ -44,6 +57,7 @@ export type GoLiveVerdict =
       announce: false;
       reason:
         | "notReady"
+        | "partnerManaged"
         | "predatesFeature"
         | "alreadyAnnounced"
         | "noRecipient"
@@ -66,6 +80,8 @@ export function goLiveDecision(facts: GoLiveFacts): GoLiveVerdict {
   // reason it is being passed over, and so the sweep can filter on it without a
   // probe. A tenant with no settled payment cannot be announced either -- it is not
   // a customer yet, and `null` must never read as "old enough".
+  if (facts.partnerManaged) return { announce: false, reason: "partnerManaged" };
+
   if (!facts.firstPaidAt || facts.firstPaidAt < facts.announceFrom) {
     return { announce: false, reason: "predatesFeature" };
   }

@@ -61,6 +61,8 @@ export async function runGoLiveSweep(): Promise<GoLiveSweepResult> {
       name: true,
       email: true,
       provisioningPrUrl: true,
+      // Reseller plans are the partner's relationship, not ours (see the policy).
+      clientId: true,
       // The settled first payment, for the no-retroactive-announcement cutoff.
       payments: {
         where: { status: "paid", sequenceType: "first" },
@@ -93,6 +95,10 @@ export async function runGoLiveSweep(): Promise<GoLiveSweepResult> {
   // cheaper order and the one that cannot mail someone by accident.
   const pending = candidates.filter((c) => {
     if (announced.has(c.id)) return false;
+    if (c.clientId) {
+      skip("partnerManaged");
+      return false;
+    }
     const paidAt = c.payments[0]?.paidAt ?? null;
     if (!paidAt || paidAt < cutoff) {
       skip("predatesFeature");
@@ -127,6 +133,7 @@ export async function runGoLiveSweep(): Promise<GoLiveSweepResult> {
     const verdict = goLiveDecision({
       stage,
       firstPaidAt: c.payments[0]?.paidAt ?? null,
+      partnerManaged: Boolean(c.clientId),
       announceFrom: cutoff,
       alreadyAnnounced: false, // filtered above; kept explicit for the reader
       to: c.email,

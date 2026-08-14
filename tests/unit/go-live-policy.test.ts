@@ -8,6 +8,7 @@ const base = (over: Partial<GoLiveFacts> = {}): GoLiveFacts => ({
   stage: "ready",
   firstPaidAt: new Date("2026-08-20T10:00:00Z"),
   announceFrom: CUTOFF,
+  partnerManaged: false,
   alreadyAnnounced: false,
   to: "owner@example.com",
   origin: "https://chez-amara.sofrapiwas.com",
@@ -117,5 +118,27 @@ describe("goLiveDecision — never announces retroactively", () => {
       base({ firstPaidAt: new Date("2026-01-01T00:00:00Z"), alreadyAnnounced: true }),
     );
     expect(out).toEqual({ announce: false, reason: "predatesFeature" });
+  });
+});
+
+describe("goLiveDecision — a partner's tenants are not ours to write to", () => {
+  // White-label resale: the partner owns the customer relationship and runs the
+  // handover. On the live data a reseller plan's TenantBilling.email is the
+  // PARTNER's address (tenant 1's restaurant has none on file), so announcing
+  // would mail the wrong person about someone else's customer.
+  it("refuses a reseller-held plan even when everything else is perfect", () => {
+    expect(goLiveDecision(base({ partnerManaged: true }))).toEqual({
+      announce: false,
+      reason: "partnerManaged",
+    });
+  });
+
+  it("still announces a direct-owner plan", () => {
+    expect(goLiveDecision(base({ partnerManaged: false })).announce).toBe(true);
+  });
+
+  it("reports partnerManaged before the age cutoff", () => {
+    const out = goLiveDecision(base({ partnerManaged: true, firstPaidAt: null }));
+    expect(out).toEqual({ announce: false, reason: "partnerManaged" });
   });
 });
