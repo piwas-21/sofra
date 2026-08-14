@@ -19,6 +19,7 @@ import { siteUrl } from "@/lib/email";
 import { autoProposeProvisioning } from "@/lib/auto-provision";
 import type { AutoProposeOutcome } from "@/lib/auto-provision-policy";
 import { notifyFounder } from "@/lib/billing-notify";
+import { sendPaymentReceipt } from "@/lib/payment-receipt";
 import {
   createCustomer,
   createFirstPayment,
@@ -178,7 +179,15 @@ export async function recordPayment(payment: MolliePayment) {
   if (!payment.customerId) return;
   const billing = await db.tenantBilling.findUnique({
     where: { mollieCustomerId: payment.customerId },
-    include: { subscriptions: true },
+    include: {
+      subscriptions: true,
+      // The payer, for the receipt. NOT `email` — on a reseller plan the payer is
+      // the partner, and mailing the restaurant about a charge it did not make
+      // would leak our wholesale price into their relationship.
+      billingIdentity: { select: { billingEmail: true } },
+      client: { select: { partner: { select: { email: true } } } },
+      payer: { select: { email: true } },
+    },
   });
   if (!billing) return;
 
@@ -220,6 +229,10 @@ export async function recordPayment(payment: MolliePayment) {
   // the founder can act on and the money stays settled.
   if (payment.status === "paid") {
     await issueInvoiceForPayment(payment.id);
+    // AFTER invoicing, deliberately: an invoice is the better receipt and is
+    // already mailed, so the receipt stands down when one was issued. Reversing
+    // these two would mail every invoiceable customer twice for one charge.
+    await sendPaymentReceipt(billing, payment, amountCents);
   }
 
   let proposal: AutoProposeOutcome | null = null;
