@@ -12,13 +12,13 @@ const base = (over: Partial<ReceiptInput> = {}): ReceiptInput => ({
 
 describe("receiptDecision — when the customer is thanked", () => {
   it("sends for a settled charge that no invoice covers", () => {
-    expect(receiptDecision(base())).toEqual({ send: true });
+    expect(receiptDecision(base())).toEqual({ send: true, to: "owner@example.com" });
   });
 
   it("sends for a recurring charge too, not just the first", () => {
     // A monthly renewal is the charge people query most — it arrives without
     // them doing anything, so silence there is what generates the support mail.
-    expect(receiptDecision(base())).toEqual({ send: true });
+    expect(receiptDecision(base())).toEqual({ send: true, to: "owner@example.com" });
   });
 });
 
@@ -68,5 +68,12 @@ describe("receiptDecision — precedence between refusals", () => {
   it("does not send merely because a recipient exists", () => {
     const out = receiptDecision(base({ status: "failed" }));
     expect(out.send).toBe(false);
+  });
+});
+
+describe("receiptDecision — the recipient travels with the verdict", () => {
+  it("returns the address it approved, so the caller cannot send elsewhere", () => {
+    const out = receiptDecision(base({ to: "partner@example.com" }));
+    expect(out).toEqual({ send: true, to: "partner@example.com" });
   });
 });

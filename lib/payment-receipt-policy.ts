@@ -24,7 +24,9 @@ export type ReceiptInput = {
 };
 
 export type ReceiptVerdict =
-  | { send: true }
+  /** Carries the recipient so the caller cannot send to a different address than
+   *  the one the decision was made about. */
+  | { send: true; to: string }
   | {
       send: false;
       /** Why not — recorded, so "no receipt" is never a silent state. */
@@ -53,5 +55,5 @@ export function receiptDecision(input: ReceiptInput): ReceiptVerdict {
 
   if (!input.to) return { send: false, reason: "noRecipient" };
 
-  return { send: true };
+  return { send: true, to: input.to };
 }

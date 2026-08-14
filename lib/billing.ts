@@ -179,7 +179,15 @@ export async function recordPayment(payment: MolliePayment) {
   if (!payment.customerId) return;
   const billing = await db.tenantBilling.findUnique({
     where: { mollieCustomerId: payment.customerId },
-    include: { subscriptions: true },
+    include: {
+      subscriptions: true,
+      // The payer, for the receipt. NOT `email` — on a reseller plan the payer is
+      // the partner, and mailing the restaurant about a charge it did not make
+      // would leak our wholesale price into their relationship.
+      billingIdentity: { select: { billingEmail: true } },
+      client: { select: { partner: { select: { email: true } } } },
+      payer: { select: { email: true } },
+    },
   });
   if (!billing) return;
 

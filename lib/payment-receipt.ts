@@ -53,9 +53,47 @@ ${detailRows(rows)}
  * Records why it did nothing when it does nothing: "the customer was not thanked"
  * should be answerable from the audit log, not inferred from an absence.
  */
+/**
+ * WHO gets told about money.
+ *
+ * NOT `TenantBilling.email` by preference. That column is free text an admin types
+ * at onboarding, and nothing constrains it to the payer — on a reseller plan the
+ * restaurant is not the customer at all. Sofra bills the PARTNER (ADR-004: the
+ * reseller flow leaves `payerUserId` null and derives the payer from
+ * `client.partner`), and mailing a restaurant about a charge it did not make would
+ * leak our wholesale price into the partner's relationship with their own customer
+ * — the exact thing white-label resale sells against.
+ *
+ * So this resolves the payer explicitly, preferring the address invoices already
+ * use (`BillingIdentity.billingEmail`, `lib/invoicing.ts`) so a customer's receipt
+ * and their invoice can never arrive at two different addresses.
+ */
+function payerAddress(billing: {
+  email: string;
+  billingIdentity: { billingEmail: string } | null;
+  client: { partner: { email: string } | null } | null;
+  payer: { email: string } | null;
+}): string | null {
+  return (
+    billing.billingIdentity?.billingEmail ??
+    billing.client?.partner?.email ??
+    billing.payer?.email ??
+    // Last resort, and only for a plan with no identity and no payer reference at
+    // all — a shape `defineTenantPlan` refuses to create today.
+    billing.email ??
+    null
+  );
+}
+
 export async function sendPaymentReceipt(
-  /** Only the payer-facing fields, so this cannot grow into the billing row. */
-  billing: { tenantSlug: string; email: string; name: string },
+  billing: {
+    tenantSlug: string;
+    email: string;
+    name: string;
+    billingIdentity: { billingEmail: string } | null;
+    client: { partner: { email: string } | null } | null;
+    payer: { email: string } | null;
+  },
   payment: MolliePayment,
   amountCents: number,
 ): Promise<void> {
@@ -64,7 +102,7 @@ export async function sendPaymentReceipt(
   const opts = {
     molliePaymentId: payment.id,
     tenantSlug: billing.tenantSlug,
-    to: billing.email,
+    to: payerAddress(billing),
     restaurantName: billing.name,
     amountCents,
     status: payment.status,
@@ -109,7 +147,7 @@ export async function sendPaymentReceipt(
   }
 
   const { sent } = await sendEmail({
-    to: opts.to,
+    to: verdict.to,
     subject: `SofraPiwas — payment received (${eur(opts.amountCents)})`,
     html: craftEmail({
       kicker: "Billing",
