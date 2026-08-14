@@ -36,13 +36,20 @@ export async function sendEmail(opts: {
     );
     return { sent: false };
   }
+  // Default the reply path rather than asking every call site to remember it. An
+  // explicit `replyTo` still wins — the founder notifications set it to the
+  // CUSTOMER so a reply reaches the person who wrote in, and that must not be
+  // overwritten. Defaulting here means a mail added later inherits a monitored
+  // mailbox instead of quietly shipping without one, which is the failure mode
+  // that produced this gap in the first place (7 of 9 customer mails had none).
+  const replyTo = opts.replyTo ?? supportReplyTo();
   const res = await fetch(RESEND_URL, {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from,
       to: [opts.to],
-      ...(opts.replyTo ? { reply_to: opts.replyTo } : {}),
+      ...(replyTo ? { reply_to: replyTo } : {}),
       subject: opts.subject,
       html: opts.html,
     }),
@@ -56,6 +63,22 @@ export async function sendEmail(opts: {
 
 export function founderInbox(): string | undefined {
   return process.env.WAITLIST_TO;
+}
+
+/**
+ * The monitored mailbox a recipient reaches by pressing Reply.
+ *
+ * Every company mail is sent FROM `send.sofrapiwas.com`, which exists to send and
+ * has no inbox — and `sofrapiwas.com` has no MX at all, so a reply to any address
+ * there hard-bounces. Without this header a customer answering their invite, their
+ * password reset or their INVOICE is replying into a black hole, and never finds
+ * out. Reply-To costs nothing and does not have to live on the sending domain.
+ *
+ * Undefined when unset: no header, which is exactly today's behaviour, so this
+ * cannot break a deployment that has not configured it yet.
+ */
+export function supportReplyTo(): string | undefined {
+  return process.env.SUPPORT_REPLY_TO || undefined;
 }
 
 export function siteUrl(): string {
