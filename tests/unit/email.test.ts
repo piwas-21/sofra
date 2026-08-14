@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { escapeHtml, founderInbox, sendEmail, siteUrl } from "@/lib/email";
+import { escapeHtml, founderInbox, sendEmail, siteUrl, supportReplyTo } from "@/lib/email";
 
 // Pure helpers only — sendEmail() is network (Resend fetch) and is deliberately
 // out of unit scope (no mocks, LIVE key). siteUrl/founderInbox read env, so we
@@ -124,5 +124,31 @@ describe("founderInbox", () => {
   it("returns undefined when WAITLIST_TO is unset", () => {
     delete process.env.WAITLIST_TO;
     expect(founderInbox()).toBeUndefined();
+  });
+});
+
+describe("supportReplyTo (the reply path)", () => {
+  const saved = process.env.SUPPORT_REPLY_TO;
+  afterEach(() => {
+    if (saved === undefined) delete process.env.SUPPORT_REPLY_TO;
+    else process.env.SUPPORT_REPLY_TO = saved;
+  });
+
+  it("returns the configured mailbox", () => {
+    process.env.SUPPORT_REPLY_TO = "sofra@piwas.nl";
+    expect(supportReplyTo()).toBe("sofra@piwas.nl");
+  });
+
+  it("is undefined when unset — no header, i.e. today's behaviour", () => {
+    delete process.env.SUPPORT_REPLY_TO;
+    expect(supportReplyTo()).toBeUndefined();
+  });
+
+  it("treats an EMPTY value as unset", () => {
+    // Compose renders an unset variable as "", so `??` would have produced
+    // `reply_to: ""` — a malformed header on every company mail. This is the
+    // reason the implementation uses `||` and not `??`.
+    process.env.SUPPORT_REPLY_TO = "";
+    expect(supportReplyTo()).toBeUndefined();
   });
 });
