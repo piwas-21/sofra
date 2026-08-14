@@ -2,8 +2,12 @@ import { describe, expect, it } from "vitest";
 import { goLiveDecision, type GoLiveFacts } from "@/lib/go-live-policy";
 
 /** A live, never-announced tenant with a usable address — the one case that sends. */
+const CUTOFF = new Date("2026-08-14T00:00:00Z");
+
 const base = (over: Partial<GoLiveFacts> = {}): GoLiveFacts => ({
   stage: "ready",
+  firstPaidAt: new Date("2026-08-20T10:00:00Z"),
+  announceFrom: CUTOFF,
   alreadyAnnounced: false,
   to: "owner@example.com",
   origin: "https://chez-amara.sofrapiwas.com",
@@ -79,5 +83,39 @@ describe("goLiveDecision — unusable targets", () => {
   it("prefers noRecipient over unusableDomain, naming the first thing to fix", () => {
     const out = goLiveDecision(base({ to: null, origin: null }));
     expect(out).toEqual({ announce: false, reason: "noRecipient" });
+  });
+});
+
+describe("goLiveDecision — never announces retroactively", () => {
+  // Measured against the LIVE control plane before merge: the candidate set
+  // included tenant 1 (RUMI) — paid, in the registry, and answering /api/health.
+  // Without this guard its owner, a real paying client live since June, would have
+  // been mailed "your restaurant is live 🎉, set your admin password".
+  it("refuses a tenant that paid before the feature existed", () => {
+    const out = goLiveDecision(base({ firstPaidAt: new Date("2026-06-01T00:00:00Z") }));
+    expect(out).toEqual({ announce: false, reason: "predatesFeature" });
+  });
+
+  it("treats a missing payment date as too old, never as new enough", () => {
+    expect(goLiveDecision(base({ firstPaidAt: null }))).toEqual({
+      announce: false,
+      reason: "predatesFeature",
+    });
+  });
+
+  it("announces a tenant that paid exactly at the cutoff", () => {
+    expect(goLiveDecision(base({ firstPaidAt: CUTOFF })).announce).toBe(true);
+  });
+
+  it("refuses one that paid a millisecond before it", () => {
+    const out = goLiveDecision(base({ firstPaidAt: new Date(CUTOFF.getTime() - 1) }));
+    expect(out).toEqual({ announce: false, reason: "predatesFeature" });
+  });
+
+  it("reports predatesFeature before alreadyAnnounced", () => {
+    const out = goLiveDecision(
+      base({ firstPaidAt: new Date("2026-01-01T00:00:00Z"), alreadyAnnounced: true }),
+    );
+    expect(out).toEqual({ announce: false, reason: "predatesFeature" });
   });
 });

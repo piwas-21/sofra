@@ -16,6 +16,20 @@ import type { TenantStage } from "@/lib/tenant-liveness";
 export type GoLiveFacts = {
   /** From `tenantStage()` -- the earned claim, not a guess. */
   stage: TenantStage;
+  /** When this tenant's first payment settled, or null if none has. */
+  firstPaidAt: Date | null;
+  /**
+   * NO RETROACTIVE ANNOUNCEMENTS. Tenants that went live before this feature
+   * existed were handed over by the old manual path and must never be "announced".
+   *
+   * This is not hypothetical: measured against the live control plane before merge,
+   * the sweep's candidate set included **tenant 1 (RUMI)** -- paid, in the registry,
+   * and answering `/api/health` -- so without this guard its owner, a real paying
+   * client live since June, would have been mailed "your restaurant is live 🎉,
+   * set your admin password" for a restaurant that has been running for a year.
+   * Announcing is not idempotent with respect to REALITY, only to our own log.
+   */
+  announceFrom: Date;
   /** An audit row says we have already announced this tenant. */
   alreadyAnnounced: boolean;
   /** Owner address from the billing row. */
@@ -28,7 +42,12 @@ export type GoLiveVerdict =
   | { announce: true; to: string; origin: string }
   | {
       announce: false;
-      reason: "notReady" | "alreadyAnnounced" | "noRecipient" | "unusableDomain";
+      reason:
+        | "notReady"
+        | "predatesFeature"
+        | "alreadyAnnounced"
+        | "noRecipient"
+        | "unusableDomain";
     };
 
 export function goLiveDecision(facts: GoLiveFacts): GoLiveVerdict {
@@ -42,6 +61,14 @@ export function goLiveDecision(facts: GoLiveFacts): GoLiveVerdict {
   // exactly what `tenant-liveness.ts` refuses to do on screen. A mail cannot be
   // taken back the way a panel re-renders, so the bar here is if anything higher.
   if (facts.stage !== "ready") return { announce: false, reason: "notReady" };
+
+  // Checked BEFORE the announced-marker so a pre-existing tenant reports the real
+  // reason it is being passed over, and so the sweep can filter on it without a
+  // probe. A tenant with no settled payment cannot be announced either -- it is not
+  // a customer yet, and `null` must never read as "old enough".
+  if (!facts.firstPaidAt || facts.firstPaidAt < facts.announceFrom) {
+    return { announce: false, reason: "predatesFeature" };
+  }
 
   // Once, ever. This runs on a schedule, so without a marker a live tenant would be
   // re-announced on every sweep for the rest of its life.

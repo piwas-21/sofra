@@ -21,6 +21,21 @@ import { sendTenantLiveEmail } from "@/lib/go-live-email";
 /** Audit action, and the once-ever marker the policy keys on. */
 export const GO_LIVE_ACTION = "tenant.golive.announced";
 
+/**
+ * Tenants whose first payment settled before this instant are NEVER announced —
+ * they went live under the old manual handover and an announcement now would be
+ * nonsense at best. Measured before merge: without this, tenant 1 (RUMI) — paid,
+ * registered and healthy — would have been mailed "your restaurant is live".
+ *
+ * Overridable so a staging run can announce its own fixtures, never to backdate:
+ * an unparseable or absent value falls back to the safe constant.
+ */
+function announceFrom(): Date {
+  const raw = process.env.GO_LIVE_ANNOUNCE_FROM;
+  const parsed = raw ? new Date(raw) : null;
+  return parsed && !Number.isNaN(parsed.getTime()) ? parsed : new Date("2026-08-14T00:00:00Z");
+}
+
 export interface GoLiveSweepResult {
   /** Paid tenants that were not already announced. */
   considered: number;
@@ -46,6 +61,13 @@ export async function runGoLiveSweep(): Promise<GoLiveSweepResult> {
       name: true,
       email: true,
       provisioningPrUrl: true,
+      // The settled first payment, for the no-retroactive-announcement cutoff.
+      payments: {
+        where: { status: "paid", sequenceType: "first" },
+        orderBy: { paidAt: "asc" },
+        take: 1,
+        select: { paidAt: true },
+      },
       // The human to greet, when there is one. `TenantBilling.name` is the
       // RESTAURANT, so using it for the salutation writes "Hi Chez Amara," to a
       // person. The direct-owner flow (ADR-004) sets payerUserId; the reseller
@@ -66,7 +88,18 @@ export async function runGoLiveSweep(): Promise<GoLiveSweepResult> {
   });
   const announced = new Set(announcedRows.map((r) => r.entityId));
 
-  const pending = candidates.filter((c) => !announced.has(c.id));
+  const cutoff = announceFrom();
+  // Filter the pre-existing tenants out HERE, before any probing: it is both the
+  // cheaper order and the one that cannot mail someone by accident.
+  const pending = candidates.filter((c) => {
+    if (announced.has(c.id)) return false;
+    const paidAt = c.payments[0]?.paidAt ?? null;
+    if (!paidAt || paidAt < cutoff) {
+      skip("predatesFeature");
+      return false;
+    }
+    return true;
+  });
   if (pending.length === 0) return { considered: 0, announced: 0, skipped };
 
   // A registry that cannot be read is "no evidence" for every tenant -- the same
@@ -93,6 +126,8 @@ export async function runGoLiveSweep(): Promise<GoLiveSweepResult> {
 
     const verdict = goLiveDecision({
       stage,
+      firstPaidAt: c.payments[0]?.paidAt ?? null,
+      announceFrom: cutoff,
       alreadyAnnounced: false, // filtered above; kept explicit for the reader
       to: c.email,
       origin: registryDomain ? tenantOrigin(registryDomain) : null,
