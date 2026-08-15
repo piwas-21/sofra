@@ -61,6 +61,9 @@ export default defineConfig({
         "lib/icp.ts",
         "lib/plan-deletion.ts",
         "lib/tax-notes.ts",
+        // G16 — the delivery-verdict rule. Its query wrapper (`email-delivery.ts`) stays out, same
+        // split as vies/vies-result above.
+        "lib/email-delivery-verdicts.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

@@ -51,7 +51,12 @@ export async function approveApplicationAction(
 
   const raw = await createToken(user.id, "invite");
   const inviteLink = `${siteUrl()}/invite/${raw}`;
-  await sendEmail({
+  // The verdict is kept, not discarded (G16). This mail is the partner's ONLY way into an account
+  // that has no password, and `sendEmail` reports a failure by returning rather than throwing — so
+  // without recording it, an approval that mailed nobody looks exactly like one that worked. The
+  // link is returned to this very screen, so the founder can still hand it over; they just have to
+  // be told they need to.
+  const invite = await sendEmail({
     to: user.email,
     subject: "Welcome to the SofraPiwas partner program",
     html: craftEmail({
@@ -62,8 +67,16 @@ export async function approveApplicationAction(
       cta: { label: "Set your password", url: inviteLink },
       footerNote: "The link works once and expires in 24 hours.",
     }),
+    // `sendEmail` swallows a non-2xx into {sent:false}, but `fetch` itself REJECTS on a DNS or
+    // connect failure — and letting that escape would throw AFTER the account and the token exist,
+    // taking `inviteLink` with it. The raw token is unrecoverable and a second approval trips the
+    // "user exists" guard, so that failure would be unrecoverable too. Caught, recorded, link
+    // returned — which is what makes the comment above true.
+  }).catch(() => ({ sent: false }));
+  await audit(admin.id, "application.approved", "PartnerApplication", id, {
+    userId: user.id,
+    emailed: invite.sent,
   });
-  await audit(admin.id, "application.approved", "PartnerApplication", id, { userId: user.id });
 
   revalidatePath("/admin");
   return { ok: true, inviteLink };
