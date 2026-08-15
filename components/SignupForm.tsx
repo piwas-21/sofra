@@ -66,9 +66,12 @@ export default function SignupForm() {
             which answers 502 when sendEmail fails — the very state that renders
             this message. A mailto is resolved by their mail client and cannot be
             taken down by our outbound transport. */}
-        {status === "successNoEmail" && (
-          <a className="underline" href={`mailto:${CONTACT_EMAIL}`}>
-            {CONTACT_EMAIL}
+        {status === ("successNoEmail" satisfies SignupStatus) && (
+          // dir + bdi like legal/page.tsx: under `ar` the paragraph is RTL, and an
+          // address that later gains a "+tag" or a trailing neutral would otherwise
+          // rely on the bidi algorithm's luck to render unreversed.
+          <a className="underline" dir="ltr" href={`mailto:${CONTACT_EMAIL}`}>
+            <bdi>{CONTACT_EMAIL}</bdi>
           </a>
         )}
       </output>

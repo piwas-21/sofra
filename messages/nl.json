@@ -1029,7 +1029,7 @@
       "slugReserved": "Dit adres is gereserveerd — kies een ander.",
       "slugTaken": "Dat adres is al bezet — kies een ander.",
       "successAccount": "Welkom aan boord! Check je e-mail om je wachtwoord in te stellen — daarna kun je je abonnement starten en richten we je restaurant in. Afiyet olsun.",
-      "successAccountNoEmail": "Je account staat klaar — maar onze welkomstmail is niet aangekomen, dus er staat geen wachtwoordlink in je inbox. Je hoeft hier niets opnieuw te doen: we hebben de fout vastgelegd. Mail ons en we sturen je de link met de hand:"
+      "successAccountNoEmail": "Je account staat klaar — maar onze welkomstmail is niet aangekomen, dus er staat geen wachtwoordlink in je inbox. Je hoeft hier niets opnieuw te doen; we hebben de fout vastgelegd. Mail ons en we sturen je de link handmatig:"
     },
     "configurator": {
       "modules": "Wat heeft u nodig?",

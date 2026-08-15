@@ -1029,7 +1029,7 @@
       "slugReserved": "Diese Adresse ist reserviert — bitte wähle eine andere.",
       "slugTaken": "Diese Adresse ist schon vergeben — bitte wählen Sie eine andere.",
       "successAccount": "Willkommen an Bord! Prüfen Sie Ihre E-Mails, um Ihr Passwort zu setzen — danach können Sie das Abonnement starten und wir richten Ihr Restaurant ein. Afiyet olsun.",
-      "successAccountNoEmail": "Ihr Konto ist bereit — unsere Willkommens-E-Mail kam jedoch nicht durch, es liegt also kein Passwort-Link in Ihrem Postfach. Sie müssen hier nichts wiederholen: der Fehler ist erfasst. Schreiben Sie uns, und wir geben Ihnen den Link direkt:"
+      "successAccountNoEmail": "Ihr Konto ist bereit — unsere Willkommens-E-Mail kam jedoch nicht durch, es liegt also kein Passwort-Link in Ihrem Postfach. Sie müssen hier nichts wiederholen; der Fehler ist erfasst. Schreiben Sie uns, und wir geben Ihnen den Link direkt:"
     },
     "configurator": {
       "modules": "Was brauchen Sie?",
