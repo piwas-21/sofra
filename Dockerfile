@@ -4,13 +4,18 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json* ./
 # --ignore-scripts (Sonar S6505): no dependency lifecycle script runs during
-# the install. ONE is then run back, explicitly and by name: @prisma/engines
-# fetches the platform's schema/query engine binaries in its postinstall, and
-# without them `prisma generate` and the `migrate` stage below fail at runtime
-# with "Can't write to /app/node_modules/@prisma/engines" (measured, not
-# assumed — the image was built and run against a Postgres to see it).
+# the install. ONE is then run back, explicitly and by name: on musl,
+# @prisma/engines only gets its schema-engine binary from its postinstall, and
+# without it the `migrate` stage below dies at runtime with "Can't write to
+# /app/node_modules/@prisma/engines" (measured on the built image, both ways).
+# Only that stage needs it: `prisma generate` and the running app do not — the
+# runtime talks to Postgres through @prisma/adapter-pg, no engine binary.
+# The `ls` is not decoration: `npm rebuild <gone-package>` exits 0, so a future
+# Prisma rename would otherwise build green here and only fail on the box
+# during a release.
 RUN npm ci --ignore-scripts \
     && npm rebuild @prisma/engines \
+    && ls node_modules/@prisma/engines/schema-engine-* \
     && npm cache clean --force
 
 FROM node:22-alpine AS builder
