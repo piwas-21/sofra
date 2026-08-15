@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useIntakeForm, looksLikeEmail } from "@/hooks/useIntakeForm";
 import { checkSlug } from "@/lib/slug-availability";
 import { interpretSignupResponse, type SignupStatus } from "@/lib/signup-outcome";
+import { CONTACT_EMAIL } from "@/lib/contact";
 import SignupConfigurator from "./SignupConfigurator";
 
 // Checkbox groups — collected with getAll and joined, never Object.fromEntries,
@@ -59,7 +60,17 @@ export default function SignupForm() {
   if (outcomeMessage) {
     return (
       <output className="block hand-drawn-border bg-card px-6 py-5 font-hand text-2xl text-craft-olive-text dark:text-craft-olive-dark">
-        {t(outcomeMessage)}
+        {t(outcomeMessage)}{" "}
+        {/* Only on the failed-mail branch, and deliberately a mailto rather than
+            a link to our own contact form: that form POSTs to /api/waitlist,
+            which answers 502 when sendEmail fails — the very state that renders
+            this message. A mailto is resolved by their mail client and cannot be
+            taken down by our outbound transport. */}
+        {status === "successNoEmail" && (
+          <a className="underline" href={`mailto:${CONTACT_EMAIL}`}>
+            {CONTACT_EMAIL}
+          </a>
+        )}
       </output>
     );
   }

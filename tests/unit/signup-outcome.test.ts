@@ -23,7 +23,11 @@ describe("interpretSignupResponse", () => {
     expect(ok({ ok: true, account: true })).toBe("success");
   });
 
-  it("a lead is never told to check an inbox, sent or not", () => {
+  it("a lead is never told to check an inbox", () => {
+    // The shape the route actually sends: `emailed` is omitted entirely when
+    // there is no account, so nothing downstream can read a meaningless false.
+    expect(ok({ ok: true, account: false })).toBe("successLead");
+    // And it stays a lead even if some future caller does send the field.
     expect(ok({ ok: true, account: false, emailed: false })).toBe("successLead");
     expect(ok({ ok: true, account: false, emailed: true })).toBe("successLead");
   });
