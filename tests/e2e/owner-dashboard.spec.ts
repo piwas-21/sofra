@@ -1,5 +1,5 @@
 import { expect, test } from "./helpers/fixtures";
-import { activateAndLogin, mintInviteLink, submitSignup, uniq } from "./helpers/flows";
+import { activateAndLogin, mintInviteLink, submitSignup, uniq, expectAccountCreated } from "./helpers/flows";
 import {
   arrangeActivePlan,
   arrangeMandateLag,
@@ -25,7 +25,7 @@ async function anOwner(page: Parameters<typeof submitSignup>[0], name: string) {
   const slug = uniq.slug(name);
   const email = uniq.email(name);
   await submitSignup(page, { slug, email, restaurantName: `Chez ${name}` });
-  await expect(page.getByText(/check your email/i)).toBeVisible();
+  await expectAccountCreated(page);
   const user = await findUser(email);
   await activateAndLogin(page, {
     inviteLink: await mintInviteLink(user!.id),

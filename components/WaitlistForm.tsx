@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-
-const CONTACT_EMAIL = "mahmutkaya.nl@gmail.com"; // founder inbox (owner-approved); move to a sofra-domain alias later
+import { CONTACT_EMAIL } from "@/lib/contact";
 
 // No waitlist — restaurants are onboarded directly (owner decision 2026-07-06).
 const INTENTS = ["demo", "call", "quote"] as const;

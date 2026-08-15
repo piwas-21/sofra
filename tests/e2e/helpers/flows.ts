@@ -54,6 +54,22 @@ export async function submitSignup(
 }
 
 /**
+ * The signup succeeded and an account exists.
+ *
+ * This suite runs with `RESEND_API_KEY=""` on purpose (scripts/e2e-suite.sh, and
+ * ci.yml does the same), so `sendEmail` never sends and the route answers
+ * `emailed:false` on EVERY signup here. Before G5 the form said "check your
+ * email to set your password" anyway — these specs asserted that copy, which
+ * means the suite had been reproducing the gap all along and passing on it. The
+ * honest copy is what this environment must produce, so asserting it is the
+ * regression test: restore the old unconditional message and every one of these
+ * specs fails.
+ */
+export async function expectAccountCreated(page: Page): Promise<void> {
+  await expect(page.getByText(/our welcome email didn't get through/i)).toBeVisible();
+}
+
+/**
  * Mint a usable set-password link for a freshly created account.
  *
  * The raw token only ever exists inside the welcome email, so there is nothing to

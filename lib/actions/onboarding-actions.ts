@@ -49,16 +49,26 @@ async function emailOnboardInvite(
   email: string,
   restaurantName: string,
   ownerFlow: boolean,
+  actorId: string,
 ): Promise<string> {
   const needsPassword = user.status === "INVITED";
   const inviteToken = needsPassword ? await createToken(user.id, "invite") : null;
-  await sendInviteEmail({
+  const invite = await sendInviteEmail({
     to: email,
     name: user.name,
     restaurantName,
     inviteToken,
     kicker: ownerFlow ? "Welcome to SofraPiwas" : "Partner program",
   });
+
+  // This flow does not LIE when the send fails — the link comes back and the page
+  // shows it — but until now the failure left no trace at all, while the public
+  // signup records one (G5). Same durability, one line.
+  if (!invite.sent) {
+    // With the actor, unlike the public signup's own failure row: this one HAS an
+    // operator behind it, and /admin/audit renders "—" for a null actor.
+    await audit(actorId, "onboard.invite.failed", "User", user.id);
+  }
   return needsPassword ? `${siteUrl()}/invite/${inviteToken}` : `${siteUrl()}/login`;
 }
 
@@ -138,7 +148,7 @@ export async function onboardPartnerAction(
     actorId: admin.id,
   });
 
-  const inviteLink = await emailOnboardInvite(user, email, input.restaurantName, ownerFlow);
+  const inviteLink = await emailOnboardInvite(user, email, input.restaurantName, ownerFlow, admin.id);
   await audit(admin.id, ownerFlow ? "owner.onboarded" : "partner.onboarded", "User", user.id, {
     tenantSlug,
     clientId,

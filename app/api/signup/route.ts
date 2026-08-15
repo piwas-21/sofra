@@ -24,7 +24,7 @@ import { sendFounderSignupNotice, sendOwnerWelcome } from "@/lib/self-serve-emai
  *  customer copy and is deliberately not localized. */
 const FOUNDER_FALLBACK_NOTES: Record<SelfServeFallback, string> = {
   alreadySignedUp:
-    "No account: this email already has a plan for this exact web address — the same person resubmitting. Usually means they never received the welcome email. Re-issue the invite (/admin/onboard on the same email) or point them at 'Forgot password'.",
+    "No account: this email already has a plan for this exact web address — the same person resubmitting. Usually means they never received the welcome email. Re-issue at /admin/onboard on the same email and hand the link over directly — NOT 'Forgot password', which runs through the same mailer and reports success whether or not it sent.",
   emailAlreadyHasAccount:
     "No account: that email already has one. An anonymous POST can't prove control of an existing mailbox, so this needs you (or a signed-in 'add a restaurant' flow, which doesn't exist yet).",
   accountDisabled:
@@ -47,7 +47,7 @@ async function mintAccount(
   outcome: Extract<SelfServeOutcome, { kind: "account" }>,
   who: { email: string; contactName: string; restaurantName: string },
   signupRequestId: string,
-): Promise<{ account: boolean; founderOutcome: string }> {
+): Promise<{ account: boolean; emailed: boolean; founderOutcome: string }> {
   let minted;
   try {
     minted = await createSelfServeAccount({
@@ -63,6 +63,7 @@ async function mintAccount(
     // 409 here would invite a resubmit and a duplicate lead.
     return {
       account: false,
+      emailed: false,
       founderOutcome:
         "No account: the requested web address was claimed by another signup moments earlier. Needs a new slug.",
     };
@@ -84,12 +85,27 @@ async function mintAccount(
     inviteToken: minted.inviteToken,
   }).catch(() => ({ sent: false }));
 
+  // Durable, because the founder notice that carries this news is itself an
+  // email: whatever broke the welcome (no key, no sender, Resend refusing) may
+  // well break that one too, and then nobody would ever learn. The audit row is
+  // in the database before either mail is attempted to matter.
+  if (!welcome.sent) {
+    await audit(null, "signup.welcome.failed", "SignupRequest", signupRequestId, {
+      tenantSlug: outcome.slug,
+    });
+    // Also to the box log, id only (§5.8 — no address, no name): /admin/audit is an
+    // unfiltered last-200 table that truncates the entity id, so the audit row alone
+    // is not something a founder can act on at 2am.
+    console.error("signup: welcome email failed", signupRequestId);
+  }
+
   const plan = `${eur(outcome.amountCents)}/mo`;
   return {
     account: true,
+    emailed: welcome.sent,
     founderOutcome: welcome.sent
       ? `Account + PENDING plan created (${plan}). The owner pays from their own dashboard.`
-      : `Account + PENDING plan created (${plan}), but the WELCOME EMAIL FAILED — the owner has no password and no link. Send the invite by hand (/admin/onboard on the same email re-issues one), or tell them to use "Forgot password".`,
+      : `Account + PENDING plan created (${plan}), but the WELCOME EMAIL FAILED — the owner has no password and no link. Re-issue at /admin/onboard on the same email and HAND THE LINK OVER directly (the page shows it). Do NOT send them to "Forgot password": same transport, same failure, and it reports success either way.`,
   };
 }
 
@@ -189,14 +205,14 @@ export async function POST(request: Request) {
   await audit(null, "signup.requested", "SignupRequest", signup.id);
 
   // ── Mint the account when the decision says so ──────────────────────────
-  const { account, founderOutcome } =
+  const { account, emailed, founderOutcome } =
     outcome.kind === "account"
       ? await mintAccount(
           outcome,
           { email, contactName: data.contactName, restaurantName: data.restaurantName },
           signup.id,
         )
-      : { account: false, founderOutcome: FOUNDER_FALLBACK_NOTES[outcome.reason] };
+      : { account: false, emailed: false, founderOutcome: FOUNDER_FALLBACK_NOTES[outcome.reason] };
 
   // ── Tell the founder what happened ─────────────────────────────────────
   // Also non-fatal. Everything the customer needs is already committed; failing
@@ -231,5 +247,11 @@ export async function POST(request: Request) {
     }).catch(() => undefined);
   }
 
-  return NextResponse.json({ ok: true, account });
+  // `emailed` is the G5 fix: the form used to say "check your email to set your
+  // password" on every account it created, including the ones whose welcome mail
+  // never left — sending the customer to an inbox that will never receive it,
+  // and to a "Forgot password" that fails the same way. Present only when there
+  // IS an account, so the next consumer cannot read a meaningless false off the
+  // lead-only answer.
+  return NextResponse.json({ ok: true, account, ...(account ? { emailed } : {}) });
 }

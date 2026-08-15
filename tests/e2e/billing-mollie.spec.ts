@@ -6,6 +6,7 @@ import {
   mintInviteLink,
   submitSignup,
   uniq,
+  expectAccountCreated,
 } from "./helpers/flows";
 import { findFirstPayment, findInvoice, findPlan, findUser } from "./helpers/db";
 
@@ -101,7 +102,7 @@ test.describe("Mollie first payment and activation", () => {
 
     // ── the owner arrives with a PENDING plan ──────────────────────────────
     await submitSignup(page, { slug, email, restaurantName: "Chez Payment" });
-    await expect(page.getByText(/check your email to set your password/i)).toBeVisible();
+    await expectAccountCreated(page);
     const user = await findUser(email);
     await activateAndLogin(page, { inviteLink: await mintInviteLink(user!.id), email, password });
 
