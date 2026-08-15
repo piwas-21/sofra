@@ -88,7 +88,11 @@ export async function forgotPasswordAction(_prev: FormState, formData: FormData)
 
   const raw = await createToken(user.id, "reset");
   const link = `${siteUrl()}/reset/${raw}`;
-  await sendEmail({
+  // Kept, not discarded (G16). The caller cannot be told — this form answers the same generic
+  // success to everyone, on purpose, so it cannot be used to probe which addresses exist — which is
+  // exactly why the failure has to land somewhere a human will see it. A locked-out owner who is
+  // told "check your email" for a mail that never left has no next move at all.
+  const reset = await sendEmail({
     to: user.email,
     subject: "SofraPiwas — reset your password",
     html: craftEmail({
@@ -99,7 +103,12 @@ export async function forgotPasswordAction(_prev: FormState, formData: FormData)
       cta: { label: "Set a new password", url: link },
       footerNote: "The link works once and expires in 24 hours.",
     }),
-  });
-  await audit(user.id, "password.reset.requested", "User", user.id);
+    // Caught for the anti-enumeration property this form exists to have: `fetch` REJECTS on a
+    // DNS/connect failure, so an unreachable transport would throw for an address that HAS an
+    // account while an address that does not still answers the generic success above — a live
+    // "is this registered" oracle, during exactly the incident nobody is watching. It also saves
+    // the `emailed: false` row, which is the failure most worth recording.
+  }).catch(() => ({ sent: false }));
+  await audit(user.id, "password.reset.requested", "User", user.id, { emailed: reset.sent });
   return generic;
 }

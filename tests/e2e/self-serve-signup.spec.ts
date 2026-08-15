@@ -343,3 +343,25 @@ test.describe("the signup answer says whether the welcome mail actually went out
     await expect(page.getByText(/our welcome email didn't get through/i)).toHaveCount(0);
   });
 });
+
+test.describe("the founder can see which mails did not get delivered (G16)", () => {
+  test("a lead whose welcome mail failed is flagged on /admin/signups", async ({ page }) => {
+    // Free evidence: this suite runs with RESEND_API_KEY="" on purpose, so every signup it makes
+    // has a failed welcome mail. Before G16 that state was recorded and shown nowhere — the
+    // founder's screen looked identical whether the customer got their link or not.
+    const restaurantName = `G16 ${uniq.slug("badge")}`;
+    await submitSignup(page, {
+      slug: uniq.slug("badge"),
+      email: uniq.email("badge"),
+      restaurantName,
+    });
+    await expectAccountCreated(page);
+
+    await loginAsAdmin(page);
+    await page.goto("/admin/signups");
+
+    const lead = page.locator("li").filter({ hasText: restaurantName });
+    await expect(lead).toContainText(/welcome email failed/i);
+    await expect(lead).toContainText(/admin\/onboard/i);
+  });
+});

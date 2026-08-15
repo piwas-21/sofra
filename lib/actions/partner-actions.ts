@@ -144,11 +144,18 @@ export async function requestOnboardingAction(
   }
 
   await db.client.update({ where: { id: client.id }, data: { status: "ONBOARDING" } });
-  await audit(partner.id, "client.onboarding_requested", "Client", id);
 
   const to = founderInbox();
+  let emailed = false;
+
   if (to) {
-    await sendEmail({
+    // The verdict is kept (G16). Nobody is waiting on this mail — the partner's request is already
+    // recorded and their dashboard says so — but it is the ONLY thing that tells the founder a
+    // client is waiting to be provisioned, and a silently unsent one is a partner wondering for a
+    // week why nothing happened. Caught, like every other send on a committed path: `fetch` REJECTS
+    // on a DNS/connect failure, and letting that escape would lose the audit row below — the very
+    // row this change exists to write — after the status transition had already committed.
+    const notice = await sendEmail({
       to,
       subject: `SofraPiwas — Onboarding request: ${client.restaurantName}`,
       html: craftEmail({
@@ -163,8 +170,14 @@ export async function requestOnboardingAction(
         cta: { label: "Open admin", url: `${siteUrl()}/admin/clients` },
         footerNote: "Provision via the deploy-repo scripts, then mark LIVE.",
       }),
-    });
+    }).catch(() => ({ sent: false }));
+
+    emailed = notice.sent;
   }
+
+  // After the send, so the row carries its outcome. `emailed: false` with no inbox configured is
+  // the honest reading either way: nobody was told.
+  await audit(partner.id, "client.onboarding_requested", "Client", id, { emailed });
 
   revalidatePath(`/dashboard/clients/${id}`);
   revalidatePath("/dashboard");
