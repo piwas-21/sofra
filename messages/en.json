@@ -1029,7 +1029,7 @@
       "slugReserved": "That address is reserved — please choose another.",
       "slugTaken": "That address is already taken — please choose another.",
       "successAccount": "Welcome aboard! Check your email to set your password — then you can start your subscription and we'll set up your restaurant. Afiyet olsun.",
-      "successAccountNoEmail": "Your account is ready — but our welcome email didn't get through, so there's no password link in your inbox. Our team has been alerted and will contact you to finish setting up. Nothing to redo here."
+      "successAccountNoEmail": "Your account is ready — but our welcome email didn't get through, so there's no password link in your inbox. Nothing here needs redoing: we've recorded the failure, and you can reach us from the contact form on our home page to get your link by hand."
     },
     "configurator": {
       "modules": "What do you need?",

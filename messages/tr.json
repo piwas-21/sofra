@@ -1029,7 +1029,7 @@
       "slugReserved": "Bu adres ayrılmış — lütfen başka bir tane seçin.",
       "slugTaken": "Bu adres zaten alınmış — lütfen başka bir tane seçin.",
       "successAccount": "Hoş geldiniz! Şifrenizi belirlemek için e-postanıza bakın — ardından aboneliğinizi başlatabilirsiniz ve restoranınızı kurarız. Afiyet olsun.",
-      "successAccountNoEmail": "Hesabınız hazır — ancak karşılama e-postamız gönderilemedi, bu yüzden gelen kutunuzda parola bağlantısı yok. Ekibimiz haberdar edildi ve kurulumu tamamlamak için sizinle iletişime geçecek. Burada yeniden yapmanız gereken bir şey yok."
+      "successAccountNoEmail": "Hesabınız hazır — ancak karşılama e-postamız ulaşmadı, bu yüzden gelen kutunuzda parola bağlantısı yok. Burada yeniden yapmanız gereken bir şey yok: hatayı kaydettik ve bağlantınızı elden almak için ana sayfamızdaki iletişim formundan bize ulaşabilirsiniz."
     },
     "configurator": {
       "modules": "Neye ihtiyacınız var?",

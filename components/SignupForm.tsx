@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useIntakeForm, looksLikeEmail } from "@/hooks/useIntakeForm";
 import { checkSlug } from "@/lib/slug-availability";
-import { interpretSignupResponse } from "@/lib/signup-outcome";
+import { interpretSignupResponse, type SignupStatus } from "@/lib/signup-outcome";
 import SignupConfigurator from "./SignupConfigurator";
 
 // Checkbox groups — collected with getAll and joined, never Object.fromEntries,
@@ -14,11 +14,14 @@ const MULTI_VALUE_FIELDS = ["modules", "languages"] as const;
 // `successAccountNoEmail` is the honest one: the account exists, so this is not
 // an error the customer can act on by resubmitting — resubmitting would only be
 // refused, their email already having a plan for that address.
-const OUTCOME_MESSAGES = {
+// Typed against SignupStatus on purpose: an untyped map would let a rename on
+// the lib side compile, return undefined here, and re-render an empty form after
+// a SUCCESSFUL signup — which the customer would answer by submitting again.
+const OUTCOME_MESSAGES: Partial<Record<SignupStatus, string>> = {
   success: "successAccount",
   successNoEmail: "successAccountNoEmail",
   successLead: "success",
-} as const;
+};
 
 export default function SignupForm() {
   const t = useTranslations("signup.form");
@@ -51,7 +54,7 @@ export default function SignupForm() {
     (res, body) => interpretSignupResponse(res.status, body, res.ok),
   );
 
-  const outcomeMessage = OUTCOME_MESSAGES[status as keyof typeof OUTCOME_MESSAGES];
+  const outcomeMessage = OUTCOME_MESSAGES[status as SignupStatus];
 
   if (outcomeMessage) {
     return (

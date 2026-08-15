@@ -52,13 +52,20 @@ async function emailOnboardInvite(
 ): Promise<string> {
   const needsPassword = user.status === "INVITED";
   const inviteToken = needsPassword ? await createToken(user.id, "invite") : null;
-  await sendInviteEmail({
+  const invite = await sendInviteEmail({
     to: email,
     name: user.name,
     restaurantName,
     inviteToken,
     kicker: ownerFlow ? "Welcome to SofraPiwas" : "Partner program",
   });
+
+  // This flow does not LIE when the send fails — the link comes back and the page
+  // shows it — but until now the failure left no trace at all, while the public
+  // signup records one (G5). Same durability, one line.
+  if (!invite.sent) {
+    await audit(null, "onboard.invite.failed", "User", user.id);
+  }
   return needsPassword ? `${siteUrl()}/invite/${inviteToken}` : `${siteUrl()}/login`;
 }
 
