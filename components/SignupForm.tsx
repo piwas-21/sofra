@@ -3,11 +3,22 @@
 import { useTranslations } from "next-intl";
 import { useIntakeForm, looksLikeEmail } from "@/hooks/useIntakeForm";
 import { checkSlug } from "@/lib/slug-availability";
+import { interpretSignupResponse } from "@/lib/signup-outcome";
 import SignupConfigurator from "./SignupConfigurator";
 
 // Checkbox groups — collected with getAll and joined, never Object.fromEntries,
 // which would keep only the last ticked box. See useIntakeForm.
 const MULTI_VALUE_FIELDS = ["modules", "languages"] as const;
+
+// The three outcomes that end the form rather than asking for a correction.
+// `successAccountNoEmail` is the honest one: the account exists, so this is not
+// an error the customer can act on by resubmitting — resubmitting would only be
+// refused, their email already having a plan for that address.
+const OUTCOME_MESSAGES = {
+  success: "successAccount",
+  successNoEmail: "successAccountNoEmail",
+  successLead: "success",
+} as const;
 
 export default function SignupForm() {
   const t = useTranslations("signup.form");
@@ -33,28 +44,19 @@ export default function SignupForm() {
       return null;
     },
     MULTI_VALUE_FIELDS,
-    // Four outcomes, three of them not "error": the account was created, the lead
-    // was captured for the founder, or the address needs changing. Only an
-    // unrecognised answer falls through to the hook's generic error.
-    (res, body) => {
-      if (res.status === 409) {
-        // The server's `slugInvalid` maps to the client's own `invalidSlug` key —
-        // unreachable from a browser (client validation catches it first), but a
-        // name mismatch that silently collapsed to the generic error would be a
-        // trap for whoever next changes either side.
-        const reason = body?.reason;
-        if (reason === "slugTaken" || reason === "slugReserved") return reason;
-        return reason === "slugInvalid" ? "invalidSlug" : "error";
-      }
-      if (res.ok && body?.ok === true) return body.account === true ? "success" : "successLead";
-      return null;
-    },
+    // Five outcomes, four of them not "error": the account was created and the
+    // welcome email is out, the account was created but the email FAILED, the
+    // lead was captured for the founder, or the address needs changing. Decided
+    // in lib/signup-outcome so the branch nobody can see is unit-testable.
+    (res, body) => interpretSignupResponse(res.status, body, res.ok),
   );
 
-  if (status === "success" || status === "successLead") {
+  const outcomeMessage = OUTCOME_MESSAGES[status as keyof typeof OUTCOME_MESSAGES];
+
+  if (outcomeMessage) {
     return (
       <output className="block hand-drawn-border bg-card px-6 py-5 font-hand text-2xl text-craft-olive-text dark:text-craft-olive-dark">
-        {t(status === "success" ? "successAccount" : "success")}
+        {t(outcomeMessage)}
       </output>
     );
   }

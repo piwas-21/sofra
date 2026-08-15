@@ -1028,7 +1028,8 @@
       "invalidSlug": "Utilisez des lettres minuscules, chiffres et tirets (2 à 31 caractères).",
       "slugReserved": "Cette adresse est réservée — veuillez en choisir une autre.",
       "slugTaken": "Cette adresse est déjà prise — veuillez en choisir une autre.",
-      "successAccount": "Bienvenue ! Consultez votre e-mail pour définir votre mot de passe — vous pourrez ensuite démarrer votre abonnement et nous installerons votre restaurant. Afiyet olsun."
+      "successAccount": "Bienvenue ! Consultez votre e-mail pour définir votre mot de passe — vous pourrez ensuite démarrer votre abonnement et nous installerons votre restaurant. Afiyet olsun.",
+      "successAccountNoEmail": "Votre compte est prêt — mais notre e-mail de bienvenue n'est pas parti, il n'y a donc aucun lien de mot de passe dans votre boîte. Notre équipe est prévenue et vous contactera pour terminer l'installation. Rien à refaire ici."
     },
     "configurator": {
       "modules": "De quoi avez-vous besoin ?",

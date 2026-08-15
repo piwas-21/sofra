@@ -7,6 +7,7 @@ import {
   mintInviteLink,
   submitSignup,
   uniq,
+  expectAccountCreated,
 } from "./helpers/flows";
 import {
   arrangeMandateLag,
@@ -48,7 +49,7 @@ test.describe("the public signup creates a payable account", () => {
     await submitSignup(page, { slug, email, restaurantName: "Chez E2E" });
 
     // The customer is told an account exists and to go set a password.
-    await expect(page.getByText(/check your email to set your password/i)).toBeVisible();
+    await expectAccountCreated(page);
 
     const user = await findUser(email);
     expect(user, "the signup must have created a user").not.toBeNull();
@@ -77,7 +78,7 @@ test.describe("the public signup creates a payable account", () => {
     const slug = uniq.slug("nologin");
     const email = uniq.email("nologin");
     await submitSignup(page, { slug, email });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
 
     await login(page, { email, password: "any-password-at-all-9" });
     await expect(page).toHaveURL(/\/login/);
@@ -92,7 +93,7 @@ test.describe("the public signup creates a payable account", () => {
     const password = `e2e-owner-pass-${Date.now()}`;
 
     await submitSignup(page, { slug, email, restaurantName: "Chez Owner" });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
     const user = await findUser(email);
 
     await activateAndLogin(page, {
@@ -129,7 +130,7 @@ test.describe("the mandate-lag window never invites a second payment", () => {
     const password = `e2e-lag-pass-${Date.now()}`;
 
     await submitSignup(page, { slug, email, restaurantName: "Chez Lag" });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
     const user = await findUser(email);
     await activateAndLogin(page, { inviteLink: await mintInviteLink(user!.id), email, password });
     // Before: they have not paid, so they SHOULD be asked for something — the
@@ -210,7 +211,7 @@ test.describe("the slug is refused while the customer can still fix it", () => {
     await page.fill('input[name="desiredSlug"]', slug);
     await page.click('button[type="submit"]');
 
-    await expect(page.getByText(/check your email to set your password/i)).toBeVisible();
+    await expectAccountCreated(page);
     expect((await findPlan(slug))?.subStatus).toBe("PENDING");
   });
 });
@@ -219,7 +220,7 @@ test.describe("what the customer cannot fix becomes a founder lead", () => {
   test("a second signup on the same email creates no second plan", async ({ page }) => {
     const email = uniq.email("dup");
     await submitSignup(page, { slug: uniq.slug("dup1"), email });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
     expect(await countPlansFor(email)).toBe(1);
 
     // A different, free slug — so nothing about the SLUG is refusing this. The
@@ -244,7 +245,7 @@ test.describe("what the customer cannot fix becomes a founder lead", () => {
     const slug = uniq.slug("resub");
     const email = uniq.email("resub");
     await submitSignup(page, { slug, email });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
 
     // This is what a customer does when the welcome email never arrives. Telling
     // them the address they just bought is "already taken" would be a dead end:
@@ -273,7 +274,7 @@ test.describe("provisioning is gated on payment", () => {
     const slug = uniq.slug("gate");
     const email = uniq.email("gate");
     await submitSignup(page, { slug, email });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
     // Nothing has been paid.
     expect(await findFirstPayment(slug)).toBeNull();
 
