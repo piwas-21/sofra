@@ -127,7 +127,7 @@ ok("apply returns 200", res.status === 200);
 res = await fetch(`${base}/api/partner/apply`, {
   method: "POST",
   headers: { "content-type": "application/json" },
-  body: JSON.stringify({ name: "Bot", email: "bot@x.y", message: "spam", company_website: "http://spam" }),
+  body: JSON.stringify({ name: "Bot", email: "bot@x.y", message: "spam", company_website: "https://spam.example.com" }),
 });
 ok("honeypot still 200 (fake ok)", res.status === 200);
 

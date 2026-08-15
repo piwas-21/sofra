@@ -14,6 +14,14 @@ name: CI
 #     diff runs against the migrated service container)
 #   * secret/dep/fs scans: gitleaks, TruffleHog (PR diff), Trivy fs,
 #     npm audit, OSV-Scanner, semgrep (non-blocking)
+# Every install runs `npm ci --ignore-scripts` (Sonar S6505): a dependency's
+# postinstall must not execute in a runner that holds GITHUB_TOKEN. Nothing in
+# this tree needs one ON A GLIBC RUNNER: @prisma/engines ships the linux-x64
+# engine as a file, so `prisma generate` and `prisma migrate deploy` both work
+# without its postinstall (measured in a node:22-bookworm container). The Alpine
+# image is the exception and rebuilds that ONE package by name — see Dockerfile.
+# Local binaries are invoked as node_modules/.bin/<tool>, never `npx`, which
+# would fetch-and-run an unpinned package on a miss.
 # Deliberately NOT ported from the frontend: njsscan (Express-centric rules;
 # semgrep covers TS/Next SAST here) and the license-compliance job (no
 # LICENSES.allowlist policy in this repo yet — adopt the frontend's
@@ -46,7 +54,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
 
   typecheck:
     name: tsc --noEmit
@@ -59,7 +67,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
       # tsc needs the generated Prisma client (lib/generated/prisma).
       - run: npm run db:generate
       - run: npm run typecheck
@@ -75,7 +83,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
       - run: npm run lint
 
   next_build:
@@ -89,7 +97,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
       # `npm run build` = prisma generate && next build. No DATABASE_URL on
       # purpose: nothing may query the DB at build time (control-plane pages
       # are dynamic; the Docker image builds the same way).
@@ -126,14 +134,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
       - name: prisma migrate deploy (committed migrations apply cleanly)
-        run: npx prisma migrate deploy
+        run: node_modules/.bin/prisma migrate deploy
       - name: prisma migrate diff (migrated DB == schema.prisma)
         # --exit-code: empty diff = 0, drift = 2. A failure here means
         # schema.prisma changed without `prisma migrate dev` generating the
         # matching migration.
-        run: npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code
+        run: node_modules/.bin/prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code
 
   npm_audit:
     name: npm audit (high+)
@@ -146,7 +154,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
       - run: npm audit --audit-level=high
 
   gitleaks:
@@ -162,7 +170,7 @@ jobs:
       - name: Install gitleaks
         run: |
           GITLEAKS_VERSION=8.21.2
-          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+          curl -sSfL --proto '=https' --proto-redir '=https' --tlsv1.2 "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
             | tar -xzf - -C /tmp gitleaks
           sudo mv /tmp/gitleaks /usr/local/bin/gitleaks
       - name: Run gitleaks
@@ -238,7 +246,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
       # Some tested lib modules import types from the generated Prisma client.
       - run: npm run db:generate
       # --coverage enforces the vitest.config.ts coverage floor (DEV-PHASES W2
@@ -315,7 +323,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
       - run: npm run db:generate
       # Throwaway secrets generated at runtime (never committed) — the DB is a
       # disposable service container, so these only ever protect this one run.
@@ -327,7 +335,7 @@ jobs:
             echo "E2E_PARTNER_PASSWORD=$(openssl rand -hex 12)"
           } >> "$GITHUB_ENV"
       - name: Apply migrations
-        run: npx prisma migrate deploy
+        run: node_modules/.bin/prisma migrate deploy
       - name: Seed ADMIN + PARTNER
         run: node scripts/seed-e2e.mjs
       - name: Install Playwright chromium
@@ -338,7 +346,7 @@ jobs:
         # deps failure is non-fatal; install the browser binary regardless.
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft*.list /etc/apt/sources.list.d/*azure*.list 2>/dev/null || true
-          npx playwright install --with-deps chromium || npx playwright install chromium
+          node_modules/.bin/playwright install --with-deps chromium || node_modules/.bin/playwright install chromium
       # Build WITHOUT DATABASE_URL in scope (repo rule: nothing queries the DB
       # at build time). Playwright's webServer (`npm run start`) then serves it
       # with the DB + auth env from the job.
@@ -364,8 +372,9 @@ jobs:
         # available. Optional on purpose: with no secret the billing spec SKIPS
         # with a stated reason (never silently passes) and the other 15 tests still
         # run. Scoped to this step so the key is not in the environment of
-        # `npm ci` (which executes dependency lifecycle scripts) or the browser
-        # install. Fork PRs never receive it: the trigger is `pull_request`, not
+        # `npm ci` or the browser install — installs are --ignore-scripts now,
+        # but a narrow scope for a live API key does not depend on that.
+        # Fork PRs never receive it: the trigger is `pull_request`, not
         # `pull_request_target`.
         env:
           MOLLIE_API_KEY: ${{ secrets.MOLLIE_API_KEY_TEST }}

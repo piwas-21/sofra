@@ -3,7 +3,8 @@
 // React <=18 peer deps. Same model: bcrypt-hashed passwords, no DB sessions.
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
+import { randomBytes } from "node:crypto";
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
@@ -11,8 +12,12 @@ import { clientIpFromXff, rateLimit } from "@/lib/rate-limit";
 
 // Compared against when the user doesn't exist / isn't ACTIVE, so the
 // failure path costs one bcrypt round-trip either way (no timing-based
-// user enumeration). Hash of random bytes — matches no real password.
-const DUMMY_HASH = "$2b$12$5iWfDPFtlJusJe4KhyQFIOPx/FjFtshCkr7CoRlYMK/oYL/bRFT7i";
+// user enumeration). Generated ONCE per process from fresh random bytes and
+// never persisted: it matches no password, and unlike a committed literal it
+// is not a bcrypt hash sitting in the repository for a scanner (or a reader)
+// to wonder about. Started eagerly at module load, not on first use, so the
+// first unknown-user login costs exactly one compare like every other one.
+const dummyHash = hash(randomBytes(32).toString("base64"), 12);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
@@ -41,7 +46,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const user = await db.user.findUnique({ where: { email } });
         const eligible = Boolean(user?.passwordHash) && user?.status === "ACTIVE";
         // Always burn one bcrypt compare; single generic failure branch.
-        const ok = await compare(password, user?.passwordHash ?? DUMMY_HASH);
+        const ok = await compare(password, user?.passwordHash ?? (await dummyHash));
         if (!eligible || !ok) {
           await audit(user?.id ?? null, "login.failed", "User", user?.id ?? null, { email });
           return null;

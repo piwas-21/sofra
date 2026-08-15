@@ -18,9 +18,10 @@ concurrency:
   group: build-image-${{ github.ref }}
   cancel-in-progress: true
 
+# Workflow-level default is read-only; `packages: write` is granted per job
+# (Sonar S8233), so the token is never broader than the job holding it needs.
 permissions:
   contents: read
-  packages: write
 
 jobs:
   build-push:
@@ -30,6 +31,9 @@ jobs:
     if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
@@ -133,6 +137,9 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
