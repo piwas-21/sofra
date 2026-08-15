@@ -3,11 +3,26 @@
 import { useTranslations } from "next-intl";
 import { useIntakeForm, looksLikeEmail } from "@/hooks/useIntakeForm";
 import { checkSlug } from "@/lib/slug-availability";
+import { interpretSignupResponse, type SignupStatus } from "@/lib/signup-outcome";
+import { CONTACT_EMAIL } from "@/lib/contact";
 import SignupConfigurator from "./SignupConfigurator";
 
 // Checkbox groups — collected with getAll and joined, never Object.fromEntries,
 // which would keep only the last ticked box. See useIntakeForm.
 const MULTI_VALUE_FIELDS = ["modules", "languages"] as const;
+
+// The three outcomes that end the form rather than asking for a correction.
+// `successAccountNoEmail` is the honest one: the account exists, so this is not
+// an error the customer can act on by resubmitting — resubmitting would only be
+// refused, their email already having a plan for that address.
+// Typed against SignupStatus on purpose: an untyped map would let a rename on
+// the lib side compile, return undefined here, and re-render an empty form after
+// a SUCCESSFUL signup — which the customer would answer by submitting again.
+const OUTCOME_MESSAGES: Partial<Record<SignupStatus, string>> = {
+  success: "successAccount",
+  successNoEmail: "successAccountNoEmail",
+  successLead: "success",
+};
 
 export default function SignupForm() {
   const t = useTranslations("signup.form");
@@ -33,28 +48,32 @@ export default function SignupForm() {
       return null;
     },
     MULTI_VALUE_FIELDS,
-    // Four outcomes, three of them not "error": the account was created, the lead
-    // was captured for the founder, or the address needs changing. Only an
-    // unrecognised answer falls through to the hook's generic error.
-    (res, body) => {
-      if (res.status === 409) {
-        // The server's `slugInvalid` maps to the client's own `invalidSlug` key —
-        // unreachable from a browser (client validation catches it first), but a
-        // name mismatch that silently collapsed to the generic error would be a
-        // trap for whoever next changes either side.
-        const reason = body?.reason;
-        if (reason === "slugTaken" || reason === "slugReserved") return reason;
-        return reason === "slugInvalid" ? "invalidSlug" : "error";
-      }
-      if (res.ok && body?.ok === true) return body.account === true ? "success" : "successLead";
-      return null;
-    },
+    // Five outcomes, four of them not "error": the account was created and the
+    // welcome email is out, the account was created but the email FAILED, the
+    // lead was captured for the founder, or the address needs changing. Decided
+    // in lib/signup-outcome so the branch nobody can see is unit-testable.
+    (res, body) => interpretSignupResponse(res.status, body, res.ok),
   );
 
-  if (status === "success" || status === "successLead") {
+  const outcomeMessage = OUTCOME_MESSAGES[status as SignupStatus];
+
+  if (outcomeMessage) {
     return (
       <output className="block hand-drawn-border bg-card px-6 py-5 font-hand text-2xl text-craft-olive-text dark:text-craft-olive-dark">
-        {t(status === "success" ? "successAccount" : "success")}
+        {t(outcomeMessage)}{" "}
+        {/* Only on the failed-mail branch, and deliberately a mailto rather than
+            a link to our own contact form: that form POSTs to /api/waitlist,
+            which answers 502 when sendEmail fails — the very state that renders
+            this message. A mailto is resolved by their mail client and cannot be
+            taken down by our outbound transport. */}
+        {status === ("successNoEmail" satisfies SignupStatus) && (
+          // dir + bdi like legal/page.tsx: under `ar` the paragraph is RTL, and an
+          // address that later gains a "+tag" or a trailing neutral would otherwise
+          // rely on the bidi algorithm's luck to render unreversed.
+          <a className="underline" dir="ltr" href={`mailto:${CONTACT_EMAIL}`}>
+            <bdi>{CONTACT_EMAIL}</bdi>
+          </a>
+        )}
       </output>
     );
   }

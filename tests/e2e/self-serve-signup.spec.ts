@@ -7,6 +7,7 @@ import {
   mintInviteLink,
   submitSignup,
   uniq,
+  expectAccountCreated,
 } from "./helpers/flows";
 import {
   arrangeMandateLag,
@@ -47,8 +48,9 @@ test.describe("the public signup creates a payable account", () => {
 
     await submitSignup(page, { slug, email, restaurantName: "Chez E2E" });
 
-    // The customer is told an account exists and to go set a password.
-    await expect(page.getByText(/check your email to set your password/i)).toBeVisible();
+    // The customer is told an account exists — and, in this suite, told honestly
+    // that the welcome mail did not go out (see expectAccountCreated).
+    await expectAccountCreated(page);
 
     const user = await findUser(email);
     expect(user, "the signup must have created a user").not.toBeNull();
@@ -77,7 +79,7 @@ test.describe("the public signup creates a payable account", () => {
     const slug = uniq.slug("nologin");
     const email = uniq.email("nologin");
     await submitSignup(page, { slug, email });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
 
     await login(page, { email, password: "any-password-at-all-9" });
     await expect(page).toHaveURL(/\/login/);
@@ -92,7 +94,7 @@ test.describe("the public signup creates a payable account", () => {
     const password = `e2e-owner-pass-${Date.now()}`;
 
     await submitSignup(page, { slug, email, restaurantName: "Chez Owner" });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
     const user = await findUser(email);
 
     await activateAndLogin(page, {
@@ -129,7 +131,7 @@ test.describe("the mandate-lag window never invites a second payment", () => {
     const password = `e2e-lag-pass-${Date.now()}`;
 
     await submitSignup(page, { slug, email, restaurantName: "Chez Lag" });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
     const user = await findUser(email);
     await activateAndLogin(page, { inviteLink: await mintInviteLink(user!.id), email, password });
     // Before: they have not paid, so they SHOULD be asked for something — the
@@ -210,7 +212,7 @@ test.describe("the slug is refused while the customer can still fix it", () => {
     await page.fill('input[name="desiredSlug"]', slug);
     await page.click('button[type="submit"]');
 
-    await expect(page.getByText(/check your email to set your password/i)).toBeVisible();
+    await expectAccountCreated(page);
     expect((await findPlan(slug))?.subStatus).toBe("PENDING");
   });
 });
@@ -219,7 +221,7 @@ test.describe("what the customer cannot fix becomes a founder lead", () => {
   test("a second signup on the same email creates no second plan", async ({ page }) => {
     const email = uniq.email("dup");
     await submitSignup(page, { slug: uniq.slug("dup1"), email });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
     expect(await countPlansFor(email)).toBe(1);
 
     // A different, free slug — so nothing about the SLUG is refusing this. The
@@ -244,7 +246,7 @@ test.describe("what the customer cannot fix becomes a founder lead", () => {
     const slug = uniq.slug("resub");
     const email = uniq.email("resub");
     await submitSignup(page, { slug, email });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
 
     // This is what a customer does when the welcome email never arrives. Telling
     // them the address they just bought is "already taken" would be a dead end:
@@ -273,7 +275,7 @@ test.describe("provisioning is gated on payment", () => {
     const slug = uniq.slug("gate");
     const email = uniq.email("gate");
     await submitSignup(page, { slug, email });
-    await expect(page.getByText(/check your email/i)).toBeVisible();
+    await expectAccountCreated(page);
     // Nothing has been paid.
     expect(await findFirstPayment(slug)).toBeNull();
 
@@ -300,5 +302,44 @@ test.describe("provisioning is gated on payment", () => {
     // uses a typographic apostrophe (U+2019), and this path returns GitHub's raw
     // text anyway (ProvisioningApiError → ActionError's passthrough).
     expect(body).toMatch(/bad credentials|401/i);
+  });
+});
+
+test.describe("the signup answer says whether the welcome mail actually went out (G5)", () => {
+  test("the suite's own signups report emailed:false, and the copy follows the answer", async ({
+    page,
+  }) => {
+    // Asserted on the RESPONSE, not only on the rendered string: this pins the
+    // cause rather than the symptom. The suite runs with RESEND_API_KEY="", so
+    // every welcome mail here fails — which is exactly the state that used to be
+    // rendered as "check your email to set your password".
+    const answer = page.waitForResponse(
+      (res) => res.url().includes("/api/signup") && res.request().method() === "POST",
+    );
+
+    await submitSignup(page, { slug: uniq.slug("nomail"), email: uniq.email("nomail") });
+
+    const body = await (await answer).json();
+    expect(body).toMatchObject({ ok: true, account: true, emailed: false });
+    await expectAccountCreated(page);
+  });
+
+  test("a signup whose welcome mail DID go out is told to check their email", async ({ page }) => {
+    // The one branch no other test can reach: this environment cannot send mail,
+    // so the server's success answer is faked at the network boundary. Without
+    // it, hardcoding `emailed: false` in the route would keep the whole suite
+    // green while every real customer saw the failure copy.
+    await page.route("**/api/signup", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, account: true, emailed: true }),
+      }),
+    );
+
+    await submitSignup(page, { slug: uniq.slug("mailok"), email: uniq.email("mailok") });
+
+    await expect(page.getByText(/check your email to set your password/i)).toBeVisible();
+    await expect(page.getByText(/our welcome email didn't get through/i)).toHaveCount(0);
   });
 });

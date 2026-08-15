@@ -1028,7 +1028,8 @@
       "invalidSlug": "Use lowercase letters, numbers and hyphens (2–31 characters).",
       "slugReserved": "That address is reserved — please choose another.",
       "slugTaken": "That address is already taken — please choose another.",
-      "successAccount": "Welcome aboard! Check your email to set your password — then you can start your subscription and we'll set up your restaurant. Afiyet olsun."
+      "successAccount": "Welcome aboard! Check your email to set your password — then you can start your subscription and we'll set up your restaurant. Afiyet olsun.",
+      "successAccountNoEmail": "Your account is ready — but our welcome email didn't get through, so there's no password link in your inbox. Nothing here needs redoing; we've recorded the failure. Write to us and we'll hand you the link:"
     },
     "configurator": {
       "modules": "What do you need?",

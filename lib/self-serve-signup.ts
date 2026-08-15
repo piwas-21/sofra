@@ -21,11 +21,23 @@
 //                exactly today's behaviour, which is why this is a degradation
 //                and not a rejection.
 //
-// One residual, accepted: `account: true` vs `account: false` is a weak oracle for
-// "does this email already have an account". It is weak because each probe costs a
-// distinct unused slug, leaves a lead row the founder reads, and is capped at 5 per
-// 15 min per IP by `guardIntake`. Closing it would mean telling a real customer
-// "check your email" when no email was sent, which is a worse lie than the leak.
+// Two residuals, both accepted on cost alone:
+//
+//  1. `account: true` vs `account: false` is a weak oracle for "does this email
+//     already have an account". Weak because each probe costs a distinct unused
+//     slug, leaves a lead row the founder reads, and is capped at 5 per 15 min per
+//     IP by `guardIntake`. (This used to be justified by the alternative being a
+//     worse lie — telling a real customer "check your email" when none was sent.
+//     That lie is gone since G5, so the trade-off now rests on the cost above and
+//     nothing else.)
+//  2. `emailed: false` (G5) tells an unauthenticated caller that the welcome mail
+//     did not go out. `sendEmail` collapses every Resend non-2xx into `{sent:false}`,
+//     and that set includes PER-RECIPIENT rejections — a suppressed address after a
+//     hard bounce, or the 403 a sandbox sender returns for everyone but the account
+//     owner. So a probe can learn something about an address at a third party that
+//     it could not otherwise. Same cost cap as (1), and the alternative — hiding a
+//     failed send from the one person it strands — is the gap this closed. If
+//     `sendEmail` ever returns a reason, echo only the non-recipient-specific ones.
 //
 // That split is the honest reading of the plan's drop-don't-reject rule
 // (lib/signup-configuration.ts): never lose a lead over something the customer
