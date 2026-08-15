@@ -159,14 +159,12 @@ export const provisionSchema = z.object({
   adminEmail: z.string().trim().max(200).email(),
   template: z.enum(["classic", "craft"]),
   currency: z.string().trim().regex(/^[A-Z]{3}$/, "3-letter ISO code, e.g. EUR"),
-  // Validated against the tenant-app locale set for the same reason `modules` is, and
-  // since GAP-2 S9 the cost of a typo is no longer only a missing UI language: the
-  // registry's list is what provision-tenant.sh writes into the tenant's
-  // Localization__SupportedLanguages, i.e. the languages that tenant's MAIL may be
-  // written in. The script refuses an unknown code — but it does so on the box, inside
-  // the unattended ADR-012 merge chain, which is the worst place to discover it. The
-  // self-serve path never had the gap (signup-configuration.ts filters with
-  // isTenantLanguage); the founder's own form did.
+  // Validated against the tenant-app locale set for the same reason `modules` is — and
+  // since GAP-2 S9 a typo costs more than a missing UI language: this list becomes the
+  // tenant's Localization__SupportedLanguages, the languages its MAIL is written in.
+  // provision-tenant.sh refuses an unknown code, but on the box inside the unattended
+  // ADR-012 merge chain. Self-serve was always safe (signup-configuration.ts filters
+  // with isTenantLanguage); this closes the founder's own form.
   languages: z
     .string()
     .trim()
