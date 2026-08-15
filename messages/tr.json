@@ -732,7 +732,7 @@
           "reserved": "(ayrılmış)",
           "taken": "(kullanımda)"
         },
-        "welcomeFailed": "Karşılama e-postası GÖNDERİLEMEDİ — davet bağlantısını /admin/onboard üzerinden iletin"
+        "welcomeFailed": "karşılama e-postası gönderilemedi — davet bağlantısını /admin/onboard üzerinden iletin"
       },
       "provision": {
         "title": "Kiracı sağla",
@@ -827,7 +827,8 @@
         "empty": "Henüz fatura yok.",
         "issueNow": "Şimdi düzenle",
         "issuing": "Düzenleniyor…",
-        "notEmailed": "gönderilmedi"
+        "notEmailed": "gönderilmedi",
+        "notNotified": "müşteri bilgilendirilmedi"
       },
       "icp": {
         "title": "AB satış listesi (ICP)",

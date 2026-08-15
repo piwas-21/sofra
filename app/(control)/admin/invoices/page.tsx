@@ -5,7 +5,7 @@ import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
 import { sellerIdentityGaps } from "@/lib/seller-identity";
-import { notEmailedByFlag } from "@/lib/email-delivery";
+import { notFlaggedByAction } from "@/lib/email-delivery";
 import ReissueInvoiceButton from "@/components/control/ReissueInvoiceButton";
 
 // Invoices are written by the webhook, so a build snapshot would be stale the
@@ -62,9 +62,18 @@ export default async function AdminInvoicesPage() {
   // G16. Issuing already records whether the invoice mail went out; nothing rendered it, so an
   // invoice that exists as a PDF nobody received looked identical to one the customer has. A
   // missing flag is "nothing recorded" — invoices issued before the flag existed — not "delivered".
-  const notDelivered = await notEmailedByFlag(
+  const notDelivered = await notFlaggedByAction(
     "billing.invoice.issued",
     invoices.map((i) => i.id),
+  );
+
+  // The other half of G16's invoice story: a charge that could not be invoiced at all also tries to
+  // tell the customer why, and `invoice-blocked.ts` records whether that told them. Same query,
+  // different flag — which is why the flag is a parameter.
+  const notNotified = await notFlaggedByAction(
+    "billing.invoice.blocked",
+    uninvoiced.map((p) => p.molliePaymentId),
+    "customerNotified",
   );
 
   return (
@@ -95,6 +104,9 @@ export default async function AdminInvoicesPage() {
                 </span>
                 <span className="flex items-center gap-3">
                   {eur(p.amountCents)} · {p.paidAt ? shortDate(p.paidAt) : "—"}
+                  {notNotified.has(p.molliePaymentId) && (
+                    <span className="font-mono text-craft-error-text">{t("notNotified")}</span>
+                  )}
                   <ReissueInvoiceButton molliePaymentId={p.molliePaymentId} />
                 </span>
               </li>

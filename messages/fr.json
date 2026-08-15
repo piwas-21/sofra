@@ -732,7 +732,7 @@
           "reserved": "(réservé)",
           "taken": "(pris)"
         },
-        "welcomeFailed": "L'e-mail de bienvenue A ÉCHOUÉ — transmettez le lien d'invitation depuis /admin/onboard"
+        "welcomeFailed": "échec de l'e-mail de bienvenue — transmettez le lien d'invitation depuis /admin/onboard"
       },
       "provision": {
         "title": "Provisionner un établissement",
@@ -827,7 +827,8 @@
         "empty": "Aucune facture pour l'instant.",
         "issueNow": "Émettre",
         "issuing": "Émission…",
-        "notEmailed": "non envoyée"
+        "notEmailed": "non envoyée",
+        "notNotified": "client non prévenu"
       },
       "icp": {
         "title": "État récapitulatif (ICP)",

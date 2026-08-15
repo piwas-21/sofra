@@ -103,7 +103,12 @@ export async function forgotPasswordAction(_prev: FormState, formData: FormData)
       cta: { label: "Set a new password", url: link },
       footerNote: "The link works once and expires in 24 hours.",
     }),
-  });
+    // Caught for the anti-enumeration property this form exists to have: `fetch` REJECTS on a
+    // DNS/connect failure, so an unreachable transport would throw for an address that HAS an
+    // account while an address that does not still answers the generic success above — a live
+    // "is this registered" oracle, during exactly the incident nobody is watching. It also saves
+    // the `emailed: false` row, which is the failure most worth recording.
+  }).catch(() => ({ sent: false }));
   await audit(user.id, "password.reset.requested", "User", user.id, { emailed: reset.sent });
   return generic;
 }

@@ -732,7 +732,7 @@
           "reserved": "(reserviert)",
           "taken": "(vergeben)"
         },
-        "welcomeFailed": "Willkommens-E-Mail FEHLGESCHLAGEN — Einladungslink über /admin/onboard weitergeben"
+        "welcomeFailed": "Willkommens-E-Mail fehlgeschlagen — Einladungslink über /admin/onboard weitergeben"
       },
       "provision": {
         "title": "Mandanten bereitstellen",
@@ -827,7 +827,8 @@
         "empty": "Noch keine Rechnungen.",
         "issueNow": "Jetzt ausstellen",
         "issuing": "Wird ausgestellt…",
-        "notEmailed": "nicht versendet"
+        "notEmailed": "nicht versendet",
+        "notNotified": "Kunde nicht informiert"
       },
       "icp": {
         "title": "Zusammenfassende Meldung (ICP)",

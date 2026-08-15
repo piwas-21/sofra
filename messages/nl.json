@@ -732,7 +732,7 @@
           "reserved": "(gereserveerd)",
           "taken": "(bezet)"
         },
-        "welcomeFailed": "Welkomstmail MISLUKT — geef de uitnodigingslink door via /admin/onboard"
+        "welcomeFailed": "welkomstmail mislukt — geef de uitnodigingslink door via /admin/onboard"
       },
       "provision": {
         "title": "Een tenant inrichten",
@@ -827,7 +827,8 @@
         "empty": "Nog geen facturen.",
         "issueNow": "Nu uitgeven",
         "issuing": "Uitgeven…",
-        "notEmailed": "niet verzonden"
+        "notEmailed": "niet verzonden",
+        "notNotified": "klant niet geïnformeerd"
       },
       "icp": {
         "title": "Opgaaf ICP",

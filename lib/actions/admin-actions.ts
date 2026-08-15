@@ -67,7 +67,12 @@ export async function approveApplicationAction(
       cta: { label: "Set your password", url: inviteLink },
       footerNote: "The link works once and expires in 24 hours.",
     }),
-  });
+    // `sendEmail` swallows a non-2xx into {sent:false}, but `fetch` itself REJECTS on a DNS or
+    // connect failure — and letting that escape would throw AFTER the account and the token exist,
+    // taking `inviteLink` with it. The raw token is unrecoverable and a second approval trips the
+    // "user exists" guard, so that failure would be unrecoverable too. Caught, recorded, link
+    // returned — which is what makes the comment above true.
+  }).catch(() => ({ sent: false }));
   await audit(admin.id, "application.approved", "PartnerApplication", id, {
     userId: user.id,
     emailed: invite.sent,

@@ -732,7 +732,7 @@
           "reserved": "(reserved)",
           "taken": "(taken)"
         },
-        "welcomeFailed": "Welcome email FAILED — hand the invite link over from /admin/onboard"
+        "welcomeFailed": "welcome email failed — hand the invite link over from /admin/onboard"
       },
       "provision": {
         "title": "Provision a tenant",
@@ -827,7 +827,8 @@
         "empty": "No invoices yet.",
         "issueNow": "Issue now",
         "issuing": "Issuing…",
-        "notEmailed": "not emailed"
+        "notEmailed": "not emailed",
+        "notNotified": "customer not told"
       },
       "icp": {
         "title": "EC Sales List (ICP)",
