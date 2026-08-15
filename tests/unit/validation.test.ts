@@ -285,8 +285,21 @@ describe("provisionSchema (ADR-012 tenant proposal)", () => {
     expect(bad.error?.issues[0]?.message).toContain("kitchen-board");
   });
 
+  it("rejects a language the tenant app cannot serve", () => {
+    // Same silent failure as the module typo, with a longer fuse. Since GAP-2 S9 the
+    // registry's languages list is what provision-tenant.sh writes into the tenant's
+    // Localization__SupportedLanguages — the languages that tenant's MAIL is written in
+    // — and the script refuses an unknown code ON THE BOX, inside the unattended merge
+    // chain. Refusing it in the form is the difference between a red field and a failed
+    // provisioning run nobody is watching.
+    const bad = provisionSchema.safeParse({ ...base, languages: "en, kl" });
+    expect(bad.success).toBe(false);
+    expect(bad.error?.issues[0]?.message).toContain("unknown language");
+  });
+
   it("tolerates the spacing and casing the action would normalise anyway", () => {
     expect(provisionSchema.safeParse({ ...base, modules: " Core ,  LOYALTY " }).success).toBe(true);
+    expect(provisionSchema.safeParse({ ...base, languages: " EN ,  NL " }).success).toBe(true);
   });
 
   it("still rejects an empty module list", () => {
