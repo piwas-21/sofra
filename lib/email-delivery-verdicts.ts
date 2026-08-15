@@ -38,7 +38,7 @@ export function notFlaggedIds(rows: readonly AuditVerdictRow[], flag: string): S
     if (row.entityId === null) continue;
 
     const meta = row.meta as Record<string, unknown> | null | undefined;
-    if (meta && meta[flag] === false) failed.add(row.entityId);
+    if (meta?.[flag] === false) failed.add(row.entityId);
   }
 
   return failed;
