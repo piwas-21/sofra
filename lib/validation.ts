@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { MODULE_IDS, unknownModuleIds } from "@/lib/module-catalog";
+import { TENANT_LANGUAGES, unknownLanguages } from "@/lib/tenant-options";
 
 /** Split a comma-separated form field into trimmed, lowercased, non-empty values.
  *  Shared so the schema validates exactly the list the action goes on to send. */
@@ -158,7 +159,19 @@ export const provisionSchema = z.object({
   adminEmail: z.string().trim().max(200).email(),
   template: z.enum(["classic", "craft"]),
   currency: z.string().trim().regex(/^[A-Z]{3}$/, "3-letter ISO code, e.g. EUR"),
-  languages: z.string().trim().min(1),
+  // Validated against the tenant-app locale set for the same reason `modules` is — and
+  // since GAP-2 S9 a typo costs more than a missing UI language: this list becomes the
+  // tenant's Localization__SupportedLanguages, the languages its MAIL is written in.
+  // provision-tenant.sh refuses an unknown code, but on the box inside the unattended
+  // ADR-012 merge chain. Self-serve was always safe (signup-configuration.ts filters
+  // with isTenantLanguage); this closes the founder's own form.
+  languages: z
+    .string()
+    .trim()
+    .min(1)
+    .refine((raw) => unknownLanguages(splitCsvLower(raw)).length === 0, {
+      message: `unknown language — allowed: ${TENANT_LANGUAGES.map((l) => l.code).join(", ")}`,
+    }),
   // Validated against the ADR-010 catalog, not just non-empty: a typo here is
   // silent — provision-tenant.sh writes whatever it is into the tenant env, and
   // the tenant simply never gets the module they are paying for.

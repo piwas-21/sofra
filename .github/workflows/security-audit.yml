@@ -13,7 +13,8 @@ name: Security Audit (weekly)
 #
 # SECURITY: no PR context, no untrusted-input expressions in run: blocks;
 # third-party actions pinned to immutable commit SHAs (matching ci.yml).
-# Read-only permissions.
+# Read-only permissions. Installs use --ignore-scripts, same rationale as
+# ci.yml: no dependency lifecycle script runs in a runner with a token.
 
 on:
   schedule:
@@ -38,7 +39,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --prefer-offline --no-audit
+      - run: npm ci --ignore-scripts --prefer-offline --no-audit
       - run: npm audit --audit-level=high
 
   osv_scanner:
@@ -78,7 +79,7 @@ jobs:
       - name: Install gitleaks
         run: |
           GITLEAKS_VERSION=8.21.2
-          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+          curl -sSfL --proto '=https' --proto-redir '=https' --tlsv1.2 "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
             | tar -xzf - -C /tmp gitleaks
           sudo mv /tmp/gitleaks /usr/local/bin/gitleaks
       - name: Run gitleaks
