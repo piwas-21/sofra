@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { eur } from "@/lib/format";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { checkSlug } from "@/lib/slug-availability";
+import { failedByAction } from "@/lib/email-delivery";
 import SignupActions from "@/components/control/SignupActions";
 
 // Direct-restaurant signup pipeline (ADR-004). Leads land here via POST
@@ -25,6 +26,15 @@ export default async function AdminSignupsPage() {
   // through; only "taken" needs the tenant list.
   const registry = await loadTenantRegistry();
   const takenSlugs = registry.ok ? registry.tenants.map((r) => r.slug) : [];
+
+  // G16. The welcome mail is the customer's only way into an account that has no password, and
+  // `sendEmail` reports a failure by returning rather than throwing — so G5 made that failure
+  // durable and this is what finally shows it. Absence of a row means "nothing recorded", not
+  // "delivered": every lead from before G5 is in exactly that state, and only failures are written.
+  const welcomeFailed = await failedByAction(
+    "signup.welcome.failed",
+    signups.map((s) => s.id),
+  );
 
   const fmtDate = (d: Date) =>
     new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(d);
@@ -67,6 +77,11 @@ export default async function AdminSignupsPage() {
               <span className="font-label text-sm text-muted-foreground text-right">
                 <span className="font-mono block">{t(`status.${s.status}`)}</span>
                 {fmtDate(s.createdAt)} · {s.locale}
+                {welcomeFailed.has(s.id) && (
+                  <span className="mt-1 block font-mono text-craft-error-text">
+                    {t("welcomeFailed")}
+                  </span>
+                )}
               </span>
             </div>
             {/* Configurator answers (O1). Absent on leads captured before it

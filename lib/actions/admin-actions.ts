@@ -51,7 +51,12 @@ export async function approveApplicationAction(
 
   const raw = await createToken(user.id, "invite");
   const inviteLink = `${siteUrl()}/invite/${raw}`;
-  await sendEmail({
+  // The verdict is kept, not discarded (G16). This mail is the partner's ONLY way into an account
+  // that has no password, and `sendEmail` reports a failure by returning rather than throwing — so
+  // without recording it, an approval that mailed nobody looks exactly like one that worked. The
+  // link is returned to this very screen, so the founder can still hand it over; they just have to
+  // be told they need to.
+  const invite = await sendEmail({
     to: user.email,
     subject: "Welcome to the SofraPiwas partner program",
     html: craftEmail({
@@ -63,7 +68,10 @@ export async function approveApplicationAction(
       footerNote: "The link works once and expires in 24 hours.",
     }),
   });
-  await audit(admin.id, "application.approved", "PartnerApplication", id, { userId: user.id });
+  await audit(admin.id, "application.approved", "PartnerApplication", id, {
+    userId: user.id,
+    emailed: invite.sent,
+  });
 
   revalidatePath("/admin");
   return { ok: true, inviteLink };

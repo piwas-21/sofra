@@ -5,6 +5,7 @@ import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
 import { sellerIdentityGaps } from "@/lib/seller-identity";
+import { notEmailedByFlag } from "@/lib/email-delivery";
 import ReissueInvoiceButton from "@/components/control/ReissueInvoiceButton";
 
 // Invoices are written by the webhook, so a build snapshot would be stale the
@@ -58,6 +59,14 @@ export default async function AdminInvoicesPage() {
     `,
   ]);
 
+  // G16. Issuing already records whether the invoice mail went out; nothing rendered it, so an
+  // invoice that exists as a PDF nobody received looked identical to one the customer has. A
+  // missing flag is "nothing recorded" — invoices issued before the flag existed — not "delivered".
+  const notDelivered = await notEmailedByFlag(
+    "billing.invoice.issued",
+    invoices.map((i) => i.id),
+  );
+
   return (
     <div className="grid gap-10">
       <div>
@@ -107,6 +116,9 @@ export default async function AdminInvoicesPage() {
               </Link>
               <span>
                 {i.tenantSlug} · {eur(i.grossCents)} · {i.taxTreatment} · {shortDate(i.issuedAt)}
+                {notDelivered.has(i.id) && (
+                  <span className="ml-2 font-mono text-craft-error-text">{t("notEmailed")}</span>
+                )}
               </span>
             </li>
           ))}
