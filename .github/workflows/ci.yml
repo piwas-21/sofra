@@ -106,6 +106,20 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --ignore-scripts --prefer-offline --no-audit
+      # Next.js incremental build cache. Keyed on the lockfile AND a hash of
+      # every source file, so a hit only ever happens for a tree that would
+      # produce the same output; restore-keys then falls back to the newest
+      # cache for the same dependency set, which is what actually pays (Next
+      # reuses the unchanged compilation units). Scoped `-site-` because the
+      # e2e job builds the SAME tree with a different NEXT_PUBLIC_SITE_URL and
+      # must not read this one's output. Measured 2026-08-16: build step 74/79/80s
+      # cold vs 40s warm on this job.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-site-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'components/**', 'lib/**', 'messages/**', 'next.config.ts', 'tsconfig.json') }}
+          restore-keys: |
+            ${{ runner.os }}-next-site-${{ hashFiles('package-lock.json') }}-
       # `npm run build` = prisma generate && next build. No DATABASE_URL on
       # purpose: nothing may query the DB at build time (control-plane pages
       # are dynamic; the Docker image builds the same way).
@@ -332,6 +346,27 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --ignore-scripts --prefer-offline --no-audit
+      # Browser binaries keyed on the RESOLVED @playwright/test version (read
+      # from the installed package, i.e. what package-lock.json pinned), not on
+      # the lockfile hash: the download only changes when Playwright does, and
+      # a stale-version hit would run a browser the client refuses to drive.
+      - name: Resolve Playwright version
+        run: echo "PLAYWRIGHT_VERSION=$(node -p "require('./node_modules/@playwright/test/package.json').version")" >> "$GITHUB_ENV"
+      - name: Cache Playwright browsers
+        id: playwright_cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+      # Same incremental Next cache as next_build, under its OWN key prefix:
+      # this job builds with NEXT_PUBLIC_SITE_URL=http://localhost:3000, so its
+      # output is not interchangeable with the site build's.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-e2e-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'components/**', 'lib/**', 'messages/**', 'next.config.ts', 'tsconfig.json') }}
+          restore-keys: |
+            ${{ runner.os }}-next-e2e-${{ hashFiles('package-lock.json') }}-
       - run: npm run db:generate
       # Throwaway secrets generated at runtime (never committed) — the DB is a
       # disposable service container, so these only ever protect this one run.
@@ -347,6 +382,7 @@ jobs:
       - name: Seed ADMIN + PARTNER
         run: node scripts/seed-e2e.mjs
       - name: Install Playwright chromium
+        if: steps.playwright_cache.outputs.cache-hit != 'true'
         # Drop the Microsoft apt sources first: `--with-deps` runs `apt-get
         # update`, which intermittently fails on packages.microsoft.com serving
         # a malformed InRelease ("NOSPLIT") — unrelated to our deps. The
@@ -355,6 +391,12 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft*.list /etc/apt/sources.list.d/*azure*.list 2>/dev/null || true
           node_modules/.bin/playwright install --with-deps chromium || node_modules/.bin/playwright install chromium
+      - name: Verify cached Playwright chromium
+        if: steps.playwright_cache.outputs.cache-hit == 'true'
+        # Cheap no-op on a good cache (the binary is already under
+        # ~/.cache/ms-playwright); re-downloads if the archive was partial, so a
+        # corrupt cache degrades to the cold path instead of failing the suite.
+        run: node_modules/.bin/playwright install chromium
       # Build WITHOUT DATABASE_URL in scope (repo rule: nothing queries the DB
       # at build time). Playwright's webServer (`npm run start`) then serves it
       # with the DB + auth env from the job.
