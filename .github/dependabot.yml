@@ -1,5 +1,20 @@
-# Dependabot — security + version updates (DEV-PHASES-PLAN W0).
-# SonarCloud/OSV/npm-audit scan what's there; this keeps what's there current.
+# Dependabot — SECURITY updates only (workspace CLAUDE.md standing decision:
+# "Dependabot PRs are paused").
+#
+# `open-pull-requests-limit: 0` is the documented way to switch OFF version-update
+# PRs while leaving Dependabot SECURITY updates fully on — which is why the file
+# stays here instead of being deleted. The CVE gate is unchanged: security-audit.yml
+# still runs its scanners on schedule, and SonarCloud is untouched.
+#
+# Why: the decision not to merge these PRs was already taken, but the bot was still
+# being paid to open them — measured on this (private, billed) repo, 21 CI runs on
+# dependabot/* branches in the 16 days to 2026-08-16, for six PRs (#114, #58, #57,
+# #55, #54, #53) that sat unmerged and rebasing. This makes the status quo honest
+# rather than changing it. Version drift is the accepted cost, and it was already
+# accruing.
+#
+# To resume version updates: raise the limits below (5 npm / 3 actions were the
+# previous values) in a PR that also says who will triage them.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -9,7 +24,7 @@ updates:
       day: monday
       time: "06:00"
       timezone: Europe/Amsterdam
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0  # version-update PRs off; security updates unaffected
     groups:
       minor-and-patch:
         patterns: ["*"]
@@ -37,7 +52,7 @@ updates:
       day: monday
       time: "06:00"
       timezone: Europe/Amsterdam
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 0  # version-update PRs off; security updates unaffected
     groups:
       actions-minor-and-patch:
         patterns: ["*"]
