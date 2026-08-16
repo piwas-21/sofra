@@ -64,10 +64,16 @@ export default defineConfig({
   // (E2E_REMOTE=1 with E2E_BASE_URL=https://staging.sofrapiwas.com). Without this,
   // pointing baseURL at staging still runs `npm run start` and waits two minutes on a
   // port nothing will answer. Mirrors the frontend repo's config.
+  // `npm run start:standalone`, NOT `next start`: next.config.ts sets
+  // output: "standalone", which `next start` refuses to serve as-built (it
+  // warns and falls back to the ordinary server). The suite was therefore
+  // exercising a server shape that never ships. This runs
+  // .next/standalone/server.js — the same entrypoint as the Docker image —
+  // after copying .next/static and public/, which standalone does not copy.
   webServer: REMOTE
     ? undefined
     : {
-        command: "npm run start",
+        command: "npm run start:standalone",
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
