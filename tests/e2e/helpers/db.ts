@@ -14,6 +14,7 @@
 //
 // Test-support only. Nothing here is imported by application code.
 
+import bcrypt from "bcryptjs";
 import pg from "pg";
 
 /** One short-lived connection per call — the suite makes a handful of queries. */
@@ -350,4 +351,32 @@ export async function arrangeProposalOpened(tenantSlug: string, url: string): Pr
     [tenantSlug, url],
   );
   if (rows.length !== 1) throw new Error(`arrangeProposalOpened: no billing row for "${tenantSlug}"`);
+}
+
+/**
+ * A user that exists, is ACTIVE and has a real bcrypt password hash — the KNOWN side of
+ * the login-timing comparison (#145).
+ *
+ * Seeded per run rather than reusing `E2E_ADMIN_EMAIL` because `lib/auth.ts` also limits
+ * `login:email:<address>` to 10 per 15 minutes, that bucket counts FAILURES, and no header
+ * can isolate it (the per-test `x-forwarded-for` fixture only splits the IP dimension). The
+ * timing spec spends seven attempts on its known address and the rest of the suite already
+ * spends four of the admin's — doubling under CI's `retries: 1` — so sharing would
+ * rate-limit the OTHER specs' logins, and a rate-limited login fails with the same generic
+ * copy as a broken one.
+ *
+ * The password is never used to sign in successfully; what is measured is that verifying a
+ * wrong one costs the same bcrypt compare as an address with no row at all.
+ */
+export async function arrangeUserWithPassword(email: string, password: string): Promise<void> {
+  // Same cost factor as scripts/seed-e2e.mjs and lib/auth.ts: the whole measurement is the
+  // cost of one compare, so a cheaper hash here would understate the known side.
+  const passwordHash = await bcrypt.hash(password, 12);
+  const rows = await query<{ id: string }>(
+    `INSERT INTO "User" (id, email, "passwordHash", name, role, status, "createdAt")
+     VALUES (gen_random_uuid()::text, lower($1), $2, 'E2E Timing', 'PARTNER', 'ACTIVE', now())
+     RETURNING id`,
+    [email, passwordHash],
+  );
+  if (rows.length !== 1) throw new Error(`arrangeUserWithPassword: could not create "${email}"`);
 }
