@@ -123,6 +123,29 @@ jobs:
       # `npm run build` = prisma generate && next build. No DATABASE_URL on
       # purpose: nothing may query the DB at build time (control-plane pages
       # are dynamic; the Docker image builds the same way).
+      #
+      # DO NOT try to share this build with e2e_smoke (or with build-image.yml)
+      # via an artifact — measured and rejected 2026-08-17, twice over:
+      #  1. CORRECTNESS. `NEXT_PUBLIC_SITE_URL` is inlined at COMPILE time and
+      #     feeds lib/seo.ts SITE_URL + IS_CANONICAL_SITE, which decide the
+      #     canonical/hreflang tags, every JSON-LD `@id`, sitemap.xml and
+      #     robots.txt. This job bakes https://sofrapiwas.com, e2e_smoke bakes
+      #     http://localhost:3000, build-image bakes a THIRD value (prod or
+      #     staging.sofrapiwas.com). The outputs are not interchangeable: one
+      #     artifact means either the e2e suite drives a prod-canonical build
+      #     that serves a crawlable robots.txt, or this pre-merge build gate
+      #     stops validating the tree that actually ships. That is why the two
+      #     .next/cache entries are also under separate key prefixes.
+      #  2. NO WALL-CLOCK WIN even if it were safe. This whole job is 62s and
+      #     runs fully PARALLEL to e2e_smoke (205s), so it is not on the
+      #     critical path — deleting it outright would save 0s. Sharing would
+      #     SERIALIZE e2e behind it plus a ~115MB .next upload/download, i.e.
+      #     strictly slower. (Run 31978057222: next build 62s total / 41s step;
+      #     playwright 205s total / 60s build step.)
+      # build-image.yml is a third, separate case: it triggers on `push` only,
+      # never on pull_request, so nothing is built three times per PR — and its
+      # build happens inside the Dockerfile on purpose, so the shipped image is
+      # built from source rather than from a host-produced tarball.
       - run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: https://sofrapiwas.com
