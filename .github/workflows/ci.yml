@@ -421,8 +421,9 @@ jobs:
         # corrupt cache degrades to the cold path instead of failing the suite.
         run: node_modules/.bin/playwright install chromium
       # Build WITHOUT DATABASE_URL in scope (repo rule: nothing queries the DB
-      # at build time). Playwright's webServer (`npm run start`) then serves it
-      # with the DB + auth env from the job.
+      # at build time). Playwright's webServer (`npm run start:standalone`)
+      # then serves the STANDALONE output — the same server.js the Docker image
+      # runs — with the DB + auth env from the job.
       - name: Build
         run: npm run build
         env:
