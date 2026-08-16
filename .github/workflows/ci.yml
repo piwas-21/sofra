@@ -32,7 +32,15 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    # main only (was [main, develop]). A merge into `develop` used to fire a push
+    # run that is bit-identical to the pull_request run of the release PR opened on
+    # the SAME sha — measured 2026-08-16: runs 31902462483 (push) and 31902465447
+    # (pull_request), same head_sha, created 4s apart, 255s + 271s for one tree.
+    # Nothing consumes the CI push run on develop: build-image.yml triggers on its
+    # own `push: [main, develop]` (not workflow_run), and no workflow in this repo
+    # uses workflow_run at all. The gate that matters before main is the release
+    # PR's own run (workspace CLAUDE.md rule 2c).
+    branches: [main]
   pull_request:
     branches: [main, develop]
 
