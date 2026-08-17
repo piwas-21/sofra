@@ -40,6 +40,12 @@ on:
     # own `push: [main, develop]` (not workflow_run), and no workflow in this repo
     # uses workflow_run at all. The gate that matters before main is the release
     # PR's own run (workspace CLAUDE.md rule 2c).
+    #
+    # Side effect that had to be paid for separately: Actions caches are scoped
+    # per ref and a PR reads only its own scope + its BASE branch's. With no run
+    # on develop, nothing writes refs/heads/develop, so every fresh PR started
+    # cold. cache-warm.yml now runs on `push: develop` and does NOTHING but
+    # populate the three cache keys below — do not re-add a full CI push run.
     branches: [main]
   pull_request:
     branches: [main, develop]
