@@ -329,10 +329,54 @@ jobs:
       - run: node scripts/check-single-file.mjs --all
 
   e2e_smoke:
-    name: playwright (login smoke)
+    # SHARDED 2 ways (2026-08-17). The whole suite still runs on every PR —
+    # `--shard=i/2` partitions it, it does not select. Measured on run
+    # 31991995830: this job was 213s = a 128s FIXED FLOOR (containers 19s,
+    # checkout+setup-node 7s, npm ci 16s, cache restores 11s, generate+migrate+
+    # seed 4s, next build 61s, post-job cache save 4s, job setup/teardown ~6s)
+    # + 85s of tests (79s of specs + ~6s of Playwright start, standalone-server
+    # boot and teardown). Sharding buys wall clock only where the removed test
+    # time exceeds the floor each new job re-pays; here the shards run on
+    # SEPARATE runners in parallel, so the floor is paid concurrently, not
+    # serially, and the arithmetic is 128 + ~42 + an aggregate job, not
+    # 2 x 213. Playwright splits at file granularity for these specs (verified
+    # with `playwright test --shard=i/2 --list`): shard 1 = billing-mollie
+    # (skips without a Mollie key) + control-auth + health + login-timing +
+    # owner-dashboard = 15 tests / ~38s, shard 2 = self-serve-signup = 15 tests
+    # / ~42s. Do NOT raise the shard count without re-measuring: at 3 shards the
+    # residual per-shard test time (~27s) is a fifth of the floor, so the win
+    # collapses while the compute cost keeps rising.
+    #
+    # Isolation (the reason this is safe with `workers: 1` in
+    # playwright.config.ts): each shard is its own runner, so it gets its OWN
+    # postgres service container, its own migrate+seed, its own standalone
+    # server on :3000 and its own in-memory login rate-limit bucket. Nothing is
+    # shared between shards, and each shard performs FEWER logins against its
+    # own 20/IP/15min bucket than the unsharded job did.
+    #
+    # login-timing.spec.ts is the one spec that had to be placed deliberately:
+    # it compares login medians with an absolute 40ms floor, so it must not
+    # share a CPU with another spec's browser. It does not — a shard is a whole
+    # 2-core runner and Playwright still runs one worker — and it sits in
+    # shard 1, whose only neighbours are three cheap logins and three API
+    # probes. Its assertions are untouched.
+    #
+    # The REQUIRED check context stays `playwright (login smoke)` and is now
+    # produced by the aggregate e2e_smoke_result job below (same pattern as the
+    # frontend repo's screenshots_result); these per-shard checks are suffixed
+    # and are not individually required. Verify with
+    # `gh api repos/piwas-21/sofra/rulesets`.
+    name: playwright (login smoke) shard ${{ matrix.shard }}/2
     needs: install_deps
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      # Both shards always report. fail-fast would cancel the sibling on a
+      # failure, and a cancelled shard tells you nothing about whether its half
+      # of the suite passes — you would re-run the whole PR to find out.
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     services:
       postgres:
         image: postgres:16-alpine
@@ -381,16 +425,25 @@ jobs:
       # a stale-version hit would run a browser the client refuses to drive.
       - name: Resolve Playwright version
         run: echo "PLAYWRIGHT_VERSION=$(node -p "require('./node_modules/@playwright/test/package.json').version")" >> "$GITHUB_ENV"
-      - name: Cache Playwright browsers
+      # RESTORE-only in both shards, SAVE from shard 1 only. Both shards compute
+      # the same cache keys, and two concurrent jobs reserving one key means the
+      # loser logs `Unable to reserve cache with key ...` and uploads nothing —
+      # so a full actions/cache here would burn a duplicate upload on every run
+      # to produce a warning. Shard 1 owns the write; the shards build the same
+      # tree with the same env, so its .next/cache is what shard 2 wants next
+      # time anyway. cache-warm.yml still writes both keys on push: develop.
+      - name: Restore Playwright browsers
         id: playwright_cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
       # Same incremental Next cache as next_build, under its OWN key prefix:
       # this job builds with NEXT_PUBLIC_SITE_URL=http://localhost:3000, so its
       # output is not interchangeable with the site build's.
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - name: Restore .next cache
+        id: next_cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .next/cache
           key: ${{ runner.os }}-next-e2e-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'components/**', 'lib/**', 'messages/**', 'next.config.ts', 'tsconfig.json') }}
@@ -426,6 +479,12 @@ jobs:
         # ~/.cache/ms-playwright); re-downloads if the archive was partial, so a
         # corrupt cache degrades to the cold path instead of failing the suite.
         run: node_modules/.bin/playwright install chromium
+      - name: Save Playwright browsers (shard 1 owns the write)
+        if: matrix.shard == 1 && steps.playwright_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
       # Build WITHOUT DATABASE_URL in scope (repo rule: nothing queries the DB
       # at build time). Playwright's webServer (`npm run start:standalone`)
       # then serves the STANDALONE output — the same server.js the Docker image
@@ -435,6 +494,20 @@ jobs:
         env:
           DATABASE_URL: ""
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      # Saved HERE rather than in a post-job step so a failing spec still leaves
+      # the next PR a warm build cache (actions/cache's implicit save skips on a
+      # failed job).
+      - name: Save .next cache (shard 1 owns the write)
+        # cache-hit is the PRIMARY key only (a restore-keys fallback leaves it
+        # false), so this writes exactly when the old implicit save would have:
+        # whenever the source hash moved. Skipping an existing primary key also
+        # keeps a re-run of the same sha from logging a reserve conflict.
+        if: matrix.shard == 1 && steps.next_cache.outputs.cache-hit != 'true'
+
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-e2e-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'components/**', 'lib/**', 'messages/**', 'next.config.ts', 'tsconfig.json') }}
       # Same bar as scripts/e2e-suite.sh, which hard-exits on a non-test_ key. The
       # spec's own test.skip only skips the BILLING file — it would leave a live_
       # key in the environment of the running server, so the refusal belongs here
@@ -463,4 +536,31 @@ jobs:
           # this. The spec POSTs the real payment id to the local handler itself;
           # only the delivery hop is stood in for. See lib/billing.ts webhookUrl().
           MOLLIE_WEBHOOK_URL: https://example.com/sofra-ci-webhook-sink
-        run: npm run test:e2e
+          # Via env, not interpolated into the command — house rule for anything
+          # that reaches a `run:` (githubactions injection posture), even a
+          # matrix literal.
+          SHARD: ${{ matrix.shard }}
+        # scripts/e2e-suite.sh is deliberately NOT sharded: locally the whole
+        # suite runs in one go against one throwaway Postgres, which is the
+        # cheaper thing there (one build, one container).
+        run: npm run test:e2e -- --shard="$SHARD/2"
+
+  e2e_smoke_result:
+    # The REQUIRED check. Green iff BOTH shards succeeded — a failed, skipped or
+    # cancelled shard leaves needs.result != success, so a half-run suite can
+    # never read as a pass. Keeps the required context name stable while the
+    # shard jobs carry suffixed names (see the ruleset note on e2e_smoke).
+    name: playwright (login smoke)
+    if: always()
+    needs: e2e_smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Reads only the matrix result from the `needs` context — no repo access.
+    permissions: {}
+    steps:
+      - name: Gate on matrix result
+        env:
+          RESULT: ${{ needs.e2e_smoke.result }}
+        run: |
+          echo "playwright shard matrix result: $RESULT"
+          [ "$RESULT" = "success" ] || { echo "::error::a playwright smoke shard did not pass"; exit 1; }
