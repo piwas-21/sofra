@@ -11,7 +11,9 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_SITE_URL;
  *
  * False on `staging.sofrapiwas.com` and on any local run, which is what makes `robots.ts`
  * refuse crawlers without a separate flag anyone has to remember to set. Baked, because
- * `NEXT_PUBLIC_SITE_URL` is a build arg — the staging image is its own bake.
+ * `NEXT_PUBLIC_SITE_URL` is a build arg — the staging image is its own bake. That is also why
+ * CI keeps two separate `.next/cache` entries (`-next-site-` vs `-next-e2e-`): a build made with a
+ * different SITE_URL is not interchangeable output.
  */
 export const IS_CANONICAL_SITE = SITE_URL === CANONICAL_SITE_URL;
 
