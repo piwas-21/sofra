@@ -8,6 +8,7 @@
 import { readFile } from "node:fs/promises";
 import { parse } from "yaml";
 import { z } from "zod";
+import { splitDeferredModules } from "./provisioning-registry";
 
 const tenantSchema = z.object({
   name: z.string(),
@@ -26,6 +27,15 @@ const tenantSchema = z.object({
   // before the field existed must keep parsing — absent displays as classic.
   template: z.enum(["classic", "craft"]).optional(),
   admin_email: z.string().optional(),
+  // The tenant's Stripe connected account (`acct_…`). Already in registry.yml's
+  // vocabulary and already read by `provision-tenant.sh` — but zod strips
+  // unknown keys, so until this line existed no sofra surface could see it at
+  // all: the founder had no way to tell a tenant that can take a card from one
+  // that cannot, short of reading the deploy repo. Optional and unvalidated
+  // beyond `string`: the registry is the source of truth (ADR-003/007) and a
+  // hand-edited account we do not recognise must still render, not blank the
+  // whole page.
+  stripe_account: z.string().optional(),
   city: z.string().optional(),
   // Go-live date (YYYY-MM-DD), optional — the durable source for the onboard
   // form's "Live since" pre-fill (deploy repo owns the value; read-only here).
@@ -78,4 +88,30 @@ export async function loadTenantRegistry(): Promise<RegistryResult> {
     console.error("tenant registry: load failed", e);
     return { ok: false, error: e instanceof Error ? e.message : "Unknown registry read error." };
   }
+}
+
+/**
+ * True when an entry buys a module `provision-tenant.sh:94` refuses without a
+ * `stripe_account:` on the SAME entry, and carries no account.
+ *
+ * P1 made that combination unreachable from the generator — both paths through
+ * `buildTenantRegistryEntry` emit the module and the account as a pair or not at
+ * all. It is still reachable by hand: `registry.yml` is edited in a PR, and the
+ * second PR that grants a deferred module is exactly the edit that adds both
+ * halves, so it is exactly the edit that can add one. The consequence of getting
+ * it wrong is not a tenant without card payment — the guard `exit 1`s before the
+ * database, so the next re-provision of that tenant does nothing at all.
+ *
+ * The rule itself is NOT restated here: `splitDeferredModules` is the one place
+ * that knows which module ids are account-paired, and asking it with no account
+ * is the same question this asks. A second list would drift the day a second
+ * paired module exists.
+ */
+export function missingPairedStripeAccount(tenant: {
+  modules: string[];
+  stripe_account?: string;
+}): boolean {
+  // Whitespace-only is not an account — the box tests `-z`, which `" "` passes.
+  if (tenant.stripe_account?.trim()) return false;
+  return splitDeferredModules(tenant.modules).deferred.length > 0;
 }

@@ -678,7 +678,9 @@
         "db": "db {db}",
         "langCount": "{count} talen",
         "modules": "modules: {list}",
-        "template": "sjabloon: {template}"
+        "template": "sjabloon: {template}",
+        "stripeAccount": "Stripe: {account}",
+        "stripeAccountMissing": "Koopt online betalingen, maar deze entry bevat geen stripe_account — provisionering weigert dit paar en stopt vóór de database, dus dit tenant opnieuw provisioneren doet helemaal niets. Voeg het account toe aan de entry, of haal de module eruit."
       },
       "onboard": {
         "title": "Partner onboarden",

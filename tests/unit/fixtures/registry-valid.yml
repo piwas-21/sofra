@@ -23,3 +23,28 @@ tenants:
     domain: demo.sofrapiwas.com
     domain_mode: subdomain
     db: tenant_demo
+  # P3 — the two Stripe shapes the founder must be able to tell apart on
+  # /admin/tenants. `pays` bought the module and has the account (the pair
+  # `provision-tenant.sh:94` demands); `unpaired` bought it and has none, which
+  # only a hand-edit can produce and which makes every re-provision a no-op.
+  pays:
+    name: Pays By Card
+    status: active
+    managed: scripts
+    box: staging
+    domain: pays.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_pays
+    languages: [en]
+    modules: [core, online-payments]
+    stripe_account: acct_1PaysExample
+  unpaired:
+    name: Unpaired Diner
+    status: provisioning
+    managed: scripts
+    box: staging
+    domain: unpaired.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_unpaired
+    languages: [en]
+    modules: [core, online-payments]
