@@ -54,13 +54,15 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-
 jobs:
   install_deps:
     name: install (cache npm modules)
     runs-on: ubuntu-latest
+    # Least privilege is declared PER JOB, not once at workflow level: a
+    # workflow-level default is inherited by every job added later, including
+    # one that should have had none (see e2e_smoke_result's `{}`).
+    permissions:
+      contents: read
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -74,6 +76,8 @@ jobs:
     name: tsc --noEmit
     needs: install_deps
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -90,6 +94,8 @@ jobs:
     name: eslint (--max-warnings=0)
     needs: install_deps
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -104,6 +110,8 @@ jobs:
     name: next build
     needs: install_deps
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -160,6 +168,8 @@ jobs:
     name: prisma (migrations apply + schema drift)
     needs: install_deps
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     services:
       postgres:
@@ -198,6 +208,8 @@ jobs:
     name: npm audit (high+)
     needs: install_deps
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -211,6 +223,8 @@ jobs:
   gitleaks:
     name: gitleaks (secret scan)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -230,6 +244,8 @@ jobs:
   trufflehog:
     name: TruffleHog (secret scan, complementary to gitleaks)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     # Only run on PRs — TruffleHog's diff-scan needs BASE != HEAD.
     # Gitleaks already does the full-filesystem secret scan on every push.
@@ -248,6 +264,8 @@ jobs:
   trivy_fs:
     name: Trivy filesystem (misconfig + secrets)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -262,6 +280,8 @@ jobs:
   semgrep:
     name: semgrep (SAST)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     container:
       image: semgrep/semgrep
@@ -277,6 +297,8 @@ jobs:
     name: OSV-Scanner (dependency CVEs)
     needs: install_deps
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -290,6 +312,8 @@ jobs:
     name: vitest (unit)
     needs: install_deps
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -308,6 +332,8 @@ jobs:
   i18n_parity:
     name: i18n parity (6 locales)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -320,6 +346,8 @@ jobs:
   file_length:
     name: file-length (CLAUDE.md §4)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -369,6 +397,8 @@ jobs:
     name: playwright (login smoke) shard ${{ matrix.shard }}/2
     needs: install_deps
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 15
     strategy:
       # Both shards always report. fail-fast would cancel the sibling on a
