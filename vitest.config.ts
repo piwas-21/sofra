@@ -48,6 +48,9 @@ export default defineConfig({
         "lib/provisioning-payment-gate.ts",
         "lib/auto-provision-policy.ts",
         "lib/tenant-liveness.ts",
+        // O7 P4 — the pre-grant window predicate. Pure, and the registry-unreadable
+        // branch is the one that must never regress silently.
+        "lib/payments-pending.ts",
         // Billing identity / VAT (SOFRA-BILLING-IDENTITY-PLAN B2+B3). The pure
         // halves only: `lib/vies.ts` owns the fetch and stays out of scope, which
         // is exactly why the judgement it depends on was split into

@@ -978,6 +978,13 @@
       "almostReadyTitle": "Neredeyse hazır",
       "almostReadyBody": "Uygulamanız başlatılıyor. Yanıt verdiği anda bu sayfa nasıl giriş yapacağınızı gösterecek."
     },
+    "paymentsPending": {
+      "kicker": "Kartlı ödeme",
+      "title": "Kartlı ödemeniz yolda",
+      "body": "Paketinize kartlı ödeme dahil. Sizin için açıyoruz — şu anda yapmanız gereken bir şey yok, kasanızda göründüğü anda size haber vereceğiz. O zamana kadar restoranınız tamamen yayında ve her zamanki gibi nakit alıyor.",
+      "billingNote": "Paketiniz başladığı günden itibaren faturalandırılır. İlk faturanız geldiğinde kartlı ödeme hâlâ açılmadıysa bize söyleyin, o ayı alacağınıza geçirelim.",
+      "stripeLink": "Stripe panonuz"
+    },
     "invoice": {
       "title": "Fatura",
       "billedTo": "Fatura adresi",

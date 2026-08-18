@@ -978,6 +978,13 @@
       "almostReadyTitle": "Fast geschafft",
       "almostReadyBody": "Ihre App wird gestartet. Sobald sie antwortet, zeigt Ihnen diese Seite, wie Sie sich anmelden."
     },
+    "paymentsPending": {
+      "kicker": "Kartenzahlung",
+      "title": "Ihre Kartenzahlung ist unterwegs",
+      "body": "Kartenzahlung gehört zu Ihrem Paket. Wir schalten sie gerade für Sie frei — Sie müssen im Moment nichts tun, und wir sagen Ihnen Bescheid, sobald sie an Ihrer Kasse auftaucht. Bis dahin ist Ihr Restaurant vollständig online und nimmt wie gewohnt Bargeld an.",
+      "billingNote": "Ihr Paket wird ab dem Starttag abgerechnet. Ist die Kartenzahlung bei Ihrer ersten Rechnung noch nicht freigeschaltet, sagen Sie uns Bescheid — wir schreiben Ihnen diesen Monat gut.",
+      "stripeLink": "Ihr Stripe-Dashboard"
+    },
     "invoice": {
       "title": "Rechnung",
       "billedTo": "Rechnung an",
