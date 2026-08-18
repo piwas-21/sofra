@@ -222,7 +222,7 @@
       },
       "payments": {
         "q": "Mes clients peuvent-ils payer en ligne — y compris avec TWINT ?",
-        "a": "Oui — avec le module Paiement en ligne, vos clients paient par carte, ainsi qu'avec les méthodes locales comme TWINT en Suisse et iDEAL aux Pays-Bas. L'argent arrive directement sur votre propre compte Stripe et nous ne prenons aucune commission. Avant le premier paiement, vous effectuez une vérification unique auprès de Stripe. Vous pouvez toujours encaisser au comptoir."
+        "a": "Oui — avec le module Paiement en ligne, vos clients paient par carte, ainsi qu'avec les méthodes locales comme TWINT en Suisse et iDEAL aux Pays-Bas. L'argent arrive directement sur votre propre compte Stripe et nous ne prenons aucune commission. Avant le premier paiement, vous effectuez une vérification unique auprès de Stripe. Le module est facturé dès son activation : si votre compte est encore en cours de vérification à la première facture, demandez-nous et nous créditons ce mois-là. Vous pouvez toujours encaisser au comptoir."
       },
       "languages": {
         "q": "Quelles langues le menu prend-il en charge ?",
