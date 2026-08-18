@@ -222,7 +222,7 @@
       },
       "payments": {
         "q": "Kunnen mijn gasten online betalen — ook met iDEAL of TWINT?",
-        "a": "Ja — met de module Online betalen betalen je gasten met kaart, plus lokale methoden zoals iDEAL in Nederland en TWINT in Zwitserland. Het geld komt direct op je eigen Stripe-account en wij nemen geen commissie. Vóór je eerste betaling doorloop je eenmalig de verificatie van Stripe. Afrekenen aan de balie blijft gewoon mogelijk."
+        "a": "Ja — met de module Online betalen betalen je gasten met kaart, plus lokale methoden zoals iDEAL in Nederland en TWINT in Zwitserland. Het geld komt direct op je eigen Stripe-account en wij nemen geen commissie. Vóór je eerste betaling doorloop je eenmalig de verificatie van Stripe. De module wordt gefactureerd vanaf de dag dat je hem activeert: is je account bij de eerste factuur nog in verificatie, vraag het ons dan en we crediteren die maand. Afrekenen aan de balie blijft gewoon mogelijk."
       },
       "languages": {
         "q": "Welke talen ondersteunt de menukaart?",

@@ -222,7 +222,7 @@
       },
       "payments": {
         "q": "Misafirlerim online ödeme yapabilir mi — TWINT dahil?",
-        "a": "Evet — Online ödeme modülüyle misafirleriniz kartla, ayrıca İsviçre'de TWINT ve Hollanda'da iDEAL gibi yerel yöntemlerle ödeyebilir. Para doğrudan kendi Stripe hesabınıza geçer, biz komisyon almayız. İlk ödemeden önce Stripe'ın tek seferlik doğrulamasını tamamlarsınız. Kasada tahsil etmeye de devam edebilirsiniz."
+        "a": "Evet — Online ödeme modülüyle misafirleriniz kartla, ayrıca İsviçre'de TWINT ve Hollanda'da iDEAL gibi yerel yöntemlerle ödeyebilir. Para doğrudan kendi Stripe hesabınıza geçer, biz komisyon almayız. İlk ödemeden önce Stripe'ın tek seferlik doğrulamasını tamamlarsınız. Modül, etkinleştirdiğiniz günden itibaren faturalandırılır; ilk fatura geldiğinde hesabınız hâlâ doğrulanıyorsa bize söyleyin, o ayı iade edelim. Kasada tahsil etmeye de devam edebilirsiniz."
       },
       "languages": {
         "q": "Menü hangi dilleri destekliyor?",

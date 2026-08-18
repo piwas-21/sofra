@@ -222,7 +222,7 @@
       },
       "payments": {
         "q": "Can my guests pay online — including TWINT?",
-        "a": "Yes — add the Online payments module and your guests pay by card, with local methods like TWINT in Switzerland and iDEAL in the Netherlands. The money goes straight into your own Stripe account and we take no commission. You complete Stripe's one-time verification before your first payment. You can always keep charging at the counter as well."
+        "a": "Yes — add the Online payments module and your guests pay by card, with local methods like TWINT in Switzerland and iDEAL in the Netherlands. The money goes straight into your own Stripe account and we take no commission. You complete Stripe's one-time verification before your first payment. The module is billed from the day you activate it, so if your account is still being verified when the first invoice lands, ask us and we will credit that month. You can always keep charging at the counter as well."
       },
       "languages": {
         "q": "Which languages does the menu support?",

@@ -222,7 +222,7 @@
       },
       "payments": {
         "q": "Können meine Gäste online bezahlen — auch mit TWINT?",
-        "a": "Ja — mit dem Modul Online-Zahlungen zahlen Ihre Gäste per Karte sowie mit lokalen Methoden wie TWINT in der Schweiz und iDEAL in den Niederlanden. Das Geld geht direkt auf Ihr eigenes Stripe-Konto, wir nehmen keine Provision. Vor der ersten Zahlung durchlaufen Sie einmalig die Verifizierung von Stripe. Am Tresen kassieren können Sie weiterhin."
+        "a": "Ja — mit dem Modul Online-Zahlungen zahlen Ihre Gäste per Karte sowie mit lokalen Methoden wie TWINT in der Schweiz und iDEAL in den Niederlanden. Das Geld geht direkt auf Ihr eigenes Stripe-Konto, wir nehmen keine Provision. Vor der ersten Zahlung durchlaufen Sie einmalig die Verifizierung von Stripe. Das Modul wird ab dem Tag der Aktivierung berechnet – wird Ihr Konto zum Zeitpunkt der ersten Rechnung noch geprüft, schreiben wir Ihnen diesen Monat auf Anfrage gut. Am Tresen kassieren können Sie weiterhin."
       },
       "languages": {
         "q": "Welche Sprachen unterstützt die Karte?",
