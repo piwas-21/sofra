@@ -978,6 +978,13 @@
       "almostReadyTitle": "Bijna klaar",
       "almostReadyBody": "Je app wordt opgestart. Zodra hij antwoordt, laat deze pagina zien hoe je inlogt."
     },
+    "paymentsPending": {
+      "kicker": "Kaartbetalingen",
+      "title": "Uw kaartbetalingen zijn onderweg",
+      "body": "Kaartbetalingen horen bij uw pakket. We zetten ze nu voor u aan — u hoeft op dit moment niets te doen, en we laten het weten zodra ze bij uw kassa verschijnen. Tot die tijd staat uw restaurant volledig online en neemt het gewoon contant geld aan.",
+      "billingNote": "Uw pakket wordt gefactureerd vanaf de dag dat het startte. Staan de kaartbetalingen bij uw eerste factuur nog niet aan? Laat het ons weten, dan crediteren we die maand.",
+      "stripeLink": "Uw Stripe-dashboard"
+    },
     "invoice": {
       "title": "Factuur",
       "billedTo": "Gefactureerd aan",

@@ -978,6 +978,13 @@
       "almostReadyTitle": "Presque terminé",
       "almostReadyBody": "Votre application démarre. Dès qu'elle répond, cette page vous indiquera comment vous connecter."
     },
+    "paymentsPending": {
+      "kicker": "Paiements par carte",
+      "title": "Vos paiements par carte arrivent",
+      "body": "Votre offre inclut les paiements par carte. Nous sommes en train de les activer pour vous — vous n'avez rien à faire pour l'instant, et nous vous préviendrons dès qu'ils apparaîtront à votre caisse. D'ici là, votre restaurant est pleinement en ligne et encaisse les espèces comme d'habitude.",
+      "billingNote": "Votre offre est facturée à partir du jour où elle a démarré. Si les paiements par carte ne sont toujours pas activés à l'arrivée de votre première facture, demandez-nous et nous créditons ce mois-là.",
+      "stripeLink": "Votre tableau de bord Stripe"
+    },
     "invoice": {
       "title": "Facture",
       "billedTo": "Facturé à",

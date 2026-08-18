@@ -13,6 +13,7 @@ import { visibleTenantStage, type TenantStage } from "@/lib/tenant-liveness";
 import StartPaymentButton from "./StartPaymentButton";
 import ActivatingPanel from "./ActivatingPanel";
 import TenantReadyPanel from "./TenantReadyPanel";
+import PaymentsPendingPanel from "./PaymentsPendingPanel";
 
 /**
  * An owner's single plan, in full (SOFRA-ONBOARDING-PLAN O4 — the gap O2 named and
@@ -48,6 +49,8 @@ export interface OwnerPlanCardProps {
    *  without them, so offering the button here would be a control that only ever
    *  errors. */
   readonly invoiceable: boolean;
+  /** Bought online payments, not granted them yet (O7 P4) — see `isPaymentsPending`. */
+  readonly paymentsPending: boolean;
 }
 
 /**
@@ -149,6 +152,11 @@ export default async function OwnerPlanCard(props: OwnerPlanCardProps) {
         stage={visibleTenantStage(props.stage, state === "processing")}
         domain={props.tenantDomain}
       />
+
+      {/* After the readiness panel on purpose: "where is my app" is the bigger
+          question, and this one is only meaningful once there is an app to take a
+          card in. */}
+      {props.paymentsPending && <PaymentsPendingPanel locale={locale} />}
 
       {history.length > 0 && (
         <div className="grid gap-1">

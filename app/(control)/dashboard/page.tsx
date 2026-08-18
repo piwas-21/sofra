@@ -42,6 +42,11 @@ export default async function DashboardPage() {
       // already paid. OwnerDashboard fetches the history separately, and bounds it
       // separately, for exactly that reason.
       payments: { where: { sequenceType: "first" }, orderBy: { createdAt: "desc" }, take: 20 },
+      // What this plan BOUGHT (O7 P4). The registry says what was granted; only the
+      // lead says what was paid for, and the gap between them is the window where a
+      // buyer of online payments is charged for a module their tenant does not have
+      // yet. One column, on a relation the row already carries.
+      signupRequest: { select: { modules: true } },
     },
     orderBy: { createdAt: "desc" },
   });
