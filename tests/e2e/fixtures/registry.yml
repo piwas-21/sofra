@@ -36,3 +36,29 @@ tenants:
     db: tenant_e2e_retired
     languages: [en]
     modules: [core]
+  # The two Stripe shapes /admin/tenants has to tell apart (SOFRA-PAYMENTS-PLAN
+  # §9 P3). Nothing here is provisioned; the ids are fixture strings.
+  e2e-card:
+    name: E2E Card Restaurant
+    status: active
+    managed: scripts
+    box: staging
+    domain: e2e-card.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_card
+    languages: [en]
+    modules: [core, online-payments]
+    stripe_account: acct_1E2eFixtureCard
+  # Bought the module, has no account. P1 makes this unreachable from the
+  # generator; a hand-edited registry PR can still produce it, and the box then
+  # refuses the whole provision — so the page has to shout about it.
+  e2e-unpaired:
+    name: E2E Unpaired Restaurant
+    status: provisioning
+    managed: scripts
+    box: staging
+    domain: e2e-unpaired.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_unpaired
+    languages: [en]
+    modules: [core, online-payments]

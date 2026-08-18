@@ -678,7 +678,9 @@
         "db": "db {db}",
         "langCount": "{count} lang",
         "modules": "modules: {list}",
-        "template": "template: {template}"
+        "template": "template: {template}",
+        "stripeAccount": "Stripe: {account}",
+        "stripeAccountMissing": "Buys online payments, but this entry records no stripe_account — provisioning refuses the pair and stops before the database, so re-provisioning this tenant does nothing at all. Add the account to the entry, or drop the module."
       },
       "onboard": {
         "title": "Onboard a partner",

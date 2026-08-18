@@ -678,7 +678,9 @@
         "db": "قاعدة البيانات {db}",
         "langCount": "{count} لغات",
         "modules": "الوحدات: {list}",
-        "template": "القالب: {template}"
+        "template": "القالب: {template}",
+        "stripeAccount": "Stripe: {account}",
+        "stripeAccountMissing": "يشتري وحدة المدفوعات عبر الإنترنت، لكن هذا السجل لا يتضمّن stripe_account — التجهيز يرفض هذا الاقتران ويتوقّف قبل قاعدة البيانات، فإعادة تجهيز هذا المستأجر لا تفعل شيئًا على الإطلاق. أضف الحساب إلى السجل، أو احذف الوحدة."
       },
       "onboard": {
         "title": "إعداد شريك",

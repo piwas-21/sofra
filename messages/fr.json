@@ -678,7 +678,9 @@
         "db": "bdd {db}",
         "langCount": "{count} langues",
         "modules": "modules : {list}",
-        "template": "modèle : {template}"
+        "template": "modèle : {template}",
+        "stripeAccount": "Stripe : {account}",
+        "stripeAccountMissing": "Achète les paiements en ligne, mais cette entrée n'indique aucun stripe_account — le provisionnement refuse ce couple et s'arrête avant la base de données : reprovisionner ce tenant ne fait donc rien du tout. Ajoutez le compte à l'entrée, ou retirez le module."
       },
       "onboard": {
         "title": "Intégrer un partenaire",

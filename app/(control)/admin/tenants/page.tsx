@@ -5,7 +5,11 @@ import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur } from "@/lib/format";
 import { BILLING_INTERVALS } from "@/lib/billing";
-import { loadTenantRegistry, type RegistryTenant } from "@/lib/tenant-registry";
+import {
+  loadTenantRegistry,
+  missingPairedStripeAccount,
+  type RegistryTenant,
+} from "@/lib/tenant-registry";
 
 // The registry file changes underneath us (rsync on deploy-repo push) — always
 // re-read instead of serving a build-time snapshot.
@@ -92,8 +96,20 @@ function TenantCard({
             {/* classic/craft is a technical identifier — rendered raw like status */}
             {t("tenants.template", { template: tenant.template ?? "classic" })}
           </span>
+          {/* An `acct_…` is a Stripe identifier, not a secret, and it is the one
+              fact that says whether this tenant can take a card at all. */}
+          {tenant.stripe_account && (
+            <span className="block text-muted-foreground">
+              {t("tenants.stripeAccount", { account: tenant.stripe_account })}
+            </span>
+          )}
         </span>
       </div>
+      {missingPairedStripeAccount(tenant) && (
+        <p role="alert" className="mt-3 font-label text-sm text-craft-error-text">
+          {t("tenants.stripeAccountMissing")}
+        </p>
+      )}
     </li>
   );
 }

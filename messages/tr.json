@@ -678,7 +678,9 @@
         "db": "vt: {db}",
         "langCount": "{count} dil",
         "modules": "modüller: {list}",
-        "template": "şablon: {template}"
+        "template": "şablon: {template}",
+        "stripeAccount": "Stripe: {account}",
+        "stripeAccountMissing": "Çevrimiçi ödeme satın alınmış ama bu kayıtta stripe_account yok — provizyon bu ikiliyi reddeder ve veritabanından önce durur, dolayısıyla bu tenant'ı yeniden provizyonlamak hiçbir şey yapmaz. Hesabı kayda ekleyin ya da modülü çıkarın."
       },
       "onboard": {
         "title": "İş ortağı kaydı",

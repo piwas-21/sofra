@@ -678,7 +678,9 @@
         "db": "DB {db}",
         "langCount": "{count} Sprachen",
         "modules": "Module: {list}",
-        "template": "Template: {template}"
+        "template": "Template: {template}",
+        "stripeAccount": "Stripe: {account}",
+        "stripeAccountMissing": "Kauft Online-Zahlungen, aber dieser Eintrag enthält kein stripe_account — die Provisionierung lehnt das Paar ab und bricht vor der Datenbank ab, ein erneutes Provisionieren dieses Tenants bewirkt also gar nichts. Konto zum Eintrag hinzufügen oder das Modul entfernen."
       },
       "onboard": {
         "title": "Partner onboarden",
