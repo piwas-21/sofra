@@ -678,7 +678,9 @@
         "db": "vt: {db}",
         "langCount": "{count} dil",
         "modules": "modüller: {list}",
-        "template": "şablon: {template}"
+        "template": "şablon: {template}",
+        "stripeAccount": "Stripe: {account}",
+        "stripeAccountMissing": "Çevrimiçi ödeme satın alınmış ama bu kayıtta stripe_account yok — provizyon bu ikiliyi reddeder ve veritabanından önce durur, dolayısıyla bu tenant'ı yeniden provizyonlamak hiçbir şey yapmaz. Hesabı kayda ekleyin ya da modülü çıkarın."
       },
       "onboard": {
         "title": "İş ortağı kaydı",
@@ -975,6 +977,13 @@
       "settingUpBody": "Yapılandırmanız son bir kontrol için sırada; ardından uygulamanız oluşturulup başlatılır. Bu genellikle on beş dakika kadar sürer.",
       "almostReadyTitle": "Neredeyse hazır",
       "almostReadyBody": "Uygulamanız başlatılıyor. Yanıt verdiği anda bu sayfa nasıl giriş yapacağınızı gösterecek."
+    },
+    "paymentsPending": {
+      "kicker": "Kartlı ödeme",
+      "title": "Kartlı ödemeniz yolda",
+      "body": "Paketinize kartlı ödeme dahil. Sizin için açıyoruz — şu anda yapmanız gereken bir şey yok, kasanızda göründüğü anda size haber vereceğiz. O zamana kadar restoranınız tamamen yayında ve her zamanki gibi nakit alıyor.",
+      "billingNote": "Paketiniz başladığı günden itibaren faturalandırılır. İlk faturanız geldiğinde kartlı ödeme hâlâ açılmadıysa bize söyleyin, o ayı alacağınıza geçirelim.",
+      "stripeLink": "Stripe panonuz"
     },
     "invoice": {
       "title": "Fatura",

@@ -678,7 +678,9 @@
         "db": "db {db}",
         "langCount": "{count} talen",
         "modules": "modules: {list}",
-        "template": "sjabloon: {template}"
+        "template": "sjabloon: {template}",
+        "stripeAccount": "Stripe: {account}",
+        "stripeAccountMissing": "Koopt online betalingen, maar deze entry bevat geen stripe_account — provisionering weigert dit paar en stopt vóór de database, dus dit tenant opnieuw provisioneren doet helemaal niets. Voeg het account toe aan de entry, of haal de module eruit."
       },
       "onboard": {
         "title": "Partner onboarden",
@@ -975,6 +977,13 @@
       "settingUpBody": "Je configuratie staat klaar voor een laatste controle; daarna wordt je app gebouwd en gestart. Dit duurt meestal zo'n vijftien minuten.",
       "almostReadyTitle": "Bijna klaar",
       "almostReadyBody": "Je app wordt opgestart. Zodra hij antwoordt, laat deze pagina zien hoe je inlogt."
+    },
+    "paymentsPending": {
+      "kicker": "Kaartbetalingen",
+      "title": "Uw kaartbetalingen zijn onderweg",
+      "body": "Kaartbetalingen horen bij uw pakket. We zetten ze nu voor u aan — u hoeft op dit moment niets te doen, en we laten het weten zodra ze bij uw kassa verschijnen. Tot die tijd staat uw restaurant volledig online en neemt het gewoon contant geld aan.",
+      "billingNote": "Uw pakket wordt gefactureerd vanaf de dag dat het startte. Staan de kaartbetalingen bij uw eerste factuur nog niet aan? Laat het ons weten, dan crediteren we die maand.",
+      "stripeLink": "Uw Stripe-dashboard"
     },
     "invoice": {
       "title": "Factuur",

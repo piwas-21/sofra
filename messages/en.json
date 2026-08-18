@@ -678,7 +678,9 @@
         "db": "db {db}",
         "langCount": "{count} lang",
         "modules": "modules: {list}",
-        "template": "template: {template}"
+        "template": "template: {template}",
+        "stripeAccount": "Stripe: {account}",
+        "stripeAccountMissing": "Buys online payments, but this entry records no stripe_account — provisioning refuses the pair and stops before the database, so re-provisioning this tenant does nothing at all. Add the account to the entry, or drop the module."
       },
       "onboard": {
         "title": "Onboard a partner",
@@ -975,6 +977,13 @@
       "settingUpBody": "Your setup is queued for a final check, then your app is built and started. This usually takes about fifteen minutes.",
       "almostReadyTitle": "Almost there",
       "almostReadyBody": "Your app is starting up. As soon as it answers, this page will show you how to sign in."
+    },
+    "paymentsPending": {
+      "kicker": "Card payments",
+      "title": "Card payments are on their way",
+      "body": "You bought card payments with your plan. We're switching them on for you — there's nothing for you to do right now, and we'll tell you the moment they appear at your checkout. Until then your restaurant is fully live and taking cash as usual.",
+      "billingNote": "Your plan is billed from the day it started. If card payments still aren't switched on when your first invoice arrives, just ask us and we'll credit that month.",
+      "stripeLink": "Your Stripe dashboard"
     },
     "invoice": {
       "title": "Invoice",

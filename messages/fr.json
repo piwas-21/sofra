@@ -678,7 +678,9 @@
         "db": "bdd {db}",
         "langCount": "{count} langues",
         "modules": "modules : {list}",
-        "template": "modèle : {template}"
+        "template": "modèle : {template}",
+        "stripeAccount": "Stripe : {account}",
+        "stripeAccountMissing": "Achète les paiements en ligne, mais cette entrée n'indique aucun stripe_account — le provisionnement refuse ce couple et s'arrête avant la base de données : reprovisionner ce tenant ne fait donc rien du tout. Ajoutez le compte à l'entrée, ou retirez le module."
       },
       "onboard": {
         "title": "Intégrer un partenaire",
@@ -975,6 +977,13 @@
       "settingUpBody": "Votre configuration attend une dernière vérification, puis votre application est créée et démarrée. Cela prend généralement une quinzaine de minutes.",
       "almostReadyTitle": "Presque terminé",
       "almostReadyBody": "Votre application démarre. Dès qu'elle répond, cette page vous indiquera comment vous connecter."
+    },
+    "paymentsPending": {
+      "kicker": "Paiements par carte",
+      "title": "Vos paiements par carte arrivent",
+      "body": "Votre offre inclut les paiements par carte. Nous sommes en train de les activer pour vous — vous n'avez rien à faire pour l'instant, et nous vous préviendrons dès qu'ils apparaîtront à votre caisse. D'ici là, votre restaurant est pleinement en ligne et encaisse les espèces comme d'habitude.",
+      "billingNote": "Votre offre est facturée à partir du jour où elle a démarré. Si les paiements par carte ne sont toujours pas activés à l'arrivée de votre première facture, demandez-nous et nous créditons ce mois-là.",
+      "stripeLink": "Votre tableau de bord Stripe"
     },
     "invoice": {
       "title": "Facture",

@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { db } from "@/lib/db";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
+import { isPaymentsPending } from "@/lib/payments-pending";
 import { tenantStage } from "@/lib/tenant-liveness";
 import { probeTenantHealthy } from "@/lib/tenant-health";
 import OwnerPlanCard from "./OwnerPlanCard";
@@ -39,6 +40,8 @@ type OwnerBilling = {
   client: ({ restaurantName: string } & { partnerId: string }) | null;
   subscriptions: { status: string; amountCents: number; interval: string; startDate: Date | null }[];
   payments: { sequenceType: string; status: string }[];
+  /** The lead this plan was minted from — null on the founder-created path (O7 P4). */
+  signupRequest: { modules: string | null } | null;
 };
 
 /** Newest payments shown in an owner's history, per plan. */
@@ -84,7 +87,7 @@ async function paymentHistory(billingIds: string[]) {
 }
 
 /**
- * The registry `domain` for each slug, or an empty map when the registry cannot be
+ * The registry entry for each slug this owner holds, and whether the registry could be
  * read at all.
  *
  * An unreadable registry degrading to "no domain" is the fail-closed direction here:
@@ -92,13 +95,26 @@ async function paymentHistory(billingIds: string[]) {
  * told their app is still being set up. The alternative — surfacing the registry read
  * error on a customer's dashboard — reports one of our ops conditions to somebody who
  * cannot act on it, and the founder already gets it loudly on `/admin/provision`.
+ *
+ * `ok` is returned alongside the map rather than folded into it because P4 needs the
+ * two apart: "no entry" and "could not look" produce the same empty map and must
+ * produce different copy — see `isPaymentsPending`.
  */
-async function registryDomains(slugs: string[]): Promise<Map<string, string>> {
-  if (slugs.length === 0) return new Map();
+async function registryEntries(
+  slugs: string[],
+): Promise<{ ok: boolean; bySlug: Map<string, { domain: string; modules: string[] }> }> {
+  if (slugs.length === 0) return { ok: true, bySlug: new Map() };
   const registry = await loadTenantRegistry();
-  if (!registry.ok) return new Map();
+  if (!registry.ok) return { ok: false, bySlug: new Map() };
   const wanted = new Set(slugs);
-  return new Map(registry.tenants.filter((t) => wanted.has(t.slug)).map((t) => [t.slug, t.domain]));
+  return {
+    ok: true,
+    bySlug: new Map(
+      registry.tenants
+        .filter((t) => wanted.has(t.slug))
+        .map((t) => [t.slug, { domain: t.domain, modules: t.modules }]),
+    ),
+  };
 }
 
 export default async function OwnerDashboard({
@@ -112,7 +128,7 @@ export default async function OwnerDashboard({
 }) {
   const t = await getTranslations({ locale, namespace: "control.dashboard" });
   const tp = await getTranslations({ locale, namespace: "control.plan" });
-  const domains = await registryDomains(billings.map((b) => b.tenantSlug));
+  const registry = await registryEntries(billings.map((b) => b.tenantSlug));
 
   // ONE history query for every plan, grouped in memory — not one per row. The probe
   // is what this render can actually wait on (3s cap, 60s cache per domain), so the
@@ -136,10 +152,16 @@ export default async function OwnerDashboard({
 
   const cards = await Promise.all(
     billings.map(async (b) => {
-      const domain = domains.get(b.tenantSlug) ?? null;
+      const entry = registry.bySlug.get(b.tenantSlug);
+      const domain = entry?.domain ?? null;
       return {
         billing: b,
         domain,
+        paymentsPending: isPaymentsPending({
+          purchased: b.signupRequest?.modules,
+          granted: entry?.modules,
+          registryReadable: registry.ok,
+        }),
         history: historyByBilling.get(b.id) ?? [],
         stage: tenantStage({
           // Read from the SAME `first`-scoped payment window planState uses, so the
@@ -165,7 +187,7 @@ export default async function OwnerDashboard({
       {cards.length === 0 ? (
         <p className="font-hand text-2xl text-muted-foreground">{tp("noPlan")}</p>
       ) : (
-        cards.map(({ billing, domain, history, stage }) => (
+        cards.map(({ billing, domain, history, stage, paymentsPending }) => (
           <OwnerPlanCard
             key={billing.id}
             locale={locale}
@@ -179,6 +201,7 @@ export default async function OwnerDashboard({
             invoiceable={invoiceableByPlan.get(billing.id) ?? false}
             stage={stage}
             tenantDomain={domain}
+            paymentsPending={paymentsPending}
           />
         ))
       )}
