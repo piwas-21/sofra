@@ -56,8 +56,10 @@ export AUTH_TRUST_HOST=true
 export NEXTAUTH_URL="http://localhost:$PORT"
 export NEXT_PUBLIC_SITE_URL="http://localhost:$PORT"
 export E2E_BASE_URL="http://localhost:$PORT"
-# `next start` reads PORT; without this it listens on 3000 while Playwright waits
-# on $PORT and the webServer times out with no useful message.
+# The standalone server (.next/standalone/server.js, what Playwright's webServer
+# starts — see playwright.config.ts) reads PORT; without this it listens on 3000
+# while Playwright waits on $PORT and the webServer times out with no useful
+# message.
 export PORT="$PORT"
 export E2E_ADMIN_EMAIL="e2e-admin@example.test"
 export E2E_PARTNER_EMAIL="e2e-partner@example.test"
@@ -97,10 +99,10 @@ export SOFRA_INVOICE_SERIES="E2E"
 # fails on this value — and that failure is the proof it passed.
 export PROVISION_GITHUB_TOKEN="ghp_e2e_placeholder_never_valid_0000000000"
 export MOLLIE_API_KEY="$MOLLIE_KEY"
-# `next start` loads .env.local too, so a developer's real Resend key would be
-# picked up and the suite would fire a live API call per signup — sending test
-# addresses to a third party and making the run depend on their uptime. Blanking
-# it here wins (process env beats .env files) and makes sendEmail log instead.
+# A developer's real Resend key in .env/.env.local would otherwise fire a live
+# API call per signup — sending test addresses to a third party and making the
+# run depend on their uptime. Blanking it here wins (process env beats .env
+# files, whichever the server loads) and makes sendEmail log instead.
 export RESEND_API_KEY=""
 # Same reason: a developer's Sentry DSN in .env.local would be baked into the
 # build below and send every deliberate E2E error to a real project.
