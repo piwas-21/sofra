@@ -5,10 +5,19 @@ import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { shortDate } from "@/lib/format";
+import { loadTenantRegistry } from "@/lib/tenant-registry";
+import { clientTenantView } from "@/lib/client-tenant";
 import ClientForm from "@/components/control/ClientForm";
 import ClientStatusBadge from "@/components/control/ClientStatusBadge";
 import ClientPipelineControls from "@/components/control/ClientPipelineControls";
+import ClientTenantPanel from "@/components/control/ClientTenantPanel";
+import ClientPlanPanel from "@/components/control/ClientPlanPanel";
+import ClientChangeRequestForm from "@/components/control/ClientChangeRequestForm";
 import NoteForm from "@/components/control/NoteForm";
+
+// The registry file changes underneath us (rsync on deploy-repo push), so this page
+// must never be served from a build-time snapshot — same reason as /admin/tenants.
+export const dynamic = "force-dynamic";
 
 export default async function ClientDetailPage({
   params,
@@ -19,13 +28,38 @@ export default async function ClientDetailPage({
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.client" });
   const { id } = await params;
+  // Scoped by partnerId, as every partner read is (SOFRA-PARTNER-PLAN §5). The plan
+  // rides the client relation, so it cannot be reached for a client they don't own.
   const client = await db.client.findFirst({
     where: { id, partnerId: partner.id },
     include: {
       clientNotes: { orderBy: { createdAt: "desc" }, include: { author: true } },
+      billing: {
+        include: {
+          billingIdentity: true,
+          subscriptions: { orderBy: { createdAt: "desc" } },
+          // FIRST payments only, bounded: `planState` reads exactly this window, and
+          // widening it would eventually push the `first` payment out and show a pay
+          // button to somebody who has already paid.
+          payments: { where: { sequenceType: "first" }, orderBy: { createdAt: "desc" }, take: 20 },
+        },
+      },
     },
   });
   if (!client) notFound();
+
+  const registry = await loadTenantRegistry();
+  const view = clientTenantView({
+    status: client.status,
+    tenantSlug: client.tenantSlug,
+    registry,
+  });
+  // `resolveIdentityForPlan` resolves the payer through `client.partnerId`; the
+  // relation is re-attached here rather than re-queried, because the plan's client is
+  // the row we just loaded.
+  const billing = client.billing
+    ? { ...client.billing, client: { partnerId: client.partnerId } }
+    : null;
 
   return (
     <div className="grid gap-10">
@@ -43,6 +77,23 @@ export default async function ClientDetailPage({
           )}
         </div>
       </div>
+
+      <ClientTenantPanel locale={locale} view={view} />
+
+      {view.kind !== "none" && (
+        <>
+          <ClientPlanPanel locale={locale} billing={billing} />
+          <section className="hand-drawn-border bg-card p-6">
+            <h2 className="font-hand text-3xl font-bold">{t("changeRequest")}</h2>
+            <p className="mt-2 font-label text-muted-foreground">{t("changeRequestIntro")}</p>
+            <div className="mt-4">
+              {/* Deliberately NOT keyed by the note count like `NoteForm` below: the
+                  remount would discard the "sent" acknowledgement it just earned. */}
+              <ClientChangeRequestForm clientId={client.id} />
+            </div>
+          </section>
+        </>
+      )}
 
       <section className="hand-drawn-border bg-card p-6">
         <h2 className="font-hand text-3xl font-bold">{t("pipeline")}</h2>
