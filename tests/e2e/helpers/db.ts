@@ -445,6 +445,25 @@ export async function findAuditEntries(
 }
 
 /**
+ * Every trial-ending marker a plan has, oldest first.
+ *
+ * The sweep's send-once record (T-d): one audit row per milestone per trial END
+ * DATE, carrying `{endsOn, phase, daysLeft, emailed}`. Read as a LIST rather than
+ * counted per action, because the property under test is "exactly one of each, no
+ * matter how often the cron fires".
+ */
+export async function findTrialWarnings(
+  entityId: string,
+): Promise<{ action: string; meta: Record<string, unknown> | null }[]> {
+  return await query<{ action: string; meta: Record<string, unknown> | null }>(
+    `SELECT action, meta FROM "AuditLog"
+      WHERE "entityId" = $1 AND action LIKE 'billing.trial.ending.%'
+      ORDER BY "createdAt" ASC`,
+    [entityId],
+  );
+}
+
+/**
  * A reseller partner with one client, optionally already a live tenant with a plan
  * (SOFRA-PARTNER-PLAN §9).
  *

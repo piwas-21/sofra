@@ -76,6 +76,17 @@ export default defineConfig({
         // G16 — the delivery-verdict rule. Its query wrapper (`email-delivery.ts`) stays out, same
         // split as vies/vies-result above.
         "lib/email-delivery-verdicts.ts",
+        // T-d — when a free period is warned about, and to whom. Same policy/sweep split
+        // as go-live-policy/go-live-notify: the half that decides is total and pure, the
+        // half that mails and writes audit rows is not and stays out of scope.
+        "lib/trial-warning-policy.ts",
+        // Who a bill is addressed to. Lifted out of payment-receipt.ts (T-d) precisely so
+        // it could be measured: it decides whether a reseller's RESTAURANT reads a price
+        // meant for their partner, and it had no unit coverage while it was private.
+        "lib/payer-contact.ts",
+        // The first localized mail (T-d). In scope because a mail rendered from a missing
+        // catalogue is a customer reading raw message keys, and that is decidable here.
+        "lib/email-locale.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial
