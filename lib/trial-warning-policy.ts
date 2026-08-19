@@ -79,6 +79,18 @@ function startOfUtcDay(d: Date): Date {
   return x;
 }
 
+/**
+ * What is TRUE right now about a free period ending at `end`.
+ *
+ * A named function rather than a chained ternary (Sonar S3358): this is the rule that
+ * keeps a late warning honest, and it deserves to be read as three cases rather than
+ * skimmed as one line.
+ */
+function phaseAt(now: number, lastDayStarts: number, end: number): TrialPhase {
+  if (now < lastDayStarts) return "soon";
+  return now <= end ? "today" : "ended";
+}
+
 export function trialWarningVerdict(facts: TrialWarningFacts): TrialWarningVerdict {
   const endsAt = facts.trialEndsAt;
   if (!endsAt || Number.isNaN(endsAt.getTime())) return { warn: false, reason: "noTrial" };
@@ -130,7 +142,7 @@ export function trialWarningVerdict(facts: TrialWarningFacts): TrialWarningVerdi
     due,
     // Derived from the clock, not from the milestone: what we say has to be true when
     // it is said, whatever made us say it.
-    phase: now < lastDayStarts ? "soon" : now <= end ? "today" : "ended",
+    phase: phaseAt(now, lastDayStarts, end),
     endsAt,
     daysLeft: view.kind === "active" ? view.daysLeft : 0,
   };

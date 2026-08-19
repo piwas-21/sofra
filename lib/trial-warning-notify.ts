@@ -1,6 +1,8 @@
 // The scheduled half of the trial-ending warning (SOFRA-PARTNER-FLEXIBILITY-PLAN
-// T-d, EMAIL-SPEC-CONTROL-PLANE G2/G3). Pair of `trial-warning-policy.ts`: that one
-// decides, this one finds, sends and records.
+// T-d, EMAIL-SPEC-CONTROL-PLANE G2/G3). Three modules, one job:
+//   trial-warning-policy.ts     — decides WHETHER, and what is true when it does
+//   trial-warning-candidates.ts — finds who is due, and what was already said
+//   this file                   — says it, and records that it was said
 //
 // IDEMPOTENCY IS THE WHOLE JOB. GitHub's `schedule:` is best-effort: it fires late,
 // it fires twice, and it skips. A partner receiving "your free period ends in 7
@@ -21,29 +23,18 @@
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
 import { founderInbox } from "@/lib/email";
-import { planState } from "@/lib/billing-display";
-import {
-  FOUNDER_HEADS_UP_DAYS,
-  LATE_GRACE_DAYS,
-  trialWarningVerdict,
-  type TrialWarning,
-} from "@/lib/trial-warning-policy";
 import { payerAddress } from "@/lib/payer-contact";
+import type { TrialWarning } from "@/lib/trial-warning-policy";
+import {
+  TRIAL_WARNING_ACTIONS,
+  bump,
+  endsOnKey,
+  findTrialWarningCandidates,
+  type TrialWarningTodo,
+} from "@/lib/trial-warning-candidates";
 import { sendFounderNotice, sendPayerWarning } from "@/lib/trial-warning-send";
 
-/** One audit action per milestone — distinct strings rather than one action with a
- *  field, so "sent already?" is an indexed query and not a JSON path filter. */
-export const TRIAL_WARNING_ACTIONS: Record<TrialWarning, string> = {
-  founder: "billing.trial.ending.founder",
-  soon: "billing.trial.ending.soon",
-  final: "billing.trial.ending.final",
-};
-const WARNING_OF = new Map(
-  Object.entries(TRIAL_WARNING_ACTIONS).map(([w, a]) => [a, w as TrialWarning]),
-);
-const DAY_MS = 24 * 60 * 60 * 1000;
-/** The UTC day a trial ends — what a marker is keyed on, and what a mail names. */
-const endsOnKey = (d: Date) => d.toISOString().slice(0, 10);
+export { TRIAL_WARNING_ACTIONS };
 
 export interface TrialWarningSweepResult {
   /** Plans in the window with at least one milestone still outstanding. */
@@ -54,92 +45,15 @@ export interface TrialWarningSweepResult {
   skipped: Record<string, number>;
 }
 
-export async function runTrialWarningSweep(
-  now: Date = new Date(),
-): Promise<TrialWarningSweepResult> {
-  const skipped: Record<string, number> = {};
-  const skip = (r: string) => void (skipped[r] = (skipped[r] ?? 0) + 1);
-  const empty = { considered: 0, founderNotices: 0, payerWarnings: 0, skipped };
+/** What one attempted milestone did: two of these are successes, the rest reasons. */
+type Outcome = "founder" | "payer" | "noRecipient" | "noFounderInbox" | "sendFailed";
 
-  // The window, both ends, in the DATABASE rather than the loop: a trial that ended
-  // last month is never loaded, and NULL `trialEndsAt` (every pre-T-a row) is
-  // excluded by the range itself.
-  const candidates = await db.tenantBilling.findMany({
-    where: {
-      trialEndsAt: {
-        gte: new Date(now.getTime() - LATE_GRACE_DAYS * DAY_MS),
-        lte: new Date(now.getTime() + FOUNDER_HEADS_UP_DAYS * DAY_MS),
-      },
-    },
-    select: {
-      id: true,
-      tenantSlug: true,
-      name: true,
-      email: true,
-      trialEndsAt: true,
-      // Newest subscription + first payments only: exactly what `planState` reads on
-      // the payer's own page (app/(control)/dashboard/billing/page.tsx).
-      subscriptions: {
-        orderBy: { createdAt: "desc" },
-        take: 1,
-        select: { status: true, amountCents: true, interval: true },
-      },
-      payments: { where: { sequenceType: "first" }, select: { sequenceType: true, status: true } },
-      billingIdentity: { select: { billingEmail: true } },
-      client: { select: { partner: { select: { name: true, email: true } } } },
-      payer: { select: { name: true, email: true } },
-      signupRequest: { select: { locale: true } },
-    },
-  });
-  if (candidates.length === 0) return empty;
-
-  // One query for the whole population's markers, not one per plan per run.
-  const markers = await db.auditLog.findMany({
-    where: {
-      action: { in: Object.values(TRIAL_WARNING_ACTIONS) },
-      entityType: "TenantBilling",
-      entityId: { in: candidates.map((c) => c.id) },
-    },
-    select: { entityId: true, action: true, meta: true },
-  });
-  const sentBefore = new Map<string, TrialWarning[]>();
-  for (const m of markers) {
-    const warning = WARNING_OF.get(m.action);
-    // `endsOn` is what makes an extension re-arm the warnings: a marker silences a
-    // milestone only for the date it was written about.
-    const endsOn = (m.meta as { endsOn?: string } | null)?.endsOn;
-    if (!warning || !m.entityId || !endsOn) continue;
-    const key = `${m.entityId}:${endsOn}`;
-    sentBefore.set(key, [...(sentBefore.get(key) ?? []), warning]);
-  }
-
-  const todo = candidates.flatMap((plan) => {
-    const sub = plan.subscriptions[0];
-    const verdict = trialWarningVerdict({
-      // The SAME verdict the payer's dashboard renders. A second opinion about
-      // whether a plan is in trial is how the mail and the page come to disagree.
-      state: planState(sub, plan.payments, { trialEndsAt: plan.trialEndsAt, now }),
-      trialEndsAt: plan.trialEndsAt,
-      now,
-      sent: sentBefore.get(`${plan.id}:${endsOnKey(plan.trialEndsAt as Date)}`) ?? [],
-    });
-    if (!verdict.warn) {
-      skip(verdict.reason);
-      return [];
-    }
-    // Unreachable (no subscription is `planState` "none"), and what lets the price
-    // reach the mail without a non-null assertion.
-    if (!sub) {
-      skip("noSubscription");
-      return [];
-    }
-    return [{ plan, sub, verdict }];
-  });
-  if (todo.length === 0) return empty;
-
-  // The language the control plane HOLDS for each payer: the partner application
-  // their address was captured on. One query for the batch; the self-serve fallback
-  // (`signupRequest.locale`) rides along on the plan already.
+/**
+ * The language the control plane HOLDS for each payer: the partner application their
+ * address was captured on. One query for the batch; the self-serve fallback
+ * (`signupRequest.locale`) rides along on the plan already.
+ */
+async function heldLocales(todo: TrialWarningTodo[]): Promise<Map<string, string>> {
   const applications = await db.partnerApplication.findMany({
     // Lowercased on both sides: the intake stores `data.email.toLowerCase()` while a
     // plan's address may be admin-typed in any case, and a mismatch here silently
@@ -148,49 +62,86 @@ export async function runTrialWarningSweep(
     orderBy: { createdAt: "desc" },
     select: { email: true, locale: true },
   });
-  const heldLocale = new Map<string, string>();
+  const held = new Map<string, string>();
   for (const a of applications) {
-    if (!heldLocale.has(a.email.toLowerCase())) heldLocale.set(a.email.toLowerCase(), a.locale);
+    if (!held.has(a.email.toLowerCase())) held.set(a.email.toLowerCase(), a.locale);
+  }
+  return held;
+}
+
+/** The send itself. `null` means there was nobody to write to — the one case that
+ *  must NOT leave a marker behind, because it is not a thing we have said. */
+async function attempt(
+  item: TrialWarningTodo,
+  warning: TrialWarning,
+  inbox: string | undefined,
+  locales: Map<string, string>,
+  to: string | null,
+): Promise<{ sent: boolean } | null> {
+  const { plan, sub, verdict } = item;
+  if (warning === "founder") return sendFounderNotice(inbox, plan, sub, verdict);
+  if (!to) return null;
+  return sendPayerWarning(to, plan, sub, verdict, locales.get(to.toLowerCase()));
+}
+
+/**
+ * Send ONE milestone for ONE plan, and record it.
+ *
+ * The audit row is written AFTER the send, so it carries the outcome — and it is
+ * written even when the send FAILED: re-warning on every later sweep is worse than
+ * one missed mail the founder can see (`emailed: false`) and re-send by hand.
+ */
+async function deliver(
+  item: TrialWarningTodo,
+  warning: TrialWarning,
+  inbox: string | undefined,
+  locales: Map<string, string>,
+): Promise<Outcome> {
+  const { plan, verdict } = item;
+  const result = await attempt(item, warning, inbox, locales, payerAddress(plan));
+  if (!result) return "noRecipient";
+
+  await audit(null, TRIAL_WARNING_ACTIONS[warning], "TenantBilling", plan.id, {
+    tenantSlug: plan.tenantSlug,
+    endsOn: endsOnKey(verdict.endsAt),
+    phase: verdict.phase,
+    daysLeft: verdict.daysLeft,
+    emailed: result.sent,
+  });
+
+  if (result.sent) return warning === "founder" ? "founder" : "payer";
+  return warning === "founder" && !inbox ? "noFounderInbox" : "sendFailed";
+}
+
+export async function runTrialWarningSweep(
+  now: Date = new Date(),
+): Promise<TrialWarningSweepResult> {
+  const { todo, skipped } = await findTrialWarningCandidates(now);
+  if (todo.length === 0) {
+    return { considered: 0, founderNotices: 0, payerWarnings: 0, skipped };
   }
 
+  const locales = await heldLocales(todo);
   const inbox = founderInbox();
   let founderNotices = 0;
   let payerWarnings = 0;
 
-  for (const { plan, sub, verdict } of todo) {
-    const to = payerAddress(plan);
+  for (const item of todo) {
     // Per plan, so one unusable row cannot abort the batch (slug only in the log
     // line — never an address, CLAUDE.md §5.8).
     try {
-      for (const warning of verdict.due) {
+      for (const warning of item.verdict.due) {
         // `due` is ordered founder-first, and this loop is why: the owner made the
         // partner's warning conditional on his own chance to extend, so even on the
         // one run where both come due he is still told first.
-        if (warning !== "founder" && !to) {
-          skip("noRecipient");
-          continue;
-        }
-        const { sent } =
-          warning === "founder"
-            ? await sendFounderNotice(inbox, plan, sub, verdict)
-            : await sendPayerWarning(to as string, plan, sub, verdict, heldLocale.get(to!.toLowerCase()));
-        // AFTER the send, so the row carries its outcome — and written even when the
-        // send failed: re-warning on every later sweep is worse than one missed mail
-        // the founder can see (`emailed: false`) and re-send by hand.
-        await audit(null, TRIAL_WARNING_ACTIONS[warning], "TenantBilling", plan.id, {
-          tenantSlug: plan.tenantSlug,
-          endsOn: endsOnKey(verdict.endsAt),
-          phase: verdict.phase,
-          daysLeft: verdict.daysLeft,
-          emailed: sent,
-        });
-        if (!sent) skip(warning === "founder" && !inbox ? "noFounderInbox" : "sendFailed");
-        else if (warning === "founder") founderNotices += 1;
-        else payerWarnings += 1;
+        const outcome = await deliver(item, warning, inbox, locales);
+        if (outcome === "founder") founderNotices += 1;
+        else if (outcome === "payer") payerWarnings += 1;
+        else bump(skipped, outcome);
       }
     } catch (e) {
-      skip("error");
-      console.error("trial-warning sweep: plan failed —", plan.tenantSlug, e);
+      bump(skipped, "error");
+      console.error("trial-warning sweep: plan failed —", item.plan.tenantSlug, e);
     }
   }
 
