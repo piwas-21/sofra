@@ -1228,5 +1228,33 @@
       "title": "Terms",
       "body": "We have no published terms of service yet. Until we do, what applies is what we agree with you in writing — ask us and we will confirm it."
     }
+  },
+  "emails": {
+    "trialEnding": {
+      "kicker": "Your free period",
+      "subject": {
+        "soon": "Your free period on SofraPiwas ends on {date}",
+        "today": "Your free period on SofraPiwas ends today",
+        "ended": "Your free period on SofraPiwas has ended"
+      },
+      "title": {
+        "soon": "Free until {date}",
+        "today": "Your free period ends today",
+        "ended": "Your free period has ended"
+      },
+      "greeting": "Hi {name},",
+      "lead": {
+        "soon": "The free period on {restaurant} runs to the end of {date} — {days, plural, one {# day} other {# days}} from now.",
+        "today": "The free period on {restaurant} runs to the end of today, {date}.",
+        "ended": "The free period on {restaurant} ended on {date}."
+      },
+      "noAutoCharge": "Nothing is charged automatically. We hold no card for you and no payment can start on its own — {restaurant} keeps running exactly as it does now.",
+      "howToStart": "When you are ready to continue, you start the monthly subscription yourself from your dashboard. It takes a minute.",
+      "rowRestaurant": "Restaurant",
+      "rowFreeUntil": "Free until",
+      "rowPlan": "Monthly",
+      "cta": "Open your billing page",
+      "footerNote": "Need more time, or have a question about the price? Just reply to this email — a person reads it."
+    }
   }
 }

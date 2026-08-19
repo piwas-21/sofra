@@ -1,0 +1,62 @@
+name: trial-warning-cron
+
+# Warns a payer that their free period is ending, and warns the FOUNDER first
+# (POST /api/cron/trial-warnings on the live sofra). The sweep sends at most one
+# mail per milestone per trial end date — an audit-row marker, the same mechanism
+# as go-live-cron — so this workflow is safe to merge and safe to re-run.
+#
+# Setup (one-time, owner): the same shared bearer secret the other two crons use —
+# must equal CRON_SECRET in the box env for the request to authorize:
+#   gh secret set CRON_SECRET -R piwas-21/sofra
+# Until it is set, the job logs a warning and exits cleanly (sends nothing).
+
+on:
+  schedule:
+    # ~08:07 UTC daily. DAILY, not hourly: every milestone is a threshold ("7 days
+    # or fewer left"), never an equality, so one run a day is enough to catch each
+    # one — and a mail about a date is not more true at 03:00 than at 09:00. The
+    # hour is a working-morning hour in CET/CEST because this mail asks a partner to
+    # do something, and the minute is offset from the other crons so three sweeps do
+    # not contend for the same single-container database.
+    - cron: "7 8 * * *"
+  workflow_dispatch: {} # manual run for testing
+
+permissions:
+  contents: read
+
+concurrency:
+  # Not cosmetic here. The send-once marker is written AFTER each send, so two
+  # overlapping sweeps could both read "not yet warned" for the same plan; the
+  # group makes a manual dispatch queue behind a scheduled run instead of racing
+  # it. GitHub can still deliver a schedule twice in principle, which is why the
+  # marker exists as well — belt and braces, in that order.
+  group: trial-warning-cron
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    name: warn about ending free periods
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: POST /api/cron/trial-warnings
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -uo pipefail
+          if [ -z "${CRON_SECRET}" ]; then
+            echo "::warning::CRON_SECRET not set — skipping (endpoint would 401)."
+            exit 0
+          fi
+          resp=$(curl -sS --max-time 60 --retry 2 --retry-delay 10 --retry-all-errors \
+            -X POST "https://sofrapiwas.com/api/cron/trial-warnings" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -w "\n%{http_code}")
+          code=$(printf '%s' "$resp" | tail -n1)
+          body=$(printf '%s' "$resp" | sed '$d')
+          echo "HTTP $code"
+          echo "$body"
+          if [ "$code" != "200" ]; then
+            echo "::error::trial-warning sweep failed (HTTP $code)"
+            exit 1
+          fi

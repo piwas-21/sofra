@@ -488,6 +488,12 @@ jobs:
             echo "AUTH_SECRET=$(openssl rand -hex 24)"
             echo "E2E_ADMIN_PASSWORD=$(openssl rand -hex 12)"
             echo "E2E_PARTNER_PASSWORD=$(openssl rand -hex 12)"
+            # The cron bearer (lib/cron-auth.ts). Generated rather than written
+            # as a literal for the same reason as the rest: a constant here is a
+            # secret-scanner hit that teaches people to ignore the scanner. The
+            # trial-warning spec reads it from the environment and hard-ERRORS
+            # without it — a 401 that skips would verify nothing.
+            echo "CRON_SECRET=$(openssl rand -hex 16)"
           } >> "$GITHUB_ENV"
       - name: Apply migrations
         run: node_modules/.bin/prisma migrate deploy

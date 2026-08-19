@@ -65,6 +65,10 @@ export E2E_ADMIN_EMAIL="e2e-admin@example.test"
 export E2E_PARTNER_EMAIL="e2e-partner@example.test"
 E2E_ADMIN_PASSWORD="$(openssl rand -hex 12)"; export E2E_ADMIN_PASSWORD
 E2E_PARTNER_PASSWORD="$(openssl rand -hex 12)"; export E2E_PARTNER_PASSWORD
+# The cron bearer (lib/cron-auth.ts), for the trial-warning sweep spec. Without it
+# /api/cron/* answers 503 and the spec would assert nothing; a fresh random value
+# per run keeps it out of the repo and out of any scanner's way.
+CRON_SECRET="$(openssl rand -hex 16)"; export CRON_SECRET
 # The suite's own registry, not the sibling deploy repo: `taken` needs a
 # known-occupied slug, and an ABSENT registry is not neutral — since O2 an
 # unreadable one makes the signup fail closed.

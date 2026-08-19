@@ -1228,5 +1228,33 @@
       "title": "Voorwaarden",
       "body": "Wij hebben nog geen gepubliceerde voorwaarden. Tot die er zijn geldt wat wij schriftelijk met u afspreken — vraag het ons en wij bevestigen het."
     }
+  },
+  "emails": {
+    "trialEnding": {
+      "kicker": "Uw gratis periode",
+      "subject": {
+        "soon": "Uw gratis periode bij SofraPiwas eindigt op {date}",
+        "today": "Uw gratis periode bij SofraPiwas eindigt vandaag",
+        "ended": "Uw gratis periode bij SofraPiwas is afgelopen"
+      },
+      "title": {
+        "soon": "Gratis tot {date}",
+        "today": "Uw gratis periode eindigt vandaag",
+        "ended": "Uw gratis periode is afgelopen"
+      },
+      "greeting": "Hallo {name},",
+      "lead": {
+        "soon": "De gratis periode van {restaurant} loopt tot het eind van {date} — over {days, plural, one {# dag} other {# dagen}}.",
+        "today": "De gratis periode van {restaurant} loopt tot het eind van vandaag, {date}.",
+        "ended": "De gratis periode van {restaurant} is op {date} afgelopen."
+      },
+      "noAutoCharge": "Er wordt niets automatisch afgeschreven. We hebben geen kaartgegevens van u en geen betaling begint vanzelf — {restaurant} blijft precies zo draaien als nu.",
+      "howToStart": "Wanneer u verder wilt, start u het maandabonnement zelf vanuit uw dashboard. Het kost een minuut.",
+      "rowRestaurant": "Restaurant",
+      "rowFreeUntil": "Gratis tot",
+      "rowPlan": "Per maand",
+      "cta": "Open uw factuurpagina",
+      "footerNote": "Meer tijd nodig of een vraag over de prijs? Beantwoord deze e-mail gewoon — een mens leest hem."
+    }
   }
 }

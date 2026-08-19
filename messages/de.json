@@ -1228,5 +1228,33 @@
       "title": "Bedingungen",
       "body": "Wir haben noch keine veröffentlichten Nutzungsbedingungen. Bis dahin gilt, was wir mit Ihnen schriftlich vereinbaren — fragen Sie uns, wir bestätigen es."
     }
+  },
+  "emails": {
+    "trialEnding": {
+      "kicker": "Ihr Gratiszeitraum",
+      "subject": {
+        "soon": "Ihr Gratiszeitraum bei SofraPiwas endet am {date}",
+        "today": "Ihr Gratiszeitraum bei SofraPiwas endet heute",
+        "ended": "Ihr Gratiszeitraum bei SofraPiwas ist abgelaufen"
+      },
+      "title": {
+        "soon": "Kostenlos bis {date}",
+        "today": "Ihr Gratiszeitraum endet heute",
+        "ended": "Ihr Gratiszeitraum ist abgelaufen"
+      },
+      "greeting": "Hallo {name},",
+      "lead": {
+        "soon": "Der Gratiszeitraum für {restaurant} läuft bis zum Ende des {date} — in {days, plural, one {# Tag} other {# Tagen}}.",
+        "today": "Der Gratiszeitraum für {restaurant} läuft noch bis zum Ende des heutigen Tages, {date}.",
+        "ended": "Der Gratiszeitraum für {restaurant} endete am {date}."
+      },
+      "noAutoCharge": "Es wird nichts automatisch abgebucht. Wir haben keine Karte hinterlegt und keine Zahlung startet von allein — {restaurant} läuft genau so weiter wie bisher.",
+      "howToStart": "Wenn Sie weitermachen möchten, starten Sie das Monatsabo selbst in Ihrem Dashboard. Das dauert eine Minute.",
+      "rowRestaurant": "Restaurant",
+      "rowFreeUntil": "Kostenlos bis",
+      "rowPlan": "Pro Monat",
+      "cta": "Zur Abrechnungsseite",
+      "footerNote": "Mehr Zeit nötig oder eine Frage zum Preis? Antworten Sie einfach auf diese E-Mail — ein Mensch liest sie."
+    }
   }
 }
