@@ -108,38 +108,65 @@ describe("languageLabels", () => {
 
 describe("planLine", () => {
   const sub = (status: string) => ({ amountCents: 4500, interval: "1 month", status });
+  const NOW = new Date("2026-08-19T12:00:00.000Z");
 
   it("returns null when no plan has been defined at all", () => {
-    expect(planLine(null)).toBeNull();
-    expect(planLine(undefined)).toBeNull();
+    expect(planLine(null, NOW)).toBeNull();
+    expect(planLine(undefined, NOW)).toBeNull();
   });
 
   it("reports a PENDING plan with no paid first payment as payable", () => {
-    expect(planLine({ subscriptions: [sub("PENDING")], payments: [] })).toEqual({
+    expect(planLine({ trialEndsAt: null, subscriptions: [sub("PENDING")], payments: [] }, NOW)).toEqual({
       state: "pay",
       amountCents: 4500,
       interval: "1 month",
+      trialEndsAt: null,
+    });
+  });
+
+  it("reports a plan inside its free period as 'trial', and carries the date to print", () => {
+    const endsAt = new Date("2026-09-19T23:59:59.999Z");
+    expect(planLine({ trialEndsAt: endsAt, subscriptions: [sub("PENDING")], payments: [] }, NOW)).toEqual({
+      state: "trial",
+      amountCents: 4500,
+      interval: "1 month",
+      trialEndsAt: endsAt,
+    });
+  });
+
+  it("goes back to payable once the free period has passed", () => {
+    const endsAt = new Date("2026-08-18T23:59:59.999Z");
+    const line = planLine({ trialEndsAt: endsAt, subscriptions: [sub("PENDING")], payments: [] }, NOW);
+    // The date is still carried — the founder's list needs to say WHEN it ended —
+    // but the partner is payable again. Nothing suspends, nothing auto-charges (O-T2).
+    expect(line).toEqual({
+      state: "pay",
+      amountCents: 4500,
+      interval: "1 month",
+      trialEndsAt: endsAt,
     });
   });
 
   it("reports the mandate window as 'processing' — never as payable", () => {
     // A pay button here is a second charge on a card that has already paid.
     const line = planLine({
+      trialEndsAt: null,
       subscriptions: [sub("PENDING")],
       payments: [{ sequenceType: "first", status: "paid" }],
-    });
+    }, NOW);
     expect(line?.state).toBe("processing");
   });
 
   it("reports an active plan with its amount", () => {
-    expect(planLine({ subscriptions: [sub("ACTIVE")], payments: [] })?.state).toBe("active");
+    expect(planLine({ trialEndsAt: null, subscriptions: [sub("ACTIVE")], payments: [] }, NOW)?.state).toBe("active");
   });
 
   it("survives a plan row with no subscription", () => {
-    expect(planLine({ subscriptions: [], payments: [] })).toEqual({
+    expect(planLine({ trialEndsAt: null, subscriptions: [], payments: [] }, NOW)).toEqual({
       state: "none",
       amountCents: null,
       interval: null,
+      trialEndsAt: null,
     });
   });
 });
@@ -151,14 +178,19 @@ describe("clientRowSummary", () => {
         status: "LIVE",
         tenantSlug: "obresse",
         registry: okRegistry(),
-        billing: { subscriptions: [{ amountCents: 4500, interval: "1 month", status: "ACTIVE" }], payments: [] },
+        billing: {
+          trialEndsAt: null,
+          subscriptions: [{ amountCents: 4500, interval: "1 month", status: "ACTIVE" }],
+          payments: [],
+        },
+        now: new Date("2026-08-19T12:00:00.000Z"),
       }),
     ).toEqual({
       domain: "obresse.sofrapiwas.com",
       tenantStatus: "active",
       view: "live",
       slug: "obresse",
-      plan: { state: "active", amountCents: 4500, interval: "1 month" },
+      plan: { state: "active", amountCents: 4500, interval: "1 month", trialEndsAt: null },
     });
   });
 
@@ -168,6 +200,7 @@ describe("clientRowSummary", () => {
       tenantSlug: "obresse",
       registry: failedRegistry,
       billing: null,
+      now: new Date("2026-08-19T12:00:00.000Z"),
     });
     expect(summary.domain).toBeNull();
     expect(summary.tenantStatus).toBeNull();
@@ -181,6 +214,7 @@ describe("clientRowSummary", () => {
       tenantSlug: null,
       registry: okRegistry(),
       billing: null,
+      now: new Date("2026-08-19T12:00:00.000Z"),
     });
     expect(summary.view).toBe("none");
     expect(clientTenantView({ status: "AGREED", tenantSlug: null, registry: okRegistry() }).kind)

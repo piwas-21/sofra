@@ -6,6 +6,7 @@ import type { ClientRowSummary } from "@/lib/client-tenant";
 /** `planState` → a short `control.tenant.row*` label. Total by construction, so a new
  *  plan state cannot silently render as nothing. */
 const PLAN_STATE_KEY: Record<PlanState, string> = {
+  trial: "rowTrial",
   pay: "rowPay",
   processing: "rowProcessing",
   active: "rowActive",

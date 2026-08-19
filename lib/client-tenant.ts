@@ -114,9 +114,13 @@ export interface PlanLine {
   amountCents: number | null;
   /** Mollie interval grammar, for `intervalKeyOf`. Null with no subscription. */
   interval: string | null;
+  /** The free period's end, carried so the caller can PRINT the date `state`
+   *  already decided on. Never re-judged downstream (T-b). */
+  trialEndsAt: Date | null;
 }
 
 interface BillingLike {
+  readonly trialEndsAt: Date | null;
   readonly subscriptions: readonly { readonly amountCents: number; readonly interval: string; readonly status: string }[];
   readonly payments: readonly { readonly sequenceType: string; readonly status: string }[];
 }
@@ -133,14 +137,19 @@ interface BillingLike {
  * `payments` must be the FIRST-sequence window — the same scoping the dashboard query
  * documents. Handed a full history it would eventually push the `first` payment out of
  * the window and read a paid plan as unpaid.
+ *
+ * `now` is injected rather than read here so the row and the panel judge one plan
+ * against ONE instant, and so the free-period boundary is a test rather than a race
+ * against the wall clock.
  */
-export function planLine(billing: BillingLike | null | undefined): PlanLine | null {
+export function planLine(billing: BillingLike | null | undefined, now: Date): PlanLine | null {
   if (!billing) return null;
   const sub = billing.subscriptions[0];
   return {
-    state: planState(sub, [...billing.payments]),
+    state: planState(sub, [...billing.payments], { trialEndsAt: billing.trialEndsAt, now }),
     amountCents: sub?.amountCents ?? null,
     interval: sub?.interval ?? null,
+    trialEndsAt: billing.trialEndsAt,
   };
 }
 
@@ -167,6 +176,7 @@ export function clientRowSummary(args: {
   tenantSlug: string | null;
   registry: RegistryResult;
   billing: BillingLike | null | undefined;
+  now: Date;
 }): ClientRowSummary {
   const view = clientTenantView(args);
   return {
@@ -174,6 +184,6 @@ export function clientRowSummary(args: {
     tenantStatus: view.kind === "live" ? view.tenant.status : null,
     view: view.kind,
     slug: args.tenantSlug,
-    plan: planLine(args.billing),
+    plan: planLine(args.billing, args.now),
   };
 }

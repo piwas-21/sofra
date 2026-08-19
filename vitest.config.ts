@@ -44,6 +44,10 @@ export default defineConfig({
         "lib/retention-policy.ts",
         "lib/seo.ts",
         "lib/billing-display.ts",
+        // T — the free period. Pure by construction (`now` is always passed in), and
+        // the one module where a wrong branch either charges a restaurant that was
+        // promised a free month or gives away one that was already paid for.
+        "lib/trial.ts",
         "lib/self-serve-signup.ts",
         "lib/provisioning-payment-gate.ts",
         "lib/auto-provision-policy.ts",

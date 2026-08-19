@@ -14,6 +14,8 @@ import { isInvoiceable } from "@/lib/billing-identity";
 import { resolveIdentityForPlan } from "@/lib/identity-upsert";
 import { planDeletionVerdict, settledOrInFlight } from "@/lib/plan-deletion";
 import DeletePlanForm from "@/components/control/DeletePlanForm";
+import TrialPanel from "@/components/control/TrialPanel";
+import PlanPaymentsList from "@/components/control/PlanPaymentsList";
 
 // Mollie interval string → control.admin.intervals key (display only).
 const intervalKey = (mollie: string) =>
@@ -117,6 +119,10 @@ export default async function AdminBillingDetailPage({
         )}
       </section>
 
+      {/* The free period, and the only control that changes it (T-c). Above the
+          subscriptions on purpose: whether money is owed comes before what it costs. */}
+      <TrialPanel locale={locale} billingId={billing.id} trialEndsAt={billing.trialEndsAt} />
+
       <section>
         <h2 className="font-hand text-3xl font-bold">{t("billingDetail.subscriptions")}</h2>
         <ul className="mt-4 grid gap-3">
@@ -167,29 +173,9 @@ export default async function AdminBillingDetailPage({
         </div>
       </section>
 
-      <section>
-        <h2 className="font-hand text-3xl font-bold">{t("billingDetail.payments")}</h2>
-        <ul className="mt-4 grid gap-2">
-          {billing.payments.map((p) => (
-            <li
-              key={p.id}
-              className="hand-drawn-border bg-card p-3 font-label text-sm flex flex-wrap justify-between gap-2"
-            >
-              <span>
-                {p.description} · {p.sequenceType}
-                {p.method ? ` · ${p.method}` : ""}
-              </span>
-              <span>
-                {eur(p.amountCents)} · <span className="font-bold">{p.status}</span> ·{" "}
-                {shortDate(p.paidAt ?? p.createdAt)}
-              </span>
-            </li>
-          ))}
-          {billing.payments.length === 0 && (
-            <li className="font-label text-muted-foreground">{t("billingDetail.noPayments")}</li>
-          )}
-        </ul>
-      </section>
+      {/* Extracted verbatim when this page reached its §4 length limit — the most
+          mechanical section on it, and the only one that is pure presentation. */}
+      <PlanPaymentsList locale={locale} payments={billing.payments} />
     </div>
   );
 }
