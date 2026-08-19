@@ -592,7 +592,10 @@
         "active": "actief",
         "awaitingFirstPayment": "{count} plan(nen) wachten op de eerste betaling",
         "lastPayment": "laatste betaling: {status} ({amount})",
-        "empty": "Nog geen facturatie-accounts."
+        "empty": "Nog geen facturatie-accounts.",
+        "trialActive": "gratis tot {date} (nog {days} dag(en))",
+        "trialExpired": "gratis periode geëindigd op {date}",
+        "trialExpiredBanner": "{count} plan(nen) zijn hun gratis periode voorbij en niemand is om betaling gevraagd: {slugs}"
       },
       "billingForm": {
         "slug": "Tenant-slug (registrysleutel, bijv. demo)",
@@ -865,6 +868,19 @@
           "hasPaidPayments": "Verwijderen niet mogelijk: er is geld ontvangen op dit plan, en de betaalregistratie is de audittrail.",
           "hasLiveSubscription": "Verwijderen niet mogelijk: een abonnement kan nog geïncasseerd worden. Zeg het eerst op, anders blijft Mollie een klant belasten die dit systeem niet meer kent."
         }
+      },
+      "trial": {
+        "title": "Gratis periode",
+        "intro": "Alleen verlengen: een gratis periode kan naar achteren worden geschoven, nooit ingekort. De reden wordt samen met beide datums in het auditlog bewaard.",
+        "none": "Geen gratis periode op dit plan — het is nu betaalbaar.",
+        "active": "Gratis tot {date} — nog {days} dag(en).",
+        "expired": "De gratis periode eindigde op {date}. Dit plan is nu betaalbaar.",
+        "dateLabel": "Gratis tot (de hele dag, UTC)",
+        "reasonLabel": "Waarom",
+        "reasonPlaceholder": "bijv. het restaurant twijfelt nog",
+        "submit": "Gratis periode verlengen",
+        "saving": "Opslaan…",
+        "saved": "Opgeslagen."
       }
     },
     "errors": {
@@ -916,7 +932,12 @@
         "hasInvoices": "Verwijderen niet mogelijk: een uitgegeven factuur noemt deze tenant, en een factuur mag niet gericht blijven aan een plan dat niet meer bestaat.",
         "hasPaidPayments": "Verwijderen niet mogelijk: er is geld ontvangen op dit plan, en de betaalregistratie is de audittrail.",
         "hasLiveSubscription": "Verwijderen niet mogelijk: een abonnement kan nog geïncasseerd worden. Zeg het eerst op, anders blijft Mollie een klant belasten die dit systeem niet meer kent."
-      }
+      },
+      "trialDateInvalid": "Die datum kon niet worden gelezen — gebruik het datumveld.",
+      "trialNotLonger": "Een gratis periode kan alleen worden verlengd. Kies een datum na de huidige.",
+      "trialTooFar": "Dat is meer dan een jaar vooruit — verleng in kleinere stappen.",
+      "trialReasonRequired": "Geef een korte reden — die wordt bij de wijziging bewaard.",
+      "trialChangedMeanwhile": "De gratis periode van dit plan is gewijzigd terwijl deze pagina openstond. Herlaad en kijk opnieuw."
     },
     "plan": {
       "title": "Jouw abonnement",
@@ -930,7 +951,6 @@
       "firstChargeNote": "Je betaalt nu de eerste maand, daarna wordt het automatisch verlengd. Altijd opzegbaar.",
       "startPayment": "Automatische maandbetaling starten",
       "redirecting": "Doorsturen naar afrekenen…",
-      "awaitingPayment": "Wachten op je eerste betaling.",
       "processing": "Betaling wordt verwerkt — dit kan even duren.",
       "active": "Actief.",
       "activeNextCharge": "Actief — volgende afschrijving op {date}.",
@@ -963,7 +983,9 @@
         "other": "{status}"
       },
       "addBillingDetails": "Vul uw factuurgegevens in",
-      "billingDetailsFirst": "We hebben het bedrijf nodig waaraan uw factuur gericht moet worden voordat we incasseren — het kost een minuut."
+      "billingDetailsFirst": "We hebben het bedrijf nodig waaraan uw factuur gericht moet worden voordat we incasseren — het kost een minuut.",
+      "trialFreeUntil": "Gratis tot {date} — nog geen betaling nodig.",
+      "trialFree": "Nog geen betaling nodig."
     },
     "tenantReady": {
       "readyKicker": "Je app is klaar",
@@ -1053,7 +1075,8 @@
         "printing": "Companion-app voor thermische printers",
         "online-payments": "Kaart en lokale methoden zoals iDEAL of TWINT, direct op je eigen Stripe-account",
         "extra-languages": "Naast Engels + één, tot 10 talen"
-      }
+      },
+      "rowTrial": "gratis periode"
     },
     "changeRequest": {
       "placeholder": "bijv. ze willen reserveringen erbij, of een andere stijl.",

@@ -89,3 +89,46 @@ tenants:
     db: tenant_e2e_partner_note
     languages: [en]
     modules: [core]
+  # The free period (SOFRA-PARTNER-FLEXIBILITY-PLAN T-b). TWO slugs, one per state,
+  # for the same reason the pair above have their own: `TenantBilling.tenantSlug` is
+  # UNIQUE, so two specs sharing a slug is a cross-spec race under parallel workers.
+  e2e-partner-trial:
+    name: E2E Partner Trial Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-partner-trial.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_partner_trial
+    languages: [en]
+    modules: [core]
+  e2e-partner-extend:
+    name: E2E Partner Extend Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-partner-extend.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_partner_extend
+    languages: [en]
+    modules: [core]
+  e2e-partner-noextend:
+    name: E2E Partner No-Extend Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-partner-noextend.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_partner_noextend
+    languages: [en]
+    modules: [core]
+  e2e-partner-expired:
+    name: E2E Partner Expired Trial Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-partner-expired.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_partner_expired
+    languages: [en]
+    modules: [core]

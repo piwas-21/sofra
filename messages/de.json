@@ -592,7 +592,10 @@
         "active": "aktiv",
         "awaitingFirstPayment": "{count} Plan/Pläne warten auf die erste Zahlung",
         "lastPayment": "letzte Zahlung: {status} ({amount})",
-        "empty": "Noch keine Abrechnungskonten."
+        "empty": "Noch keine Abrechnungskonten.",
+        "trialActive": "kostenlos bis {date} (noch {days} Tag(e))",
+        "trialExpired": "Gratiszeitraum endete am {date}",
+        "trialExpiredBanner": "{count} Plan/Pläne sind über den Gratiszeitraum hinaus, ohne dass jemand zur Zahlung aufgefordert wurde: {slugs}"
       },
       "billingForm": {
         "slug": "Tenant-Slug (Registry-Schlüssel, z. B. demo)",
@@ -865,6 +868,19 @@
           "hasPaidPayments": "Löschen nicht möglich: Auf diesem Tarif wurde Geld verbucht, und der Zahlungsdatensatz ist der Prüfpfad.",
           "hasLiveSubscription": "Löschen nicht möglich: Ein Abonnement kann noch belastet werden. Zuerst kündigen, sonst berechnet Mollie weiter einem Kunden, den dieses System nicht mehr kennt."
         }
+      },
+      "trial": {
+        "title": "Gratiszeitraum",
+        "intro": "Nur Verlängerung: Ein Gratiszeitraum kann nach hinten verschoben, aber nie verkürzt werden. Der Grund wird zusammen mit beiden Daten im Audit-Log festgehalten.",
+        "none": "Kein Gratiszeitraum für diesen Plan — er ist ab sofort zahlbar.",
+        "active": "Kostenlos bis {date} — noch {days} Tag(e).",
+        "expired": "Der Gratiszeitraum endete am {date}. Dieser Plan ist jetzt zahlbar.",
+        "dateLabel": "Kostenlos bis (der ganze Tag, UTC)",
+        "reasonLabel": "Grund",
+        "reasonPlaceholder": "z. B. das Restaurant überlegt noch",
+        "submit": "Gratiszeitraum verlängern",
+        "saving": "Wird gespeichert…",
+        "saved": "Gespeichert."
       }
     },
     "errors": {
@@ -916,7 +932,12 @@
         "hasInvoices": "Löschen nicht möglich: Eine ausgestellte Rechnung nennt diesen Mandanten, und eine Rechnung darf nicht an einen Tarif adressiert bleiben, den es nicht mehr gibt.",
         "hasPaidPayments": "Löschen nicht möglich: Auf diesem Tarif wurde Geld verbucht, und der Zahlungsdatensatz ist der Prüfpfad.",
         "hasLiveSubscription": "Löschen nicht möglich: Ein Abonnement kann noch belastet werden. Zuerst kündigen, sonst berechnet Mollie weiter einem Kunden, den dieses System nicht mehr kennt."
-      }
+      },
+      "trialDateInvalid": "Dieses Datum konnte nicht gelesen werden — bitte das Datumsfeld verwenden.",
+      "trialNotLonger": "Ein Gratiszeitraum kann nur verlängert werden. Bitte ein Datum nach dem aktuellen wählen.",
+      "trialTooFar": "Das liegt mehr als ein Jahr in der Zukunft — bitte in kleineren Schritten verlängern.",
+      "trialReasonRequired": "Bitte einen kurzen Grund angeben — er wird mit der Änderung gespeichert.",
+      "trialChangedMeanwhile": "Der Gratiszeitraum dieses Plans hat sich geändert, während diese Seite offen war. Bitte neu laden und noch einmal nachsehen."
     },
     "plan": {
       "title": "Ihr Abo",
@@ -930,7 +951,6 @@
       "firstChargeNote": "Sie zahlen jetzt den ersten Monat, danach verlängert es sich automatisch. Jederzeit kündbar.",
       "startPayment": "Automatische Monatszahlung starten",
       "redirecting": "Weiterleitung zur Kasse…",
-      "awaitingPayment": "Warten auf Ihre erste Zahlung.",
       "processing": "Zahlung wird verarbeitet — das kann einen Moment dauern.",
       "active": "Aktiv.",
       "activeNextCharge": "Aktiv — nächste Abbuchung am {date}.",
@@ -963,7 +983,9 @@
         "other": "{status}"
       },
       "addBillingDetails": "Rechnungsdaten hinzufügen",
-      "billingDetailsFirst": "Wir brauchen das Unternehmen, an das Ihre Rechnung gehen soll, bevor wir abbuchen — das dauert eine Minute."
+      "billingDetailsFirst": "Wir brauchen das Unternehmen, an das Ihre Rechnung gehen soll, bevor wir abbuchen — das dauert eine Minute.",
+      "trialFreeUntil": "Kostenlos bis {date} — bisher ist keine Zahlung nötig.",
+      "trialFree": "Bisher ist keine Zahlung nötig."
     },
     "tenantReady": {
       "readyKicker": "Ihre App ist bereit",
@@ -1053,7 +1075,8 @@
         "printing": "Begleit-App für Thermodrucker",
         "online-payments": "Karte und lokale Methoden wie TWINT oder iDEAL, direkt auf Ihr eigenes Stripe-Konto",
         "extra-languages": "Über Englisch + eine hinaus, bis zu 10 Sprachen"
-      }
+      },
+      "rowTrial": "Gratiszeitraum"
     },
     "changeRequest": {
       "placeholder": "z. B. Reservierungen sollen dazu, oder ein anderer Look.",

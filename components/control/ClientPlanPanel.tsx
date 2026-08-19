@@ -25,6 +25,8 @@ export type ClientPlanBilling = {
   billingIdentityId: string | null;
   payerUserId: string | null;
   billingIdentity: BillingIdentity | null;
+  /** The free period's end (T). Null = no trial, i.e. payable now. */
+  trialEndsAt: Date | null;
   client: { partnerId: string } | null;
   subscriptions: { amountCents: number; interval: string; status: string; startDate: Date | null }[];
   /** FIRST-sequence payments only — what `planState` reads (see the dashboard query). */
@@ -40,7 +42,10 @@ export default async function ClientPlanPanel({
 }) {
   const t = await getTranslations({ locale, namespace: "control.tenant" });
   const tp = await getTranslations({ locale, namespace: "control.plan" });
-  const line = planLine(billing);
+  // One instant for the whole render: the state and the date printed under it must
+  // come from the same reading of the clock.
+  const now = new Date();
+  const line = planLine(billing, now);
 
   if (!billing || !line) {
     return (
@@ -86,7 +91,8 @@ export default async function ClientPlanPanel({
         state={line.state}
         billingId={billing.id}
         invoiceable={invoiceable}
-        nextCharge={sub ? nextChargeDate(sub.startDate, sub.interval, new Date()) : null}
+        nextCharge={sub ? nextChargeDate(sub.startDate, sub.interval, now) : null}
+        trialEndsAt={line.trialEndsAt}
       />
 
       <p className="font-label text-sm text-muted-foreground">{t("planNote")}</p>

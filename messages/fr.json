@@ -592,7 +592,10 @@
         "active": "actif",
         "awaitingFirstPayment": "{count} plan(s) en attente du premier paiement",
         "lastPayment": "dernier paiement : {status} ({amount})",
-        "empty": "Pas encore de comptes de facturation."
+        "empty": "Pas encore de comptes de facturation.",
+        "trialActive": "gratuit jusqu'au {date} ({days} jour(s) restant(s))",
+        "trialExpired": "période gratuite terminée le {date}",
+        "trialExpiredBanner": "{count} plan(s) ont dépassé leur période gratuite sans qu'un paiement ait été demandé : {slugs}"
       },
       "billingForm": {
         "slug": "Slug du tenant (clé du registre, ex. demo)",
@@ -865,6 +868,19 @@
           "hasPaidPayments": "Suppression impossible : des paiements ont été encaissés, et cet enregistrement constitue la piste d'audit.",
           "hasLiveSubscription": "Suppression impossible : un abonnement peut encore être prélevé. Annulez-le d'abord, sinon Mollie continue de facturer un client que ce système ne connaît plus."
         }
+      },
+      "trial": {
+        "title": "Période gratuite",
+        "intro": "Prolongation uniquement : une période gratuite peut être repoussée, jamais raccourcie. Le motif est conservé dans le journal d'audit avec les deux dates.",
+        "none": "Aucune période gratuite sur ce plan — il est payable dès maintenant.",
+        "active": "Gratuit jusqu'au {date} — {days} jour(s) restant(s).",
+        "expired": "La période gratuite s'est terminée le {date}. Ce plan est payable dès maintenant.",
+        "dateLabel": "Gratuit jusqu'au (toute la journée, UTC)",
+        "reasonLabel": "Motif",
+        "reasonPlaceholder": "ex. le restaurant réfléchit encore",
+        "submit": "Prolonger la période gratuite",
+        "saving": "Enregistrement…",
+        "saved": "Enregistré."
       }
     },
     "errors": {
@@ -916,7 +932,12 @@
         "hasInvoices": "Suppression impossible : une facture émise nomme ce locataire, et une facture ne doit pas rester adressée à un forfait qui n'existe plus.",
         "hasPaidPayments": "Suppression impossible : des paiements ont été encaissés, et cet enregistrement constitue la piste d'audit.",
         "hasLiveSubscription": "Suppression impossible : un abonnement peut encore être prélevé. Annulez-le d'abord, sinon Mollie continue de facturer un client que ce système ne connaît plus."
-      }
+      },
+      "trialDateInvalid": "Cette date n'a pas pu être lue — utilisez le champ de date.",
+      "trialNotLonger": "Une période gratuite ne peut qu'être prolongée. Choisissez une date postérieure à l'actuelle.",
+      "trialTooFar": "C'est à plus d'un an — prolongez par étapes plus courtes.",
+      "trialReasonRequired": "Indiquez un bref motif — il est conservé avec la modification.",
+      "trialChangedMeanwhile": "La période gratuite de ce plan a changé pendant que cette page était ouverte. Rechargez et vérifiez."
     },
     "plan": {
       "title": "Votre abonnement",
@@ -930,7 +951,6 @@
       "firstChargeNote": "Vous payez le premier mois maintenant, puis le renouvellement est automatique. Annulable à tout moment.",
       "startPayment": "Démarrer le paiement mensuel automatique",
       "redirecting": "Redirection vers le paiement…",
-      "awaitingPayment": "En attente de votre premier paiement.",
       "processing": "Paiement en cours — cela peut prendre une minute.",
       "active": "Actif.",
       "activeNextCharge": "Actif — prochain prélèvement le {date}.",
@@ -963,7 +983,9 @@
         "other": "{status}"
       },
       "addBillingDetails": "Ajouter vos informations de facturation",
-      "billingDetailsFirst": "Nous avons besoin de la société à laquelle adresser votre facture avant d'encaisser — cela prend une minute."
+      "billingDetailsFirst": "Nous avons besoin de la société à laquelle adresser votre facture avant d'encaisser — cela prend une minute.",
+      "trialFreeUntil": "Gratuit jusqu'au {date} — aucun paiement nécessaire pour l'instant.",
+      "trialFree": "Aucun paiement nécessaire pour l'instant."
     },
     "tenantReady": {
       "readyKicker": "Votre application est prête",
@@ -1053,7 +1075,8 @@
         "printing": "Application compagnon pour imprimantes thermiques",
         "online-payments": "Carte et méthodes locales comme TWINT ou iDEAL, versées sur votre propre compte Stripe",
         "extra-languages": "Au-delà de l'anglais + une, jusqu'à 10 langues"
-      }
+      },
+      "rowTrial": "période gratuite"
     },
     "changeRequest": {
       "placeholder": "ex. : ils aimeraient ajouter les réservations, ou changer de style.",

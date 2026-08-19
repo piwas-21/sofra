@@ -382,6 +382,69 @@ export async function arrangeUserWithPassword(email: string, password: string): 
 }
 
 /**
+ * An ADMIN with a password, seeded per spec.
+ *
+ * Not `E2E_ADMIN_EMAIL`, for the reason `arrangeUserWithPassword` documents: the
+ * `login:email:<address>` bucket is 10 per 15 minutes, counts failures, and no header
+ * can isolate it. The shared admin address already spends four attempts a run, so a
+ * spec that logs in as the founder to exercise a founder-only control should bring its
+ * own — otherwise it eats another spec's headroom and the failure looks like a broken
+ * login, not a rate limit.
+ */
+export async function arrangeAdminUser(email: string, password: string): Promise<string> {
+  const passwordHash = await bcrypt.hash(password, 12);
+  const rows = await query<{ id: string }>(
+    `INSERT INTO "User" (id, email, "passwordHash", name, role, status, "createdAt")
+     VALUES (gen_random_uuid()::text, lower($1), $2, 'E2E Founder', 'ADMIN', 'ACTIVE', now())
+     RETURNING id`,
+    [email, passwordHash],
+  );
+  if (rows.length !== 1) throw new Error(`arrangeAdminUser: could not create "${email}"`);
+  return rows[0].id;
+}
+
+/**
+ * The plan id and free-period column for a slug — what a trial write must move.
+ *
+ * `AT TIME ZONE 'UTC'` is load-bearing, and its absence cost an hour: every Prisma
+ * `DateTime` is a `TIMESTAMP(3)` **without** a zone, and node-pg parses a bare
+ * `timestamp` in the CLIENT's local zone. Read raw from a machine on CEST, a value the
+ * app stored as 23:59:59.999Z comes back as 21:59:59.999Z — a two-hour "bug" that
+ * exists only in the test helper, and that would flip with the reader's timezone.
+ * Casting to `timestamptz` hands pg an offset to parse, so the instant survives.
+ */
+export async function findTrial(
+  tenantSlug: string,
+): Promise<{ billingId: string; trialEndsAt: Date | null } | null> {
+  const rows = await query<{ id: string; trial_ends_at: Date | null }>(
+    `SELECT id, "trialEndsAt" AT TIME ZONE 'UTC' AS trial_ends_at
+       FROM "TenantBilling" WHERE "tenantSlug" = $1`,
+    [tenantSlug],
+  );
+  const r = rows[0];
+  return r ? { billingId: r.id, trialEndsAt: r.trial_ends_at } : null;
+}
+
+/**
+ * Audit rows for one action on one entity, newest first.
+ *
+ * The audit log is the ONLY record of why a trial was extended — the column can say
+ * "until when" and never "why" — so a spec that asserted the new date but not the
+ * entry would be passing on half the feature.
+ */
+export async function findAuditEntries(
+  action: string,
+  entityId: string,
+): Promise<{ action: string; meta: Record<string, unknown> | null }[]> {
+  return await query<{ action: string; meta: Record<string, unknown> | null }>(
+    `SELECT action, meta FROM "AuditLog"
+      WHERE action = $1 AND "entityId" = $2
+      ORDER BY "createdAt" DESC`,
+    [action, entityId],
+  );
+}
+
+/**
  * A reseller partner with one client, optionally already a live tenant with a plan
  * (SOFRA-PARTNER-PLAN §9).
  *
@@ -401,7 +464,14 @@ export async function arrangeResellerClient(opts: {
   status: string;
   tenantSlug?: string;
   city?: string;
-  plan?: { amountCents: number; interval: string; subStatus: string };
+  plan?: {
+    amountCents: number;
+    interval: string;
+    subStatus: string;
+    /** The free period's end, as an ISO instant. Omitted = the column stays NULL,
+     *  which is what every plan written before T-a means: payable now. */
+    trialEndsAtIso?: string;
+  };
 }): Promise<{ partnerId: string; clientId: string }> {
   const passwordHash = await bcrypt.hash(opts.partnerPassword, 12);
   const partners = await query<{ id: string }>(
@@ -427,10 +497,16 @@ export async function arrangeResellerClient(opts: {
     if (!opts.tenantSlug) throw new Error("arrangeResellerClient: a plan needs a tenantSlug");
     const billings = await query<{ id: string }>(
       `INSERT INTO "TenantBilling"
-         (id, "tenantSlug", name, email, "clientId", "liveSince", "createdAt")
-       VALUES (gen_random_uuid()::text, $1, $2, $3, $4, now(), now())
+         (id, "tenantSlug", name, email, "clientId", "liveSince", "trialEndsAt", "createdAt")
+       VALUES (gen_random_uuid()::text, $1, $2, $3, $4, now(), $5::timestamptz, now())
        RETURNING id`,
-      [opts.tenantSlug, opts.restaurantName, opts.partnerEmail.toLowerCase(), clientId],
+      [
+        opts.tenantSlug,
+        opts.restaurantName,
+        opts.partnerEmail.toLowerCase(),
+        clientId,
+        opts.plan.trialEndsAtIso ?? null,
+      ],
     );
     await query(
       `INSERT INTO "BillingSubscription"

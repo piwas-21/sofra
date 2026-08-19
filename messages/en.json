@@ -592,7 +592,10 @@
         "active": "active",
         "awaitingFirstPayment": "{count} plan(s) awaiting first payment",
         "lastPayment": "last payment: {status} ({amount})",
-        "empty": "No billing accounts yet."
+        "empty": "No billing accounts yet.",
+        "trialActive": "free until {date} ({days} day(s) left)",
+        "trialExpired": "free period ended {date}",
+        "trialExpiredBanner": "{count} plan(s) have run past their free period and nobody has been asked to pay yet: {slugs}"
       },
       "billingForm": {
         "slug": "Tenant slug (registry key, e.g. demo)",
@@ -865,6 +868,19 @@
           "hasPaidPayments": "Cannot delete: money settled on this plan, and the payment record is the audit trail.",
           "hasLiveSubscription": "Cannot delete: a subscription can still be charged. Cancel it first, or Mollie keeps billing a customer this system no longer knows."
         }
+      },
+      "trial": {
+        "title": "Free period",
+        "intro": "Extensions only: a free period can be pushed out, never pulled in. The reason is kept in the audit log together with both dates.",
+        "none": "No free period on this plan — it is payable now.",
+        "active": "Free until {date} — {days} day(s) left.",
+        "expired": "The free period ended on {date}. This plan is payable now.",
+        "dateLabel": "Free until (the whole of that day, UTC)",
+        "reasonLabel": "Why",
+        "reasonPlaceholder": "e.g. the restaurant is still deciding",
+        "submit": "Extend free period",
+        "saving": "Saving…",
+        "saved": "Saved."
       }
     },
     "errors": {
@@ -916,7 +932,12 @@
         "hasInvoices": "Cannot delete: an issued invoice names this tenant, and an invoice must not be left addressed to a plan that no longer exists.",
         "hasPaidPayments": "Cannot delete: money settled on this plan, and the payment record is the audit trail.",
         "hasLiveSubscription": "Cannot delete: a subscription can still be charged. Cancel it first, or Mollie keeps billing a customer this system no longer knows."
-      }
+      },
+      "trialDateInvalid": "That date could not be read — pick one with the date field.",
+      "trialNotLonger": "A free period can only be extended. Pick a date after the current one.",
+      "trialTooFar": "That is more than a year away — extend in smaller steps.",
+      "trialReasonRequired": "Give a short reason — it is kept with the change.",
+      "trialChangedMeanwhile": "This plan's free period changed while this page was open. Reload and look again."
     },
     "plan": {
       "title": "Your plan",
@@ -930,7 +951,6 @@
       "firstChargeNote": "You'll pay the first month now, then it renews automatically. Cancel anytime.",
       "startPayment": "Start auto-monthly payment",
       "redirecting": "Redirecting to checkout…",
-      "awaitingPayment": "Awaiting your first payment.",
       "processing": "Payment processing — this can take a minute.",
       "active": "Active.",
       "activeNextCharge": "Active — next charge on {date}.",
@@ -963,7 +983,9 @@
         "other": "{status}"
       },
       "addBillingDetails": "Add your billing details",
-      "billingDetailsFirst": "We need the company your invoice should be addressed to before taking payment — it takes a minute."
+      "billingDetailsFirst": "We need the company your invoice should be addressed to before taking payment — it takes a minute.",
+      "trialFreeUntil": "Free until {date} — no payment needed yet.",
+      "trialFree": "No payment needed yet."
     },
     "tenantReady": {
       "readyKicker": "Your app is ready",
@@ -1053,7 +1075,8 @@
         "printing": "Companion app for thermal printers",
         "online-payments": "Cards and local methods like TWINT or iDEAL, paid into your own Stripe account",
         "extra-languages": "Beyond English + one, up to 10 languages"
-      }
+      },
+      "rowTrial": "free period"
     },
     "changeRequest": {
       "placeholder": "e.g. they'd like reservations added, or a change of look.",

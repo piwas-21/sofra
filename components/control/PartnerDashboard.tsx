@@ -25,6 +25,8 @@ type PartnerBilling = {
   billingIdentityId: string | null;
   payerUserId: string | null;
   billingIdentity: BillingIdentity | null;
+  /** The free period's end (T). Null = no trial, i.e. payable now. */
+  trialEndsAt: Date | null;
   client: { id: string; restaurantName: string; partnerId: string } | null;
   subscriptions: { amountCents: number; interval: string; status: string }[];
   payments: { sequenceType: string; status: string }[];
@@ -52,6 +54,7 @@ type PartnerClient = {
 async function rowSummaries(
   clients: PartnerClient[],
   billings: PartnerBilling[],
+  now: Date,
 ): Promise<Map<string, ClientRowSummary>> {
   const registry: RegistryResult = await loadTenantRegistry();
   const billingByClient = new Map(
@@ -65,6 +68,7 @@ async function rowSummaries(
         tenantSlug: c.tenantSlug,
         registry,
         billing: billingByClient.get(c.id),
+        now,
       }),
     ]),
   );
@@ -98,16 +102,21 @@ export default async function PartnerDashboard({
     invoiceableByPlan.set(b.id, isInvoiceable(identity));
   }
 
-  // Plans that still need the payer's attention: awaiting a payment, or a payment
-  // being processed.
+  // Read the clock ONCE for this render: the hero's decision, every row's decision
+  // and the date printed inside them all judge the same instant.
+  const now = new Date();
+
+  // Plans the payer should be told about up front: awaiting a payment, a payment
+  // being processed — or free until a date, which is news they should not have to
+  // open a client page to find (T-b).
   const awaiting = billings.filter((b) => {
-    const st = planState(b.subscriptions[0], b.payments);
-    return st === "pay" || st === "processing";
+    const st = planState(b.subscriptions[0], b.payments, { trialEndsAt: b.trialEndsAt, now });
+    return st === "pay" || st === "processing" || st === "trial";
   });
 
   // Tenant + plan facts per row (SOFRA-PARTNER-PLAN §9). One registry read and one
   // map, so the list stays a single query path however many clients a partner holds.
-  const summaries = await rowSummaries(clients, billings);
+  const summaries = await rowSummaries(clients, billings, now);
 
   return (
     <div className="grid gap-10">
@@ -145,10 +154,11 @@ export default async function PartnerDashboard({
                 so the two surfaces can never disagree about the "processing" window. */}
             <PartnerPlanAction
               locale={locale}
-              state={planState(sub, b.payments)}
+              state={planState(sub, b.payments, { trialEndsAt: b.trialEndsAt, now })}
               billingId={b.id}
               invoiceable={invoiceableByPlan.get(b.id) ?? false}
               nextCharge={null}
+              trialEndsAt={b.trialEndsAt}
             />
           </section>
         );

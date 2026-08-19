@@ -13,6 +13,7 @@
 
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
+import { trialEndForNewPlan } from "@/lib/trial";
 import { siteUrl } from "@/lib/email";
 import { BILLING_INTERVALS, webhookUrl, type BillingInterval } from "@/lib/billing";
 import { createCustomer, createFirstPayment } from "@/lib/mollie";
@@ -52,6 +53,12 @@ export async function defineTenantPlan(input: {
     );
   }
 
+  // The free period (T2), decided from the payer shape asserted just above rather
+  // than from a caller-supplied flag: `clientId` set = reseller-paid = one month
+  // free; a direct self-serve owner gets null, because their pay-before-provision
+  // gate is the abuse defence. The rule and its reasoning live in lib/trial.ts.
+  const trialEndsAt = trialEndForNewPlan({ resellerPaid: Boolean(input.clientId), now: new Date() });
+
   const billing = await db.$transaction(async (tx) => {
     const b = await tx.tenantBilling.create({
       data: {
@@ -63,6 +70,7 @@ export async function defineTenantPlan(input: {
         liveSince: input.liveSince ?? undefined,
         clientId: input.clientId ?? undefined,
         payerUserId: input.payerUserId ?? undefined,
+        trialEndsAt: trialEndsAt ?? undefined,
       },
     });
     await tx.billingSubscription.create({
@@ -77,8 +85,12 @@ export async function defineTenantPlan(input: {
     return b;
   });
 
+  // The trial is audited with the plan that granted it: "why is this tenant free
+  // until October" must be answerable a quarter later, and the column alone says
+  // nothing about when or by whom it was set.
   await audit(input.actorId, "billing.plan.defined", "TenantBilling", billing.id, {
     tenantSlug: input.tenantSlug,
+    trialEndsAt: trialEndsAt?.toISOString() ?? null,
   });
   return billing;
 }

@@ -1,6 +1,7 @@
 // Partner-facing billing display helpers (pure — no DB/Mollie). Shared by the
 // dashboard welcome hero and the billing page so both read a plan the same way.
 import { BILLING_INTERVALS } from "@/lib/billing";
+import { isTrialActive } from "@/lib/trial";
 
 /** Mollie interval grammar ("1 month") → control.plan.interval.* key. */
 export const intervalKeyOf = (mollie: string) =>
@@ -9,15 +10,20 @@ export const intervalKeyOf = (mollie: string) =>
 type SubLike = { status: string } | undefined;
 type PayLike = { sequenceType: string; status: string };
 
+/** The free period as `planState` reads it: the plan's date, and the clock. */
+export type TrialWindow = { trialEndsAt: Date | null; now: Date };
+
 /**
  * What the partner should see for a plan:
+ *   trial      — payable, but inside its free period → say "free until", show NO
+ *                pay button (SOFRA-PARTNER-FLEXIBILITY-PLAN T-b)
  *   pay        — PENDING, no first payment paid yet → show the pay button
  *   processing — first payment paid but not yet ACTIVE (mandate-lag window) or
  *                mid-activation → show "processing", NEVER a second pay button
  *                (that window is the double-charge trap)
  *   active / inactive / none
  */
-export type PlanState = "pay" | "processing" | "active" | "inactive" | "none";
+export type PlanState = "trial" | "pay" | "processing" | "active" | "inactive" | "none";
 
 /**
  * When this subscription is charged NEXT, or null when it cannot be stated.
@@ -95,11 +101,29 @@ export function paymentStatusKey(status: string): "paid" | "pending" | "failed" 
   return "other";
 }
 
-export function planState(sub: SubLike, payments: PayLike[]): PlanState {
+/**
+ * The one verdict every payer-facing surface branches on.
+ *
+ * `trial` is a mask over `pay` and over NOTHING else, which is the whole of the
+ * rule: a free period suppresses the ASK, it does not rewind money. A plan whose
+ * first payment has settled is "processing" whatever its trial says (a second
+ * button there is the double-charge trap), an ACTIVE plan is charging, and a
+ * canceled one is not offered a button either way.
+ *
+ * The window is a REQUIRED argument rather than an optional one on purpose. Every
+ * caller is a view, and an optional trial is a view that forgets it — which shows a
+ * pay button to a partner who was told, on the page next door, that they owe nothing
+ * yet. Making it required means a new surface cannot be written without answering
+ * the question.
+ */
+export function planState(sub: SubLike, payments: PayLike[], trial: TrialWindow): PlanState {
   if (!sub) return "none";
   if (sub.status === "ACTIVE") return "active";
   const firstPaid = payments.some((p) => p.sequenceType === "first" && p.status === "paid");
-  if (sub.status === "PENDING") return firstPaid ? "processing" : "pay";
+  if (sub.status === "PENDING") {
+    if (firstPaid) return "processing";
+    return isTrialActive(trial.trialEndsAt, trial.now) ? "trial" : "pay";
+  }
   if (sub.status === "ACTIVATING") return "processing";
   return "inactive"; // CANCELED / SUSPENDED / COMPLETED
 }

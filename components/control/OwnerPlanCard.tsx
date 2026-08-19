@@ -42,6 +42,11 @@ export interface OwnerPlanCardProps {
   /** Newest-first, bounded: every payment, for the history list. */
   readonly history: ReadonlyArray<{ readonly id: string; readonly createdAt: Date; readonly sequenceType: string; readonly status: string; readonly amountCents: number }>;
   readonly liveSince: Date | null;
+  /** The free period's end. Null for every self-serve plan by policy (T2 — the
+   *  pay-before-provision gate is the abuse defence), but honoured if the founder
+   *  ever sets one: the column is the single source, and a surface that ignored it
+   *  would ask for money the founder had just said was not owed. */
+  readonly trialEndsAt: Date | null;
   readonly stage: TenantStage;
   readonly tenantDomain: string | null;
   /** Whether this plan has the legal details an invoice needs (B5). False sends
@@ -64,10 +69,22 @@ function planAction(args: {
   locale: string;
   restaurant: string;
   nextCharge: Date | null;
+  trialEndsAt: Date | null;
   invoiceable: boolean;
   t: (key: string, values?: Record<string, string>) => string;
 }) {
   const { state, billingId, locale, restaurant, nextCharge, invoiceable, t } = args;
+  // A free period suppresses the ask here too — `planState` decided it; this only
+  // prints the date it decided on.
+  if (state === "trial") {
+    return (
+      <p className="font-label text-craft-success-text dark:text-craft-success">
+        {args.trialEndsAt
+          ? t("trialFreeUntil", { date: shortDate(args.trialEndsAt) })
+          : t("trialFree")}
+      </p>
+    );
+  }
   // Before the pay button, not instead of the gate. `startPaymentAction` refuses
   // a plan with no billing identity, because no charge may settle that cannot
   // then be invoiced — so without this branch a self-serve owner meets a pay
@@ -107,7 +124,11 @@ function planAction(args: {
 export default async function OwnerPlanCard(props: OwnerPlanCardProps) {
   const { locale, billingId, restaurant, ownerName, subscription, firstPayments, history } = props;
   const t = await getTranslations({ locale, namespace: "control.plan" });
-  const state = planState(subscription ?? undefined, [...firstPayments]);
+  const now = new Date();
+  const state = planState(subscription ?? undefined, [...firstPayments], {
+    trialEndsAt: props.trialEndsAt,
+    now,
+  });
 
   return (
     <section className="hand-drawn-border bg-card p-6 sm:p-8 grid gap-4">
@@ -138,7 +159,8 @@ export default async function OwnerPlanCard(props: OwnerPlanCardProps) {
             billingId,
             locale,
             restaurant,
-            nextCharge: nextChargeDate(subscription.startDate, subscription.interval, new Date()),
+            nextCharge: nextChargeDate(subscription.startDate, subscription.interval, now),
+            trialEndsAt: props.trialEndsAt,
             invoiceable: props.invoiceable,
             t,
           })}
