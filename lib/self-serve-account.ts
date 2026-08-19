@@ -107,6 +107,10 @@ export async function createSelfServeAccount(input: {
           // Owner flow: the payer IS the user, and there is no reseller Client
           // (the clientId XOR payerUserId shape `defineTenantPlan` asserts).
           payerUserId: user.id,
+          // No `trialEndsAt`, and that absence is the policy, not an omission
+          // (SOFRA-PARTNER-FLEXIBILITY-PLAN T2): a self-serve buyer pays before
+          // their tenant is provisioned, and that gate is the abuse defence for
+          // anonymous signups. Trials are for approved partners.
           signupRequestId: input.signupRequestId,
         },
       });

@@ -10,6 +10,11 @@ import {
 const first = (status: string) => ({ sequenceType: "first", status });
 const recurring = (status: string) => ({ sequenceType: "recurring", status });
 
+const NOW = new Date("2026-08-19T12:00:00.000Z");
+/** No free period — the reading of every plan written before T-a. */
+const noTrial = { trialEndsAt: null, now: NOW };
+const trialUntil = (iso: string) => ({ trialEndsAt: new Date(iso), now: NOW });
+
 describe("intervalKeyOf", () => {
   it("maps Mollie interval grammar back to a key", () => {
     expect(intervalKeyOf("1 month")).toBe("month");
@@ -23,31 +28,69 @@ describe("intervalKeyOf", () => {
 
 describe("planState (partner billing view / double-charge guard)", () => {
   it("returns 'none' with no subscription", () => {
-    expect(planState(undefined, [])).toBe("none");
+    expect(planState(undefined, [], noTrial)).toBe("none");
   });
 
   it("returns 'pay' for a PENDING plan with no paid first payment", () => {
-    expect(planState({ status: "PENDING" }, [])).toBe("pay");
-    expect(planState({ status: "PENDING" }, [first("open")])).toBe("pay");
+    expect(planState({ status: "PENDING" }, [], noTrial)).toBe("pay");
+    expect(planState({ status: "PENDING" }, [first("open")], noTrial)).toBe("pay");
   });
 
   it("returns 'processing' for PENDING once a first payment is PAID (mandate-lag window)", () => {
     // The trap: sub can read PENDING for ~80s..~26h after payment while the
     // webhook retries activation — must NOT offer to pay again.
-    expect(planState({ status: "PENDING" }, [first("paid")])).toBe("processing");
+    expect(planState({ status: "PENDING" }, [first("paid")], noTrial)).toBe("processing");
   });
 
   it("returns 'processing' while ACTIVATING", () => {
-    expect(planState({ status: "ACTIVATING" }, [first("paid")])).toBe("processing");
+    expect(planState({ status: "ACTIVATING" }, [first("paid")], noTrial)).toBe("processing");
   });
 
   it("returns 'active' when ACTIVE", () => {
-    expect(planState({ status: "ACTIVE" }, [first("paid"), recurring("paid")])).toBe("active");
+    expect(planState({ status: "ACTIVE" }, [first("paid"), recurring("paid")], noTrial)).toBe(
+      "active",
+    );
   });
 
   it("returns 'inactive' for terminal states", () => {
-    expect(planState({ status: "CANCELED" }, [])).toBe("inactive");
-    expect(planState({ status: "SUSPENDED" }, [])).toBe("inactive");
+    expect(planState({ status: "CANCELED" }, [], noTrial)).toBe("inactive");
+    expect(planState({ status: "SUSPENDED" }, [], noTrial)).toBe("inactive");
+  });
+});
+
+describe("planState + trial (T-b: the free period suppresses the ask, nothing else)", () => {
+  it("masks 'pay' to 'trial' while the free period runs", () => {
+    expect(
+      planState({ status: "PENDING" }, [], trialUntil("2026-09-19T23:59:59.999Z")),
+    ).toBe("trial");
+    // An unpaid, still-open checkout attempt is still inside the trial.
+    expect(
+      planState({ status: "PENDING" }, [first("open")], trialUntil("2026-09-19T23:59:59.999Z")),
+    ).toBe("trial");
+  });
+
+  it("returns 'pay' again the moment the free period has passed", () => {
+    expect(planState({ status: "PENDING" }, [], trialUntil("2026-08-19T11:59:59.999Z"))).toBe(
+      "pay",
+    );
+    // Exactly at the end instant: over. `trialEndsAt` is the last instant of the
+    // free day, so `<= now` is expired — this is the boundary O-T2 hangs off, and
+    // "nothing automatic" means the pay button simply returns.
+    expect(planState({ status: "PENDING" }, [], trialUntil("2026-08-19T12:00:00.000Z"))).toBe(
+      "pay",
+    );
+  });
+
+  it("NEVER masks a plan whose money already moved", () => {
+    const running = trialUntil("2026-09-19T23:59:59.999Z");
+    // A settled first payment is the double-charge window, trial or not.
+    expect(planState({ status: "PENDING" }, [first("paid")], running)).toBe("processing");
+    expect(planState({ status: "ACTIVATING" }, [first("paid")], running)).toBe("processing");
+    // And an ACTIVE subscription is charging — a trial written onto it afterwards
+    // must not make the payer think the charges stopped.
+    expect(planState({ status: "ACTIVE" }, [first("paid")], running)).toBe("active");
+    expect(planState({ status: "CANCELED" }, [], running)).toBe("inactive");
+    expect(planState(undefined, [], running)).toBe("none");
   });
 });
 

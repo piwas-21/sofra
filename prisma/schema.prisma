@@ -377,6 +377,19 @@ model TenantBilling {
   // Display-only: when the tenant's app went live (admin-entered at
   // onboarding), shown on the partner's welcome panel.
   liveSince        DateTime?
+  // When the free period ends (SOFRA-PARTNER-FLEXIBILITY-PLAN T). NULL = no
+  // trial, i.e. the plan is payable now — which is what every row written before
+  // this column means, and the correct reading of them.
+  //
+  // Set by default to one month out for RESELLER plans (clientId set); NEVER for
+  // direct self-serve OWNER plans, whose pay-before-provision gate (O2) is the
+  // abuse defence. Extended — only ever outward — by the founder on
+  // /admin/billing/[id], audited as `billing.trial.extended`.
+  //
+  // One nullable date and no status enum on purpose: the state is
+  // `trialEndsAt > now()` and a second column that can disagree with it is a bug
+  // surface. See lib/trial.ts for every rule that reads it.
+  trialEndsAt      DateTime?
   createdAt        DateTime  @default(now())
 
   // The lead this plan was minted from (O3). Set only on the SELF-SERVE path, so

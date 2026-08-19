@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
 import { mollieConfigured } from "@/lib/mollie";
 import { BILLING_INTERVALS } from "@/lib/billing";
+import { trialView } from "@/lib/trial";
 import BillingCreateForm from "@/components/control/BillingCreateForm";
 
 // Mollie interval string → control.admin.intervals key (display only; the
@@ -29,6 +30,15 @@ export default async function AdminBillingPage() {
     },
   });
 
+  // Free periods, on the list the founder actually opens (T-c). Both halves matter
+  // and for different reasons: a RUNNING trial is the answer to "why has this tenant
+  // never paid", and an EXPIRED one is a plan that is now payable and that nobody has
+  // been told about — nothing automatic happens on expiry by decision (T5/O-T2), so
+  // this line is the only thing standing between an ended trial and being forgotten.
+  const now = new Date();
+  const trials = new Map(billings.map((b) => [b.id, trialView(b.trialEndsAt, now)] as const));
+  const expired = billings.filter((b) => trials.get(b.id)?.kind === "expired");
+
   return (
     <div className="grid gap-10">
       <div>
@@ -49,6 +59,15 @@ export default async function AdminBillingPage() {
         </div>
       </section>
 
+      {expired.length > 0 && (
+        <p className="hand-drawn-border bg-card p-4 font-label text-sm">
+          {t("billing.trialExpiredBanner", {
+            count: expired.length,
+            slugs: expired.map((b) => b.tenantSlug).join(", "),
+          })}
+        </p>
+      )}
+
       <section>
         <h2 className="font-hand text-3xl font-bold">
           {t("billing.tenantsHeading", { count: billings.length })}
@@ -58,6 +77,7 @@ export default async function AdminBillingPage() {
             const active = b.subscriptions.filter((s) => s.status === "ACTIVE");
             const pending = b.subscriptions.filter((s) => s.status === "PENDING");
             const last = b.payments[0];
+            const trial = trials.get(b.id);
             return (
               <li key={b.id} className="hand-drawn-border bg-card p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -81,6 +101,19 @@ export default async function AdminBillingPage() {
                     {pending.length > 0 && (
                       <span className="block text-muted-foreground">
                         {t("billing.awaitingFirstPayment", { count: pending.length })}
+                      </span>
+                    )}
+                    {trial?.kind === "active" && (
+                      <span className="block text-craft-success-text dark:text-craft-success">
+                        {t("billing.trialActive", {
+                          date: shortDate(trial.endsAt),
+                          days: trial.daysLeft,
+                        })}
+                      </span>
+                    )}
+                    {trial?.kind === "expired" && (
+                      <span className="block text-craft-error-text">
+                        {t("billing.trialExpired", { date: shortDate(trial.endsAt) })}
                       </span>
                     )}
                     {last && (

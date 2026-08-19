@@ -1,0 +1,23 @@
+-- Trials on a reseller plan (workspace docs/plans/SOFRA-PARTNER-FLEXIBILITY-PLAN.md, T-a).
+--
+-- The first reseller tenant went live on 2026-08-19 with no payment asked of the
+-- partner, because that is what the owner decided: a partner sells with a working
+-- site, so the first month is on us. Mechanically that was already true — nothing
+-- schedules a charge against a PENDING plan — but it was true by ACCIDENT: no end
+-- date, no policy, and nothing the partner could read. This column is the policy.
+--
+-- ONE nullable date, and deliberately no `TrialStatus` enum beside it. "In trial" is
+-- `trialEndsAt > now()`; a status column can disagree with the date, and the surface
+-- that reads the wrong one either charges a restaurant that was promised a free month
+-- or gives away a month that was already paid for. There is no second source.
+--
+-- NULL means "no trial — payable now", which is the correct reading of every row that
+-- exists today: RUMI (billed since long before this idea) and the two live plans. So
+-- this is additive, nullable, and needs no backfill — a plan already inside its free
+-- period by accident is not retroactively given a deadline it was never told about.
+--
+-- No index: the founder's list reads it alongside the plans it already selects, and
+-- nothing queries BY it (there is no expiry job — T5/O-T2 is "nothing automatic in
+-- v1", so no scheduler scans this column). Add one with the first query that needs it.
+
+ALTER TABLE "TenantBilling" ADD COLUMN "trialEndsAt" TIMESTAMP(3);

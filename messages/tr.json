@@ -592,7 +592,10 @@
         "active": "aktif",
         "awaitingFirstPayment": "{count} plan ilk ödemeyi bekliyor",
         "lastPayment": "son ödeme: {status} ({amount})",
-        "empty": "Henüz faturalama hesabı yok."
+        "empty": "Henüz faturalama hesabı yok.",
+        "trialActive": "{date} tarihine kadar ücretsiz ({days} gün kaldı)",
+        "trialExpired": "ücretsiz dönem {date} tarihinde bitti",
+        "trialExpiredBanner": "{count} planın ücretsiz dönemi doldu ve kimseden ödeme istenmedi: {slugs}"
       },
       "billingForm": {
         "slug": "Tenant slug'ı (registry anahtarı, örn. demo)",
@@ -865,6 +868,19 @@
           "hasPaidPayments": "Silinemez: bu planda para tahsil edilmiş ve ödeme kaydı denetim izidir.",
           "hasLiveSubscription": "Silinemez: bir abonelikten hâlâ tahsilat yapılabilir. Önce iptal edin, aksi hâlde Mollie bu sistemin artık tanımadığı bir müşteriyi faturalamaya devam eder."
         }
+      },
+      "trial": {
+        "title": "Ücretsiz dönem",
+        "intro": "Yalnızca uzatma: ücretsiz dönem ileri alınabilir, asla kısaltılamaz. Gerekçe her iki tarihle birlikte denetim kaydına yazılır.",
+        "none": "Bu planda ücretsiz dönem yok — şu anda ödenebilir durumda.",
+        "active": "{date} tarihine kadar ücretsiz — {days} gün kaldı.",
+        "expired": "Ücretsiz dönem {date} tarihinde bitti. Bu plan artık ödenebilir durumda.",
+        "dateLabel": "Şu tarihe kadar ücretsiz (o günün tamamı, UTC)",
+        "reasonLabel": "Gerekçe",
+        "reasonPlaceholder": "ör. restoran hâlâ karar veriyor",
+        "submit": "Ücretsiz dönemi uzat",
+        "saving": "Kaydediliyor…",
+        "saved": "Kaydedildi."
       }
     },
     "errors": {
@@ -916,7 +932,12 @@
         "hasInvoices": "Silinemez: düzenlenmiş bir fatura bu kiracıyı adlandırıyor ve bir fatura artık var olmayan bir plana yazılı kalmamalıdır.",
         "hasPaidPayments": "Silinemez: bu planda para tahsil edilmiş ve ödeme kaydı denetim izidir.",
         "hasLiveSubscription": "Silinemez: bir abonelikten hâlâ tahsilat yapılabilir. Önce iptal edin, aksi hâlde Mollie bu sistemin artık tanımadığı bir müşteriyi faturalamaya devam eder."
-      }
+      },
+      "trialDateInvalid": "Bu tarih okunamadı — tarih alanını kullanın.",
+      "trialNotLonger": "Ücretsiz dönem yalnızca uzatılabilir. Mevcut tarihten sonraki bir tarih seçin.",
+      "trialTooFar": "Bu tarih bir yıldan uzak — daha kısa adımlarla uzatın.",
+      "trialReasonRequired": "Kısa bir gerekçe yazın — değişiklikle birlikte saklanır.",
+      "trialChangedMeanwhile": "Bu sayfa açıkken planın ücretsiz dönemi değişti. Sayfayı yenileyip tekrar bakın."
     },
     "plan": {
       "title": "Aboneliğiniz",
@@ -930,7 +951,6 @@
       "firstChargeNote": "İlk ayı şimdi ödersiniz, ardından otomatik olarak yenilenir. İstediğiniz zaman iptal edebilirsiniz.",
       "startPayment": "Otomatik aylık ödemeyi başlat",
       "redirecting": "Ödemeye yönlendiriliyor…",
-      "awaitingPayment": "İlk ödemeniz bekleniyor.",
       "processing": "Ödeme işleniyor — bu bir dakika sürebilir.",
       "active": "Etkin.",
       "activeNextCharge": "Etkin — sonraki tahsilat {date}.",
@@ -963,7 +983,9 @@
         "other": "{status}"
       },
       "addBillingDetails": "Fatura bilgilerinizi ekleyin",
-      "billingDetailsFirst": "Ödemeyi almadan önce faturanızın düzenleneceği şirketi bilmemiz gerekiyor — bir dakika sürer."
+      "billingDetailsFirst": "Ödemeyi almadan önce faturanızın düzenleneceği şirketi bilmemiz gerekiyor — bir dakika sürer.",
+      "trialFreeUntil": "{date} tarihine kadar ücretsiz — şimdilik ödeme gerekmiyor.",
+      "trialFree": "Şimdilik ödeme gerekmiyor."
     },
     "tenantReady": {
       "readyKicker": "Uygulamanız hazır",
@@ -1053,7 +1075,8 @@
         "printing": "Termal yazıcılar için yardımcı uygulama",
         "online-payments": "Kart ve TWINT ya da iDEAL gibi yerel yöntemler, doğrudan kendi Stripe hesabınıza",
         "extra-languages": "İngilizce + bir dilin ötesinde, 10 dile kadar"
-      }
+      },
+      "rowTrial": "ücretsiz dönem"
     },
     "changeRequest": {
       "placeholder": "ör. rezervasyon eklensin ya da görünüm değişsin.",

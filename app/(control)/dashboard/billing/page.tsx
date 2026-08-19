@@ -1,16 +1,10 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
-import {
-  intervalKeyOf,
-  nextChargeDate,
-  planState,
-  type PlanState,
-} from "@/lib/billing-display";
-import StartPaymentButton from "@/components/control/StartPaymentButton";
+import { intervalKeyOf, nextChargeDate, planState } from "@/lib/billing-display";
+import PartnerPlanAction from "@/components/control/PartnerPlanAction";
 import { isInvoiceable } from "@/lib/billing-identity";
 import { resolveIdentityForPlan } from "@/lib/identity-upsert";
 
@@ -19,53 +13,19 @@ export default async function DashboardBillingPage() {
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.plan" });
 
-  // Plan-status node via if/else (avoids a nested ternary — Sonar S3358).
+  // The reseller's book, and the SAME plan control the dashboard hero and the client
+  // page render (#163, `PartnerPlanAction`).
   //
-  // `nextChargeDate` rather than the raw `startDate` this used to print: that column is
-  // the FIRST recurring charge and is never advanced, so from month two onward it named
-  // a date in the past (see lib/billing-display.ts). Same defect, same fix, on both the
-  // reseller's page and the owner's card.
-  const statusNode = (
-    sub: { startDate: Date | null; interval: string },
-    state: PlanState,
-    billingId: string,
-    invoiceable: boolean,
-  ) => {
-    if (state === "active") {
-      const next = nextChargeDate(sub.startDate, sub.interval, new Date());
-      return (
-        <p className="font-label text-craft-success-text dark:text-craft-success">
-          {next ? t("activeNextCharge", { date: shortDate(next) }) : t("active")}
-        </p>
-      );
-    }
-    if (state === "pay") {
-      // Same rule as the owner card: `startPaymentAction` refuses a plan with no
-      // billing identity, so offering the button here would be a control that
-      // only ever errors. Send them to the form instead.
-      if (!invoiceable) {
-        return (
-          <div className="grid gap-2">
-            <Link href="/dashboard/billing/details" className="btn-primary w-fit">
-              {t("addBillingDetails")}
-            </Link>
-            <p className="font-label text-sm text-muted-foreground">{t("billingDetailsFirst")}</p>
-          </div>
-        );
-      }
-      return (
-        <div className="grid gap-2">
-          <p className="font-label text-muted-foreground">{t("awaitingPayment")}</p>
-          <StartPaymentButton billingId={billingId} />
-        </div>
-      );
-    }
-    if (state === "processing") {
-      return <p className="font-label text-muted-foreground">{t("processing")}</p>;
-    }
-    return <p className="font-label text-muted-foreground">{t("inactive")}</p>;
-  };
+  // This page used to keep its own copy of that decision — a local `statusNode` with
+  // its own pay/processing/active branches. Three copies of one money question is two
+  // too many: the free period (T-b) had to suppress the pay button on all three, and a
+  // page that judged it privately would have gone on asking a partner for money the
+  // other two had just told them was not owed. The one visible loss is this page's
+  // extra "Awaiting your first payment." line, which the shared control replaces with
+  // the note that says what paying actually does.
 
+  // One instant for every plan on the page (see PartnerDashboard).
+  const now = new Date();
   const billings = await db.tenantBilling.findMany({
     where: { client: { partnerId: partner.id } },
     include: {
@@ -103,7 +63,7 @@ export default async function DashboardBillingPage() {
           {billings.map((b) => {
             const sub = b.subscriptions[0];
             const restaurant = b.client?.restaurantName ?? b.tenantSlug;
-            const state = planState(sub, b.payments);
+            const state = planState(sub, b.payments, { trialEndsAt: b.trialEndsAt, now });
             return (
               <li key={b.id} className="hand-drawn-border bg-card p-6 grid gap-4">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -123,7 +83,14 @@ export default async function DashboardBillingPage() {
                         interval: t(`interval.${intervalKeyOf(sub.interval)}`),
                       })}
                     </p>
-                    {statusNode(sub, state, b.id, invoiceableByPlan.get(b.id) ?? false)}
+                    <PartnerPlanAction
+                      locale={locale}
+                      state={state}
+                      billingId={b.id}
+                      invoiceable={invoiceableByPlan.get(b.id) ?? false}
+                      nextCharge={nextChargeDate(sub.startDate, sub.interval, now)}
+                      trialEndsAt={b.trialEndsAt}
+                    />
                   </>
                 ) : (
                   <p className="font-label text-muted-foreground">{t("noPlan")}</p>

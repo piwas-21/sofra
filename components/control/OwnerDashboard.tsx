@@ -31,6 +31,8 @@ type OwnerBilling = {
   id: string;
   tenantSlug: string;
   liveSince: Date | null;
+  /** The free period's end. Null on every self-serve plan by policy (T2). */
+  trialEndsAt: Date | null;
   provisioningPrUrl: string | null;
   // The three `resolveIdentityForPlan` reads, so invoiceability is decided the
   // same way here as in the gate and the write.
@@ -198,6 +200,7 @@ export default async function OwnerDashboard({
             firstPayments={billing.payments}
             history={history}
             liveSince={billing.liveSince}
+            trialEndsAt={billing.trialEndsAt}
             invoiceable={invoiceableByPlan.get(billing.id) ?? false}
             stage={stage}
             tenantDomain={domain}
