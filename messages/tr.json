@@ -1228,5 +1228,33 @@
       "title": "Koşullar",
       "body": "Henüz yayımlanmış hizmet koşullarımız yok. O zamana dek geçerli olan, sizinle yazılı olarak anlaştığımız şeydir — bize sorun, teyit edelim."
     }
+  },
+  "emails": {
+    "trialEnding": {
+      "kicker": "Ücretsiz kullanım süreniz",
+      "subject": {
+        "soon": "SofraPiwas'taki ücretsiz süreniz {date} tarihinde bitiyor",
+        "today": "SofraPiwas'taki ücretsiz süreniz bugün bitiyor",
+        "ended": "SofraPiwas'taki ücretsiz süreniz sona erdi"
+      },
+      "title": {
+        "soon": "{date} tarihine kadar ücretsiz",
+        "today": "Ücretsiz süreniz bugün bitiyor",
+        "ended": "Ücretsiz süreniz sona erdi"
+      },
+      "greeting": "Merhaba {name},",
+      "lead": {
+        "soon": "{restaurant} için ücretsiz süre {date} gününün sonuna kadar geçerli — {days, plural, one {# gün} other {# gün}} kaldı.",
+        "today": "{restaurant} için ücretsiz süre bugünün sonuna kadar geçerli, {date}.",
+        "ended": "{restaurant} için ücretsiz süre {date} tarihinde sona erdi."
+      },
+      "noAutoCharge": "Otomatik olarak hiçbir tahsilat yapılmaz. Kayıtlı bir kartınız yok ve hiçbir ödeme kendiliğinden başlamaz — {restaurant} tam şu anki gibi çalışmaya devam eder.",
+      "howToStart": "Devam etmeye hazır olduğunuzda aylık aboneliği kendi panelinizden siz başlatırsınız. Bir dakika sürer.",
+      "rowRestaurant": "Restoran",
+      "rowFreeUntil": "Şu tarihe kadar ücretsiz",
+      "rowPlan": "Aylık",
+      "cta": "Fatura sayfanızı açın",
+      "footerNote": "Daha fazla süreye mi ihtiyacınız var ya da fiyatla ilgili bir sorunuz mu var? Bu e-postayı yanıtlamanız yeterli — mesajı bir insan okuyor."
+    }
   }
 }

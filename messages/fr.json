@@ -1228,5 +1228,33 @@
       "title": "Conditions",
       "body": "Nous n'avons pas encore publié de conditions de service. En attendant, ce qui s'applique est ce que nous convenons par écrit avec vous — demandez-nous et nous vous le confirmerons."
     }
+  },
+  "emails": {
+    "trialEnding": {
+      "kicker": "Votre période gratuite",
+      "subject": {
+        "soon": "Votre période gratuite sur SofraPiwas se termine le {date}",
+        "today": "Votre période gratuite sur SofraPiwas se termine aujourd'hui",
+        "ended": "Votre période gratuite sur SofraPiwas est terminée"
+      },
+      "title": {
+        "soon": "Gratuit jusqu'au {date}",
+        "today": "Votre période gratuite se termine aujourd'hui",
+        "ended": "Votre période gratuite est terminée"
+      },
+      "greeting": "Bonjour {name},",
+      "lead": {
+        "soon": "La période gratuite de {restaurant} court jusqu'à la fin du {date} — dans {days, plural, one {# jour} other {# jours}}.",
+        "today": "La période gratuite de {restaurant} court jusqu'à la fin de la journée, le {date}.",
+        "ended": "La période gratuite de {restaurant} s'est terminée le {date}."
+      },
+      "noAutoCharge": "Rien n'est prélevé automatiquement. Nous n'avons aucune carte enregistrée et aucun paiement ne peut démarrer tout seul — {restaurant} continue de fonctionner exactement comme aujourd'hui.",
+      "howToStart": "Quand vous serez prêt à continuer, vous lancez vous-même l'abonnement mensuel depuis votre tableau de bord. Cela prend une minute.",
+      "rowRestaurant": "Restaurant",
+      "rowFreeUntil": "Gratuit jusqu'au",
+      "rowPlan": "Par mois",
+      "cta": "Ouvrir votre page de facturation",
+      "footerNote": "Besoin de plus de temps ou une question sur le prix ? Répondez simplement à cet e-mail — une personne le lit."
+    }
   }
 }
