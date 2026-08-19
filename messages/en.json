@@ -505,7 +505,9 @@
       "pipeline": "Pipeline",
       "details": "Details",
       "notes": "Notes",
-      "noNotes": "No notes yet."
+      "noNotes": "No notes yet.",
+      "changeRequest": "Ask for a change",
+      "changeRequestIntro": "A module added, a different look, a price change — write it here and it reaches SofraPiwas with this client's details attached. It is kept as a note too."
     },
     "clientForm": {
       "restaurantName": "Restaurant / café name",
@@ -997,6 +999,68 @@
       "vat": "VAT",
       "iban": "IBAN",
       "service": "Service: {tenant}"
+    },
+    "tenant": {
+      "title": "Their restaurant app",
+      "statusLine": "status: {status}",
+      "domainHint": "The live address their guests use.",
+      "templateLabel": "Look",
+      "languagesLabel": "Languages",
+      "currencyLabel": "Prices in",
+      "modulesLabel": "What they have",
+      "noModules": "No modules listed on this tenant.",
+      "moduleUnknown": "Granted directly in the registry — not a catalogue module.",
+      "registryNote": "Modules, languages and the address are set up by SofraPiwas. Ask for a change below and we'll take care of it.",
+      "slugLine": "Tenant name:",
+      "awaitingTitle": "SofraPiwas is setting this restaurant up",
+      "awaitingBody": "You've asked for onboarding. We prepare the restaurant's own app, put it online and flip this client to Live — the address and everything it includes appear here the moment it exists.",
+      "unlistedTitle": "Nearly there",
+      "unlistedBody": "The tenant name is reserved and the app is being prepared. The details appear here as soon as it is set up.",
+      "unreadableTitle": "We can't show the setup right now",
+      "unreadableBody": "That's on our side and nothing to do with the restaurant's own app, which keeps running. Try again in a few minutes.",
+      "planTitle": "What this costs you",
+      "planNoneBody": "No plan yet. SofraPiwas sets your wholesale price for this restaurant when it goes live, and it appears here.",
+      "planNote": "This is what SofraPiwas charges you for this restaurant. What you charge them is between you and them.",
+      "rowPay": "payment due",
+      "rowProcessing": "payment processing",
+      "rowActive": "plan active",
+      "rowInactive": "plan not active",
+      "rowNoPlan": "no plan yet",
+      "rowAwaiting": "being set up",
+      "rowUnknown": "tenant details unavailable",
+      "template": {
+        "classic": "Classic",
+        "craft": "Craft"
+      },
+      "module": {
+        "core": "Core — QR menu & online ordering",
+        "kitchen-board": "Kitchen display",
+        "cashier": "Cashier & Z-report",
+        "server": "Table service",
+        "reservations": "Reservations",
+        "loyalty": "Loyalty points",
+        "printing": "Receipt printing",
+        "online-payments": "Online payments",
+        "extra-languages": "Extra languages"
+      },
+      "moduleSurface": {
+        "core": "QR menu, online ordering and the admin panel",
+        "kitchen-board": "Live order board for the kitchen",
+        "cashier": "Till, payments and end-of-day report",
+        "server": "Floor plan and waiter ordering",
+        "reservations": "Online booking and table management",
+        "loyalty": "Points, customer groups and discounts",
+        "printing": "Companion app for thermal printers",
+        "online-payments": "Cards and local methods like TWINT or iDEAL, paid into your own Stripe account",
+        "extra-languages": "Beyond English + one, up to 10 languages"
+      }
+    },
+    "changeRequest": {
+      "placeholder": "e.g. they'd like reservations added, or a change of look.",
+      "aria": "What should change?",
+      "submit": "Send request",
+      "sending": "Sending…",
+      "sent": "Sent — we'll come back to you."
     }
   },
   "signup": {

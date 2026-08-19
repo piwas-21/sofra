@@ -505,7 +505,9 @@
       "pipeline": "Pipeline",
       "details": "Gegevens",
       "notes": "Notities",
-      "noNotes": "Nog geen notities."
+      "noNotes": "Nog geen notities.",
+      "changeRequest": "Wijziging aanvragen",
+      "changeRequestIntro": "Een module erbij, een andere stijl, een prijswijziging — schrijf het hier: het verzoek gaat met de gegevens van deze klant naar SofraPiwas en wordt ook als notitie bewaard."
     },
     "clientForm": {
       "restaurantName": "Naam restaurant / café",
@@ -997,6 +999,68 @@
       "vat": "Btw",
       "iban": "IBAN",
       "service": "Dienst: {tenant}"
+    },
+    "tenant": {
+      "title": "Hun restaurant-app",
+      "statusLine": "status: {status}",
+      "domainHint": "Het live adres dat hun gasten gebruiken.",
+      "templateLabel": "Stijl",
+      "languagesLabel": "Talen",
+      "currencyLabel": "Valuta",
+      "modulesLabel": "Wat ze hebben",
+      "noModules": "Geen modules vermeld voor deze tenant.",
+      "moduleUnknown": "Rechtstreeks in het register toegekend — geen catalogusmodule.",
+      "registryNote": "Modules, talen en het adres worden door SofraPiwas ingesteld. Vraag hieronder een wijziging aan, wij regelen het.",
+      "slugLine": "Tenantnaam:",
+      "awaitingTitle": "SofraPiwas zet dit restaurant op",
+      "awaitingBody": "Je hebt de onboarding aangevraagd. We maken de eigen app van het restaurant klaar, zetten die online en zetten deze klant op Live — het adres en alles wat erbij zit verschijnt hier zodra het bestaat.",
+      "unlistedTitle": "Bijna klaar",
+      "unlistedBody": "De tenantnaam is gereserveerd en de app wordt voorbereid. De details verschijnen hier zodra alles staat.",
+      "unreadableTitle": "We kunnen de configuratie nu niet tonen",
+      "unreadableBody": "Dat ligt aan ons en niet aan de app van het restaurant, die gewoon draait. Probeer het over een paar minuten opnieuw.",
+      "planTitle": "Wat dit jou kost",
+      "planNoneBody": "Nog geen abonnement. SofraPiwas stelt jouw wholesale-prijs voor dit restaurant vast zodra het live gaat; die verschijnt hier.",
+      "planNote": "Dit is wat SofraPiwas jou voor dit restaurant rekent. Wat jij het restaurant rekent, is aan jou.",
+      "rowPay": "betaling open",
+      "rowProcessing": "betaling wordt verwerkt",
+      "rowActive": "abonnement actief",
+      "rowInactive": "abonnement niet actief",
+      "rowNoPlan": "nog geen abonnement",
+      "rowAwaiting": "wordt opgezet",
+      "rowUnknown": "tenantgegevens niet beschikbaar",
+      "template": {
+        "classic": "Klassiek",
+        "craft": "Ambachtelijk"
+      },
+      "module": {
+        "core": "Basis — QR-menu en online bestellen",
+        "kitchen-board": "Keukenscherm",
+        "cashier": "Kassa en Z-rapport",
+        "server": "Tafelbediening",
+        "reservations": "Reserveringen",
+        "loyalty": "Loyaliteitspunten",
+        "printing": "Bonnen printen",
+        "online-payments": "Online betalen",
+        "extra-languages": "Extra talen"
+      },
+      "moduleSurface": {
+        "core": "QR-menu, online bestellen en beheer",
+        "kitchen-board": "Live besteloverzicht voor de keuken",
+        "cashier": "Kassa, betalingen en dagafsluiting",
+        "server": "Plattegrond en bestellen aan tafel",
+        "reservations": "Online reserveren en tafelbeheer",
+        "loyalty": "Punten, klantgroepen en kortingen",
+        "printing": "Companion-app voor thermische printers",
+        "online-payments": "Kaart en lokale methoden zoals iDEAL of TWINT, direct op je eigen Stripe-account",
+        "extra-languages": "Naast Engels + één, tot 10 talen"
+      }
+    },
+    "changeRequest": {
+      "placeholder": "bijv. ze willen reserveringen erbij, of een andere stijl.",
+      "aria": "Wat moet er veranderen?",
+      "submit": "Verzoek versturen",
+      "sending": "Versturen…",
+      "sent": "Verstuurd — we komen bij je terug."
     }
   },
   "signup": {

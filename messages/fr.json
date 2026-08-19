@@ -505,7 +505,9 @@
       "pipeline": "Pipeline",
       "details": "Détails",
       "notes": "Notes",
-      "noNotes": "Pas encore de notes."
+      "noNotes": "Pas encore de notes.",
+      "changeRequest": "Demander un changement",
+      "changeRequestIntro": "Ajouter un module, changer de style, ajuster le tarif — écrivez-le ici : la demande part chez SofraPiwas avec les informations de ce client et reste enregistrée en note."
     },
     "clientForm": {
       "restaurantName": "Nom du restaurant / café",
@@ -997,6 +999,68 @@
       "vat": "TVA",
       "iban": "IBAN",
       "service": "Service : {tenant}"
+    },
+    "tenant": {
+      "title": "Leur application restaurant",
+      "statusLine": "statut : {status}",
+      "domainHint": "L'adresse en ligne que leurs clients utilisent.",
+      "templateLabel": "Style",
+      "languagesLabel": "Langues",
+      "currencyLabel": "Devise",
+      "modulesLabel": "Ce qu'ils ont",
+      "noModules": "Aucun module listé pour ce restaurant.",
+      "moduleUnknown": "Accordé directement dans le registre — hors catalogue.",
+      "registryNote": "Les modules, les langues et l'adresse sont configurés par SofraPiwas. Demandez un changement ci-dessous et nous nous en occupons.",
+      "slugLine": "Nom technique :",
+      "awaitingTitle": "SofraPiwas met ce restaurant en place",
+      "awaitingBody": "Vous avez demandé l'installation. Nous préparons l'application du restaurant, nous la mettons en ligne et nous passons ce client en « En service » — l'adresse et tout ce qu'elle contient apparaîtront ici dès qu'elle existera.",
+      "unlistedTitle": "Presque prêt",
+      "unlistedBody": "Le nom technique est réservé et l'application est en préparation. Les détails apparaîtront ici dès qu'elle sera installée.",
+      "unreadableTitle": "Impossible d'afficher la configuration pour le moment",
+      "unreadableBody": "Cela vient de chez nous et n'affecte pas l'application du restaurant, qui continue de fonctionner. Réessayez dans quelques minutes.",
+      "planTitle": "Ce que cela vous coûte",
+      "planNoneBody": "Pas encore d'abonnement. SofraPiwas fixe votre tarif revendeur pour ce restaurant lors de sa mise en service, et il apparaîtra ici.",
+      "planNote": "C'est ce que SofraPiwas vous facture pour ce restaurant. Ce que vous facturez au restaurant ne regarde que vous.",
+      "rowPay": "paiement à effectuer",
+      "rowProcessing": "paiement en cours",
+      "rowActive": "abonnement actif",
+      "rowInactive": "abonnement inactif",
+      "rowNoPlan": "pas encore d'abonnement",
+      "rowAwaiting": "en cours d'installation",
+      "rowUnknown": "détails indisponibles",
+      "template": {
+        "classic": "Classique",
+        "craft": "Artisanal"
+      },
+      "module": {
+        "core": "Essentiel — menu QR et commande en ligne",
+        "kitchen-board": "Écran cuisine",
+        "cashier": "Caisse et rapport Z",
+        "server": "Service à table",
+        "reservations": "Réservations",
+        "loyalty": "Points de fidélité",
+        "printing": "Impression des tickets",
+        "online-payments": "Paiement en ligne",
+        "extra-languages": "Langues supplémentaires"
+      },
+      "moduleSurface": {
+        "core": "Menu QR, commande en ligne et administration",
+        "kitchen-board": "Tableau des commandes en direct pour la cuisine",
+        "cashier": "Caisse, paiements et rapport de fin de journée",
+        "server": "Plan de salle et prise de commande",
+        "reservations": "Réservation en ligne et gestion des tables",
+        "loyalty": "Points, groupes de clients et remises",
+        "printing": "Application compagnon pour imprimantes thermiques",
+        "online-payments": "Carte et méthodes locales comme TWINT ou iDEAL, versées sur votre propre compte Stripe",
+        "extra-languages": "Au-delà de l'anglais + une, jusqu'à 10 langues"
+      }
+    },
+    "changeRequest": {
+      "placeholder": "ex. : ils aimeraient ajouter les réservations, ou changer de style.",
+      "aria": "Que faut-il changer ?",
+      "submit": "Envoyer la demande",
+      "sending": "Envoi…",
+      "sent": "Envoyé — nous revenons vers vous."
     }
   },
   "signup": {

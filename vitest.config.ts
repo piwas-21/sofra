@@ -48,6 +48,11 @@ export default defineConfig({
         "lib/provisioning-payment-gate.ts",
         "lib/auto-provision-policy.ts",
         "lib/tenant-liveness.ts",
+        // SOFRA-PARTNER-PLAN §9 — what a partner is told about the tenant they sold.
+        // Pure: it only judges a registry result and a plan the caller already loaded,
+        // and every "say nothing" branch in it is a branch a partner would otherwise
+        // meet as an empty panel.
+        "lib/client-tenant.ts",
         // O7 P4 — the pre-grant window predicate. Pure, and the registry-unreadable
         // branch is the one that must never regress silently.
         "lib/payments-pending.ts",

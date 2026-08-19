@@ -1,13 +1,15 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { eur, shortDate } from "@/lib/format";
-import { intervalKeyOf, planState, type PlanState } from "@/lib/billing-display";
+import { intervalKeyOf, planState } from "@/lib/billing-display";
 import { isInvoiceable } from "@/lib/billing-identity";
 import { resolveIdentityForPlan } from "@/lib/identity-upsert";
+import { loadTenantRegistry, type RegistryResult } from "@/lib/tenant-registry";
+import { clientRowSummary, type ClientRowSummary } from "@/lib/client-tenant";
 import type { BillingIdentity } from "@/lib/generated/prisma/client";
 import ClientForm from "./ClientForm";
 import ClientStatusBadge from "./ClientStatusBadge";
-import StartPaymentButton from "./StartPaymentButton";
+import ClientRowLine from "./ClientRowLine";
+import PartnerPlanAction from "./PartnerPlanAction";
 
 /**
  * The reseller's dashboard — unchanged behaviour, lifted out of `page.tsx` when the
@@ -23,7 +25,7 @@ type PartnerBilling = {
   billingIdentityId: string | null;
   payerUserId: string | null;
   billingIdentity: BillingIdentity | null;
-  client: { restaurantName: string; partnerId: string } | null;
+  client: { id: string; restaurantName: string; partnerId: string } | null;
   subscriptions: { amountCents: number; interval: string; status: string }[];
   payments: { sequenceType: string; status: string }[];
 };
@@ -34,51 +36,38 @@ type PartnerClient = {
   city: string | null;
   contactName: string | null;
   status: string;
+  /** Set by the founder once the tenant is provisioned — the join to the registry. */
+  tenantSlug: string | null;
   updatedAt: Date;
 };
 
 /**
- * What the partner can do about a client's plan right now. Guard clauses rather than a
- * chain of ternaries (Sonar S3358).
+ * The registry once per render, for the tenant line on every client row.
  *
- * `state` is only ever "pay" or "processing" here — the caller's filter admits exactly
- * those two — so "processing" is the mandate-validation window. The reseller keeps the
- * terse line: they read this queue as a pipeline and are not the one who just watched
- * money leave their own account (the owner gets `<ActivatingPanel />` instead). Neither
- * branch renders a pay button in that window: a second payment is the trap it sets.
+ * Read here rather than in `page.tsx` so the owner view never pays for it. Failure is
+ * not surfaced: a partner cannot act on an unreadable registry mount, and
+ * `clientRowSummary` already degrades every row to "no tenant facts" — the founder
+ * gets the error loudly on /admin/tenants.
  */
-function planAction(args: {
-  state: PlanState;
-  billingId: string;
-  invoiceable: boolean;
-  tp: (key: string) => string;
-}) {
-  const { state, billingId, invoiceable, tp } = args;
-  // Same rule as the owner card and the Plan page: `startPaymentAction` refuses a
-  // plan with no billing identity, so a button here would only ever error. This
-  // is the RESELLER's landing page — /login sends every non-admin to /dashboard,
-  // so it is the most prominent of the three payment surfaces, not the least.
-  if (state === "pay" && !invoiceable) {
-    return (
-      <div className="grid gap-2">
-        <Link href="/dashboard/billing/details" className="btn-primary w-fit">
-          {tp("addBillingDetails")}
-        </Link>
-        <span className="font-label text-sm text-muted-foreground">
-          {tp("billingDetailsFirst")}
-        </span>
-      </div>
-    );
-  }
-  if (state === "pay") {
-    return (
-      <div className="grid gap-2">
-        <StartPaymentButton billingId={billingId} />
-        <span className="font-label text-sm text-muted-foreground">{tp("firstChargeNote")}</span>
-      </div>
-    );
-  }
-  return <p className="font-label text-muted-foreground">{tp("processing")}</p>;
+async function rowSummaries(
+  clients: PartnerClient[],
+  billings: PartnerBilling[],
+): Promise<Map<string, ClientRowSummary>> {
+  const registry: RegistryResult = await loadTenantRegistry();
+  const billingByClient = new Map(
+    billings.flatMap((b) => (b.client ? [[b.client.id, b] as const] : [])),
+  );
+  return new Map(
+    clients.map((c) => [
+      c.id,
+      clientRowSummary({
+        status: c.status,
+        tenantSlug: c.tenantSlug,
+        registry,
+        billing: billingByClient.get(c.id),
+      }),
+    ]),
+  );
 }
 
 export default async function PartnerDashboard({
@@ -116,6 +105,10 @@ export default async function PartnerDashboard({
     return st === "pay" || st === "processing";
   });
 
+  // Tenant + plan facts per row (SOFRA-PARTNER-PLAN §9). One registry read and one
+  // map, so the list stays a single query path however many clients a partner holds.
+  const summaries = await rowSummaries(clients, billings);
+
   return (
     <div className="grid gap-10">
       <div>
@@ -148,12 +141,15 @@ export default async function PartnerDashboard({
                 interval: tp(`interval.${intervalKeyOf(sub.interval)}`),
               })}
             </p>
-            {planAction({
-              state: planState(sub, b.payments),
-              billingId: b.id,
-              invoiceable: invoiceableByPlan.get(b.id) ?? false,
-              tp,
-            })}
+            {/* The shared reseller plan control — the same one the client page renders,
+                so the two surfaces can never disagree about the "processing" window. */}
+            <PartnerPlanAction
+              locale={locale}
+              state={planState(sub, b.payments)}
+              billingId={b.id}
+              invoiceable={invoiceableByPlan.get(b.id) ?? false}
+              nextCharge={null}
+            />
           </section>
         );
       })}
@@ -179,10 +175,13 @@ export default async function PartnerDashboard({
                   <span className="font-hand text-2xl font-bold block truncate">
                     {c.restaurantName}
                   </span>
-                  <span className="font-label text-sm text-muted-foreground">
+                  <span className="font-label text-sm text-muted-foreground block">
                     {[c.city, c.contactName].filter(Boolean).join(" · ") || "—"} ·{" "}
                     {t("updated", { date: shortDate(c.updatedAt) })}
                   </span>
+                  {/* The tenant line: what this client actually has, and what it costs.
+                      Plain text, not a link — the whole row is already an anchor. */}
+                  <ClientRowLine locale={locale} summary={summaries.get(c.id)} />
                 </span>
                 <ClientStatusBadge status={c.status} />
               </a>

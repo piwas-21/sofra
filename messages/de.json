@@ -505,7 +505,9 @@
       "pipeline": "Pipeline",
       "details": "Details",
       "notes": "Notizen",
-      "noNotes": "Noch keine Notizen."
+      "noNotes": "Noch keine Notizen.",
+      "changeRequest": "Änderung anfragen",
+      "changeRequestIntro": "Ein Modul dazu, ein anderer Look, eine Preisänderung — schreiben Sie es hier: Die Anfrage geht mit den Daten dieses Kunden an SofraPiwas und wird zusätzlich als Notiz gespeichert."
     },
     "clientForm": {
       "restaurantName": "Name des Restaurants / Cafés",
@@ -997,6 +999,68 @@
       "vat": "USt-IdNr.",
       "iban": "IBAN",
       "service": "Leistung: {tenant}"
+    },
+    "tenant": {
+      "title": "Ihre Restaurant-App",
+      "statusLine": "Status: {status}",
+      "domainHint": "Die Live-Adresse, die ihre Gäste nutzen.",
+      "templateLabel": "Look",
+      "languagesLabel": "Sprachen",
+      "currencyLabel": "Währung",
+      "modulesLabel": "Was sie haben",
+      "noModules": "Für diesen Tenant sind keine Module eingetragen.",
+      "moduleUnknown": "Direkt im Registry vergeben — kein Katalogmodul.",
+      "registryNote": "Module, Sprachen und Adresse richtet SofraPiwas ein. Fordern Sie unten eine Änderung an, wir kümmern uns darum.",
+      "slugLine": "Tenant-Name:",
+      "awaitingTitle": "SofraPiwas richtet dieses Restaurant ein",
+      "awaitingBody": "Sie haben die Einrichtung angefordert. Wir bereiten die eigene App des Restaurants vor, stellen sie online und setzen diesen Kunden auf „Live“ — Adresse und Umfang erscheinen hier, sobald es sie gibt.",
+      "unlistedTitle": "Fast fertig",
+      "unlistedBody": "Der Tenant-Name ist reserviert und die App wird vorbereitet. Die Details erscheinen hier, sobald sie eingerichtet ist.",
+      "unreadableTitle": "Die Einrichtung lässt sich gerade nicht anzeigen",
+      "unreadableBody": "Das liegt an uns und betrifft die App des Restaurants nicht — die läuft weiter. Versuchen Sie es in ein paar Minuten erneut.",
+      "planTitle": "Was Sie das kostet",
+      "planNoneBody": "Noch kein Abo. SofraPiwas legt Ihren Händlerpreis für dieses Restaurant fest, wenn es live geht — er erscheint dann hier.",
+      "planNote": "Das berechnet SofraPiwas Ihnen für dieses Restaurant. Was Sie dem Restaurant berechnen, bleibt Ihre Sache.",
+      "rowPay": "Zahlung offen",
+      "rowProcessing": "Zahlung wird verarbeitet",
+      "rowActive": "Abo aktiv",
+      "rowInactive": "Abo nicht aktiv",
+      "rowNoPlan": "noch kein Abo",
+      "rowAwaiting": "wird eingerichtet",
+      "rowUnknown": "Tenant-Details nicht verfügbar",
+      "template": {
+        "classic": "Klassisch",
+        "craft": "Handgemacht"
+      },
+      "module": {
+        "core": "Basis — QR-Karte und Online-Bestellung",
+        "kitchen-board": "Küchendisplay",
+        "cashier": "Kasse und Z-Bericht",
+        "server": "Tischservice",
+        "reservations": "Reservierungen",
+        "loyalty": "Treuepunkte",
+        "printing": "Bondruck",
+        "online-payments": "Online-Zahlungen",
+        "extra-languages": "Zusätzliche Sprachen"
+      },
+      "moduleSurface": {
+        "core": "QR-Karte, Online-Bestellung und Verwaltung",
+        "kitchen-board": "Live-Bestelltafel für die Küche",
+        "cashier": "Kasse, Zahlungen und Tagesabschluss",
+        "server": "Tischplan und Bestellung am Tisch",
+        "reservations": "Online-Buchung und Tischverwaltung",
+        "loyalty": "Punkte, Kundengruppen und Rabatte",
+        "printing": "Begleit-App für Thermodrucker",
+        "online-payments": "Karte und lokale Methoden wie TWINT oder iDEAL, direkt auf Ihr eigenes Stripe-Konto",
+        "extra-languages": "Über Englisch + eine hinaus, bis zu 10 Sprachen"
+      }
+    },
+    "changeRequest": {
+      "placeholder": "z. B. Reservierungen sollen dazu, oder ein anderer Look.",
+      "aria": "Was soll sich ändern?",
+      "submit": "Anfrage senden",
+      "sending": "Senden…",
+      "sent": "Gesendet — wir melden uns."
     }
   },
   "signup": {
