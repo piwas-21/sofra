@@ -45,8 +45,9 @@ export default async function ClientRowLine({
 
   const plan = summary.plan;
   const parts: string[] = [summary.domain || t(VIEW_KEY[summary.view])];
-  if (plan && plan.amountCents !== null && plan.interval !== null) {
-    parts.push(`${eur(plan.amountCents)} / ${tp(`interval.${intervalKeyOf(plan.interval)}`)}`);
+  if (plan?.amountCents != null && plan.interval != null) {
+    const interval = tp(`interval.${intervalKeyOf(plan.interval)}`);
+    parts.push(`${eur(plan.amountCents)} / ${interval}`);
   }
   parts.push(t(PLAN_STATE_KEY[plan?.state ?? "none"]));
 

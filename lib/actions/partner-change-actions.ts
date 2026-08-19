@@ -49,7 +49,11 @@ export async function requestClientChangeAction(
   formData: FormData,
 ): Promise<ChangeRequestState> {
   const partner = await requirePartner();
-  const id = String(formData.get("id") ?? "");
+  // Read as a string rather than `String(...)`: a FormData value can be a File, and
+  // stringifying one yields "[object Object]" — a lookup that would then miss rather
+  // than refuse (Sonar S6551, same shape as `startPaymentAction`).
+  const raw = formData.get("id");
+  const id = typeof raw === "string" ? raw : "";
   const client = await ownClient(partner.id, id);
   if (!client) return { error: "clientNotFound" };
 
