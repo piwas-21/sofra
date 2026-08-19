@@ -8,16 +8,11 @@ import { audit } from "@/lib/audit";
 import { sendEmail, founderInbox, siteUrl } from "@/lib/email";
 import { craftEmail, detailRows } from "@/lib/email-templates";
 import { clientSchema, noteSchema, partnerStatusSchema } from "@/lib/validation";
+import { ownClient } from "@/lib/client-access";
 
 /** `error` is a message key in the `control.errors` namespace, translated at
  *  render by <ActionError /> (control-plane i18n, sofra #9). */
 export type PartnerActionState = { error?: string; ok?: boolean };
-
-/** Loads a client iff it belongs to the calling partner — the ONLY way
- *  partner actions may touch a client row. */
-async function ownClient(partnerId: string, clientId: string) {
-  return db.client.findFirst({ where: { id: clientId, partnerId } });
-}
 
 export async function createClientAction(
   _prev: PartnerActionState,

@@ -505,7 +505,9 @@
       "pipeline": "Süreç",
       "details": "Bilgiler",
       "notes": "Notlar",
-      "noNotes": "Henüz not yok."
+      "noNotes": "Henüz not yok.",
+      "changeRequest": "Değişiklik iste",
+      "changeRequestIntro": "Modül eklemek, görünümü değiştirmek, fiyatı güncellemek — buraya yazın: talep bu müşterinin bilgileriyle SofraPiwas'a ulaşır ve not olarak da kaydedilir."
     },
     "clientForm": {
       "restaurantName": "Restoran / kafe adı",
@@ -997,6 +999,68 @@
       "vat": "KDV",
       "iban": "IBAN",
       "service": "Hizmet: {tenant}"
+    },
+    "tenant": {
+      "title": "Restoranın uygulaması",
+      "statusLine": "durum: {status}",
+      "domainHint": "Misafirlerinin kullandığı canlı adres.",
+      "templateLabel": "Görünüm",
+      "languagesLabel": "Diller",
+      "currencyLabel": "Para birimi",
+      "modulesLabel": "Sahip oldukları",
+      "noModules": "Bu tenant için modül listelenmemiş.",
+      "moduleUnknown": "Doğrudan kayıt dosyasında verildi — katalog modülü değil.",
+      "registryNote": "Modülleri, dilleri ve adresi SofraPiwas kurar. Aşağıdan değişiklik isteyin, gerisini biz hallederiz.",
+      "slugLine": "Tenant adı:",
+      "awaitingTitle": "SofraPiwas bu restoranı kuruyor",
+      "awaitingBody": "Kurulum talebiniz bize ulaştı. Restoranın kendi uygulamasını hazırlayıp yayına alıyor ve bu müşteriyi Canlı'ya geçiriyoruz — adres ve içerdiği her şey, var olur olmaz burada görünecek.",
+      "unlistedTitle": "Neredeyse hazır",
+      "unlistedBody": "Tenant adı ayrıldı ve uygulama hazırlanıyor. Kurulum biter bitmez ayrıntılar burada görünecek.",
+      "unreadableTitle": "Kurulum bilgileri şu anda gösterilemiyor",
+      "unreadableBody": "Bu bizim tarafımızdaki bir durum; restoranın uygulaması etkilenmez, çalışmaya devam eder. Birkaç dakika sonra tekrar deneyin.",
+      "planTitle": "Bunun size maliyeti",
+      "planNoneBody": "Henüz abonelik yok. SofraPiwas bu restoran için toptan fiyatınızı yayına alındığında belirler; burada görünecek.",
+      "planNote": "Bu, SofraPiwas'ın bu restoran için sizden aldığı tutardır. Sizin restorandan aldığınız tutar sizin bileceğiniz iştir.",
+      "rowPay": "ödeme bekliyor",
+      "rowProcessing": "ödeme işleniyor",
+      "rowActive": "abonelik aktif",
+      "rowInactive": "abonelik aktif değil",
+      "rowNoPlan": "henüz abonelik yok",
+      "rowAwaiting": "kuruluyor",
+      "rowUnknown": "tenant bilgileri yok",
+      "template": {
+        "classic": "Klasik",
+        "craft": "El yapımı"
+      },
+      "module": {
+        "core": "Temel — QR menü ve çevrimiçi sipariş",
+        "kitchen-board": "Mutfak ekranı",
+        "cashier": "Kasa ve Z raporu",
+        "server": "Masa servisi",
+        "reservations": "Rezervasyonlar",
+        "loyalty": "Sadakat puanları",
+        "printing": "Fiş yazdırma",
+        "online-payments": "Online ödeme",
+        "extra-languages": "Ek diller"
+      },
+      "moduleSurface": {
+        "core": "QR menü, çevrimiçi sipariş ve yönetim paneli",
+        "kitchen-board": "Mutfak için canlı sipariş panosu",
+        "cashier": "Kasa, ödemeler ve gün sonu raporu",
+        "server": "Salon planı ve masada sipariş",
+        "reservations": "Çevrimiçi rezervasyon ve masa yönetimi",
+        "loyalty": "Puanlar, müşteri grupları ve indirimler",
+        "printing": "Termal yazıcılar için yardımcı uygulama",
+        "online-payments": "Kart ve TWINT ya da iDEAL gibi yerel yöntemler, doğrudan kendi Stripe hesabınıza",
+        "extra-languages": "İngilizce + bir dilin ötesinde, 10 dile kadar"
+      }
+    },
+    "changeRequest": {
+      "placeholder": "ör. rezervasyon eklensin ya da görünüm değişsin.",
+      "aria": "Ne değişmeli?",
+      "submit": "Talebi gönder",
+      "sending": "Gönderiliyor…",
+      "sent": "Gönderildi — size döneceğiz."
     }
   },
   "signup": {

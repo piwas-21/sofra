@@ -4,6 +4,11 @@ import { db } from "@/lib/db";
 import OwnerDashboard from "@/components/control/OwnerDashboard";
 import PartnerDashboard from "@/components/control/PartnerDashboard";
 
+// Both views read the tenant registry, which changes underneath us (rsync on
+// deploy-repo push) — never serve a build-time snapshot of it. Same reason as
+// /admin/tenants.
+export const dynamic = "force-dynamic";
+
 /**
  * `/dashboard` — shared by the reseller (PARTNER) and the restaurant owner (OWNER),
  * who want almost nothing in common.

@@ -380,3 +380,66 @@ export async function arrangeUserWithPassword(email: string, password: string): 
   );
   if (rows.length !== 1) throw new Error(`arrangeUserWithPassword: could not create "${email}"`);
 }
+
+/**
+ * A reseller partner with one client, optionally already a live tenant with a plan
+ * (SOFRA-PARTNER-PLAN §9).
+ *
+ * Its own PARTNER user per call rather than the seeded `E2E_PARTNER_EMAIL`, for the
+ * reason `arrangeUserWithPassword` documents: `lib/auth.ts` limits
+ * `login:email:<address>` to 10 per 15 minutes and no header can isolate that bucket,
+ * so sharing one address across specs rate-limits the OTHER specs' logins.
+ *
+ * ARRANGES a state the founder's own flow produces — a `Client` LIVE with a
+ * `tenantSlug`, and a reseller plan hanging off it — rather than driving /admin, which
+ * is a different surface's concern and would double the runtime of every case here.
+ */
+export async function arrangeResellerClient(opts: {
+  partnerEmail: string;
+  partnerPassword: string;
+  restaurantName: string;
+  status: string;
+  tenantSlug?: string;
+  city?: string;
+  plan?: { amountCents: number; interval: string; subStatus: string };
+}): Promise<{ partnerId: string; clientId: string }> {
+  const passwordHash = await bcrypt.hash(opts.partnerPassword, 12);
+  const partners = await query<{ id: string }>(
+    `INSERT INTO "User" (id, email, "passwordHash", name, role, status, "createdAt")
+     VALUES (gen_random_uuid()::text, lower($1), $2, 'E2E Reseller', 'PARTNER', 'ACTIVE', now())
+     RETURNING id`,
+    [opts.partnerEmail, passwordHash],
+  );
+  const partnerId = partners[0].id;
+
+  const clients = await query<{ id: string }>(
+    `INSERT INTO "Client"
+       (id, "partnerId", "restaurantName", "contactName", city, status, "tenantSlug",
+        "createdAt", "updatedAt")
+     VALUES (gen_random_uuid()::text, $1, $2, 'E2E Contact', $3, $4::"ClientStatus", $5,
+             now(), now())
+     RETURNING id`,
+    [partnerId, opts.restaurantName, opts.city ?? "Geneva", opts.status, opts.tenantSlug ?? null],
+  );
+  const clientId = clients[0].id;
+
+  if (opts.plan) {
+    if (!opts.tenantSlug) throw new Error("arrangeResellerClient: a plan needs a tenantSlug");
+    const billings = await query<{ id: string }>(
+      `INSERT INTO "TenantBilling"
+         (id, "tenantSlug", name, email, "clientId", "liveSince", "createdAt")
+       VALUES (gen_random_uuid()::text, $1, $2, $3, $4, now(), now())
+       RETURNING id`,
+      [opts.tenantSlug, opts.restaurantName, opts.partnerEmail.toLowerCase(), clientId],
+    );
+    await query(
+      `INSERT INTO "BillingSubscription"
+         (id, "billingId", description, "amountCents", currency, interval, status, "createdAt")
+       VALUES (gen_random_uuid()::text, $1, 'E2E arranged plan', $2, 'EUR', $3,
+               $4::"SubscriptionStatus", now())`,
+      [billings[0].id, opts.plan.amountCents, opts.plan.interval, opts.plan.subStatus],
+    );
+  }
+
+  return { partnerId, clientId };
+}

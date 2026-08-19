@@ -62,3 +62,30 @@ tenants:
     db: tenant_e2e_unpaired
     languages: [en]
     modules: [core, online-payments]
+  # The reseller's own view of a tenant they sold (SOFRA-PARTNER-PLAN §9). Its OWN
+  # slugs rather than a share of `e2e-card`/`e2e-occupied`: the owner specs repoint a
+  # plan onto those, and `TenantBilling.tenantSlug` is UNIQUE — so a shared slug is a
+  # cross-spec race under parallel workers, not a saving.
+  e2e-partner-live:
+    name: E2E Partner Live Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-partner-live.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_partner_live
+    currency: CHF
+    languages: [en, fr]
+    modules: [core, reservations, online-payments]
+    template: craft
+    stripe_account: acct_1E2ePartnerLive
+  e2e-partner-note:
+    name: E2E Partner Note Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-partner-note.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_partner_note
+    languages: [en]
+    modules: [core]
