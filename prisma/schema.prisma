@@ -82,6 +82,8 @@ model User {
   auditLogs      AuditLog[]
   // Tenants this user pays for directly (OWNER self-serve; ADR-004).
   billingsPaid   TenantBilling[]   @relation("BillingPayer")
+  // Base domains a PARTNER has claimed for their own clients (D1).
+  baseDomains    PartnerDomain[]
   // The legal entity this user is invoiced as (B1). One per user: a party has
   // one set of registration details at a time.
   billingIdentity BillingIdentity?
@@ -284,6 +286,55 @@ model PartnerProfile {
   city    String?
   // Founder-only notes — never rendered in partner-facing views.
   notes   String?
+}
+
+// A zone a PARTNER says is theirs, and the proof that it is
+// (SOFRA-PARTNER-FLEXIBILITY-PLAN D1/D1b).
+//
+// Its own model rather than columns on PartnerProfile, for three reasons. A partner
+// can hold more than one brand zone and a single column would force a migration the
+// first time one does. PartnerProfile is a founder-facing CRM row (it carries
+// `notes`, which are never rendered to the partner) and a security-load-bearing
+// verification token does not belong beside it. And a row per claim is what makes
+// the audit read properly: claimed at, verified at, and a token that is scoped to
+// ONE claim.
+//
+// `@@unique([partnerId, domain])` — per PARTNER, deliberately NOT global. A global
+// unique would let anyone squat a competitor's zone with an unverified claim and
+// lock the real owner out of ever claiming it, which is a denial of service bought
+// for the price of typing a name. It is not needed for safety either: each row
+// carries its OWN random token, so proving control of a zone proves control of that
+// zone, no matter who else has typed it. Two partners who both verify the same
+// domain both genuinely hold it.
+//
+// The token is stored in PLAINTEXT on purpose — see lib/base-domain-verification.ts:
+// the partner has to publish it in public DNS, so it is a public value, and hashing
+// it would only stop us from showing it to them again.
+model PartnerDomain {
+  id        String @id @default(cuid())
+  partnerId String
+  partner   User   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  /// Normalized by lib/base-domain.ts: lower-case, no scheme, no trailing dot.
+  /// Everything downstream concatenates a slug onto this, so it has exactly one form.
+  domain String
+
+  /// Random per-claim secret; published as TXT `_sofra-verify.<domain>`. Never
+  /// rotated on a re-check, so a record published once keeps satisfying it.
+  verifyToken String
+
+  /// When control was last PROVEN. Null = claimed but unusable — every surface
+  /// treats an unverified base domain as if it were not there.
+  verifiedAt DateTime?
+  /// When we last looked, whatever the answer. Separates "never checked" from
+  /// "checked, still not published", which is the difference between a partner who
+  /// has not started and one who is stuck.
+  lastCheckedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@unique([partnerId, domain])
+  @@index([partnerId])
 }
 
 model Client {

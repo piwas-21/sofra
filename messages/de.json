@@ -473,7 +473,8 @@
         "fleet": "Flotte",
         "invoices": "Rechnungen",
         "icp": "ICP",
-        "billingDetails": "Rechnungsdaten"
+        "billingDetails": "Rechnungsdaten",
+        "domains": "Domains"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -656,7 +657,12 @@
         "clients": "Kunden",
         "noClients": "Noch keine Kunden.",
         "ledger": "Provisionsbuch",
-        "empty": "Noch nichts verbucht."
+        "empty": "Noch nichts verbucht.",
+        "baseDomains": "Ihre eigenen Domains",
+        "baseDomainVerified": "bestätigt am {date} (vor {days} Tagen)",
+        "baseDomainStale": "bestätigt am {date} — vor {days} Tagen, sollte erneut bestätigt werden",
+        "baseDomainUnverified": "nicht bestätigt — unbrauchbar",
+        "noBaseDomains": "Keine eigenen Domains."
       },
       "commissionForm": {
         "amount": "Betrag (EUR, negativ = Auszahlung)",
@@ -937,7 +943,22 @@
       "trialNotLonger": "Ein Gratiszeitraum kann nur verlängert werden. Bitte ein Datum nach dem aktuellen wählen.",
       "trialTooFar": "Das liegt mehr als ein Jahr in der Zukunft — bitte in kleineren Schritten verlängern.",
       "trialReasonRequired": "Bitte einen kurzen Grund angeben — er wird mit der Änderung gespeichert.",
-      "trialChangedMeanwhile": "Der Gratiszeitraum dieses Plans hat sich geändert, während diese Seite offen war. Bitte neu laden und noch einmal nachsehen."
+      "trialChangedMeanwhile": "Der Gratiszeitraum dieses Plans hat sich geändert, während diese Seite offen war. Bitte neu laden und noch einmal nachsehen.",
+      "baseDomain": {
+        "empty": "Geben Sie eine Domain ein.",
+        "tooLong": "Diese Domain ist zu lang.",
+        "notAHostname": "Das sieht nicht nach einem Domainnamen aus — nur Buchstaben, Ziffern und Bindestriche, z. B. ihrefirma.com.",
+        "singleLabel": "Geben Sie die vollständige Domain samt Endung ein — z. B. ihrefirma.com.",
+        "ipAddress": "Das ist eine IP-Adresse, kein Domainname.",
+        "reservedTld": "Diese Endung lässt sich im öffentlichen Internet nicht verwenden; dafür könnte nie ein Zertifikat ausgestellt werden.",
+        "publicSuffix": "Das ist eine Domainendung, keine Domain. Geben Sie den Namen ein, den Sie registriert haben, z. B. ihrefirma.co.uk.",
+        "ourZone": "Diese Domain gehört uns. Ihre Kunden bekommen darunter bereits eine kostenlose Adresse — hier geht es um eine eigene Domain.",
+        "tooMany": "Sie haben die maximale Anzahl an Domains erreicht. Entfernen Sie eine, oder bitten Sie uns, das Limit zu erhöhen.",
+        "unknownDomain": "Diese Domain gehört nicht zu Ihrem Konto.",
+        "recordNotFound": "Wir haben den Eintrag noch nicht gefunden. Prüfen Sie, ob er veröffentlicht ist, und versuchen Sie es in ein paar Minuten erneut.",
+        "lookupFailed": "Wir konnten die Domain gerade nicht abfragen. Es hat sich nichts geändert — versuchen Sie es gleich noch einmal.",
+        "tokenMismatch": "Wir haben einen Eintrag gefunden, aber nicht den oben gezeigten Wert. Prüfen Sie, ob er exakt kopiert wurde."
+      }
     },
     "plan": {
       "title": "Ihr Abo",
@@ -1084,6 +1105,37 @@
       "submit": "Anfrage senden",
       "sending": "Senden…",
       "sent": "Gesendet — wir melden uns."
+    },
+    "baseDomain": {
+      "title": "Ihre eigenen Domains",
+      "intro": "Bringen Sie die Restaurants, die Sie verkaufen, unter eine eigene Domain — obresse.ihrefirma.com statt obresse.sofrapiwas.com. Domain hier hinzufügen und nachweisen, dass sie Ihnen gehört; danach wird sie bei jedem neuen Kunden angeboten.",
+      "addTitle": "Domain hinzufügen",
+      "addIntro": "Die Firmendomain, unter der Ihre Kunden leben sollen. Nicht die eigene Domain eines Restaurants — das ist eine separate Wahl beim Einrichten des Kunden.",
+      "addLabel": "Ihre Domain",
+      "addPlaceholder": "ihrefirma.com",
+      "addSubmit": "Domain hinzufügen",
+      "adding": "Wird hinzugefügt…",
+      "added": "Hinzugefügt — veröffentlichen Sie jetzt den Eintrag unten.",
+      "listTitle": "Ihre Domains",
+      "empty": "Noch keine Domain. Fügen Sie oben eine hinzu, um Kunden unter Ihrem eigenen Namen zu führen.",
+      "footerNote": "Eine Domain wird erst nutzbar, wenn wir den Eintrag gesehen haben. Bis dahin steht sie nur hier und wird nirgends angeboten.",
+      "statusVerified": "Bestätigt am {date}",
+      "statusStale": "Bestätigt am {date} — bitte bestätigen Sie, dass sie noch Ihnen gehört",
+      "statusPending": "Noch nicht bestätigt",
+      "statusNotFoundYet": "Wir haben nachgesehen und den Eintrag noch nicht gefunden",
+      "howBody": "Legen Sie diesen TXT-Eintrag im DNS Ihrer Domain an und drücken Sie dann „Jetzt prüfen“. Es kann einige Minuten bis Stunden dauern, bis wir ihn sehen.",
+      "recordType": "Typ",
+      "recordName": "Name",
+      "recordValue": "Wert",
+      "keepRecordNote": "Lassen Sie den Eintrag stehen. Wir prüfen von Zeit zu Zeit erneut, und derselbe Eintrag funktioniert weiterhin.",
+      "verify": "Jetzt prüfen",
+      "recheck": "Erneut prüfen",
+      "verifying": "Wird geprüft…",
+      "verifiedNow": "Bestätigt — Sie können jetzt Kunden unter dieser Domain führen.",
+      "remove": "Entfernen",
+      "removing": "Wird entfernt…",
+      "removeNote": "Das Entfernen hier ändert nichts an Restaurants, die bereits unter dieser Domain online sind — sagen Sie uns Bescheid, wenn eines umziehen soll.",
+      "staleNote": "Die Bestätigung ist lange her. Drücken Sie „Erneut prüfen“, um zu bestätigen, dass die Domain noch Ihnen gehört."
     }
   },
   "signup": {

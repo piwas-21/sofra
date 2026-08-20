@@ -473,7 +473,8 @@
         "fleet": "Filo",
         "invoices": "Faturalar",
         "icp": "ICP",
-        "billingDetails": "Fatura bilgileri"
+        "billingDetails": "Fatura bilgileri",
+        "domains": "Alan adları"
       },
       "groups": {
         "pipeline": "Süreç",
@@ -656,7 +657,12 @@
         "clients": "Müşteriler",
         "noClients": "Henüz müşteri yok.",
         "ledger": "Komisyon defteri",
-        "empty": "Henüz kayıt yok."
+        "empty": "Henüz kayıt yok.",
+        "baseDomains": "Kendi alan adları",
+        "baseDomainVerified": "{date} tarihinde doğrulandı ({days} gün önce)",
+        "baseDomainStale": "{date} tarihinde doğrulandı — {days} gün önce, yeniden teyit edilmeli",
+        "baseDomainUnverified": "doğrulanmadı — kullanılamaz",
+        "noBaseDomains": "Kendilerine ait alan adı yok."
       },
       "commissionForm": {
         "amount": "Tutar (EUR, negatif = ödeme)",
@@ -937,7 +943,22 @@
       "trialNotLonger": "Ücretsiz dönem yalnızca uzatılabilir. Mevcut tarihten sonraki bir tarih seçin.",
       "trialTooFar": "Bu tarih bir yıldan uzak — daha kısa adımlarla uzatın.",
       "trialReasonRequired": "Kısa bir gerekçe yazın — değişiklikle birlikte saklanır.",
-      "trialChangedMeanwhile": "Bu sayfa açıkken planın ücretsiz dönemi değişti. Sayfayı yenileyip tekrar bakın."
+      "trialChangedMeanwhile": "Bu sayfa açıkken planın ücretsiz dönemi değişti. Sayfayı yenileyip tekrar bakın.",
+      "baseDomain": {
+        "empty": "Bir alan adı girin.",
+        "tooLong": "Bu alan adı çok uzun.",
+        "notAHostname": "Bu bir alan adına benzemiyor — yalnızca harf, rakam ve tire, örn. sirketiniz.com.",
+        "singleLabel": "Uzantısıyla birlikte tam alan adını girin — örn. sirketiniz.com.",
+        "ipAddress": "Bu bir IP adresi, alan adı değil.",
+        "reservedTld": "Bu uzantı genel internette kullanılamaz; onun için hiçbir sertifika verilemez.",
+        "publicSuffix": "Bu bir alan adı uzantısı, alan adı değil. Kaydettiğiniz adı girin, örn. sirketiniz.co.uk.",
+        "ourZone": "Bu alan adı bize ait. Müşterileriniz zaten onun altında ücretsiz bir adres alıyor — burası kendi alan adınız için.",
+        "tooMany": "Azami alan adı sayısına ulaştınız. Birini kaldırın ya da artırmamızı isteyin.",
+        "unknownDomain": "Bu alan adı hesabınızda yok.",
+        "recordNotFound": "Kaydı henüz bulamadık. Yayınlandığından emin olun, birkaç dakika sonra tekrar deneyin.",
+        "lookupFailed": "Alan adını şu anda sorgulayamadık. Hiçbir şey değişmedi — birazdan tekrar deneyin.",
+        "tokenMismatch": "Bir kayıt bulduk ama yukarıdaki değeri değil. Tam olarak kopyalandığından emin olun."
+      }
     },
     "plan": {
       "title": "Aboneliğiniz",
@@ -1084,6 +1105,37 @@
       "submit": "Talebi gönder",
       "sending": "Gönderiliyor…",
       "sent": "Gönderildi — size döneceğiz."
+    },
+    "baseDomain": {
+      "title": "Kendi alan adlarınız",
+      "intro": "Sattığınız restoranları kendi alan adınızın altına alın — obresse.sofrapiwas.com yerine obresse.sirketiniz.com. Alan adını buraya ekleyin ve size ait olduğunu kanıtlayın; sonrasında her yeni müşteride seçenek olarak sunulur.",
+      "addTitle": "Alan adı ekleyin",
+      "addIntro": "Müşterilerinizin altında yer alacağı şirket alan adı. Restoranın kendi alan adı değil — o, müşteriyi kurarken ayrı bir seçenek.",
+      "addLabel": "Alan adınız",
+      "addPlaceholder": "sirketiniz.com",
+      "addSubmit": "Alan adını ekle",
+      "adding": "Ekleniyor…",
+      "added": "Eklendi — şimdi aşağıdaki kaydı yayınlayın.",
+      "listTitle": "Alan adlarınız",
+      "empty": "Henüz alan adı yok. Müşterileri kendi adınızın altına almak için yukarıdan bir tane ekleyin.",
+      "footerNote": "Bir alan adı ancak kaydı gördüğümüzde kullanılabilir hâle gelir. O ana kadar yalnızca burada durur, hiçbir yerde sunulmaz.",
+      "statusVerified": "{date} tarihinde doğrulandı",
+      "statusStale": "{date} tarihinde doğrulandı — hâlâ sizde olduğunu teyit etmekte fayda var",
+      "statusPending": "Henüz doğrulanmadı",
+      "statusNotFoundYet": "Baktık, kaydı henüz bulamadık",
+      "howBody": "Bu TXT kaydını alan adınızın DNS'ine ekleyin, sonra “Şimdi kontrol et”e basın. Görebilmemiz birkaç dakika ile birkaç saat sürebilir.",
+      "recordType": "Tür",
+      "recordName": "Ad",
+      "recordValue": "Değer",
+      "keepRecordNote": "Kaydı yerinde bırakın. Zaman zaman yeniden kontrol ediyoruz ve aynı kayıt çalışmaya devam eder.",
+      "verify": "Şimdi kontrol et",
+      "recheck": "Yeniden kontrol et",
+      "verifying": "Kontrol ediliyor…",
+      "verifiedNow": "Doğrulandı — artık bu alan adının altına müşteri alabilirsiniz.",
+      "remove": "Kaldır",
+      "removing": "Kaldırılıyor…",
+      "removeNote": "Buradan kaldırmak, bu alan adı altında zaten yayında olan restoranları değiştirmez — taşınması gereken varsa bize söyleyin.",
+      "staleNote": "Bu doğrulama epey eski. Alan adının hâlâ sizde olduğunu teyit etmek için “Yeniden kontrol et”e basın."
     }
   },
   "signup": {

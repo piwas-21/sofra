@@ -473,7 +473,8 @@
         "fleet": "Vloot",
         "invoices": "Facturen",
         "icp": "ICP",
-        "billingDetails": "Factuurgegevens"
+        "billingDetails": "Factuurgegevens",
+        "domains": "Domeinen"
       },
       "groups": {
         "pipeline": "Pijplijn",
@@ -656,7 +657,12 @@
         "clients": "Klanten",
         "noClients": "Nog geen klanten.",
         "ledger": "Commissiegrootboek",
-        "empty": "Nog niets geboekt."
+        "empty": "Nog niets geboekt.",
+        "baseDomains": "Hun eigen domeinen",
+        "baseDomainVerified": "geverifieerd op {date} ({days} dagen geleden)",
+        "baseDomainStale": "geverifieerd op {date} — {days} dagen geleden, opnieuw bevestigen",
+        "baseDomainUnverified": "niet geverifieerd — onbruikbaar",
+        "noBaseDomains": "Geen eigen domeinen."
       },
       "commissionForm": {
         "amount": "Bedrag (EUR, negatief = uitbetaling)",
@@ -937,7 +943,22 @@
       "trialNotLonger": "Een gratis periode kan alleen worden verlengd. Kies een datum na de huidige.",
       "trialTooFar": "Dat is meer dan een jaar vooruit — verleng in kleinere stappen.",
       "trialReasonRequired": "Geef een korte reden — die wordt bij de wijziging bewaard.",
-      "trialChangedMeanwhile": "De gratis periode van dit plan is gewijzigd terwijl deze pagina openstond. Herlaad en kijk opnieuw."
+      "trialChangedMeanwhile": "De gratis periode van dit plan is gewijzigd terwijl deze pagina openstond. Herlaad en kijk opnieuw.",
+      "baseDomain": {
+        "empty": "Vul een domein in.",
+        "tooLong": "Dat domein is te lang.",
+        "notAHostname": "Dat lijkt geen domeinnaam — alleen letters, cijfers en streepjes, bijv. jouwbedrijf.com.",
+        "singleLabel": "Vul het volledige domein in, inclusief de extensie — bijv. jouwbedrijf.com.",
+        "ipAddress": "Dat is een IP-adres, geen domeinnaam.",
+        "reservedTld": "Die extensie kan niet op het publieke internet worden gebruikt, dus er kan nooit een certificaat voor worden uitgegeven.",
+        "publicSuffix": "Dat is een extensie, geen domein. Vul de naam in die je hebt geregistreerd, bijv. jouwbedrijf.co.uk.",
+        "ourZone": "Dat domein is van ons. Je klanten krijgen daar al een gratis adres onder — dit is voor een eigen domein.",
+        "tooMany": "Je hebt het maximum aantal domeinen bereikt. Verwijder er een, of vraag ons het te verhogen.",
+        "unknownDomain": "Dat domein staat niet op je account.",
+        "recordNotFound": "We konden het record nog niet vinden. Controleer of het gepubliceerd is en probeer het over een paar minuten opnieuw.",
+        "lookupFailed": "We konden het domein nu niet opvragen. Er is niets veranderd — probeer het zo nog eens.",
+        "tokenMismatch": "We vonden een record, maar niet de waarde hierboven. Controleer of die precies is overgenomen."
+      }
     },
     "plan": {
       "title": "Jouw abonnement",
@@ -1084,6 +1105,37 @@
       "submit": "Verzoek versturen",
       "sending": "Versturen…",
       "sent": "Verstuurd — we komen bij je terug."
+    },
+    "baseDomain": {
+      "title": "Je eigen domeinen",
+      "intro": "Zet de restaurants die je verkoopt onder een eigen domein — obresse.jouwbedrijf.com in plaats van obresse.sofrapiwas.com. Voeg het domein hier toe en bewijs dat het van jou is; daarna wordt het aangeboden bij elke nieuwe klant.",
+      "addTitle": "Domein toevoegen",
+      "addIntro": "Het bedrijfsdomein waaronder je klanten moeten komen. Niet het eigen domein van een restaurant — dat is een aparte keuze bij het inrichten van de klant.",
+      "addLabel": "Jouw domein",
+      "addPlaceholder": "jouwbedrijf.com",
+      "addSubmit": "Domein toevoegen",
+      "adding": "Toevoegen…",
+      "added": "Toegevoegd — publiceer nu het record hieronder.",
+      "listTitle": "Jouw domeinen",
+      "empty": "Nog geen domein. Voeg er hierboven een toe om klanten onder je eigen naam te zetten.",
+      "footerNote": "Een domein wordt pas bruikbaar zodra we het record hebben gezien. Tot die tijd staat het alleen hier en wordt het nergens aangeboden.",
+      "statusVerified": "Geverifieerd op {date}",
+      "statusStale": "Geverifieerd op {date} — bevestig even dat het nog van jou is",
+      "statusPending": "Nog niet geverifieerd",
+      "statusNotFoundYet": "We hebben gekeken en het record nog niet gevonden",
+      "howBody": "Voeg dit TXT-record toe in de DNS van je domein en druk daarna op “Nu controleren”. Het kan enkele minuten tot enkele uren duren voor we het zien.",
+      "recordType": "Type",
+      "recordName": "Naam",
+      "recordValue": "Waarde",
+      "keepRecordNote": "Laat het record staan. We controleren af en toe opnieuw, en hetzelfde record blijft werken.",
+      "verify": "Nu controleren",
+      "recheck": "Opnieuw controleren",
+      "verifying": "Bezig met controleren…",
+      "verifiedNow": "Geverifieerd — je kunt nu klanten onder dit domein zetten.",
+      "remove": "Verwijderen",
+      "removing": "Verwijderen…",
+      "removeNote": "Hier verwijderen verandert niets aan restaurants die al onder dit domein online staan — laat het ons weten als er een moet verhuizen.",
+      "staleNote": "Dit is lang geleden geverifieerd. Druk op “Opnieuw controleren” om te bevestigen dat het domein nog van jou is."
     }
   },
   "signup": {

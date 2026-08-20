@@ -473,7 +473,8 @@
         "fleet": "Fleet",
         "invoices": "Invoices",
         "icp": "ICP",
-        "billingDetails": "Billing details"
+        "billingDetails": "Billing details",
+        "domains": "Domains"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -656,7 +657,12 @@
         "clients": "Clients",
         "noClients": "No clients yet.",
         "ledger": "Commission ledger",
-        "empty": "Nothing recorded yet."
+        "empty": "Nothing recorded yet.",
+        "baseDomains": "Their own domains",
+        "baseDomainVerified": "verified {date} ({days} days ago)",
+        "baseDomainStale": "verified {date} — {days} days ago, worth re-confirming",
+        "baseDomainUnverified": "not verified — unusable",
+        "noBaseDomains": "No domains of their own."
       },
       "commissionForm": {
         "amount": "Amount (EUR, negative = payout)",
@@ -937,7 +943,22 @@
       "trialNotLonger": "A free period can only be extended. Pick a date after the current one.",
       "trialTooFar": "That is more than a year away — extend in smaller steps.",
       "trialReasonRequired": "Give a short reason — it is kept with the change.",
-      "trialChangedMeanwhile": "This plan's free period changed while this page was open. Reload and look again."
+      "trialChangedMeanwhile": "This plan's free period changed while this page was open. Reload and look again.",
+      "baseDomain": {
+        "empty": "Enter a domain.",
+        "tooLong": "That domain is too long.",
+        "notAHostname": "That does not look like a domain name — letters, digits and dashes only, e.g. yourcompany.com.",
+        "singleLabel": "Enter the full domain, including the ending — e.g. yourcompany.com.",
+        "ipAddress": "That is an IP address, not a domain name.",
+        "reservedTld": "That ending cannot be used on the public internet, so no certificate could ever be issued for it.",
+        "publicSuffix": "That is a domain ending, not a domain. Enter the name you registered, e.g. yourcompany.co.uk.",
+        "ourZone": "That domain is ours. Your clients already get a free address under it — this is for a domain of your own.",
+        "tooMany": "You have reached the maximum number of domains. Remove one, or ask us to raise it.",
+        "unknownDomain": "That domain is not on your account.",
+        "recordNotFound": "We could not find the record yet. Check that it is published, then try again in a few minutes.",
+        "lookupFailed": "We could not look the domain up just now. Nothing has changed — try again shortly.",
+        "tokenMismatch": "We found a record, but not the value shown above. Check it was copied exactly."
+      }
     },
     "plan": {
       "title": "Your plan",
@@ -1084,6 +1105,37 @@
       "submit": "Send request",
       "sending": "Sending…",
       "sent": "Sent — we'll come back to you."
+    },
+    "baseDomain": {
+      "title": "Your own domains",
+      "intro": "Put the restaurants you sell under a domain of your own — obresse.yourcompany.com instead of obresse.sofrapiwas.com. Add the domain here and prove it is yours; from then on it is offered every time you set up a new client.",
+      "addTitle": "Add a domain",
+      "addIntro": "The company domain you want your clients to live under. Not a restaurant's own domain — that is a separate choice when you set the client up.",
+      "addLabel": "Your domain",
+      "addPlaceholder": "yourcompany.com",
+      "addSubmit": "Add domain",
+      "adding": "Adding…",
+      "added": "Added — now publish the record below.",
+      "listTitle": "Your domains",
+      "empty": "No domains yet. Add one above to put clients under your own name.",
+      "footerNote": "A domain becomes usable only once we have seen the record. Until then it stays here and is offered nowhere.",
+      "statusVerified": "Verified {date}",
+      "statusStale": "Verified {date} — worth confirming it is still yours",
+      "statusPending": "Not verified yet",
+      "statusNotFoundYet": "We looked and did not find the record yet",
+      "howBody": "Add this TXT record in your domain's DNS, then press “Check now”. It can take a few minutes to a few hours before we can see it.",
+      "recordType": "Type",
+      "recordName": "Name",
+      "recordValue": "Value",
+      "keepRecordNote": "Leave the record in place. We check again from time to time, and the same record keeps working.",
+      "verify": "Check now",
+      "recheck": "Check again",
+      "verifying": "Checking…",
+      "verifiedNow": "Verified — you can now put clients under this domain.",
+      "remove": "Remove",
+      "removing": "Removing…",
+      "removeNote": "Removing a domain here does not change restaurants that are already online under it — ask us if one needs to move.",
+      "staleNote": "This was verified a long time ago. Press “Check again” to confirm the domain is still yours."
     }
   },
   "signup": {
