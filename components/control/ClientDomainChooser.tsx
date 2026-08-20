@@ -73,82 +73,79 @@ export default function ClientDomainChooser({
         <span className="text-xs">{t("slugHint")}</span>
       </label>
 
+      {/* Each option is a two-column grid rather than a wrapper span, so the option's
+          NAME is a direct child of the <label> and is therefore its accessible text
+          (jsx-a11y/label-has-associated-control, Sonar S6853). Nested one level deeper —
+          as it was — the label reads as having no text at all to a strict checker, and
+          the fix is structural rather than an aria-label that would paper over it. */}
       <fieldset className="grid gap-3">
         <legend className="font-label text-xs uppercase tracking-[0.15em] text-muted-foreground">
           {t("optionsLegend")}
         </legend>
 
-        <label className="flex gap-3 rounded-craft border-2 border-border p-3">
-          <input type="radio" name="choice" value="sofra" defaultChecked className="mt-1" />
-          <span>
-            <span className="font-bold">{t("optionSofra")}</span>
-            <span className="block font-label text-sm text-muted-foreground">
-              {t("optionSofraHint")}
-            </span>
+        <label className="grid grid-cols-[auto_1fr] items-start gap-x-3 gap-y-1 rounded-craft border-2 border-border p-3">
+          <input type="radio" name="choice" value="sofra" defaultChecked className="mt-1.5" />
+          <span className="font-bold">{t("optionSofra")}</span>
+          <span className="col-start-2 font-label text-sm text-muted-foreground">
+            {t("optionSofraHint")}
           </span>
         </label>
 
-        <label className="flex gap-3 rounded-craft border-2 border-border p-3">
+        <label className="grid grid-cols-[auto_1fr] items-start gap-x-3 gap-y-1 rounded-craft border-2 border-border p-3">
           <input
             type="radio"
             name="choice"
             value="partnerBase"
             disabled={!hasBase}
-            className="mt-1"
+            className="mt-1.5"
           />
-          <span className="grid gap-2">
-            <span className="font-bold">{t("optionPartnerBase")}</span>
-            <span className="block font-label text-sm text-muted-foreground">
-              {t("optionPartnerBaseHint")}
-            </span>
-            {hasBase ? (
-              <select name="baseDomainId" className="input-primary font-mono sm:max-w-sm">
-                {baseDomains.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.domain}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <span className="font-label text-sm">
-                {t("noVerifiedBase")}{" "}
-                <Link href="/dashboard/domains" className="underline">
-                  {t("manageDomains")}
-                </Link>
-              </span>
-            )}
+          <span className="font-bold">{t("optionPartnerBase")}</span>
+          <span className="col-start-2 font-label text-sm text-muted-foreground">
+            {t("optionPartnerBaseHint")}
           </span>
+          {hasBase ? (
+            <select name="baseDomainId" className="input-primary col-start-2 mt-1 font-mono sm:max-w-sm">
+              {baseDomains.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.domain}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <span className="col-start-2 font-label text-sm">
+              {t("noVerifiedBase")}{" "}
+              <Link href="/dashboard/domains" className="underline">
+                {t("manageDomains")}
+              </Link>
+            </span>
+          )}
         </label>
 
-        <label className="flex gap-3 rounded-craft border-2 border-border p-3">
-          <input type="radio" name="choice" value="byo" className="mt-1" />
-          <span className="grid gap-2">
-            <span className="font-bold">{t("optionByo")}</span>
-            <span className="block font-label text-sm text-muted-foreground">
-              {t("optionByoHint")}
-            </span>
-            <input
-              name="ownDomain"
-              maxLength={253}
-              autoComplete="off"
-              spellCheck={false}
-              placeholder={t("ownDomainPlaceholder")}
-              aria-label={t("ownDomainLabel")}
-              className="input-primary font-mono sm:max-w-sm"
-            />
+        <label className="grid grid-cols-[auto_1fr] items-start gap-x-3 gap-y-1 rounded-craft border-2 border-border p-3">
+          <input type="radio" name="choice" value="byo" className="mt-1.5" />
+          <span className="font-bold">{t("optionByo")}</span>
+          <span className="col-start-2 font-label text-sm text-muted-foreground">
+            {t("optionByoHint")}
           </span>
+          <input
+            name="ownDomain"
+            maxLength={253}
+            autoComplete="off"
+            spellCheck={false}
+            placeholder={t("ownDomainPlaceholder")}
+            aria-label={t("ownDomainLabel")}
+            className="input-primary col-start-2 mt-1 font-mono sm:max-w-sm"
+          />
         </label>
 
         {/* Blocked on domainio#231, not merely unbuilt — see the component doc. */}
-        <label className="flex gap-3 rounded-craft border-2 border-dashed border-border p-3 opacity-60">
-          <input type="radio" name="choice" value="buy" disabled className="mt-1" />
-          <span>
-            <span className="font-bold">
-              {t("optionBuy")} · {t("optionBuySoon")}
-            </span>
-            <span className="block font-label text-sm text-muted-foreground">
-              {t("optionBuyHint")}
-            </span>
+        <label className="grid grid-cols-[auto_1fr] items-start gap-x-3 gap-y-1 rounded-craft border-2 border-dashed border-border p-3 opacity-60">
+          <input type="radio" name="choice" value="buy" disabled className="mt-1.5" />
+          <span className="font-bold">
+            {t("optionBuy")} · {t("optionBuySoon")}
+          </span>
+          <span className="col-start-2 font-label text-sm text-muted-foreground">
+            {t("optionBuyHint")}
           </span>
         </label>
       </fieldset>

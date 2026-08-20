@@ -122,6 +122,15 @@ describe("suggestSlug", () => {
     }
   });
 
+  it("is bounded before it transforms — a huge paste is not folded first", () => {
+    // Same ordering rule as `normalizeBaseDomain`: measure, then rewrite. A slug is 31
+    // characters at most, so folding accents across a megabyte to throw all but 31 of it
+    // away is work nobody asked for, on a value that reaches here from a form.
+    const s = suggestSlug(`Bistro ${"é".repeat(200_000)}`);
+    expect(s.length).toBeLessThanOrEqual(31);
+    expect(s.startsWith("bistro")).toBe(true);
+  });
+
   it("does NOT consult the reserved or taken lists — that is the authorities' job", () => {
     // A suggestion that silently differed from the name would be harder to explain
     // than one the partner is asked to change.
