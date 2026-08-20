@@ -1,6 +1,4 @@
 import { z } from "zod";
-import { MODULE_IDS, unknownModuleIds } from "@/lib/module-catalog";
-import { TENANT_LANGUAGES, unknownLanguages } from "@/lib/tenant-options";
 
 /** Split a comma-separated form field into trimmed, lowercased, non-empty values.
  *  Shared so the schema validates exactly the list the action goes on to send. */
@@ -23,7 +21,7 @@ export const splitCsvLower = (raw: string): string[] =>
  *  passing through that form, so the guard has to be at the intake edge too or the
  *  unattended path is the one place nothing checks. `trim()` is not enough — it strips
  *  only the ends. */
-const noControlChars = <T extends z.ZodType<string>>(schema: T) =>
+export const noControlChars = <T extends z.ZodType<string>>(schema: T) =>
   schema.refine((v) => !/[\u0000-\u001f\u007f]/.test(v), "no line breaks or control characters");
 
 export const applySchema = z.object({
@@ -143,56 +141,6 @@ export const onboardSchema = z.object({
       // (e.g. ""), and toISOString() throws on an Invalid Date.
       return !Number.isNaN(dt.getTime()) && dt.toISOString().slice(0, 10) === v;
     }, "not a real calendar date")
-    .optional()
-    .or(z.literal("")),
-});
-
-// Propose a NEW tenant registry entry (ADR-012). languages/modules are comma-
-// separated in the form; the action splits + lowercases them. Slug mirrors the
-// registry grammar; currency is an ISO-4217 code.
-export const provisionSchema = z.object({
-  slug: z
-    .string()
-    .trim()
-    .regex(/^[a-z0-9][a-z0-9-]{1,30}$/, "lowercase slug, 2-31 chars"),
-  name: noControlChars(z.string().trim().min(1).max(200)),
-  adminEmail: z.string().trim().max(200).email(),
-  template: z.enum(["classic", "craft"]),
-  currency: z.string().trim().regex(/^[A-Z]{3}$/, "3-letter ISO code, e.g. EUR"),
-  // Validated against the tenant-app locale set for the same reason `modules` is — and
-  // since GAP-2 S9 a typo costs more than a missing UI language: this list becomes the
-  // tenant's Localization__SupportedLanguages, the languages its MAIL is written in.
-  // provision-tenant.sh refuses an unknown code, but on the box inside the unattended
-  // ADR-012 merge chain. Self-serve was always safe (signup-configuration.ts filters
-  // with isTenantLanguage); this closes the founder's own form.
-  languages: z
-    .string()
-    .trim()
-    .min(1)
-    .refine((raw) => unknownLanguages(splitCsvLower(raw)).length === 0, {
-      message: `unknown language — allowed: ${TENANT_LANGUAGES.map((l) => l.code).join(", ")}`,
-    }),
-  // Validated against the ADR-010 catalog, not just non-empty: a typo here is
-  // silent — provision-tenant.sh writes whatever it is into the tenant env, and
-  // the tenant simply never gets the module they are paying for.
-  modules: z
-    .string()
-    .trim()
-    .min(1)
-    .refine((raw) => unknownModuleIds(splitCsvLower(raw)).length === 0, {
-      message: `unknown module — allowed: ${MODULE_IDS.join(", ")}`,
-    }),
-  city: z.string().trim().max(200).optional().or(z.literal("")),
-  // The tenant's Stripe connected account, when the founder already has it (runbook
-  // §2b creates it BEFORE proposing, precisely because provision-tenant.sh refuses the
-  // module without it). Optional: left empty, the generator defers `online-payments` to
-  // a second registry PR rather than emitting an entry that would be refused.
-  // Grammar-pinned rather than free text — this value reaches the tenant's Stripe env,
-  // where a typo means charges addressed to an account that does not exist.
-  stripeAccount: z
-    .string()
-    .trim()
-    .regex(/^acct_[A-Za-z0-9]{8,32}$/, "Stripe account id, e.g. acct_1AbCdEfGhIjKlMnO")
     .optional()
     .or(z.literal("")),
 });

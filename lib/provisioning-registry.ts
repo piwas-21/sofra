@@ -6,7 +6,12 @@
 // so it stays unit-testable + free of the GitHub API / secrets.
 
 import { stringify } from "yaml";
+import { tenantHostname } from "./base-domain";
 import type { ModuleId } from "./module-catalog";
+
+/** The zone every tenant lived under until D1. An absent `base_domain:` means exactly
+ *  this, both here and in `provision-tenant.sh`. */
+const DEFAULT_BASE_DOMAIN = "sofrapiwas.com";
 
 /**
  * Modules `provision-tenant.sh` refuses unless the SAME entry also records a
@@ -58,6 +63,18 @@ export function splitDeferredModules(
 export interface TenantProvisionInput {
   /** Registry key + derivation seed. Must already match the slug grammar. */
   slug: string;
+  /**
+   * A PARTNER'S OWN verified base domain, when the tenant should live under it rather
+   * than under ours (SOFRA-PARTNER-FLEXIBILITY-PLAN D1) — `obresse.solutioneva.com`.
+   *
+   * Optional, and ABSENCE IS THE CONTRACT: without it the generator emits exactly what
+   * it emitted before this field existed, `<slug>.sofrapiwas.com` with no `base_domain:`
+   * key at all. That is what every entry in the registry looks like today, and the
+   * deploy repo reads an absent `base_domain` as `sofrapiwas.com` for the same reason.
+   * The regression proof is that every pre-existing test of this function passes
+   * unchanged.
+   */
+  baseDomain?: string;
   name: string;
   adminEmail: string;
   template: "classic" | "craft";
@@ -86,6 +103,17 @@ export interface TenantProvisionInput {
  * a module and shipped an entry omitting it. Making the strip part of the return value
  * is what stops the next caller doing that by omission.
  */
+/**
+ * The hostname an entry will answer on.
+ *
+ * Exported because the PR body has to quote the SAME name the entry carries — a body
+ * that says `slug.sofrapiwas.com` above a diff that says `slug.solutioneva.com` is worse
+ * than no body, because the founder ticks the checklist against it.
+ */
+export function tenantDomain(input: Pick<TenantProvisionInput, "slug" | "baseDomain">): string {
+  return tenantHostname(input.slug, input.baseDomain || DEFAULT_BASE_DOMAIN);
+}
+
 export function buildTenantRegistryEntry(input: TenantProvisionInput): {
   entry: string;
   deferred: string[];
@@ -100,8 +128,13 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): {
       status: "provisioning",
       managed: "scripts",
       box,
-      domain: `${slug}.sofrapiwas.com`,
+      domain: tenantDomain(input),
       domain_mode: "subdomain",
+      // Emitted ONLY when the tenant lives under a partner's zone. An always-present
+      // `base_domain: sofrapiwas.com` would be a no-op key on every existing entry and
+      // a diff on every future one; absent is the same statement and is what the script
+      // already defaults to.
+      ...(input.baseDomain ? { base_domain: input.baseDomain } : {}),
       db: `tenant_${slug}`,
       db_role: `tenant_${slug}`,
       compose_project: `tenant-${slug}`,

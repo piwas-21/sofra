@@ -464,6 +464,71 @@ export async function findTrialWarnings(
 }
 
 /**
+ * A PARTNER with a password and nothing else.
+ *
+ * Its own address per call, for the reason `arrangeUserWithPassword` documents: the
+ * `login:email:<address>` bucket is 10 per 15 minutes, counts failures, and no header
+ * can isolate it — so a spec that logs in as a partner brings its own.
+ */
+export async function arrangePartnerUser(email: string, password: string): Promise<string> {
+  const passwordHash = await bcrypt.hash(password, 12);
+  const rows = await query<{ id: string }>(
+    `INSERT INTO "User" (id, email, "passwordHash", name, role, status, "createdAt")
+     VALUES (gen_random_uuid()::text, lower($1), $2, 'E2E Domain Partner', 'PARTNER', 'ACTIVE', now())
+     RETURNING id`,
+    [email, passwordHash],
+  );
+  if (rows.length !== 1) throw new Error(`arrangePartnerUser: could not create "${email}"`);
+  return rows[0].id;
+}
+
+/**
+ * A base-domain claim, optionally already proven
+ * (SOFRA-PARTNER-FLEXIBILITY-PLAN D1b).
+ *
+ * ARRANGES the row the claim action writes. The verified state cannot be reached
+ * through the UI in this suite at all — proving control means publishing a TXT record
+ * in a zone we do not own, and the whole point of the check is that nothing but real
+ * DNS can satisfy it. So the PROOF is unit-tested (`txtMatchesToken`) and what the
+ * verified state UNLOCKS is arranged here.
+ */
+export async function arrangeBaseDomain(
+  partnerId: string,
+  domain: string,
+  opts: { verified?: boolean; verifiedDaysAgo?: number } = {},
+): Promise<{ id: string; verifyToken: string }> {
+  const verifiedAt = opts.verified
+    ? `now() - make_interval(days => ${Math.trunc(opts.verifiedDaysAgo ?? 1)})`
+    : "NULL";
+  const rows = await query<{ id: string; verify_token: string }>(
+    `INSERT INTO "PartnerDomain"
+       (id, "partnerId", domain, "verifyToken", "verifiedAt", "createdAt")
+     VALUES (gen_random_uuid()::text, $1, $2, md5(random()::text) || md5(random()::text),
+             ${verifiedAt}, now())
+     RETURNING id, "verifyToken" AS verify_token`,
+    [partnerId, domain],
+  );
+  if (rows.length !== 1) throw new Error(`arrangeBaseDomain: could not claim "${domain}"`);
+  return { id: rows[0].id, verifyToken: rows[0].verify_token };
+}
+
+/** One partner's claim on a domain — what a check or a removal must have moved. */
+export async function findBaseDomain(
+  partnerId: string,
+  domain: string,
+): Promise<{ id: string; verified: boolean; checked: boolean } | null> {
+  const rows = await query<{ id: string; verified: boolean; checked: boolean }>(
+    `SELECT id,
+            ("verifiedAt" IS NOT NULL)    AS verified,
+            ("lastCheckedAt" IS NOT NULL) AS checked
+       FROM "PartnerDomain" WHERE "partnerId" = $1 AND domain = $2`,
+    [partnerId, domain],
+  );
+  const r = rows[0];
+  return r ? { id: r.id, verified: r.verified, checked: r.checked } : null;
+}
+
+/**
  * A reseller partner with one client, optionally already a live tenant with a plan
  * (SOFRA-PARTNER-PLAN §9).
  *

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   openProvisioningPrAction,
@@ -8,6 +8,7 @@ import {
 } from "@/lib/actions/provisioning-actions";
 import ActionError from "./ActionError";
 import ProvisionPicker from "./ProvisionPicker";
+import ProvisionDomainField, { type ProvisionBaseDomainOption } from "./ProvisionDomainField";
 import type { ProvisionPrefill } from "@/lib/provision-prefill";
 
 /**
@@ -21,12 +22,22 @@ import type { ProvisionPrefill } from "@/lib/provision-prefill";
 export default function ProvisionForm({
   disabled,
   prefill,
-}: Readonly<{ disabled?: boolean; prefill?: ProvisionPrefill }>) {
+  baseDomains = [],
+}: Readonly<{
+  disabled?: boolean;
+  prefill?: ProvisionPrefill;
+  /** Verified partner zones the founder may place this tenant under (D1). */
+  baseDomains?: ProvisionBaseDomainOption[];
+}>) {
   const t = useTranslations("control.admin");
   const [state, action, pending] = useActionState<ProvisionActionState, FormData>(
     openProvisioningPrAction,
     {},
   );
+  // Held here rather than in the domain field, because the hostname preview is derived
+  // from BOTH inputs and they sit in different halves of the form — the founder is
+  // proposing an immutable identifier and should read the result before submitting.
+  const [slug, setSlug] = useState(prefill?.slug ?? "");
 
   return (
     <form action={action} className="grid gap-3 sm:grid-cols-2">
@@ -37,7 +48,8 @@ export default function ProvisionForm({
         name="slug"
         required
         pattern="[a-z0-9][a-z0-9\-]{1,30}"
-        defaultValue={prefill?.slug}
+        value={slug}
+        onChange={(e) => setSlug(e.target.value)}
         placeholder={t("provision.slug")}
         aria-label={t("provision.slug")}
         className="input-primary"
@@ -108,6 +120,13 @@ export default function ProvisionForm({
         />
         <span>{t("provision.stripeAccountHint")}</span>
       </label>
+      {/* A partner's own zone (SOFRA-PARTNER-FLEXIBILITY-PLAN D1). The default option is
+          empty and emits exactly the entry this form emitted before the field existed:
+          `<slug>.sofrapiwas.com`, no `base_domain:` key. Picked, the entry's domain is
+          derived as `<slug>.<base>` and the PR body gains the pre-flight check — the A
+          record has to resolve BEFORE the merge, because certificates are issued per
+          hostname over HTTP-01 and cannot be pre-issued. */}
+      <ProvisionDomainField slug={slug} options={baseDomains} />
       <ProvisionPicker
         initialModules={prefill?.modules}
         initialLanguages={prefill?.languages}

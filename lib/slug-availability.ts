@@ -121,6 +121,45 @@ export function checkSlug(
   return "available";
 }
 
+/**
+ * A first-draft slug from a restaurant's name.
+ *
+ * A SUGGESTION and nothing more: it pre-fills the partner's proposal so they edit a
+ * plausible name instead of inventing one, and every authority downstream still judges
+ * it (`checkSlug` here, `provisionSchema` on the founder's form, `provision-tenant.sh`
+ * on the box). It deliberately does not consult the reserved or taken lists — a
+ * suggestion that silently differed from what was typed would be worse than one the
+ * partner is asked to fix.
+ *
+ * Accents are folded rather than dropped (`Crème` → `creme`, not `crme`): a restaurant
+ * named in French or Turkish otherwise gets a suggestion with holes in it. Returns ""
+ * when nothing usable survives — the field is then simply empty and required.
+ */
+export function suggestSlug(name: string): string {
+  // Measured before it is transformed, like `normalizeBaseDomain`: the work below walks
+  // and rebuilds the string, and a slug is at most 31 characters, so there is no reason
+  // to fold accents across a megabyte before throwing all but 31 of it away. 200 is the
+  // registry `name:` bound, so nothing a real restaurant is called is truncated here.
+  const source = name.length > 200 ? name.slice(0, 200) : name;
+  let slug = source
+    .normalize("NFD")
+    // Combining marks, i.e. the accents NFD just separated from their letters.
+    .replace(/[\u0300-\u036f]/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-");
+  // Edge dashes come off without an anchored `-+` pattern: those backtrack
+  // super-linearly on a long run that fails to match, which is a free ReDoS on a value
+  // that ultimately comes from a form (Sonar S8786). Plain string operations are linear
+  // and, here, no less readable.
+  while (slug.startsWith("-")) slug = slug.slice(1);
+  while (slug.endsWith("-")) slug = slug.slice(0, -1);
+  slug = slug.slice(0, 31);
+  // The slice can leave a trailing dash; the grammar forbids one only at the start, but
+  // a name ending in "-" reads as truncated, which it is.
+  while (slug.endsWith("-")) slug = slug.slice(0, -1);
+  return SLUG_PATTERN.test(slug) ? slug : "";
+}
+
 /** True when a slug can be provisioned as-is. */
 export function isSlugUsable(
   raw: string | null | undefined,

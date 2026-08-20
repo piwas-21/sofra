@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkSlug, isSlugUsable, RESERVED_SLUGS } from "@/lib/slug-availability";
+import { checkSlug, isSlugUsable, RESERVED_SLUGS, suggestSlug } from "@/lib/slug-availability";
 
 describe("checkSlug", () => {
   it("accepts a well-formed, unclaimed slug", () => {
@@ -83,5 +83,58 @@ describe("isSlugUsable", () => {
     expect(isSlugUsable("www")).toBe(false);
     expect(isSlugUsable("rumi", ["rumi"])).toBe(false);
     expect(isSlugUsable("Bad Slug")).toBe(false);
+  });
+});
+
+describe("suggestSlug", () => {
+  it("lower-cases and hyphenates a name", () =>
+    expect(suggestSlug("O Bresse Bistro")).toBe("o-bresse-bistro"));
+
+  it("FOLDS accents rather than dropping them", () => {
+    // Dropped, a French or Turkish name gets a suggestion with holes in it — `Crème`
+    // would become `crme`, which the partner then has to notice and fix.
+    expect(suggestSlug("Crème Brûlée")).toBe("creme-brulee");
+    expect(suggestSlug("Çiğköfteci")).toBe("cigkofteci");
+  });
+
+  it("collapses punctuation runs and trims the edges", () =>
+    expect(suggestSlug("  --O'Bresse & Co.--  ")).toBe("o-bresse-co"));
+
+  it("never ends on a dash after truncation", () => {
+    const s = suggestSlug(`${"a".repeat(30)} bistro`);
+    expect(s.length).toBeLessThanOrEqual(31);
+    expect(s.endsWith("-")).toBe(false);
+  });
+
+  it("returns '' when nothing usable survives, rather than an invalid slug", () => {
+    // The field is required, so an empty suggestion is simply an empty field — an
+    // INVALID one would be pre-filled failure the partner has to diagnose.
+    for (const name of ["", "!!!", "…", "é"]) {
+      const s = suggestSlug(name);
+      expect(s === "" || isSlugUsable(s)).toBe(true);
+    }
+  });
+
+  it("only ever suggests something the grammar accepts", () => {
+    for (const name of ["A", "ab", "Bistro 1", "L'Étoile du Nord", "北京饭店"]) {
+      const s = suggestSlug(name);
+      expect(s === "" || checkSlug(s) !== "invalid").toBe(true);
+    }
+  });
+
+  it("is bounded before it transforms — a huge paste is not folded first", () => {
+    // Same ordering rule as `normalizeBaseDomain`: measure, then rewrite. A slug is 31
+    // characters at most, so folding accents across a megabyte to throw all but 31 of it
+    // away is work nobody asked for, on a value that reaches here from a form.
+    const s = suggestSlug(`Bistro ${"é".repeat(200_000)}`);
+    expect(s.length).toBeLessThanOrEqual(31);
+    expect(s.startsWith("bistro")).toBe(true);
+  });
+
+  it("does NOT consult the reserved or taken lists — that is the authorities' job", () => {
+    // A suggestion that silently differed from the name would be harder to explain
+    // than one the partner is asked to change.
+    expect(suggestSlug("Mail")).toBe("mail");
+    expect(checkSlug(suggestSlug("Mail"))).toBe("reserved");
   });
 });

@@ -26,9 +26,17 @@ export default defineConfig({
         "lib/format.ts",
         "lib/rate-limit.ts",
         "lib/validation.ts",
+        // Split out of validation.ts (D2) when the pair outgrew the LOC limit. Listed
+        // explicitly for the reason provisioning-pr-body.ts is: leaving it off would
+        // quietly move already-covered code OUT of the floor's scope, which reads as a
+        // passing gate rather than as lost coverage.
+        "lib/validation-provision.ts",
         "lib/tenant-registry.ts",
         "lib/onboard-tenants.ts",
         "lib/provision-prefill.ts",
+        // The form→entry seam. In scope precisely because its absence is what let a
+        // posted field be silently dropped while every other test stayed green.
+        "lib/provision-form-input.ts",
         "lib/slug-availability.ts",
         "lib/provisioning-registry.ts",
         // Split out of provisioning-registry.ts (P1) when the pair outgrew the LOC limit.
@@ -87,6 +95,17 @@ export default defineConfig({
         // The first localized mail (T-d). In scope because a mail rendered from a missing
         // catalogue is a customer reading raw message keys, and that is decidable here.
         "lib/email-locale.ts",
+        // D1/D1b — whose domain a tenant lives on. BOTH halves of the security boundary
+        // are pure and therefore measurable here: what counts as a claimable public zone,
+        // and whether a resolver's answer actually proves control of it. The transport
+        // (`base-domain-dns.ts`) stays out, same split as vies/vies-result.
+        "lib/base-domain.ts",
+        "lib/base-domain-verification.ts",
+        // D2 — which of the four domain shapes a partner proposed, and what DNS it
+        // needs. Pure by construction: it cannot see whose base domain it was handed or
+        // whether it is verified, because an authorization decision made in a pure
+        // helper is one that can be bypassed by calling the helper differently.
+        "lib/client-domain-choice.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

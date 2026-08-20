@@ -4,6 +4,7 @@ import { controlLocale } from "@/lib/control-locale";
 import { provisioningConfigured } from "@/lib/provisioning";
 import { db } from "@/lib/db";
 import { toProvisionPrefill, type ProvisionPrefill } from "@/lib/provision-prefill";
+import { allVerifiedBaseDomains } from "@/lib/partner-domain-access";
 import ProvisionForm from "@/components/control/ProvisionForm";
 
 // Propose a new tenant registry entry (ADR-012). Opens a reviewable PR on the
@@ -28,6 +29,14 @@ export default async function AdminProvisionPage({
 
   // Prefill from a signup lead when arriving via "Open provisioning" (/admin/signups).
   // Only the id travels in the URL; the PII is fetched here behind requireAdmin.
+  // Every partner zone that has been PROVEN, whoever owns it — this page is the one
+  // surface where the founder places a tenant under someone else's domain (D1). Not
+  // scoped by partner on purpose, and safe only because of the requireAdmin() above.
+  const baseDomains = (await allVerifiedBaseDomains()).map((d) => ({
+    domain: d.domain,
+    partner: d.partner.name ?? "—",
+  }));
+
   const { from: rawFrom } = await searchParams;
   const from = Array.isArray(rawFrom) ? rawFrom[0] : rawFrom;
   let prefill: ProvisionPrefill | undefined;
@@ -56,7 +65,7 @@ export default async function AdminProvisionPage({
       )}
 
       <section className="hand-drawn-border bg-card p-5">
-        <ProvisionForm disabled={!configured} prefill={prefill} />
+        <ProvisionForm disabled={!configured} prefill={prefill} baseDomains={baseDomains} />
       </section>
     </div>
   );

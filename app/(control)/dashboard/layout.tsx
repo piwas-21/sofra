@@ -42,7 +42,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const hasBilling = billingCount > 0;
   const hasCommissions = commissionCount > 0;
 
-  const nav = [{ href: "/dashboard", label: t("nav.clients") }];
+  const nav = [
+    { href: "/dashboard", label: t("nav.clients") },
+    // Always present for a PARTNER, not gated on holding one: the page's job is to
+    // let them claim their FIRST zone, so hiding it until they have one would hide
+    // the only way to get one (SOFRA-PARTNER-FLEXIBILITY-PLAN D1).
+    { href: "/dashboard/domains", label: t("nav.domains") },
+  ];
   if (hasBilling) {
     nav.push({ href: "/dashboard/billing", label: t("nav.plan") });
     nav.push({ href: "/dashboard/billing/details", label: t("nav.billingDetails") });
