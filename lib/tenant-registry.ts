@@ -17,6 +17,14 @@ const tenantSchema = z.object({
   box: z.string(),
   domain: z.string(),
   domain_mode: z.string(),
+  // The partner zone a `subdomain` tenant lives under, when it is not ours
+  // (SOFRA-PARTNER-FLEXIBILITY-PLAN D1). Optional and unvalidated beyond `string`:
+  // ABSENT means `sofrapiwas.com`, which is every entry that existed before this
+  // field, and the deploy repo's script reads it the same way. Present only on
+  // partner-zone entries — and it has to be listed here at all because zod STRIPS
+  // unknown keys, so without this line no sofra surface could see it (the same trap
+  // `stripe_account` fell into).
+  base_domain: z.string().optional(),
   db: z.string(),
   backend_tag: z.string().optional(),
   frontend_tag: z.string().optional(),

@@ -10,7 +10,10 @@ import { clientTenantView } from "@/lib/client-tenant";
 import ClientForm from "@/components/control/ClientForm";
 import ClientStatusBadge from "@/components/control/ClientStatusBadge";
 import ClientPipelineControls from "@/components/control/ClientPipelineControls";
+import { verifiedBaseDomains } from "@/lib/partner-domain-access";
+import { suggestSlug } from "@/lib/slug-availability";
 import ClientTenantPanel from "@/components/control/ClientTenantPanel";
+import ClientDomainChooser from "@/components/control/ClientDomainChooser";
 import ClientPlanPanel from "@/components/control/ClientPlanPanel";
 import ClientChangeRequestForm from "@/components/control/ClientChangeRequestForm";
 import NoteForm from "@/components/control/NoteForm";
@@ -27,6 +30,7 @@ export default async function ClientDetailPage({
   const partner = await requirePartner();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.client" });
+  const td = await getTranslations({ locale, namespace: "control.domainChoice" });
   const { id } = await params;
   // Scoped by partnerId, as every partner read is (SOFRA-PARTNER-PLAN §5). The plan
   // rides the client relation, so it cannot be reached for a client they don't own.
@@ -47,6 +51,10 @@ export default async function ClientDetailPage({
     },
   });
   if (!client) notFound();
+
+  // Only fetched when the chooser will actually render — a live client's page must not
+  // pay a query for a control it does not show.
+  const baseDomains = client.tenantSlug ? [] : await verifiedBaseDomains(partner.id);
 
   const registry = await loadTenantRegistry();
   const view = clientTenantView({
@@ -79,6 +87,29 @@ export default async function ClientDetailPage({
       </div>
 
       <ClientTenantPanel locale={locale} view={view} />
+
+      {/* Before a tenant exists, the partner gets to say where it should live (D2).
+          After it exists this disappears on purpose: the domain is baked into a
+          per-domain image, so changing it is a rebuild plus a re-provision — a
+          conversation for the change-request form, not a chooser. Only VERIFIED base
+          domains are offered, and the action re-reads and re-checks the proof anyway. */}
+      {!client.tenantSlug && (
+        <section className="hand-drawn-border bg-card p-6">
+          <h2 className="font-hand text-3xl font-bold">{td("title")}</h2>
+          <p className="mt-2 font-label text-muted-foreground">{td("intro")}</p>
+          <div className="mt-4">
+            <ClientDomainChooser
+              clientId={client.id}
+              suggestedSlug={suggestSlug(client.restaurantName)}
+              baseDomains={baseDomains.map((d) => ({ id: d.id, domain: d.domain }))}
+              // Env, not a constant: the box IP is deployment configuration, and a
+              // hardcoded one would be wrong the day the box moves. Unset renders as
+              // "we will send you the address" rather than a plausible placeholder.
+              boxIp={process.env.TENANT_BOX_IP}
+            />
+          </div>
+        </section>
+      )}
 
       {view.kind !== "none" && (
         <>

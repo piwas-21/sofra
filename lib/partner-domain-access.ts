@@ -37,3 +37,25 @@ export async function verifiedBaseDomains(partnerId: string) {
     orderBy: { domain: "asc" },
   });
 }
+
+/**
+ * Every PROVEN base domain, whoever claimed it, with the partner it belongs to.
+ *
+ * The one read here that is deliberately NOT scoped by `partnerId` — it exists for
+ * `/admin/provision`, which is `requireAdmin()` and is the surface where the founder
+ * places somebody else's client under somebody else's zone. It is the caller's guard
+ * that makes it safe, which is exactly why it is a separately-named function: an
+ * unscoped read that shared a name with a scoped one would eventually be called from a
+ * partner surface by someone who read the name and not the query.
+ *
+ * Verified only, for the same reason the partner's own list is: an unproven zone is a
+ * name we cannot show a certificate for, and offering it to the founder would move the
+ * mistake from "refused" to "provisioned without TLS".
+ */
+export async function allVerifiedBaseDomains() {
+  return db.partnerDomain.findMany({
+    where: { verifiedAt: { not: null } },
+    orderBy: { domain: "asc" },
+    select: { domain: true, partner: { select: { name: true } } },
+  });
+}

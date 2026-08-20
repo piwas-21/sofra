@@ -770,7 +770,13 @@
         "price": "Prix catalogue mensuel",
         "priceBundle": "en formule",
         "priceALaCarte": "à la carte",
-        "fromSignup": "Proposition d’un locataire pour {restaurant} depuis sa demande d’inscription — les champs ci-dessous sont pré-remplis. Vérifiez-les : le slug ne peut plus être modifié après le provisionnement."
+        "fromSignup": "Proposition d’un locataire pour {restaurant} depuis sa demande d’inscription — les champs ci-dessous sont pré-remplis. Vérifiez-les : le slug ne peut plus être modifié après le provisionnement.",
+        "baseDomain": "Domaine de base",
+        "baseDomainHint": "Par défaut le nôtre, sans aucune configuration — toutes les entrées du registre ont cette forme aujourd'hui.",
+        "baseDomainOurs": "sofrapiwas.com — le nôtre (par défaut)",
+        "baseDomainPreview": "Ce locataire répondra sur",
+        "baseDomainDnsFirst": "Zone propre au partenaire : l'entrée porte base_domain: et l'enregistrement A doit déjà résoudre avant la fusion, sinon le certificat ne peut pas être émis.",
+        "baseDomainSlugPlaceholder": "<slug>"
       },
       "fleet": {
         "title": "Parc d'imprimantes",
@@ -958,6 +964,18 @@
         "recordNotFound": "Nous n'avons pas encore trouvé l'enregistrement. Vérifiez qu'il est publié, puis réessayez dans quelques minutes.",
         "lookupFailed": "Nous n'avons pas pu interroger le domaine pour l'instant. Rien n'a changé — réessayez sous peu.",
         "tokenMismatch": "Nous avons trouvé un enregistrement, mais pas la valeur indiquée ci-dessus. Vérifiez qu'elle a été copiée exactement."
+      },
+      "domainChoice": {
+        "unknownChoice": "Choisissez l'une des options ci-dessus.",
+        "buyUnavailable": "L'achat d'un domaine chez nous n'est pas encore disponible — choisissez une autre option, ou demandez-nous et nous l'enregistrerons à la main.",
+        "invalidSlug": "Nom court : minuscules, chiffres et tirets, 2 à 31 caractères.",
+        "reservedSlug": "Ce nom court est réservé et ne peut pas être utilisé — il entrerait en conflit avec une adresse existante.",
+        "takenSlug": "Ce nom court est déjà utilisé par un autre restaurant.",
+        "noBaseDomain": "Choisissez d'abord l'un de vos domaines vérifiés, ou ajoutez-en un sur votre page domaines.",
+        "baseNotVerified": "Ce domaine n'est pas encore vérifié — publiez l'enregistrement sur votre page domaines puis vérifiez-le.",
+        "invalidOwnDomain": "Cela ne ressemble pas à un domaine que le restaurant pourrait posséder — par ex. lebistro.ch.",
+        "ownDomainIsOurs": "C'est l'une de nos propres adresses. Choisissez plutôt la première option.",
+        "tenantExists": "Ce restaurant est déjà configuré. Son adresse peut encore changer, mais cela demande une reconstruction — demandez-le-nous ci-dessous."
       }
     },
     "plan": {
@@ -1136,6 +1154,41 @@
       "removing": "Retrait…",
       "removeNote": "Retirer un domaine ici ne change rien aux restaurants déjà en ligne sous ce nom — dites-le-nous si l'un d'eux doit être déplacé.",
       "staleNote": "La vérification date. Appuyez sur « Vérifier à nouveau » pour confirmer que le domaine est toujours à vous."
+    },
+    "domainChoice": {
+      "title": "Où ce restaurant doit-il vivre ?",
+      "intro": "Choisissez l'adresse web maintenant, avant que nous préparions le restaurant. Nous nous occupons du reste — et vous pouvez ajouter un mot si quelque chose mérite d'être précisé.",
+      "optionsLegend": "L'adresse",
+      "slugLabel": "Nom court",
+      "slugHint": "Minuscules, chiffres et tirets. Il devient l'adresse et ne peut plus être changé sans tout reconfigurer.",
+      "optionSofra": "Sur sofrapiwas.com",
+      "optionSofraHint": "nomcourt.sofrapiwas.com — rien à configurer, fonctionne immédiatement.",
+      "optionPartnerBase": "Sous votre propre domaine",
+      "optionPartnerBaseHint": "nomcourt.votresociete.com. Vous publiez un enregistrement DNS par client ; nous vous indiquons exactement lequel.",
+      "noVerifiedBase": "Vous n'avez pas encore de domaine vérifié.",
+      "manageDomains": "En ajouter un",
+      "optionByo": "Un domaine que le restaurant possède déjà",
+      "optionByoHint": "Son propre nom, par ex. lebistro.ch. Il le pointe vers nous et nous nous occupons du certificat.",
+      "ownDomainLabel": "Le domaine du restaurant",
+      "ownDomainPlaceholder": "lebistro.ch",
+      "optionBuy": "Acheter un domaine chez nous",
+      "optionBuySoon": "bientôt",
+      "optionBuyHint": "Pas encore disponible : nous pouvons enregistrer un nom aujourd'hui mais pas encore le faire pointer quelque part, vous vous retrouveriez donc avec un domaine inutile. Demandez-nous et nous l'enregistrerons à la main en attendant.",
+      "messageLabel": "Quelque chose à ajouter ?",
+      "messagePlaceholder": "Facultatif — ce que nous devrions savoir sur cette adresse.",
+      "submit": "Envoyer cette proposition",
+      "sending": "Envoi…",
+      "sent": "Envoyé — nous prenons le relais.",
+      "outcomeTitle": "Ce que vous avez proposé",
+      "outcomeNoDns": "Rien à configurer — cette adresse pointe déjà vers nous.",
+      "outcomeWhoPartner": "Publiez cet enregistrement dans le DNS de votre domaine :",
+      "outcomeWhoRestaurant": "Le restaurant publie cet enregistrement dans le DNS de son domaine :",
+      "outcomeBeforeProvisioning": "Cela doit être en place AVANT que nous préparions le restaurant — le certificat de sécurité ne peut être émis qu'une fois l'adresse active.",
+      "recordType": "Type",
+      "recordName": "Nom",
+      "recordValue": "Pointe vers",
+      "recordValueUnknown": "Nous vous enverrons l'adresse vers laquelle pointer.",
+      "footerNote": "Ceci est une proposition. SofraPiwas prépare le restaurant et confirme l'adresse."
     }
   },
   "signup": {

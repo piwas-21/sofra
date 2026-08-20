@@ -7,7 +7,7 @@
 // and a body that misdescribes the diff is worse than no body — the founder ticks the
 // checklist against it.
 
-import { splitDeferredModules, type TenantProvisionInput } from "./provisioning-registry";
+import { splitDeferredModules, tenantDomain, type TenantProvisionInput } from "./provisioning-registry";
 
 // Close the quote, emit an escaped apostrophe, reopen: the only way to get a
 // literal ' inside a POSIX single-quoted argument.
@@ -46,7 +46,10 @@ const oneLine = (value: string): string => value.replace(/\s+/g, " ").trim();
  */
 export function buildProvisioningPrBody(input: TenantProvisionInput): string {
   const { slug } = input;
-  const domain = `${slug}.sofrapiwas.com`;
+  // Derived through the SAME helper the entry uses, never re-literalled: this body is
+  // the checklist the founder ticks, and a body naming a different host than the diff
+  // is worse than no body at all.
+  const domain = tenantDomain(input);
   const box = input.box ?? "staging";
   const chained = box === "staging";
   // Same helper the entry generator uses, so the body cannot describe a split the diff
@@ -112,6 +115,27 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
       ]
     : [];
 
+  // The one thing that can go wrong with a partner-zone entry and cannot be fixed after
+  // the merge: the name has to RESOLVE before provisioning, because the certificate is
+  // issued per hostname over HTTP-01 and there is no way to pre-issue one. A tenant
+  // provisioned ahead of its A record sits without TLS, which looks exactly like a
+  // broken product to the restaurant that was just handed a link.
+  const baseDomainBlock = input.baseDomain
+    ? [
+        "",
+        `### ⚠️ Partner zone — \`base_domain: ${input.baseDomain}\`, so the wildcard does NOT cover it`,
+        "",
+        `\`\`\`bash\ndig +short ${domain}   # must already answer with this box's IP\n\`\`\``,
+        "",
+        "The partner publishes that A record in their own zone (plan §D1a: per-client A record —",
+        "a delegated subzone is impossible, not merely worse). An empty answer means merging will",
+        "stand the tenant up and then fail to get a certificate, which are issued per hostname over",
+        "HTTP-01 and cannot be pre-issued: **wait for the record rather than merge and retry.** And",
+        "note `NEXT_PUBLIC_*` are baked per domain, so changing this domain later is a rebuild plus",
+        "a re-provision, not a registry edit.",
+      ]
+    : [];
+
   const after = chained
     ? [
         "The chain provisions **first-time only**, and reports back on this PR when it is done —",
@@ -133,7 +157,9 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
     `- **languages** \`${input.languages.join(", ")}\` · **modules** \`${granted.join(", ")}\`${
       deferred.length ? ` · **deferred** \`${deferred.join(", ")}\` (see below)` : ""
     }`,
-    `- **box** \`${box}\` · status starts at \`provisioning\``,
+    `- **box** \`${box}\` · status starts at \`provisioning\`${
+      input.baseDomain ? ` · **base_domain** \`${input.baseDomain}\` (a partner's own zone)` : ""
+    }`,
     "",
     ...header,
     "",
@@ -147,6 +173,7 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
     tagCheck,
     `- [ ] **template** \`${input.template}\` and **currency** \`${input.currency}\` are right — the template is baked into the image at build time, so changing it later is a rebuild`,
     ...deferredBlock,
+    ...baseDomainBlock,
     "",
     ...after,
     "",
