@@ -34,6 +34,9 @@ export default defineConfig({
         "lib/tenant-registry.ts",
         "lib/onboard-tenants.ts",
         "lib/provision-prefill.ts",
+        // The form→entry seam. In scope precisely because its absence is what let a
+        // posted field be silently dropped while every other test stayed green.
+        "lib/provision-form-input.ts",
         "lib/slug-availability.ts",
         "lib/provisioning-registry.ts",
         // Split out of provisioning-registry.ts (P1) when the pair outgrew the LOC limit.
