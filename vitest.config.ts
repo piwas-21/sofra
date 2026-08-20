@@ -26,6 +26,11 @@ export default defineConfig({
         "lib/format.ts",
         "lib/rate-limit.ts",
         "lib/validation.ts",
+        // Split out of validation.ts (D2) when the pair outgrew the LOC limit. Listed
+        // explicitly for the reason provisioning-pr-body.ts is: leaving it off would
+        // quietly move already-covered code OUT of the floor's scope, which reads as a
+        // passing gate rather than as lost coverage.
+        "lib/validation-provision.ts",
         "lib/tenant-registry.ts",
         "lib/onboard-tenants.ts",
         "lib/provision-prefill.ts",
@@ -93,6 +98,11 @@ export default defineConfig({
         // (`base-domain-dns.ts`) stays out, same split as vies/vies-result.
         "lib/base-domain.ts",
         "lib/base-domain-verification.ts",
+        // D2 — which of the four domain shapes a partner proposed, and what DNS it
+        // needs. Pure by construction: it cannot see whose base domain it was handed or
+        // whether it is verified, because an authorization decision made in a pure
+        // helper is one that can be bypassed by calling the helper differently.
+        "lib/client-domain-choice.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

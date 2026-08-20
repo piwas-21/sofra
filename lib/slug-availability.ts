@@ -121,6 +121,36 @@ export function checkSlug(
   return "available";
 }
 
+/**
+ * A first-draft slug from a restaurant's name.
+ *
+ * A SUGGESTION and nothing more: it pre-fills the partner's proposal so they edit a
+ * plausible name instead of inventing one, and every authority downstream still judges
+ * it (`checkSlug` here, `provisionSchema` on the founder's form, `provision-tenant.sh`
+ * on the box). It deliberately does not consult the reserved or taken lists — a
+ * suggestion that silently differed from what was typed would be worse than one the
+ * partner is asked to fix.
+ *
+ * Accents are folded rather than dropped (`Crème` → `creme`, not `crme`): a restaurant
+ * named in French or Turkish otherwise gets a suggestion with holes in it. Returns ""
+ * when nothing usable survives — the field is then simply empty and required.
+ */
+export function suggestSlug(name: string): string {
+  const slug = name
+    .normalize("NFD")
+    // Combining marks, i.e. the accents NFD just separated from their letters.
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "")
+    .slice(0, 31)
+    // The slice can leave a trailing dash; the grammar forbids one only at the start,
+    // but a name ending in "-" reads as truncated, which it is.
+    .replace(/-+$/, "");
+  return SLUG_PATTERN.test(slug) ? slug : "";
+}
+
 /** True when a slug can be provisioned as-is. */
 export function isSlugUsable(
   raw: string | null | undefined,

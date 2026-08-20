@@ -8,12 +8,12 @@ import {
   onboardSchema,
   partnerStatusSchema,
   PARTNER_STATUSES,
-  provisionSchema,
   splitCsvLower,
   signupSchema,
   signupStatusSchema,
   SIGNUP_STATUSES,
 } from "@/lib/validation";
+import { provisionSchema } from "@/lib/validation-provision";
 
 describe("applySchema (partner application)", () => {
   const valid = { name: "Ada", email: "ada@example.com", message: "Hi there" };
@@ -313,6 +313,31 @@ describe("provisionSchema (ADR-012 tenant proposal)", () => {
     expect(provisionSchema.safeParse({ ...base, stripeAccount: "acct_1AbCdEfGhIjKlMnO" }).success).toBe(true);
     expect(provisionSchema.safeParse({ ...base, stripeAccount: "" }).success).toBe(true);
     expect(provisionSchema.safeParse(base).success).toBe(true);
+  });
+
+  it("accepts a partner base domain, and treats absent/empty as 'ours' (D1/D2)", () => {
+    // Empty is the normal case and MUST parse: it is what makes an absent
+    // `base_domain:` — i.e. `<slug>.sofrapiwas.com`, every entry that exists today —
+    // the unchanged default rather than something anyone has to choose.
+    expect(provisionSchema.safeParse({ ...base, baseDomain: "solutioneva.com" }).success).toBe(true);
+    expect(provisionSchema.safeParse({ ...base, baseDomain: "" }).success).toBe(true);
+    expect(provisionSchema.safeParse(base).success).toBe(true);
+  });
+
+  it("rejects a base domain the claim flow would also refuse", () => {
+    // Validated through `normalizeBaseDomain`, not a second regex, so the founder's
+    // form and a partner's claim cannot disagree about what a base domain is.
+    for (const bad of ["localhost", "192.168.1.1", "co.uk", "not a domain", "eva.local"]) {
+      expect(provisionSchema.safeParse({ ...base, baseDomain: bad }).success).toBe(false);
+    }
+  });
+
+  it("rejects OUR OWN zone as a base domain", () => {
+    // `base_domain: sofrapiwas.com` would be a no-op key; a SUBDOMAIN of it would make
+    // the tenant `<slug>.x.sofrapiwas.com` behind a wildcard that only covers one label.
+    for (const ours of ["sofrapiwas.com", "clients.sofrapiwas.com"]) {
+      expect(provisionSchema.safeParse({ ...base, baseDomain: ours }).success).toBe(false);
+    }
   });
 
   it("rejects a malformed Stripe account id rather than forwarding it", () => {

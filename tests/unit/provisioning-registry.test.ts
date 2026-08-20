@@ -388,3 +388,95 @@ describe("deferring online-payments out of the generated entry", () => {
     );
   });
 });
+
+describe("a partner's own base domain in the generated entry (D1/D2)", () => {
+  // The regression proof for this whole feature is NOT in this describe block: it is
+  // that every test ABOVE — written before `baseDomain` existed — still passes
+  // unchanged. Absent must keep emitting exactly what it emitted, `domain:
+  // <slug>.sofrapiwas.com` with no `base_domain:` key at all, because that is what
+  // every entry in the live registry looks like and what `provision-tenant.sh`
+  // defaults to.
+  const withBase = (baseDomain?: string) =>
+    asTenant(
+      buildTenantRegistryEntry({
+        slug: "obresse",
+        name: "O'Bresse",
+        adminEmail: "chef@obresse.example",
+        template: "craft",
+        currency: "CHF",
+        languages: ["fr"],
+        modules: ["core"],
+        baseDomain,
+      }),
+      "obresse",
+    ) as Record<string, unknown>;
+
+  it("derives the domain from the partner's zone and records base_domain", () => {
+    const t = withBase("solutioneva.com");
+    expect(t.domain).toBe("obresse.solutioneva.com");
+    expect(t.base_domain).toBe("solutioneva.com");
+    // Still a subdomain tenant — `byo` means a domain belonging to the RESTAURANT, one
+    // per tenant. This is one partner zone with N tenants under it, which is why it is
+    // a sibling field rather than a third mode (plan §D1).
+    expect(t.domain_mode).toBe("subdomain");
+  });
+
+  it("emits NO base_domain key at all when there is none", () => {
+    const t = withBase(undefined);
+    expect(t.domain).toBe("obresse.sofrapiwas.com");
+    expect("base_domain" in t).toBe(false);
+  });
+
+  it("treats an empty string as absent, not as an empty zone", () => {
+    // The founder's form posts "" when the field is untouched, and an emitted
+    // `base_domain: ""` would make the domain `obresse.` — a name that resolves to
+    // nothing and a certificate that can never issue.
+    const t = withBase("");
+    expect(t.domain).toBe("obresse.sofrapiwas.com");
+    expect("base_domain" in t).toBe(false);
+  });
+
+  it("still derives everything else from the slug, not from the domain", () => {
+    const t = withBase("solutioneva.com");
+    expect(t.db).toBe("tenant_obresse");
+    expect(t.compose_project).toBe("tenant-obresse");
+    expect(t.frontend_tag).toBe("tenant-obresse");
+  });
+});
+
+describe("the PR body describes the entry it ships with", () => {
+  const bodyFor = (baseDomain?: string) =>
+    buildProvisioningPrBody({
+      slug: "obresse",
+      name: "O'Bresse",
+      adminEmail: "chef@obresse.example",
+      template: "craft",
+      currency: "CHF",
+      languages: ["fr"],
+      modules: ["core"],
+      baseDomain,
+    });
+
+  it("quotes the partner-zone hostname, never the sofrapiwas one", () => {
+    const body = bodyFor("solutioneva.com");
+    expect(body).toContain("obresse.solutioneva.com");
+    // The whole point of deriving both through `tenantDomain`: a body naming a
+    // different host than the diff is worse than no body, because the founder ticks
+    // the checklist against it.
+    expect(body).not.toContain("obresse.sofrapiwas.com");
+  });
+
+  it("adds the pre-flight the founder cannot recover from missing", () => {
+    const body = bodyFor("solutioneva.com");
+    expect(body).toContain("base_domain: solutioneva.com");
+    expect(body).toContain("dig +short obresse.solutioneva.com");
+    expect(body).toMatch(/wait for the record/i);
+  });
+
+  it("says none of that when the wildcard covers the tenant", () => {
+    const body = bodyFor(undefined);
+    expect(body).toContain("obresse.sofrapiwas.com");
+    expect(body).not.toContain("base_domain");
+    expect(body).not.toContain("dig +short");
+  });
+});

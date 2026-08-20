@@ -122,6 +122,34 @@ tenants:
     db: tenant_e2e_partner_noextend
     languages: [en]
     modules: [core]
+  # D2 — the per-client domain chooser (SOFRA-PARTNER-FLEXIBILITY-PLAN). Its OWN slug
+  # and plan, like every pair above: `TenantBilling.tenantSlug` is UNIQUE, and two
+  # specs sharing one is a cross-spec race under parallel workers, not a saving. This
+  # one stands in for a client that is ALREADY a tenant, which is the state where the
+  # chooser must disappear (the domain is baked into a per-domain image by then).
+  e2e-domain-live:
+    name: E2E Domain Live Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-domain-live.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_domain_live
+    languages: [en]
+    modules: [core]
+  # A partner-zone entry, so `lib/tenant-registry.ts` parsing `base_domain` is asserted
+  # against a real fixture rather than only in a unit test. Nothing here is provisioned.
+  e2e-partner-zone:
+    name: E2E Partner Zone Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-partner-zone.solutioneva.example
+    domain_mode: subdomain
+    base_domain: solutioneva.example
+    db: tenant_e2e_partner_zone
+    languages: [en]
+    modules: [core]
   e2e-partner-expired:
     name: E2E Partner Expired Trial Restaurant
     status: active

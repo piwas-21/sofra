@@ -5,10 +5,12 @@
 // the change syncs to the box, then the provision-tenant Action runs the script.
 
 import { requireAdmin } from "@/lib/rbac";
+import { normalizeBaseDomain } from "@/lib/base-domain";
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
 import { slugProvisionVerdict } from "@/lib/provisioning-facts";
-import { provisionSchema, splitCsvLower } from "@/lib/validation";
+import { splitCsvLower } from "@/lib/validation";
+import { provisionSchema } from "@/lib/validation-provision";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { checkSlug } from "@/lib/slug-availability";
 import {
@@ -51,6 +53,7 @@ export async function openProvisioningPrAction(
     languages: csvField(formData, "languages"),
     modules: csvField(formData, "modules"),
     city: formData.get("city"),
+    baseDomain: formData.get("baseDomain"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "invalidInput" };
   const input = parsed.data;
@@ -58,6 +61,10 @@ export async function openProvisioningPrAction(
   const languages = splitCsvLower(input.languages);
   const modules = splitCsvLower(input.modules);
   if (languages.length === 0 || modules.length === 0) return { error: "invalidInput" };
+
+  // Empty stays undefined all the way down, which is what makes an absent
+  // `base_domain:` the unchanged default rather than a value anyone had to choose.
+  const baseDomain = input.baseDomain ? normalizeBaseDomain(input.baseDomain) : undefined;
 
   // Last gate before an IMMUTABLE identifier is proposed: the slug becomes the
   // subdomain, database, DB role and compose project, so a wrong one costs a full
@@ -101,6 +108,11 @@ export async function openProvisioningPrAction(
       languages,
       modules,
       stripeAccount: input.stripeAccount || undefined,
+      // Re-normalized rather than passed through: the schema only ASKED whether the
+      // value is a usable base domain, and the answer it validated is a different
+      // string from the one it was handed (a pasted scheme, a trailing dot). The
+      // registry must carry the canonical form, because a slug is concatenated onto it.
+      baseDomain: baseDomain?.ok ? baseDomain.domain : undefined,
       city: input.city || undefined,
     });
     // Record it on the billing row when there is one. The auto path reads this as its

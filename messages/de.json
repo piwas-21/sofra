@@ -770,7 +770,13 @@
         "price": "Monatlicher Listenpreis",
         "priceBundle": "als Paket",
         "priceALaCarte": "einzeln",
-        "fromSignup": "Mandant für {restaurant} wird aus seiner Anmeldung vorgeschlagen — die Felder unten sind vorausgefüllt. Bitte prüfen: der Slug lässt sich nach der Bereitstellung nicht mehr ändern."
+        "fromSignup": "Mandant für {restaurant} wird aus seiner Anmeldung vorgeschlagen — die Felder unten sind vorausgefüllt. Bitte prüfen: der Slug lässt sich nach der Bereitstellung nicht mehr ändern.",
+        "baseDomain": "Basis-Domain",
+        "baseDomainHint": "Standard ist unsere, ganz ohne Einrichtung — so sieht heute jeder Eintrag im Register aus.",
+        "baseDomainOurs": "sofrapiwas.com — unsere (Standard)",
+        "baseDomainPreview": "Dieser Mandant wird erreichbar sein unter",
+        "baseDomainDnsFirst": "Eigene Zone des Partners: der Eintrag führt base_domain: und der A-Eintrag muss vor dem Merge bereits auflösen, sonst kann kein Zertifikat ausgestellt werden.",
+        "baseDomainSlugPlaceholder": "<slug>"
       },
       "fleet": {
         "title": "Drucker-Flotte",
@@ -958,6 +964,18 @@
         "recordNotFound": "Wir haben den Eintrag noch nicht gefunden. Prüfen Sie, ob er veröffentlicht ist, und versuchen Sie es in ein paar Minuten erneut.",
         "lookupFailed": "Wir konnten die Domain gerade nicht abfragen. Es hat sich nichts geändert — versuchen Sie es gleich noch einmal.",
         "tokenMismatch": "Wir haben einen Eintrag gefunden, aber nicht den oben gezeigten Wert. Prüfen Sie, ob er exakt kopiert wurde."
+      },
+      "domainChoice": {
+        "unknownChoice": "Wählen Sie eine der Optionen oben.",
+        "buyUnavailable": "Eine Domain über uns zu kaufen ist noch nicht möglich — wählen Sie eine andere Option, oder fragen Sie uns und wir registrieren eine von Hand.",
+        "invalidSlug": "Kurzname: Kleinbuchstaben, Ziffern und Bindestriche, 2–31 Zeichen.",
+        "reservedSlug": "Dieser Kurzname ist reserviert und kann nicht verwendet werden — er würde mit einer bestehenden Adresse kollidieren.",
+        "takenSlug": "Diesen Kurznamen verwendet bereits ein anderes Restaurant.",
+        "noBaseDomain": "Wählen Sie zuerst eine Ihrer bestätigten Domains, oder fügen Sie auf Ihrer Domain-Seite eine hinzu.",
+        "baseNotVerified": "Diese Domain ist noch nicht bestätigt — veröffentlichen Sie den Eintrag auf Ihrer Domain-Seite und prüfen Sie ihn.",
+        "invalidOwnDomain": "Das sieht nicht nach einer Domain aus, die das Restaurant besitzen könnte — z. B. dasbistro.ch.",
+        "ownDomainIsOurs": "Das ist eine unserer eigenen Adressen. Wählen Sie stattdessen die erste Option.",
+        "tenantExists": "Dieses Restaurant ist bereits eingerichtet. Die Adresse kann sich noch ändern, das ist aber ein Neuaufbau — fragen Sie uns unten."
       }
     },
     "plan": {
@@ -1136,6 +1154,41 @@
       "removing": "Wird entfernt…",
       "removeNote": "Das Entfernen hier ändert nichts an Restaurants, die bereits unter dieser Domain online sind — sagen Sie uns Bescheid, wenn eines umziehen soll.",
       "staleNote": "Die Bestätigung ist lange her. Drücken Sie „Erneut prüfen“, um zu bestätigen, dass die Domain noch Ihnen gehört."
+    },
+    "domainChoice": {
+      "title": "Wo soll dieses Restaurant leben?",
+      "intro": "Wählen Sie die Web-Adresse jetzt, bevor wir das Restaurant einrichten. Um den Rest kümmern wir uns — und Sie können eine Notiz hinzufügen, wenn dazu etwas zu sagen ist.",
+      "optionsLegend": "Die Adresse",
+      "slugLabel": "Kurzname",
+      "slugHint": "Kleinbuchstaben, Ziffern und Bindestriche. Er wird zur Adresse und lässt sich später nur durch eine komplette Neueinrichtung ändern.",
+      "optionSofra": "Auf sofrapiwas.com",
+      "optionSofraHint": "kurzname.sofrapiwas.com — nichts einzurichten, funktioniert sofort.",
+      "optionPartnerBase": "Unter Ihrer eigenen Domain",
+      "optionPartnerBaseHint": "kurzname.ihrefirma.com. Sie veröffentlichen einen DNS-Eintrag pro Kunde; wir zeigen genau welchen.",
+      "noVerifiedBase": "Sie haben noch keine bestätigte Domain.",
+      "manageDomains": "Eine hinzufügen",
+      "optionByo": "Eine Domain, die das Restaurant bereits besitzt",
+      "optionByoHint": "Der eigene Name, z. B. dasbistro.ch. Es zeigt darauf zu uns, und wir kümmern uns um das Zertifikat.",
+      "ownDomainLabel": "Die Domain des Restaurants",
+      "ownDomainPlaceholder": "dasbistro.ch",
+      "optionBuy": "Eine Domain über uns kaufen",
+      "optionBuySoon": "demnächst",
+      "optionBuyHint": "Noch nicht verfügbar: Wir können einen Namen heute registrieren, ihn aber noch nirgendwohin zeigen lassen — Sie hätten also eine Domain, die nichts tut. Fragen Sie uns, wir registrieren sie in der Zwischenzeit von Hand.",
+      "messageLabel": "Noch etwas?",
+      "messagePlaceholder": "Optional — was wir zu dieser Adresse wissen sollten.",
+      "submit": "Vorschlag senden",
+      "sending": "Wird gesendet…",
+      "sent": "Gesendet — wir übernehmen ab hier.",
+      "outcomeTitle": "Ihr Vorschlag",
+      "outcomeNoDns": "Nichts einzurichten — diese Adresse zeigt bereits auf uns.",
+      "outcomeWhoPartner": "Veröffentlichen Sie diesen Eintrag im DNS Ihrer Domain:",
+      "outcomeWhoRestaurant": "Das Restaurant veröffentlicht diesen Eintrag im DNS seiner Domain:",
+      "outcomeBeforeProvisioning": "Das muss BEVOR wir das Restaurant einrichten aktiv sein — das Sicherheitszertifikat kann erst ausgestellt werden, wenn die Adresse antwortet.",
+      "recordType": "Typ",
+      "recordName": "Name",
+      "recordValue": "Zeigt auf",
+      "recordValueUnknown": "Wir senden Ihnen die Adresse, auf die gezeigt werden soll.",
+      "footerNote": "Das ist ein Vorschlag. SofraPiwas richtet das Restaurant ein und bestätigt die Adresse."
     }
   },
   "signup": {
