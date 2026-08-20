@@ -32,6 +32,21 @@ describe("normalizeBaseDomain — refused", () => {
   it("empty", () => rejected("   ", "empty"));
   it("empty after a scheme alone", () => rejected("https://", "empty"));
   it("over 253 characters", () => rejected(`${"a".repeat(250)}.com`, "tooLong"));
+
+  // The guard is ORDERED before normalisation on purpose: the rewrites below it walk
+  // and rebuild the string, so measuring afterwards means a huge paste is scanned in
+  // full before being thrown away — which is what made a trailing-slash pattern a
+  // real ReDoS lever rather than a theoretical one. These pin the ordering: each
+  // input is far past any plausible domain AND shaped to be expensive to normalize,
+  // and each must come back refused.
+  it("refuses an absurdly long paste outright", () =>
+    rejected("a".repeat(100_000), "tooLong"));
+  it("refuses a long run of trailing slashes without normalizing it first", () =>
+    rejected(`https://eva.com${"/".repeat(100_000)}a`, "tooLong"));
+  it("refuses a long run of trailing dots the same way", () =>
+    rejected(`eva.com${".".repeat(100_000)}`, "tooLong"));
+  it("still accepts a name padded to just under the raw ceiling", () =>
+    ok(`  https://${"a".repeat(60)}.com/  `, `${"a".repeat(60)}.com`));
   it("a single label", () => rejected("localdomain", "singleLabel"));
   it("a label over 63 characters", () => rejected(`${"a".repeat(64)}.com`, "notAHostname"));
   it("an empty label (double dot)", () => rejected("a..com", "notAHostname"));

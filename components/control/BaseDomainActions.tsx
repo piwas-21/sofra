@@ -35,13 +35,17 @@ export default function BaseDomainActions({
     {},
   );
 
+  // Flattened out of the button, not for style: a nested ternary in JSX is the shape
+  // that gets misread on the next edit (Sonar S3358).
+  const idleLabel = verified ? "recheck" : "verify";
+
   return (
     <div className="grid gap-2">
       <div className="flex flex-wrap items-center gap-3">
         <form action={checkAction}>
           <input type="hidden" name="id" value={id} />
           <button type="submit" disabled={checking} className="btn-secondary text-sm disabled:opacity-60">
-            {checking ? t("verifying") : t(verified ? "recheck" : "verify")}
+            {checking ? t("verifying") : t(idleLabel)}
           </button>
         </form>
         <form action={removeAction}>

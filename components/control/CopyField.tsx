@@ -11,7 +11,10 @@ import { useTranslations } from "next-intl";
  * screen reader announcing both as "Link" gives no way to tell which is which —
  * neither to a partner, nor to a test.
  */
-export default function CopyField({ value, label }: { value: string; label?: string }) {
+export default function CopyField({
+  value,
+  label,
+}: Readonly<{ value: string; label?: string }>) {
   const t = useTranslations("control.copy");
   const [copied, setCopied] = useState(false);
 

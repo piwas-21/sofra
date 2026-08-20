@@ -82,6 +82,11 @@ const BARE_PUBLIC_SUFFIXES = new Set([
   "com.sg",
 ]);
 
+/** The ceiling on the RAW input, checked before anything is normalized (see below).
+ *  253 for the name itself, plus room for `https://`, a trailing slash, the
+ *  fully-qualified dot and some surrounding whitespace. */
+const MAX_RAW_LENGTH = 300;
+
 const LABEL = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
 /** ASCII TLDs are letters; an IDN one is punycode (`xn--p1ai`). Both are accepted;
  *  an all-digit last label is not, which is how `192.168.0.1` is refused. */
@@ -97,17 +102,39 @@ const TLD = /^(?:[a-z]{2,}|xn--[a-z0-9-]{2,})$/;
  * caller has to lower-case or strip anything again.
  */
 export function normalizeBaseDomain(raw: string): BaseDomainResult {
+  // LENGTH FIRST, on the RAW input, before a single character is normalized.
+  //
+  // Not a micro-optimisation — an ordering bug. Every string this sees was typed or
+  // pasted by a logged-in partner, and the normalisation below walks and rewrites it.
+  // With the length check where it used to be (after the rewrites) a megabyte-long
+  // paste got the full scan-and-rewrite treatment and was only then measured and
+  // thrown away, which is the whole reason a trailing-slash pattern like `/\/+$/`
+  // was a live ReDoS lever rather than a theoretical one: `"//////…a"` fails to match
+  // and backtracks quadratically. Measuring first removes the CLASS, not the instance,
+  // and it is simply more correct — there is no reason to normalize a megabyte before
+  // deciding it cannot possibly be a hostname.
+  //
+  // The bound is deliberately generous rather than 253: the raw form may legitimately
+  // carry a scheme, surrounding whitespace, a trailing slash and a trailing dot, none
+  // of which survive normalisation. Anything past this is not a domain someone
+  // mistyped, it is a payload.
+  if (raw.length > MAX_RAW_LENGTH) return { ok: false, reason: "tooLong" };
+
   let value = raw.trim().toLowerCase();
   // A pasted address, reduced to its host. Done before the character check so the
   // common paste is accepted; anything still carrying a path, a port, credentials
   // or whitespace after this is refused rather than silently truncated further.
   value = value.replace(/^https?:\/\//, "");
-  value = value.replace(/\/+$/, "");
-  // A trailing dot is the fully-qualified form of the same name.
-  value = value.replace(/\.$/, "");
+  // Trailing slashes and the fully-qualified trailing dot come off without a pattern.
+  // The length guard above is what makes this safe; using plain string operations as
+  // well is belt and braces, and costs nothing (Sonar S8786).
+  while (value.endsWith("/")) value = value.slice(0, -1);
+  if (value.endsWith(".")) value = value.slice(0, -1);
 
   if (!value) return { ok: false, reason: "empty" };
-  // 253 is the maximum length of a presentation-format domain name.
+  // And again on the NORMALIZED value: 253 is the maximum length of a
+  // presentation-format domain name, and it is that form the rest of this function —
+  // and every consumer downstream — reasons about.
   if (value.length > 253) return { ok: false, reason: "tooLong" };
   if (/[^a-z0-9.-]/.test(value)) return { ok: false, reason: "notAHostname" };
 
@@ -117,7 +144,12 @@ export function normalizeBaseDomain(raw: string): BaseDomainResult {
     return { ok: false, reason: "notAHostname" };
   }
 
-  const tld = labels[labels.length - 1];
+  // Sliced from the string rather than indexed off the array: `labels[length - 1]` and
+  // `labels.at(-1)` are both typed or linted awkwardly (the first is an index
+  // expression Sonar asks you to replace, the second is `string | undefined` and
+  // needs a fallback branch no test can ever reach). `lastIndexOf` is total here —
+  // the two-label check above guarantees a dot.
+  const tld = value.slice(value.lastIndexOf(".") + 1);
   // Checked before the TLD grammar so a dotted-quad gets the message that names
   // it, rather than the generic one about the last label.
   if (labels.every((l) => /^\d+$/.test(l))) return { ok: false, reason: "ipAddress" };
