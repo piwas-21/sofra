@@ -87,6 +87,12 @@ export default defineConfig({
         // The first localized mail (T-d). In scope because a mail rendered from a missing
         // catalogue is a customer reading raw message keys, and that is decidable here.
         "lib/email-locale.ts",
+        // D1/D1b — whose domain a tenant lives on. BOTH halves of the security boundary
+        // are pure and therefore measurable here: what counts as a claimable public zone,
+        // and whether a resolver's answer actually proves control of it. The transport
+        // (`base-domain-dns.ts`) stays out, same split as vies/vies-result.
+        "lib/base-domain.ts",
+        "lib/base-domain-verification.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

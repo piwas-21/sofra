@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
+import { verificationAge } from "@/lib/base-domain-verification";
 import ClientStatusBadge from "@/components/control/ClientStatusBadge";
 import CommissionForm from "@/components/control/CommissionForm";
 
@@ -23,11 +24,18 @@ export default async function AdminPartnerDetailPage({
       profile: true,
       clients: { orderBy: { updatedAt: "desc" } },
       commissions: { orderBy: { createdAt: "desc" }, include: { client: true } },
+      // The zones this partner may put clients under (D1). The founder is the only
+      // person who can see a partner's proof AGE, and staleness is deliberately
+      // surfaced rather than acted on — nothing auto-revokes (lib/base-domain-
+      // verification.ts). This is where "is that still theirs?" gets asked.
+      baseDomains: { orderBy: [{ verifiedAt: "desc" }, { createdAt: "desc" }] },
     },
   });
   if (!partner) notFound();
 
   const balance = partner.commissions.reduce((s, c) => s + c.amountCents, 0);
+  // One clock for the whole render, so two domains never disagree about staleness.
+  const now = new Date();
 
   return (
     <div className="grid gap-10">
@@ -56,6 +64,35 @@ export default async function AdminPartnerDetailPage({
           ))}
           {partner.clients.length === 0 && (
             <li className="font-label text-muted-foreground">{t("noClients")}</li>
+          )}
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="font-hand text-3xl font-bold">{t("baseDomains")}</h2>
+        <ul className="mt-4 grid gap-2">
+          {partner.baseDomains.map((d) => {
+            const age = verificationAge(d.verifiedAt, now);
+            return (
+              <li key={d.id} className="flex flex-wrap items-center gap-3 font-label text-sm">
+                <code className="font-mono text-xs bg-muted/60 rounded-craft px-2 py-1">
+                  {d.domain}
+                </code>
+                {d.verifiedAt ? (
+                  <span className={age.stale ? "text-craft-error-text" : "text-muted-foreground"}>
+                    {t(age.stale ? "baseDomainStale" : "baseDomainVerified", {
+                      date: shortDate(d.verifiedAt),
+                      days: age.ageDays ?? 0,
+                    })}
+                  </span>
+                ) : (
+                  <span className="text-craft-error-text">{t("baseDomainUnverified")}</span>
+                )}
+              </li>
+            );
+          })}
+          {partner.baseDomains.length === 0 && (
+            <li className="font-label text-muted-foreground">{t("noBaseDomains")}</li>
           )}
         </ul>
       </section>
