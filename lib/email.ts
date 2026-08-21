@@ -3,6 +3,8 @@
 // certainty (e.g. invite links) must surface the link in the UI as well.
 const RESEND_URL = "https://api.resend.com/emails";
 
+import { recipientTag, redactAddresses } from "@/lib/log-recipient";
+
 export const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -15,7 +17,10 @@ export async function sendEmail(opts: {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.WAITLIST_FROM;
   if (!apiKey) {
-    console.warn(`email (not sent, no RESEND_API_KEY): to=${opts.to} subject=${opts.subject}`);
+    // The recipient is TAGGED, never printed: this line fires on every send in
+    // any environment without a key, so a plain `to=` here is the whole
+    // customer list in the log (CLAUDE.md §5.8). See lib/log-recipient.ts.
+    console.warn(`email (not sent, no RESEND_API_KEY): to=${recipientTag(opts.to)} subject=${opts.subject}`);
     return { sent: false };
   }
   // No sandbox fallback. `onboarding@resend.dev` used to be the default here, and it does
@@ -31,7 +36,7 @@ export async function sendEmail(opts: {
   // back false — so the failure stays visible without taking the money path down with it.
   if (!from) {
     console.error(
-      `email (not sent, no WAITLIST_FROM): to=${opts.to} subject=${opts.subject} — ` +
+      `email (not sent, no WAITLIST_FROM): to=${recipientTag(opts.to)} subject=${opts.subject} — ` +
         `set WAITLIST_FROM to a sender on a Resend-VERIFIED domain, e.g. "Sofra <sofra@send.sofrapiwas.com>"`,
     );
     return { sent: false };
@@ -55,7 +60,10 @@ export async function sendEmail(opts: {
     }),
   });
   if (!res.ok) {
-    console.error("email: resend failed", res.status, await res.text());
+    // Redacted, not verbatim: Resend quotes the recipient back in its own error
+    // text (the sandbox-sender 403 names the address outright), so a raw body
+    // reintroduces from the provider's side exactly what the tag removes above.
+    console.error("email: resend failed", res.status, redactAddresses(await res.text()));
     return { sent: false };
   }
   return { sent: true };

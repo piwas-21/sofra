@@ -24,6 +24,20 @@ const BASELINE = join(ROOT, "scripts", "file-length-baseline.txt");
 // inner `)` in the console args doesn't defeat the match.
 const CONSOLE_CALL = /console\.(log|error|warn|info)\(/;
 const PII_SHAPE = /@[\w.-]+\.\w{2,}|\+?\d[\d\s().-]{7,}\d/;
+// The shape rule alone cannot see the common case, and missed the real one: a
+// warn line that interpolated `opts.to` printed every customer's address for
+// months (EMAIL-SPEC-CONTROL-PLANE G15), because an INTERPOLATED value has no
+// shape until runtime. So also flag a console line that interpolates something
+// NAMED like a person: `email`, `mail`, `phone`, `recipient`, or a bare `to`.
+// Names, not types — which is why this stays a warning: such a value may well be
+// a slug or a boolean. A false warning costs a glance; the miss it replaces cost
+// a live PII leak that every gate reported as clean.
+const PII_INTERPOLATION =
+  /\$\{[^}]*\b(e?mail(?!Sent|ed\b)[\w.]*|phone[\w.]*|recipient[\w.]*|to)\b[^}]*\}/i;
+// …except where the value is ALREADY passed through the redaction helpers. They
+// are stripped rather than allow-listed per line, so a line that tags one value
+// and prints another raw is still caught — the mixed case is the likely one.
+const PII_REDACTED_CALL = /\b(recipientTag|redactAddresses)\s*\([^)]*\)/g;
 
 function limitFor(rel) {
   // rel is repo-relative (no leading slash), e.g. "lib/billing.ts",
@@ -65,9 +79,16 @@ function checkFile(abs, { blocking } = {}) {
     process.stderr.write(`${rel}: file-length: ${kind} ~${loc} LOC (limit ${lim}) — extract per CLAUDE.md §4\n`);
     if (blocking) violated = true;
   }
-  if (src.split("\n").some((line) => CONSOLE_CALL.test(line) && PII_SHAPE.test(line))) {
+  if (
+    src
+      .split("\n")
+      .map((line) => line.replace(PII_REDACTED_CALL, "TAGGED"))
+      .some((line) => CONSOLE_CALL.test(line) && (PII_SHAPE.test(line) || PII_INTERPOLATION.test(line)))
+  ) {
     // Always a warning, never fails CI (heuristic — may be a false positive).
-    process.stderr.write(`${rel}: pii-in-log: console.* appears to log an email/phone — log ids, not PII (CLAUDE.md §5)\n`);
+    process.stderr.write(
+      `${rel}: pii-in-log: console.* appears to log an email/phone/recipient — log an id or a tag (lib/log-recipient.ts), not PII (CLAUDE.md §5)\n`,
+    );
   }
   return violated;
 }

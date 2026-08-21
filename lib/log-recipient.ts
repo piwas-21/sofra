@@ -1,0 +1,72 @@
+// Keeping recipient addresses OUT of the logs (CLAUDE.md §5.8, EMAIL-SPEC-CONTROL-PLANE G15).
+//
+// `lib/email.ts` used to write `to=${opts.to}` on both of its refusal paths, so
+// every send made without a key or without a verified sender put a customer's
+// address into the container log — the one place this repo says PII may not go.
+// The file-length checker's PII heuristic did not catch it because that rule
+// looks for an email-SHAPED literal on a `console.*` line, and an interpolated
+// variable has no shape until runtime.
+//
+// What replaces the address is a TAG: a short digest that is stable within a
+// process, so two failures for the same recipient are still recognisably the
+// same recipient, and useless as an address.
+//
+// The salt is why this is not just "hash the email and call it anonymous". An
+// email address is a low-entropy, guessable value: an unsalted digest of one is
+// reversible by anyone holding a list of addresses, which is what a leaked log
+// would be handed to. `LOG_HASH_SALT` pins the tag across restarts and
+// containers when an operator wants that; unset, a per-process random salt is
+// generated, and the tags are then correlatable only within one container's
+// lifetime — deliberately the safer default, because the common case (reading
+// one container's log after a failed send) needs nothing more.
+//
+// It is pseudonymisation, not anonymisation, and the doc comment says so on
+// purpose: with the salt in hand the tag is reversible again. The claim is
+// narrow and true — an address is no longer sitting in the log.
+
+import { createHash, randomBytes } from "node:crypto";
+
+/** Emitted instead of a tag when there is no address at all. A digest here would
+ *  assert a recipient that never existed. */
+export const NO_RECIPIENT = "(none)";
+
+/** Address shape, deliberately looser than a validator: this is used to FIND
+ *  addresses inside third-party text, where a near-miss must still be redacted.
+ *  Global + case-insensitive because a provider error may name several. */
+const ADDRESS_IN_TEXT = /[^\s<>"'(),;:]+@[^\s<>"'(),;:]+\.[a-z]{2,}/gi;
+
+let processSalt: string | null = null;
+
+function salt(): string {
+  const configured = process.env.LOG_HASH_SALT;
+  if (configured) return configured;
+  // Lazily generated, once, and never logged. Not a secret worth managing — its
+  // only job is to make the digests in one log file non-reversible.
+  processSalt ??= randomBytes(16).toString("hex");
+  return processSalt;
+}
+
+/**
+ * A stable, non-address stand-in for one recipient, e.g. `#3f1a9c22b0`.
+ *
+ * Normalised (trimmed + lower-cased) so `Owner@Example.com` and
+ * `owner@example.com` tag identically — an operator comparing two log lines is
+ * asking about the person, not about the capitalisation.
+ */
+export function recipientTag(address: string | null | undefined): string {
+  const normalized = (address ?? "").trim().toLowerCase();
+  if (!normalized) return NO_RECIPIENT;
+  return `#${createHash("sha256").update(`${salt()}:${normalized}`).digest("hex").slice(0, 10)}`;
+}
+
+/**
+ * The same substitution, applied to text we did not write.
+ *
+ * Resend's error bodies quote the recipient back at us — the sandbox-sender 403
+ * is literally *"You can only send testing emails to your own email address
+ * (...)"* — so logging a provider response verbatim reintroduces exactly what
+ * `recipientTag` removes, from a direction nobody thinks to check.
+ */
+export function redactAddresses(text: string): string {
+  return text.replace(ADDRESS_IN_TEXT, (match) => recipientTag(match));
+}

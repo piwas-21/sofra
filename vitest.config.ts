@@ -81,6 +81,11 @@ export default defineConfig({
         "lib/icp.ts",
         "lib/plan-deletion.ts",
         "lib/tax-notes.ts",
+        // G15 — what a log line may say about a recipient. In scope because the
+        // failure it prevents is silent by construction: a leak here is only ever
+        // discovered by reading months of container logs, and the module is pure
+        // apart from one env read.
+        "lib/log-recipient.ts",
         // G16 — the delivery-verdict rule. Its query wrapper (`email-delivery.ts`) stays out, same
         // split as vies/vies-result above.
         "lib/email-delivery-verdicts.ts",
