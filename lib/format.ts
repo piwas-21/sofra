@@ -8,3 +8,28 @@ export function eur(cents: number): string {
 export function shortDate(d: Date): string {
   return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(d);
 }
+
+/**
+ * Bytes as a short human string: `18 MiB`, `1.4 GiB`, `0 B`.
+ *
+ * BINARY units (1024), not decimal, because the numbers on /admin/backups come
+ * from `restic` and `du`, which both report binary — a page that silently
+ * restated 18 MiB as 18.9 MB would not match anything an operator sees on the
+ * box, and the whole value of the page is that it agrees with the box.
+ *
+ * One decimal place from MiB upward and none below: `1.4 GiB` is a size, `1434.7
+ * KiB` is a number to decode. Locale-independent on purpose — these are
+ * technical units rendered beside a snapshot id, not prose.
+ */
+export function humanBytes(bytes: number): string {
+  const units = ["B", "KiB", "MiB", "GiB", "TiB"];
+  let value = Math.max(0, bytes);
+  let unit = 0;
+  while (value >= 1024 && unit < units.length - 1) {
+    value /= 1024;
+    unit += 1;
+  }
+  // `unit >= 2` is MiB and up. Below that the fraction is noise: a dump is never
+  // interestingly 512.3 KiB rather than 512 KiB.
+  return `${unit >= 2 ? value.toFixed(1) : Math.round(value)} ${units[unit]}`;
+}

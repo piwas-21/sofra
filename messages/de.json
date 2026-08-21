@@ -471,6 +471,7 @@
         "overview": "Übersicht",
         "signups": "Anmeldungen",
         "fleet": "Flotte",
+        "backups": "Sicherungen",
         "invoices": "Rechnungen",
         "icp": "ICP",
         "billingDetails": "Rechnungsdaten",
@@ -800,6 +801,95 @@
           "errors": "{count} Fehler"
         }
       },
+      "backups": {
+        "title": "Sicherungen der Mandanten",
+        "intro": "Jede Kopie, die wir von den Daten eines Restaurants halten — und zuerst: jedes Restaurant, von dem wir keine aktuelle Kopie haben.",
+        "thresholds": "Ein Restaurant gilt nach {stale} h ohne neue Kopie als veraltet und nach {unprotected} h als ungeschützt. Daten eines ausgeschiedenen Restaurants werden {days} Tage aufbewahrt.",
+        "attention": "{count} von {total} Restaurants brauchen Aufmerksamkeit.",
+        "allProtected": "Alle {count} Restaurants haben eine aktuelle Sicherung.",
+        "registryUnavailable": "Das Mandantenregister konnte nicht gelesen werden, daher fehlen aktive Restaurants und ihre Namen in dieser Liste: {error}",
+        "tenants": "{count} Restaurants",
+        "empty": "Es wurde noch kein Restaurant und keine Kopie gemeldet.",
+        "boxes": {
+          "title": "Server",
+          "none": "Kein Server hat jemals ein Inventar gemeldet, nichts auf dieser Seite ist also aktuell — prüfen Sie, ob der Sicherungs-Agent ausgerollt ist. Ein Server gilt nach {hours} h als still.",
+          "quiet": "Still — seit {hours} h nichts gemeldet",
+          "reporting": "Meldet",
+          "artifacts": "{count} Kopien",
+          "lastReport": "letzte Meldung {date}"
+        },
+        "health": {
+          "protected": "Geschützt",
+          "stale": "Veraltet",
+          "unprotected": "UNGESCHÜTZT",
+          "never": "NIE GESICHERT"
+        },
+        "tenant": {
+          "notInRegistry": "Nicht mehr im Register — Daten eines ausgeschiedenen Restaurants",
+          "box": "Server {box}",
+          "artifacts": "{count} Kopien",
+          "newest": "neueste ist {hours} h alt",
+          "newestNever": "es wurde nie eine Kopie gemeldet",
+          "localOnly": "Jede Kopie liegt auf dem Server, der dieses Restaurant betreibt. Ein Ausfall, der den Server mitnimmt, nimmt die Sicherung mit.",
+          "boxQuiet": "Server {box} meldet nichts mehr; diese Zahlen sind sein letzter Stand, nicht die Gegenwart."
+        },
+        "retention": {
+          "reason": {
+            "trialLapsed": "die kostenlose Zeit abgelaufen ist",
+            "deprovisioned": "das Restaurant abgebaut wurde",
+            "departed": "das Restaurant nicht mehr existiert"
+          },
+          "retained": "Aufbewahrt, weil {reason} — wir haben die Daten noch bis {until}, also {days} Tage.",
+          "expired": "Aufbewahrt, weil {reason} — die Frist endete am {until}; der Server hat sie höchstwahrscheinlich schon gelöscht.",
+          "nothingHeld": "Aufbewahrt, weil {reason} — wir halten aber überhaupt keine Kopie. Es gibt nichts wiederherzustellen."
+        },
+        "artifact": {
+          "kind": {
+            "SCHEDULED": "Nächtlich",
+            "MANUAL": "Auf Anforderung",
+            "DEPROVISION": "Bei Abschaltung",
+            "ARCHIVE": "Archiv"
+          },
+          "location": {
+            "RESTIC": "Extern, verschlüsselt",
+            "LOCAL": "Auf dem Server"
+          }
+        },
+        "create": {
+          "button": "Jetzt sichern",
+          "pending": "Wird eingereiht…",
+          "queued": "Für {slug} eingereiht — der Server holt sie beim nächsten Abruf, in etwa fünf Minuten."
+        },
+        "delete": {
+          "reveal": "Diese Kopie löschen…",
+          "warning": "Damit wird der Server gebeten, diese Kopie endgültig zu vernichten. Es gibt kein Zurück.",
+          "warningLastCopy": "Dies ist die EINZIGE Kopie der Daten von {slug}. Die Vernichtung ist endgültig und es gibt kein Zurück.",
+          "confirmLabel": "Zum Bestätigen {slug} eintippen",
+          "reasonLabel": "Begründung — wird im Audit-Log festgehalten",
+          "override": "Ja, die letzte verbliebene Kopie der Daten dieses Restaurants vernichten",
+          "confirm": "Löschung einreihen",
+          "pending": "Wird eingereiht…",
+          "queued": "Löschung für {slug} eingereiht — der Server führt sie beim nächsten Abruf aus."
+        },
+        "jobs": {
+          "title": "Eingereihte Aufträge",
+          "empty": "Es wurde noch nichts von einem Server verlangt.",
+          "deleteEnabled": "Löschen ist hier EINGESCHALTET. Die Aufbewahrungsregel auf dem Server bleibt der normale Weg, Kopien zu entfernen.",
+          "deleteDisabled": "Löschen ist ausgeschaltet. Kopien werden von der Aufbewahrungsregel auf dem Server entfernt — im deploy-Repo nachlesbar und durch keinen Fehlklick auszulösen.",
+          "requestedBy": "angefordert von {name}",
+          "failed": "Fehlgeschlagen: {error}",
+          "action": {
+            "CREATE": "Sichern",
+            "DELETE": "Löschen"
+          },
+          "status": {
+            "PENDING": "Eingereiht",
+            "CLAIMED": "Läuft",
+            "DONE": "Fertig",
+            "FAILED": "Fehlgeschlagen"
+          }
+        }
+      },
       "identity": {
         "title": "Rechnungsidentität",
         "intro": "Die juristische Person, an die die Rechnungen dieses Mandanten gerichtet sind.",
@@ -976,6 +1066,16 @@
         "invalidOwnDomain": "Das sieht nicht nach einer Domain aus, die das Restaurant besitzen könnte — z. B. dasbistro.ch.",
         "ownDomainIsOurs": "Das ist eine unserer eigenen Adressen. Wählen Sie stattdessen die erste Option.",
         "tenantExists": "Dieses Restaurant ist bereits eingerichtet. Die Adresse kann sich noch ändern, das ist aber ein Neuaufbau — fragen Sie uns unten."
+      },
+      "backup": {
+        "registryUnavailable": "Das Mandantenregister konnte nicht gelesen werden; damit ist nicht feststellbar, auf welchem Server dieses Restaurant liegt.",
+        "unknownTenant": "Dieses Restaurant steht nicht im Register.",
+        "tooManyPending": "Dieser Server hat bereits so viele Aufträge in der Warteschlange, wie erlaubt sind. Warten Sie, bis er aufgeholt hat.",
+        "deleteDisabled": "Das Löschen von Sicherungen ist in dieser Umgebung ausgeschaltet.",
+        "confirmSlugMismatch": "Der eingetippte Slug gehört nicht zum Restaurant dieser Kopie.",
+        "reasonRequired": "Eine Begründung ist Pflicht, und sie muss etwas aussagen.",
+        "lastArtifact": "Das ist die einzige Kopie der Daten dieses Restaurants. Setzen Sie das Häkchen, wenn Sie es wirklich meinen.",
+        "artifactNotFound": "Diese Kopie existiert nicht mehr."
       }
     },
     "plan": {

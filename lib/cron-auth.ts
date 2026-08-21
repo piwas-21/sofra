@@ -20,7 +20,26 @@ import { createHash, timingSafeEqual } from "node:crypto";
  * distinguishable to an operator without being distinguishable to a caller.
  */
 export function cronAuthorized(request: Request): boolean {
-  const secret = process.env.CRON_SECRET;
+  return bearerAuthorized(request, process.env.CRON_SECRET);
+}
+
+/**
+ * The same constant-time bearer check against an ARBITRARY shared secret.
+ *
+ * Extracted when a third machine-to-machine posture (the backup agent's three
+ * endpoints, BACKUP_AGENT_SECRET) needed it and /api/telemetry/fleet had already
+ * copied the comparison a second time. This file's own header says why that
+ * matters: a fix to one copy — a length guard, a header name, a timing property
+ * — silently does not reach the others, and these are AUTH checks, so the copy
+ * that lags is a hole rather than a style nit.
+ *
+ * Callers pass the secret rather than a name, so nothing here can read an
+ * environment variable a caller did not intend. An unset/empty secret returns
+ * false: no secret, no access. Callers answer 503 for that case separately, so
+ * "not configured" and "wrong token" stay distinguishable to an operator without
+ * being distinguishable to a caller.
+ */
+export function bearerAuthorized(request: Request, secret: string | undefined): boolean {
   if (!secret) return false;
   const digest = (s: string) => createHash("sha256").update(s).digest();
   const provided = digest(request.headers.get("authorization") ?? "");

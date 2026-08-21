@@ -471,6 +471,7 @@
         "overview": "Aperçu",
         "signups": "Inscriptions",
         "fleet": "Parc",
+        "backups": "Sauvegardes",
         "invoices": "Factures",
         "icp": "ICP",
         "billingDetails": "Infos de facturation",
@@ -800,6 +801,95 @@
           "errors": "{count} erreurs"
         }
       },
+      "backups": {
+        "title": "Sauvegardes des restaurants",
+        "intro": "Chaque copie que nous détenons des données d'un restaurant — et, d'abord, chaque restaurant dont nous n'avons aucune copie récente.",
+        "thresholds": "Un restaurant est signalé « ancienne » après {stale} h sans nouvelle copie, et « non protégé » après {unprotected} h. Les données d'un restaurant parti sont conservées {days} jours.",
+        "attention": "{count} restaurants sur {total} demandent votre attention.",
+        "allProtected": "Les {count} restaurants ont une sauvegarde récente.",
+        "registryUnavailable": "Le registre des restaurants n'a pas pu être lu : les restaurants actifs et leurs noms manquent donc dans cette liste ({error}).",
+        "tenants": "{count} restaurants",
+        "empty": "Aucun restaurant ni aucune copie n'a encore été signalé.",
+        "boxes": {
+          "title": "Serveurs",
+          "none": "Aucun serveur n'a jamais transmis d'inventaire : rien sur cette page n'est à jour — vérifiez que l'agent de sauvegarde est déployé. Un serveur est considéré silencieux après {hours} h.",
+          "quiet": "Silencieux — plus rien depuis {hours} h",
+          "reporting": "Transmet",
+          "artifacts": "{count} copies",
+          "lastReport": "dernier envoi le {date}"
+        },
+        "health": {
+          "protected": "Protégé",
+          "stale": "Ancienne",
+          "unprotected": "NON PROTÉGÉ",
+          "never": "JAMAIS SAUVEGARDÉ"
+        },
+        "tenant": {
+          "notInRegistry": "Absent du registre — données conservées pour un restaurant parti",
+          "box": "serveur {box}",
+          "artifacts": "{count} copies",
+          "newest": "la plus récente date de {hours} h",
+          "newestNever": "aucune copie n'a jamais été signalée",
+          "localOnly": "Toutes les copies se trouvent sur le serveur qui héberge ce restaurant. Une panne qui emporte le serveur emporte la sauvegarde avec lui.",
+          "boxQuiet": "Le serveur {box} ne transmet plus : ces chiffres sont sa dernière parole, pas l'état actuel."
+        },
+        "retention": {
+          "reason": {
+            "trialLapsed": "leur période gratuite est terminée",
+            "deprovisioned": "le restaurant a été démonté",
+            "departed": "le restaurant n'existe plus"
+          },
+          "retained": "Conservées parce que {reason} — nous avons encore leurs données jusqu'au {until}, soit {days} jours.",
+          "expired": "Conservées parce que {reason} — la fenêtre s'est refermée le {until} ; le serveur les a très probablement déjà purgées.",
+          "nothingHeld": "Conservées parce que {reason} — mais nous n'avons aucune copie. Il n'y a rien à restaurer."
+        },
+        "artifact": {
+          "kind": {
+            "SCHEDULED": "Nocturne",
+            "MANUAL": "À la demande",
+            "DEPROVISION": "Prise à l'arrêt",
+            "ARCHIVE": "Archive"
+          },
+          "location": {
+            "RESTIC": "Hors serveur, chiffrée",
+            "LOCAL": "Sur le serveur"
+          }
+        },
+        "create": {
+          "button": "Sauvegarder maintenant",
+          "pending": "Mise en file…",
+          "queued": "En file pour {slug} — le serveur la prendra à sa prochaine relève, environ cinq minutes."
+        },
+        "delete": {
+          "reveal": "Supprimer cette copie…",
+          "warning": "Ceci demande au serveur de détruire définitivement cette copie. Il n'y a pas de retour en arrière.",
+          "warningLastCopy": "C'est la SEULE copie des données de {slug}. La détruire est définitif et sans retour en arrière.",
+          "confirmLabel": "Saisissez {slug} pour confirmer",
+          "reasonLabel": "Motif — consigné dans le journal d'audit",
+          "override": "Oui, détruire la dernière copie des données de ce restaurant",
+          "confirm": "Mettre la suppression en file",
+          "pending": "Mise en file…",
+          "queued": "Suppression en file pour {slug} — le serveur l'exécutera à sa prochaine relève."
+        },
+        "jobs": {
+          "title": "Travaux en file",
+          "empty": "Rien n'a encore été demandé à un serveur.",
+          "deleteEnabled": "La suppression est ACTIVÉE ici. La rétention sur le serveur reste la manière normale de retirer des copies.",
+          "deleteDisabled": "La suppression est désactivée. Les copies sont retirées par la rétention sur le serveur — relisible dans le dépôt deploy, et impossible à déclencher d'un clic malheureux.",
+          "requestedBy": "demandé par {name}",
+          "failed": "Échec : {error}",
+          "action": {
+            "CREATE": "Sauvegarder",
+            "DELETE": "Supprimer"
+          },
+          "status": {
+            "PENDING": "En file",
+            "CLAIMED": "En cours",
+            "DONE": "Terminé",
+            "FAILED": "Échec"
+          }
+        }
+      },
       "identity": {
         "title": "Identité de facturation",
         "intro": "L'entité juridique à laquelle les factures de ce locataire sont adressées.",
@@ -976,6 +1066,16 @@
         "invalidOwnDomain": "Cela ne ressemble pas à un domaine que le restaurant pourrait posséder — par ex. lebistro.ch.",
         "ownDomainIsOurs": "C'est l'une de nos propres adresses. Choisissez plutôt la première option.",
         "tenantExists": "Ce restaurant est déjà configuré. Son adresse peut encore changer, mais cela demande une reconstruction — demandez-le-nous ci-dessous."
+      },
+      "backup": {
+        "registryUnavailable": "Le registre des restaurants n'a pas pu être lu : impossible de savoir sur quel serveur vit ce restaurant.",
+        "unknownTenant": "Ce restaurant n'est pas dans le registre.",
+        "tooManyPending": "Ce serveur a déjà autant de travaux en file qu'il est permis. Laissez-le rattraper son retard.",
+        "deleteDisabled": "La suppression des sauvegardes est désactivée sur cet environnement.",
+        "confirmSlugMismatch": "L'identifiant saisi ne correspond pas au restaurant de cette copie.",
+        "reasonRequired": "Un motif est obligatoire, et il doit dire quelque chose.",
+        "lastArtifact": "C'est la seule copie des données de ce restaurant. Cochez la dérogation si vous le voulez vraiment.",
+        "artifactNotFound": "Cette copie n'existe plus."
       }
     },
     "plan": {

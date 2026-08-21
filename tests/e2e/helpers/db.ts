@@ -603,3 +603,55 @@ export async function arrangeResellerClient(opts: {
 
   return { partnerId, clientId };
 }
+
+/**
+ * A bare billing plan for a slug, with a free period that has already lapsed.
+ *
+ * Deliberately minimal — no partner, no client, no subscription — because the
+ * backup page reads exactly two things off a plan: `trialEndsAt`, and whether a
+ * subscription is ACTIVE. Building a whole reseller arrangement to set one date
+ * would couple this spec to the partner flow, which it does not test.
+ *
+ * `ON CONFLICT DO NOTHING` on the UNIQUE `tenantSlug`, then an explicit UPDATE:
+ * a retried spec must land on the same state rather than fail on the constraint.
+ */
+export async function arrangeLapsedTrialPlan(
+  tenantSlug: string,
+  trialEndsAtIso: string,
+): Promise<void> {
+  await query(
+    `INSERT INTO "TenantBilling" (id, "tenantSlug", name, email, "trialEndsAt", "createdAt")
+     VALUES (gen_random_uuid()::text, $1, $2, $3, $4::timestamptz, now())
+     ON CONFLICT ("tenantSlug") DO UPDATE SET "trialEndsAt" = EXCLUDED."trialEndsAt"`,
+    [tenantSlug, `E2E ${tenantSlug}`, `${tenantSlug}@example.test`, trialEndsAtIso],
+  );
+}
+
+/** Every backup artifact ref we hold for a slug. The prune assertion reads this:
+ *  an artifact the box stopped listing must actually LEAVE the database, not
+ *  merely stop being rendered. */
+export async function findBackupArtifactRefs(tenantSlug: string): Promise<string[]> {
+  const rows = await query<{ ref: string }>(
+    `SELECT ref FROM "BackupArtifact" WHERE "tenantSlug" = $1 ORDER BY ref`,
+    [tenantSlug],
+  );
+  return rows.map((r) => r.ref);
+}
+
+export type BackupJobRow = {
+  id: string;
+  action: string;
+  status: string;
+  ref: string | null;
+  reason: string | null;
+  override: boolean;
+};
+
+/** Jobs queued for a slug, newest first. */
+export async function findBackupJobs(tenantSlug: string): Promise<BackupJobRow[]> {
+  return await query<BackupJobRow>(
+    `SELECT id, action::text AS action, status::text AS status, ref, reason, override
+       FROM "BackupJob" WHERE "tenantSlug" = $1 ORDER BY "createdAt" DESC`,
+    [tenantSlug],
+  );
+}

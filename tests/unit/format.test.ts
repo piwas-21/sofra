@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eur, shortDate } from "@/lib/format";
+import { eur, humanBytes, shortDate } from "@/lib/format";
 
 // nl-NL currency formatting uses a non-breaking space between € and the value.
 const NBSP = "\u00a0";
@@ -40,5 +40,38 @@ describe("shortDate (en-GB dd MMM yyyy)", () => {
 
   it("formats an end-of-year date", () => {
     expect(shortDate(new Date(2025, 11, 31))).toBe("31 Dec 2025");
+  });
+});
+
+describe("humanBytes (binary units, to match restic and du)", () => {
+  it("shows plain bytes below a kibibyte", () => {
+    expect(humanBytes(0)).toBe("0 B");
+    expect(humanBytes(999)).toBe("999 B");
+  });
+
+  it("uses BINARY steps — 1024, not 1000", () => {
+    // The numbers on /admin/backups come from restic and du, both binary. A page
+    // that restated 18 MiB as 18.9 MB would agree with nothing on the box, and
+    // agreeing with the box is the entire value of the page.
+    expect(humanBytes(1024)).toBe("1 KiB");
+    expect(humanBytes(1024 * 1024)).toBe("1.0 MiB");
+  });
+
+  it("drops the fraction below MiB, where it is noise", () => {
+    expect(humanBytes(1536)).toBe("2 KiB");
+  });
+
+  it("keeps one decimal from MiB upward", () => {
+    expect(humanBytes(18 * 1024 * 1024)).toBe("18.0 MiB");
+    expect(humanBytes(Math.round(1.4 * 1024 ** 3))).toBe("1.4 GiB");
+  });
+
+  it("stops at TiB rather than inventing a unit", () => {
+    expect(humanBytes(5 * 1024 ** 4)).toBe("5.0 TiB");
+    expect(humanBytes(2048 * 1024 ** 4)).toBe("2048.0 TiB");
+  });
+
+  it("clamps a negative to zero rather than rendering it", () => {
+    expect(humanBytes(-1)).toBe("0 B");
   });
 });

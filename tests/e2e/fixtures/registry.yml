@@ -160,3 +160,64 @@ tenants:
     db: tenant_e2e_partner_expired
     languages: [en]
     modules: [core]
+  # Tenant backups (ADR-014). Their OWN box id, `e2e-backup-box`, and it is
+  # load-bearing rather than tidy: the inventory push is WHOLE-BOX and prunes
+  # what it does not list, so a spec that pushed against `staging` would delete
+  # any other spec's artifacts on the way past. And their OWN slugs and plans,
+  # for the reason every pair above has its own — `TenantBilling.tenantSlug` is
+  # UNIQUE, so a shared slug is a cross-spec race under parallel workers.
+  #
+  # One slug per state the page has to tell apart: a fresh copy, a copy old
+  # enough to be unprotected, a tenant with no copy at all, a tenant whose only
+  # copy sits on the box that runs it, and a lapsed trial. The DEPARTED case has
+  # deliberately NO entry here — that is the point of it.
+  e2e-backup-fresh:
+    name: E2E Backup Fresh Restaurant
+    status: active
+    managed: sofra
+    box: e2e-backup-box
+    domain: e2e-backup-fresh.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_backup_fresh
+    languages: [en]
+    modules: [core]
+  e2e-backup-stale:
+    name: E2E Backup Stale Restaurant
+    status: active
+    managed: sofra
+    box: e2e-backup-box
+    domain: e2e-backup-stale.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_backup_stale
+    languages: [en]
+    modules: [core]
+  e2e-backup-none:
+    name: E2E Backup Never Restaurant
+    status: active
+    managed: sofra
+    box: e2e-backup-box
+    domain: e2e-backup-none.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_backup_none
+    languages: [en]
+    modules: [core]
+  e2e-backup-local:
+    name: E2E Backup Local-Only Restaurant
+    status: active
+    managed: sofra
+    box: e2e-backup-box
+    domain: e2e-backup-local.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_backup_local
+    languages: [en]
+    modules: [core]
+  e2e-backup-lapsed:
+    name: E2E Backup Lapsed Trial Restaurant
+    status: active
+    managed: sofra
+    box: e2e-backup-box
+    domain: e2e-backup-lapsed.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_backup_lapsed
+    languages: [en]
+    modules: [core]
