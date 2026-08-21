@@ -464,6 +464,24 @@ export async function findTrialWarnings(
 }
 
 /**
+ * Every backup-alert marker the platform holds, oldest first.
+ *
+ * Platform-wide rather than per-tenant (`entityId = 'backups'`): one mail lists every
+ * affected restaurant, so there is no row to hang the marker off. Read as a LIST
+ * because the property under test is an ABSENCE — a sweep whose mail never left must
+ * leave nothing behind, or the next sweep would treat the silence as already-said.
+ */
+export async function findBackupAlerts(): Promise<
+  { action: string; meta: Record<string, unknown> | null }[]
+> {
+  return await query<{ action: string; meta: Record<string, unknown> | null }>(
+    `SELECT action, meta FROM "AuditLog"
+      WHERE "entityId" = 'backups' AND action LIKE 'backup.alert.%'
+      ORDER BY "createdAt" ASC`,
+  );
+}
+
+/**
  * A PARTNER with a password and nothing else.
  *
  * Its own address per call, for the reason `arrangeUserWithPassword` documents: the

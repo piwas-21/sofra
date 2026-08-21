@@ -368,10 +368,15 @@ jobs:
     # SEPARATE runners in parallel, so the floor is paid concurrently, not
     # serially, and the arithmetic is 128 + ~42 + an aggregate job, not
     # 2 x 213. Playwright splits at file granularity for these specs (verified
-    # with `playwright test --shard=i/2 --list`): shard 1 = billing-mollie
-    # (skips without a Mollie key) + control-auth + health + login-timing +
-    # owner-dashboard = 15 tests / ~38s, shard 2 = self-serve-signup = 15 tests
-    # / ~42s. Do NOT raise the shard count without re-measuring: at 3 shards the
+    # with `playwright test --shard=i/2 --list`). Re-listed 2026-08-21, when the
+    # backup-alert spec joined: shard 1 = admin-backups + admin-tenants +
+    # backup-alert-cron + billing-mollie (skips without a Mollie key) +
+    # control-auth + health + login-timing + owner-dashboard +
+    # owner-payments-pending + partner-base-domain = 32 tests, shard 2 =
+    # partner-client-domain + partner-tenant-panel + partner-trial +
+    # self-serve-signup + trial-warning-cron = 32 tests. The seconds above are
+    # the 2026-08-17 run's, not this split's — the balance is what was re-checked.
+    # Do NOT raise the shard count without re-measuring: at 3 shards the
     # residual per-shard test time (~27s) is a fifth of the floor, so the win
     # collapses while the compute cost keeps rising.
     #
