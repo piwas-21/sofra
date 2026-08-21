@@ -832,7 +832,7 @@
           "newest": "neueste ist {hours} h alt",
           "newestNever": "es wurde nie eine Kopie gemeldet",
           "clusterDumpOnly": "Dieser Mandant wird nie einzeln gesichert — seine Datenbank ist Teil der Gesamtsicherung des Servers, die jede Nacht zusammen mit dem Rest vom Server weggeschickt wird. Etwas Mandantenspezifisches erscheint hier nie.",
-          "offBoxNotReported": "Der Agent meldet nur, was er auf dem Server findet; Kopien außerhalb des Servers fehlen deshalb in dieser Liste. Das nächtliche Sicherungsverzeichnis wird ebenfalls in das verschlüsselte Repository außerhalb des Servers geschickt.",
+          "offBoxMissing": "Für diesen Mandanten wurde im nächtlichen Zyklus nichts vom Server weggeschickt. Jede sichtbare Kopie liegt auf dem Server, der ihn betreibt, und ein Ausfall, der den Server mitnimmt, nimmt die Sicherung mit.",
           "boxQuiet": "Server {box} meldet nichts mehr; diese Zahlen sind sein letzter Stand, nicht die Gegenwart."
         },
         "retention": {

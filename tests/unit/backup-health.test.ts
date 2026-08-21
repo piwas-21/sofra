@@ -7,7 +7,6 @@ import {
   boxIsQuiet,
   healthSeverity,
   hoursSince,
-  isSingleSiteOnly,
   totalBytes,
 } from "@/lib/backup-health";
 
@@ -71,21 +70,6 @@ describe("backupHealth", () => {
     expect(healthSeverity("never")).toBeGreaterThan(healthSeverity("unprotected"));
     expect(healthSeverity("unprotected")).toBeGreaterThan(healthSeverity("stale"));
     expect(healthSeverity("stale")).toBeGreaterThan(healthSeverity("protected"));
-  });
-});
-
-describe("isSingleSiteOnly", () => {
-  it("flags a tenant whose every copy is on the box that runs it", () => {
-    expect(isSingleSiteOnly({ artifactCount: 3, newestTakenAt: NOW, offBoxCount: 0 })).toBe(true);
-  });
-
-  it("is silent once ANY copy is off-box", () => {
-    expect(isSingleSiteOnly({ artifactCount: 3, newestTakenAt: NOW, offBoxCount: 1 })).toBe(false);
-  });
-
-  it("is silent when there is nothing at all — that is `never`, not one-site", () => {
-    // Two alarms for one problem is how a page trains its reader to skim.
-    expect(isSingleSiteOnly({ artifactCount: 0, newestTakenAt: null, offBoxCount: 0 })).toBe(false);
   });
 });
 

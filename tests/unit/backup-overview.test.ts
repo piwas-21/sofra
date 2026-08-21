@@ -81,12 +81,29 @@ describe("buildBackupOverview", () => {
     expect(rows[0].newestTakenAt).toEqual(hoursAgo(6));
   });
 
-  it("flags a tenant whose only copies live on the box that runs it", () => {
+  it("flags a tenant that is still being dumped and whose dumps never leave the box", () => {
+    // Fresh copy, green by every age rule, and nothing has shipped since the
+    // tenant's first artifact 40h ago. `protected` and one hardware failure from
+    // gone — see lib/backup-offbox.ts.
     const { rows } = build({
       registry: [registry("localonly")],
-      artifacts: [artifact({ tenantSlug: "localonly", location: "LOCAL" })],
+      artifacts: [
+        artifact({ tenantSlug: "localonly", location: "LOCAL", takenAt: hoursAgo(4) }),
+        artifact({ tenantSlug: "localonly", location: "LOCAL", takenAt: hoursAgo(40) }),
+      ],
     });
-    expect(rows[0]).toMatchObject({ health: "protected", singleSiteOnly: true });
+    expect(rows[0]).toMatchObject({ health: "protected", offBoxMissing: true, offBoxCount: 0 });
+  });
+
+  it("says nothing about a tenant whose off-box copy came on the last ship", () => {
+    const { rows } = build({
+      registry: [registry("shipped")],
+      artifacts: [
+        artifact({ tenantSlug: "shipped", location: "LOCAL", takenAt: hoursAgo(4) }),
+        artifact({ tenantSlug: "shipped", location: "RESTIC", takenAt: hoursAgo(28) }),
+      ],
+    });
+    expect(rows[0]).toMatchObject({ health: "protected", offBoxMissing: false });
   });
 
   it("marks every tenant on a quiet box, so a green age is not read as an observation", () => {

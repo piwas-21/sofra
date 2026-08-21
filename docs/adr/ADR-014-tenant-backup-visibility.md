@@ -251,6 +251,40 @@ The general lesson, and the reason this is written down rather than fixed quietl
 the query (`backup-overview-load.ts`) was never enough; the JUDGEMENT has to be
 shared too, or the two drift the first time one of them is corrected.
 
+**D5b — the single-site signal is REAL now, and re-armed (2026-08-21, same day).**
+D5 removed it because the flag could not be true: the agent hard-coded
+`location: "local"` for everything it found by walking the box filesystem and could
+not see a restic snapshot at all. That half is fixed in the deploy repo
+([#139](https://github.com/piwas-21/restaurant-app-deploy/pull/139)) and the
+measurement that shaped it belongs here, because it is not what the plan assumed:
+
+- **Only the PROD box can enumerate anything.** Staging has no `restic` binary and
+  no repository password, and the repo directory it hosts is prod's — encrypted and
+  opaque to it. Prod holds `restic-staging`, which is where the **staging** box's
+  per-tenant dumps land, and prod's own dump dir has no per-tenant files at all
+  (rumi is `managed: legacy`). So **the box that reports a tenant's off-box copy is
+  not the box that runs the tenant**, and that is fine: the ingest's natural key is
+  `(box, location, ref)` and this page groups by slug. Verified in production the
+  same day — `demo` and `obresse` now each carry `LOCAL` rows from `staging` and
+  `RESTIC` rows from `prod`.
+- **A failure pushes NOTHING.** The ingest prunes what a push stops listing, so a
+  half-read repository would read as "those copies are gone". The agent aborts the
+  whole push instead; the box then goes quiet and this alarm says so by name.
+- **Still unenumerated:** repo A (prod's own dumps, held over sftp on staging). It
+  holds no per-tenant artifact today. The day prod gains a `managed: scripts`
+  tenant, its dumps ship there and it would read as never-shipped until that repo is
+  added to `BACKUP_AGENT_RESTIC_TAGS`/`_REPO`.
+
+The re-armed rule is NOT the old one. `lib/backup-offbox.ts` fires only when **the
+dumps are still arriving and are not leaving** — measured cadence 02:15 dump, 03:00
+ship, so 30h with nothing off box means a ship did not happen. Two exclusions, each
+removing a false alarm the naive flag would have raised: a tenant provisioned this
+afternoon is waiting for tonight, not unprotected (the clock falls back to its
+OLDEST artifact); and a `stale` or `unprotected` tenant is NOT also reported as
+un-shipped, because nothing has been dumped to ship — one problem, one line. The
+signal that survives is the one nothing else on this page can see: **green ages,
+and nothing leaving the box.**
+
 ### D6 — Restore is NOT a button here, and that is the same decision as D1.
 
 The obvious next feature after "see the backups" is "press restore". It is not built,

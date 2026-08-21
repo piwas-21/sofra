@@ -189,19 +189,16 @@ export default function BackupTenantCard({
         </ul>
       )}
 
-      {/* Under the list, because it is a caveat ABOUT the list and not a verdict
-          on the tenant. It used to be a red alert reading "every copy sits on the
-          box that runs this tenant" — which is not what the flag knows. The agent
-          hard-codes `location: "local"` for everything it finds on the box
-          filesystem and cannot see a restic snapshot at all, while
-          `backup-offsite.sh` ships that whole directory off box every night. So
-          the flag is true for every tenant, permanently, and the off-box copies
-          it denies demonstrably exist. Stated as the reporting gap it is until
-          the agent enumerates restic (ADR-014 D5, follow-up B-b) — a red alarm
-          that is always on is a page training its reader to skip red. */}
-      {row.singleSiteOnly && (
-        <p className="mt-3 font-label text-sm text-muted-foreground">
-          {t("tenant.offBoxNotReported")}
+      {/* Under the list, because it is a statement about what that list does NOT
+          contain. Red and an alert again since the agent began enumerating the
+          restic repository (deploy #139): for a day this said "off-box copies are
+          not reported", which was true of the agent and is no longer true of
+          anything. It now fires only once a nightly ship has HAD its chance, so
+          a restaurant provisioned this afternoon is not accused of being
+          unprotected on its first day. */}
+      {row.offBoxMissing && (
+        <p role="alert" className="mt-3 font-label text-sm text-craft-error-text">
+          {t("tenant.offBoxMissing")}
         </p>
       )}
 

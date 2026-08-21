@@ -225,6 +225,18 @@ tenants:
     db: tenant_e2e_backup_local
     languages: [en]
     modules: [core]
+  # Provisioned "this afternoon": one local dump, nothing off box, and tonight's
+  # ship has not run. The row the off-box alarm must stay SILENT about.
+  e2e-backup-new:
+    name: E2E Backup Brand New Restaurant
+    status: active
+    managed: sofra
+    box: e2e-backup-box
+    domain: e2e-backup-new.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_backup_new
+    languages: [en]
+    modules: [core]
   e2e-backup-lapsed:
     name: E2E Backup Lapsed Trial Restaurant
     status: active

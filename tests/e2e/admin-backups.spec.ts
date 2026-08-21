@@ -55,10 +55,18 @@ function fullInventory() {
       // Four days old: past the 72h threshold, so UNPROTECTED.
       { tenantSlug: "e2e-backup-stale", kind: "scheduled", takenAt: hoursAgo(96),
         sizeBytes: 1_048_576, location: "restic", ref: "stale-restic-1", sha256: null },
-      // Fresh, and entirely on the box that runs it: green by every age rule and
-      // gone with the box.
+      // Dumped nightly and NEVER shipped: a fresh copy (green by every age rule)
+      // beside one older than a whole ship cycle, so the off-box alarm fires while
+      // health stays `protected`. The two dates are the assertion — one alone
+      // proves nothing, because a lone fresh dump is a tenant waiting for tonight.
       { tenantSlug: "e2e-backup-local", kind: "scheduled", takenAt: hoursAgo(4),
         sizeBytes: 2048, location: "local", ref: "local-dump-1.sql.gz", sha256: null },
+      { tenantSlug: "e2e-backup-local", kind: "scheduled", takenAt: hoursAgo(40),
+        sizeBytes: 2000, location: "local", ref: "local-dump-0.sql.gz", sha256: null },
+      // Provisioned this afternoon: one local dump, nothing off box, and tonight's
+      // ship has not run. It must NOT be accused of anything.
+      { tenantSlug: "e2e-backup-new", kind: "scheduled", takenAt: hoursAgo(2),
+        sizeBytes: 1024, location: "local", ref: "new-dump-1.sql.gz", sha256: null },
       // A lapsed trial with exactly ONE copy — both the retention sentence and
       // the last-copy refusal are asserted against this row.
       { tenantSlug: "e2e-backup-lapsed", kind: "scheduled", takenAt: daysAgo(2),
@@ -108,7 +116,7 @@ test("the page shows what is protected and, first, what is not", async ({ page }
   const push = await page.request.post(INGEST, { headers: authHeaders(), data: fullInventory() });
   expect(push.status()).toBe(200);
   // Counts only in the response — no path, no ref, no slug.
-  expect(await push.json()).toMatchObject({ ok: true, artifacts: 6 });
+  expect(await push.json()).toMatchObject({ ok: true, artifacts: 8 });
 
   await loginAsAdmin(page);
   await page.goto("/admin/backups", { waitUntil: "domcontentloaded" });
@@ -123,14 +131,19 @@ test("the page shows what is protected and, first, what is not", async ({ page }
   await expect(card("e2e-backup-stale")).toHaveAttribute("data-health", "unprotected");
   await expect(card("e2e-backup-fresh")).toHaveAttribute("data-health", "protected");
 
-  // The single-site line, as a NOTE and no longer an alarm: the agent cannot see
-  // a restic snapshot, so it reports every artifact `local` while the nightly dump
-  // directory is shipped off box anyway. It is a reporting gap, it is true for
-  // every tenant, and a red alert that is permanently on is how a page teaches its
-  // reader to skip red (ADR-014 D5; B-b re-arms it).
+  // Dumped nightly, never shipped: `protected` by every age rule AND alarmed,
+  // which is the pair no other row on this page produces. Re-armed once the box
+  // agent could see a restic snapshot at all (deploy #139) — before that this
+  // alert was true for every tenant, permanently, which is how a page teaches its
+  // reader to skip red (ADR-014 D5).
   await expect(card("e2e-backup-local")).toHaveAttribute("data-health", "protected");
-  await expect(card("e2e-backup-local")).toContainText(/off-box copies are missing/i);
-  await expect(card("e2e-backup-local").getByRole("alert")).toHaveCount(0);
+  await expect(card("e2e-backup-local").getByRole("alert")).toContainText(
+    /nothing has been shipped off this box/i,
+  );
+  // The same shape on its first afternoon is NOT accused: one dump, no off-box
+  // copy, tonight's ship still to come.
+  await expect(card("e2e-backup-new")).toHaveAttribute("data-health", "protected");
+  await expect(card("e2e-backup-new").getByRole("alert")).toHaveCount(0);
   await expect(card("e2e-backup-fresh").getByRole("alert")).toHaveCount(0);
 
   // A `managed: legacy` tenant: no per-tenant copy exists or ever will, so the
