@@ -51,14 +51,14 @@ test("its OWN box still works — the mechanism is a binding, not a block", asyn
   expect(await res.json()).toMatchObject({ ok: true });
 });
 
-test("the legacy shared secret still authenticates, for any box", async ({ page }) => {
-  // The rollout depends on this: strict-only would require the code and both boxes'
-  // .env to change in the same instant, and getting that wrong makes every box go
-  // silent — which the alarm reads as unprotected. Removed once both per-box values
-  // are set and both agents have been observed pushing.
+test("a bearer this control plane does not hold is refused outright", async ({ page }) => {
+  // Including the RETIRED shared secret, which both boxes still hold in their own
+  // .env for their own agent. A box whose per-box value was never configured here
+  // gets 401 and then goes quiet — which the backup alarm reports. Loud, in the
+  // surface built to be loud.
   const res = await page.request.post(INGEST, {
-    headers: { Authorization: `Bearer ${required("BACKUP_AGENT_SECRET")}` },
+    headers: { Authorization: "Bearer a-secret-this-control-plane-never-had" },
     data: inventory(OTHER_BOX),
   });
-  expect(res.status()).toBe(200);
+  expect(res.status()).toBe(401);
 });

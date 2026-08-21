@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  ANY_BOX,
   authenticatedBox,
   backupAgentConfigured,
   boxAuthorized,
@@ -32,9 +31,9 @@ describe("envNameForBox", () => {
 });
 
 describe("backupAgentConfigured", () => {
-  it("is true for either shape, false for neither", () => {
+  it("counts per-box secrets only — the shared one is gone", () => {
     expect(backupAgentConfigured(env)).toBe(true);
-    expect(backupAgentConfigured({ BACKUP_AGENT_SECRET: "shared" })).toBe(true);
+    expect(backupAgentConfigured({ BACKUP_AGENT_SECRET: "shared" })).toBe(false);
     expect(backupAgentConfigured({})).toBe(false);
     // An empty value is not a configuration — it is the unset case spelled out.
     expect(backupAgentConfigured({ BACKUP_AGENT_SECRET_PROD: "" })).toBe(false);
@@ -60,17 +59,13 @@ describe("authenticatedBox", () => {
     expect(authenticatedBox(req("same"), shared)).toBeNull();
   });
 
-  it("still accepts the legacy shared secret, as ANY box", () => {
-    // The rollout depends on this: the strict form alone would require the code
-    // and both boxes' .env to change in the same instant, and getting that wrong
-    // makes every box go silent — which the alarm reads as unprotected.
-    expect(authenticatedBox(req("shared"), { BACKUP_AGENT_SECRET: "shared" })).toBe(ANY_BOX);
-  });
-
-  it("prefers a per-box match over the shared one", () => {
+  it("REFUSES the retired shared secret, which both boxes still hold", () => {
+    // It was accepted for exactly as long as the rollout needed it. Leaving it in
+    // would have kept the whole hole open behind a closed door: the old value is
+    // the one value BOTH boxes have.
     const both = { ...env, BACKUP_AGENT_SECRET: "shared" };
+    expect(authenticatedBox(req("shared"), both)).toBeNull();
     expect(authenticatedBox(req("prod-secret"), both)).toBe("prod");
-    expect(authenticatedBox(req("shared"), both)).toBe(ANY_BOX);
   });
 });
 
@@ -87,8 +82,7 @@ describe("boxAuthorized — the binding that is the whole point", () => {
     expect(boxAuthorized("e2e_backup_box", "e2e-backup-other")).toBe(false);
   });
 
-  it("lets the legacy shared secret act as any box, and null as none", () => {
-    expect(boxAuthorized(ANY_BOX, "prod")).toBe(true);
+  it("authorizes nothing for an unauthenticated caller", () => {
     expect(boxAuthorized(null, "prod")).toBe(false);
   });
 });

@@ -74,7 +74,9 @@ CRON_SECRET="$(openssl rand -hex 16)"; export CRON_SECRET
 # a 401-everywhere run would report green having verified nothing. Fresh and random
 # per run, like the rest: a constant here is a secret-scanner hit that teaches people
 # to ignore the scanner.
-BACKUP_AGENT_SECRET="$(openssl rand -hex 16)"; export BACKUP_AGENT_SECRET
+# PER BOX (ADR-014 D1a): the name carries the box the /admin/backups spec pushes as
+# (`e2e-backup-box` -> ..._E2E_BACKUP_BOX). There is no shared value any more.
+BACKUP_AGENT_SECRET_E2E_BACKUP_BOX="$(openssl rand -hex 16)"; export BACKUP_AGENT_SECRET_E2E_BACKUP_BOX
 # A SECOND box's credential, for the per-box binding spec: it is a real, valid agent
 # secret that simply belongs to another box. That is the only way to prove the thing
 # that matters — that a valid bearer cannot act as a box it is not — and a wrong
