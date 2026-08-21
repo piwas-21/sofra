@@ -106,3 +106,29 @@ describe("redactAddresses (provider text we did not write)", () => {
     expect(out).not.toContain("kebabhouse");
   });
 });
+
+describe("redactAddresses — the regex is pointed at text we do not control", () => {
+  it("does not backtrack catastrophically on a long adversarial run", () => {
+    // The pattern this replaced was super-linear (Sonar S8786) and ran on a
+    // provider's response body. A pathological input must stay fast, so this is
+    // an assertion about TIME, which is the only way that property is visible.
+    // The measured numbers, for whoever changes this next: an address-shaped
+    // regex took ~1.9s on these two inputs; the token scan takes single-digit ms.
+    const hostile = `${"a".repeat(50_000)}!`;
+    const started = Date.now();
+    redactAddresses(hostile);
+    redactAddresses(`${hostile}@${hostile}`);
+    expect(Date.now() - started).toBeLessThan(250);
+  });
+
+  it("leaves an @mention alone — it is not an address and a digest would only hurt", () => {
+    expect(redactAddresses("cc @here about the 403")).toBe("cc @here about the 403");
+  });
+
+  it("redacts an address wrapped in angle brackets, keeping the brackets", () => {
+    const out = redactAddresses("From: Sofra <sofra@send.sofrapiwas.com>");
+    expect(out).toContain("<");
+    expect(out).toContain(">");
+    expect(out).not.toContain("send.sofrapiwas.com");
+  });
+});

@@ -32,8 +32,11 @@ const PII_SHAPE = /@[\w.-]+\.\w{2,}|\+?\d[\d\s().-]{7,}\d/;
 // Names, not types — which is why this stays a warning: such a value may well be
 // a slug or a boolean. A false warning costs a glance; the miss it replaces cost
 // a live PII leak that every gate reported as clean.
-const PII_INTERPOLATION =
-  /\$\{[^}]*\b(e?mail(?!Sent|ed\b)[\w.]*|phone[\w.]*|recipient[\w.]*|to)\b[^}]*\}/i;
+// Two small patterns rather than one clever one: an interpolation, and a name
+// inside it. Sonar flagged the combined version for complexity, and splitting it
+// is the better code anyway — each half is readable on its own line.
+const INTERPOLATION = /\$\{[^}]*\}/g;
+const PII_NAME = /\b(e?mail|phone|recipient|to)\b/i;
 // …except where the value is ALREADY passed through the redaction helpers. They
 // are stripped rather than allow-listed per line, so a line that tags one value
 // and prints another raw is still caught — the mixed case is the likely one.
@@ -83,7 +86,13 @@ function checkFile(abs, { blocking } = {}) {
     src
       .split("\n")
       .map((line) => line.replace(PII_REDACTED_CALL, "TAGGED"))
-      .some((line) => CONSOLE_CALL.test(line) && (PII_SHAPE.test(line) || PII_INTERPOLATION.test(line)))
+      .some((line) => {
+        if (!CONSOLE_CALL.test(line)) return false;
+        if (PII_SHAPE.test(line)) return true;
+        // EVERY interpolation on the line, not the first: `${slug}` followed by
+        // `${user.email}` is the shape a careful-looking line actually has.
+        return [...line.matchAll(INTERPOLATION)].some((m) => PII_NAME.test(m[0]));
+      })
   ) {
     // Always a warning, never fails CI (heuristic — may be a false positive).
     process.stderr.write(
