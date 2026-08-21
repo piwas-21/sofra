@@ -45,7 +45,7 @@ const FOUNDER_FALLBACK_NOTES: Record<SelfServeFallback, string> = {
  */
 async function mintAccount(
   outcome: Extract<SelfServeOutcome, { kind: "account" }>,
-  who: { email: string; contactName: string; restaurantName: string },
+  who: { email: string; contactName: string; restaurantName: string; locale: string },
   signupRequestId: string,
 ): Promise<{ account: boolean; emailed: boolean; founderOutcome: string }> {
   let minted;
@@ -83,6 +83,10 @@ async function mintAccount(
     slug: outcome.slug,
     amountCents: outcome.amountCents,
     inviteToken: minted.inviteToken,
+    // The language the visitor filled the form in (G9) — the same value stored on
+    // the lead and now on the account itself, so the welcome mail and everything
+    // that follows it speak one language.
+    locale: who.locale,
   }).catch(() => ({ sent: false }));
 
   // Durable, because the founder notice that carries this news is itself an
@@ -209,7 +213,12 @@ export async function POST(request: Request) {
     outcome.kind === "account"
       ? await mintAccount(
           outcome,
-          { email, contactName: data.contactName, restaurantName: data.restaurantName },
+          {
+            email,
+            contactName: data.contactName,
+            restaurantName: data.restaurantName,
+            locale: data.locale,
+          },
           signup.id,
         )
       : { account: false, emailed: false, founderOutcome: FOUNDER_FALLBACK_NOTES[outcome.reason] };

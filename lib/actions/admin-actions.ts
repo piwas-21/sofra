@@ -7,6 +7,7 @@ import { audit } from "@/lib/audit";
 import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
 import { craftEmail } from "@/lib/email-templates";
 import { createToken } from "@/lib/tokens";
+import { emailTranslator } from "@/lib/email-locale";
 import { commissionSchema } from "@/lib/validation";
 
 /** `error` is a message key in the `control.errors` namespace, translated at
@@ -39,6 +40,9 @@ export async function approveApplicationAction(
       name: application.name,
       role: "PARTNER",
       status: "INVITED",
+      // The language they applied in (G9). The application row is a lead and gets
+      // left behind; the account is what every later mail is addressed to.
+      locale: application.locale,
       profile: {
         create: { company: application.company, city: application.city },
       },
@@ -56,16 +60,19 @@ export async function approveApplicationAction(
   // without recording it, an approval that mailed nobody looks exactly like one that worked. The
   // link is returned to this very screen, so the founder can still hand it over; they just have to
   // be told they need to.
+  // In the language they APPLIED in (G9): the application row holds it, and this
+  // is the first thing we ever send them.
+  const t = await emailTranslator(user.locale, "emails.partnerApproved");
   const invite = await sendEmail({
     to: user.email,
-    subject: "Welcome to the SofraPiwas partner program",
+    subject: t("subject"),
     html: craftEmail({
-      kicker: "Partner program",
-      title: "Welcome aboard 🎉",
-      bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
-<p style="margin:0;">Your SofraPiwas partner application is approved. Set your password to open your partner dashboard — afiyet olsun.</p>`,
-      cta: { label: "Set your password", url: inviteLink },
-      footerNote: "The link works once and expires in 24 hours.",
+      kicker: t("kicker"),
+      title: t("title"),
+      bodyHtml: `<p style="margin:0 0 12px;">${t("greeting", { name: escapeHtml(user.name) })}</p>
+<p style="margin:0;">${t("lead")}</p>`,
+      cta: { label: t("cta"), url: inviteLink },
+      footerNote: t("footerNote"),
     }),
     // `sendEmail` swallows a non-2xx into {sent:false}, but `fetch` itself REJECTS on a DNS or
     // connect failure — and letting that escape would throw AFTER the account and the token exist,

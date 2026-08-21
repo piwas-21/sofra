@@ -75,6 +75,10 @@ export async function createSelfServeAccount(input: {
    *  payment-triggered proposal reads (O3) — without it the only join back to them
    *  is `desiredSlug`, which several leads can share. */
   signupRequestId: string;
+  /** The language the visitor filled the signup form in. Stored on the ACCOUNT,
+   *  not only on the lead (G9): the lead row is consumed and left behind, and an
+   *  owner who later holds a second tenant has no path back to it. */
+  locale: string;
 }): Promise<SelfServeAccount> {
   try {
     const minted = await db.$transaction(async (tx) => {
@@ -91,6 +95,7 @@ export async function createSelfServeAccount(input: {
             email: input.email,
             name: input.contactName,
             role: "OWNER",
+            locale: input.locale,
             // No password: the invite link sets it, and until it does
             // lib/auth.ts refuses the login. This IS the email verification.
             status: "INVITED",

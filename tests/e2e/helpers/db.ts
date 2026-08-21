@@ -40,6 +40,8 @@ export type OwnerRow = {
   role: string;
   status: string;
   hasPassword: boolean;
+  /** The language this person is written to in (G9). */
+  locale: string;
 };
 
 export async function findUser(email: string): Promise<OwnerRow | null> {
@@ -49,14 +51,22 @@ export async function findUser(email: string): Promise<OwnerRow | null> {
     role: string;
     status: string;
     has_password: boolean;
+    locale: string;
   }>(
-    `SELECT id, email, role, status, ("passwordHash" IS NOT NULL) AS has_password
+    `SELECT id, email, role, status, locale, ("passwordHash" IS NOT NULL) AS has_password
        FROM "User" WHERE email = $1`,
     [email.toLowerCase()],
   );
   const r = rows[0];
   return r
-    ? { id: r.id, email: r.email, role: r.role, status: r.status, hasPassword: r.has_password }
+    ? {
+        id: r.id,
+        email: r.email,
+        role: r.role,
+        status: r.status,
+        hasPassword: r.has_password,
+        locale: r.locale,
+      }
     : null;
 }
 

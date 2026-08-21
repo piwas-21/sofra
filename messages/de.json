@@ -1491,6 +1491,71 @@
       "rowPlan": "Pro Monat",
       "cta": "Zur Abrechnungsseite",
       "footerNote": "Mehr Zeit nötig oder eine Frage zum Preis? Antworten Sie einfach auf diese E-Mail — ein Mensch liest sie."
+    },
+    "invite": {
+      "kicker": "Willkommen bei SofraPiwas",
+      "subject": {
+        "setPassword": "Willkommen bei SofraPiwas — Passwort festlegen",
+        "ready": "SofraPiwas — {restaurant} ist bereit für Ihr Abo"
+      },
+      "title": {
+        "setPassword": "Willkommen an Bord 🎉",
+        "ready": "Ein neues Abo wartet auf Sie"
+      },
+      "greeting": "Hallo {name},",
+      "lead": {
+        "setPassword": "{restaurant} ist auf SofraPiwas eingerichtet. Legen Sie Ihr Passwort fest, um Ihr Dashboard zu öffnen und das Monatsabo zu starten — afiyet olsun.",
+        "ready": "{restaurant} ist auf SofraPiwas eingerichtet. Melden Sie sich in Ihrem Dashboard an und starten Sie das Monatsabo — afiyet olsun."
+      },
+      "cta": {
+        "setPassword": "Passwort festlegen",
+        "ready": "Dashboard öffnen"
+      },
+      "footerNote": "Der Link funktioniert einmal und läuft nach 24 Stunden ab.",
+      "rowAddress": "Ihre Webadresse",
+      "rowPlan": "Ihr Abo"
+    },
+    "partnerApproved": {
+      "kicker": "Partnerprogramm",
+      "subject": "Willkommen im SofraPiwas-Partnerprogramm",
+      "title": "Willkommen an Bord 🎉",
+      "greeting": "Hallo {name},",
+      "lead": "Ihre Bewerbung als SofraPiwas-Partner ist angenommen. Legen Sie Ihr Passwort fest, um Ihr Partner-Dashboard zu öffnen — afiyet olsun.",
+      "cta": "Passwort festlegen",
+      "footerNote": "Der Link funktioniert einmal und läuft nach 24 Stunden ab."
+    },
+    "reset": {
+      "kicker": {
+        "partner": "Partnerbereich",
+        "account": "Ihr Konto"
+      },
+      "subject": "SofraPiwas — Passwort zurücksetzen",
+      "title": "Passwort zurücksetzen",
+      "greeting": "Hallo {name},",
+      "lead": {
+        "partner": "Jemand (hoffentlich Sie) hat angefragt, Ihr SofraPiwas-Partnerpasswort zurückzusetzen. Falls Sie das nicht waren, können Sie diese E-Mail einfach ignorieren.",
+        "account": "Jemand (hoffentlich Sie) hat angefragt, Ihr SofraPiwas-Passwort zurückzusetzen. Falls Sie das nicht waren, können Sie diese E-Mail einfach ignorieren."
+      },
+      "cta": "Neues Passwort festlegen",
+      "footerNote": "Der Link funktioniert einmal und läuft nach 24 Stunden ab."
+    },
+    "invoice": {
+      "kicker": "Abrechnung",
+      "subject": "Rechnung {number} — SofraPiwas",
+      "title": "Rechnung {number}",
+      "rowInvoice": "Rechnungsnummer",
+      "rowService": "Restaurant",
+      "rowTotal": "Gesamt",
+      "cta": "Rechnung ansehen"
+    },
+    "billingDetails": {
+      "kicker": "Abrechnung",
+      "subject": "Wir brauchen Ihre Rechnungsdaten — SofraPiwas",
+      "title": "Ihre Rechnung wartet noch auf ein paar Angaben",
+      "received": "Wir haben Ihre Zahlung über {amount} für {restaurant} erhalten. Vielen Dank.",
+      "ask": "Damit wir Ihnen eine ordentliche Rechnung schicken können, brauchen wir das Unternehmen, an das sie gehen soll — Firmenname, Adresse und Land. Das dauert eine Minute, und die Rechnung wird ausgestellt, sobald Sie die Angaben gespeichert haben.",
+      "vat": "Wenn Ihr Unternehmen eine EU-USt-IdNr. hat, tragen Sie sie ebenfalls ein — dann wenden wir das Reverse-Charge-Verfahren an, statt Ihnen die Umsatzsteuer zu berechnen.",
+      "cta": "Rechnungsdaten hinzufügen"
     }
   }
 }

@@ -72,18 +72,24 @@ model User {
   role         UserRole   @default(PARTNER)
   status       UserStatus @default(INVITED)
   createdAt    DateTime   @default(now())
+  /// The language this person is written to in (G9). Seeded from the intake that
+  /// created the account (`SignupRequest.locale` / `PartnerApplication.locale`)
+  /// and refreshed when they set their password, which is the one moment they are
+  /// certainly present with a language chosen. Defaults to `en`, which is what
+  /// every account created before this column actually received.
+  locale       String     @default("en")
 
-  profile        PartnerProfile?
-  clients        Client[]
-  notes          ClientNote[]
-  commissions    CommissionEntry[] @relation("PartnerCommissions")
-  createdEntries CommissionEntry[] @relation("EntryAuthor")
-  inviteTokens   InviteToken[]
-  auditLogs      AuditLog[]
+  profile         PartnerProfile?
+  clients         Client[]
+  notes           ClientNote[]
+  commissions     CommissionEntry[] @relation("PartnerCommissions")
+  createdEntries  CommissionEntry[] @relation("EntryAuthor")
+  inviteTokens    InviteToken[]
+  auditLogs       AuditLog[]
   // Tenants this user pays for directly (OWNER self-serve; ADR-004).
-  billingsPaid   TenantBilling[]   @relation("BillingPayer")
+  billingsPaid    TenantBilling[]   @relation("BillingPayer")
   // Base domains a PARTNER has claimed for their own clients (D1).
-  baseDomains    PartnerDomain[]
+  baseDomains     PartnerDomain[]
   // The legal entity this user is invoiced as (B1). One per user: a party has
   // one set of registration details at a time.
   billingIdentity BillingIdentity?
@@ -237,12 +243,12 @@ model Invoice {
 
   tenantSlug String
 
-  currency   String @default("EUR")
-  netCents   Int
-  vatCents   Int
-  grossCents Int
+  currency     String  @default("EUR")
+  netCents     Int
+  vatCents     Int
+  grossCents   Int
   /// Basis points: 2100 = 21%, 0 = reverse charge or outside scope.
-  vatRateBps Int
+  vatRateBps   Int
   /// The lib/tax-treatment.ts verdict, stored as the string it decided.
   taxTreatment String
   /// The exact sentence printed on the document, e.g. "BTW verlegd …". Stored
@@ -267,11 +273,11 @@ model Invoice {
 }
 
 model InvoiceLine {
-  id          String  @id @default(cuid())
+  id          String    @id @default(cuid())
   invoiceId   String
-  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoice     Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   description String
-  quantity    Int     @default(1)
+  quantity    Int       @default(1)
   unitCents   Int
   netCents    Int
   /// The service period this line covers, when it is a subscription charge.
@@ -328,7 +334,7 @@ model PartnerDomain {
 
   /// When control was last PROVEN. Null = claimed but unusable — every surface
   /// treats an unverified base domain as if it were not there.
-  verifiedAt DateTime?
+  verifiedAt    DateTime?
   /// When we last looked, whatever the answer. Separates "never checked" from
   /// "checked, still not published", which is the difference between a partner who
   /// has not started and one who is stuck.
@@ -454,7 +460,7 @@ model TenantBilling {
   // Not unique on purpose — the state is unreachable and the constraint would only add
   // a P2002 surface to the signup transaction. See the migration for the full reasoning.
   signupRequestId   String?
-  signupRequest     SignupRequest? @relation(fields: [signupRequestId], references: [id], onDelete: SetNull)
+  signupRequest     SignupRequest?   @relation(fields: [signupRequestId], references: [id], onDelete: SetNull)
   // Who this subscription is INVOICED to (B1). Nullable because every row that
   // existed before this column has no identity and none can be invented for it —
   // an absent identity is the honest state, and it is what blocks invoicing.
@@ -649,22 +655,22 @@ model BackupInventory {
 /// longer have a registry entry, and a FK would delete exactly the departed
 /// customer's backup this feature exists to preserve.
 model BackupArtifact {
-  id         String         @id @default(cuid())
-  box        String
-  tenantSlug String
-  kind       BackupKind
-  location   BackupLocation
-  ref        String // restic snapshot id, or a dump filename
-  takenAt    DateTime
-  sizeBytes  BigInt // BigInt, not Int: Int caps at 2.1 GB, which a tenant dump will pass
-  sha256     String?
-  firstSeenAt DateTime      @default(now())
+  id          String         @id @default(cuid())
+  box         String
+  tenantSlug  String
+  kind        BackupKind
+  location    BackupLocation
+  ref         String // restic snapshot id, or a dump filename
+  takenAt     DateTime
+  sizeBytes   BigInt // BigInt, not Int: Int caps at 2.1 GB, which a tenant dump will pass
+  sha256      String?
+  firstSeenAt DateTime       @default(now())
   /// Mark-and-sweep marker: set to the ingest time on EVERY push that still
   /// lists this artifact. The whole-box push then deletes this box's rows that
   /// were not re-marked — which is how an artifact the box no longer holds
   /// disappears here without the ingest having to name what is missing.
-  lastSeenAt  DateTime      @default(now())
-  updatedAt  DateTime       @updatedAt
+  lastSeenAt  DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   // Identity of an artifact on the wire. `ref` alone is not unique — a local
   // filename can repeat across boxes, and the same restic id can appear in two

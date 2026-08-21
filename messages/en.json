@@ -1491,6 +1491,71 @@
       "rowPlan": "Monthly",
       "cta": "Open your billing page",
       "footerNote": "Need more time, or have a question about the price? Just reply to this email — a person reads it."
+    },
+    "invite": {
+      "kicker": "Welcome to SofraPiwas",
+      "subject": {
+        "setPassword": "Welcome to SofraPiwas — set your password",
+        "ready": "SofraPiwas — {restaurant} is ready for your subscription"
+      },
+      "title": {
+        "setPassword": "Welcome aboard 🎉",
+        "ready": "A new plan is waiting"
+      },
+      "greeting": "Hi {name},",
+      "lead": {
+        "setPassword": "{restaurant} is set up on SofraPiwas. Set your password to open your dashboard and start the monthly subscription — afiyet olsun.",
+        "ready": "{restaurant} is set up on SofraPiwas. Sign in to your dashboard and start the monthly subscription — afiyet olsun."
+      },
+      "cta": {
+        "setPassword": "Set your password",
+        "ready": "Open your dashboard"
+      },
+      "footerNote": "The link works once and expires in 24 hours.",
+      "rowAddress": "Your web address",
+      "rowPlan": "Your plan"
+    },
+    "partnerApproved": {
+      "kicker": "Partner program",
+      "subject": "Welcome to the SofraPiwas partner program",
+      "title": "Welcome aboard 🎉",
+      "greeting": "Hi {name},",
+      "lead": "Your SofraPiwas partner application is approved. Set your password to open your partner dashboard — afiyet olsun.",
+      "cta": "Set your password",
+      "footerNote": "The link works once and expires in 24 hours."
+    },
+    "reset": {
+      "kicker": {
+        "partner": "Partner area",
+        "account": "Your account"
+      },
+      "subject": "SofraPiwas — reset your password",
+      "title": "Reset your password",
+      "greeting": "Hi {name},",
+      "lead": {
+        "partner": "Someone (hopefully you) asked to reset your SofraPiwas partner password. If this wasn't you, you can safely ignore this email.",
+        "account": "Someone (hopefully you) asked to reset your SofraPiwas password. If this wasn't you, you can safely ignore this email."
+      },
+      "cta": "Set a new password",
+      "footerNote": "The link works once and expires in 24 hours."
+    },
+    "invoice": {
+      "kicker": "Billing",
+      "subject": "Invoice {number} — SofraPiwas",
+      "title": "Invoice {number}",
+      "rowInvoice": "Invoice number",
+      "rowService": "Restaurant",
+      "rowTotal": "Total",
+      "cta": "View your invoice"
+    },
+    "billingDetails": {
+      "kicker": "Billing",
+      "subject": "We need your billing details — SofraPiwas",
+      "title": "Your invoice is waiting on a few details",
+      "received": "We received your payment of {amount} for {restaurant}. Thank you.",
+      "ask": "To send you a proper invoice we need the company it should be addressed to — the legal name, address and country. It takes a minute, and the invoice is issued as soon as you have saved them.",
+      "vat": "If your company has an EU VAT number, add it too and we will reverse-charge the VAT instead of charging it.",
+      "cta": "Add your billing details"
     }
   }
 }
