@@ -1298,6 +1298,28 @@
       "recordValue": "Points to",
       "recordValueUnknown": "We'll send you the address to point it at.",
       "footerNote": "This is a proposal. SofraPiwas sets the restaurant up and confirms the address."
+    },
+    "tenantDns": {
+      "title": "DNS for this address",
+      "intro": "These records have to exist before the address can work. While one is missing we cannot get a certificate for it, and visitors see a security warning instead of the restaurant.",
+      "whoPartner": "You publish this one, in the DNS for {zone}.",
+      "whoRestaurant": "The restaurant publishes this one, wherever DNS for {zone} is managed.",
+      "recordType": "Type",
+      "recordName": "Name",
+      "recordValue": "Points to",
+      "recordTtl": "TTL",
+      "fqdnNote": "Some DNS editors want the whole name instead: {host}",
+      "valueUnknown": "Ask us for the address — it is not configured here.",
+      "aliasNote": "An older address, kept working so existing links and printed QR codes still lead somewhere.",
+      "status": {
+        "ok": "Published, pointing at us",
+        "elsewhere": "Points somewhere else",
+        "missing": "Not published yet",
+        "unknown": "Could not check just now"
+      },
+      "elsewhereNote": "We see it pointing at {addresses}. Until it points at the address below, the restaurant will not load.",
+      "missingNote": "We cannot see this record yet. Add it in your DNS editor — it usually takes a few minutes to spread.",
+      "footerNote": "DNS changes take a few minutes to spread. This panel re-checks every time you open the page."
     }
   },
   "signup": {

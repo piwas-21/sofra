@@ -25,6 +25,19 @@ const tenantSchema = z.object({
   // unknown keys, so without this line no sofra surface could see it (the same trap
   // `stripe_account` fell into).
   base_domain: z.string().optional(),
+  // Extra hostnames that 301 to `domain` — typically the `www.` of a BYO apex, or a
+  // previous address kept alive after a move so printed QR codes still work. Listed
+  // here for the same reason `base_domain` is: zod STRIPS unknown keys, so a field
+  // the deploy scripts act on is invisible to every sofra surface until it appears in
+  // this schema. Each alias needs its own A record unless it rides our wildcard,
+  // which is exactly what the partner's DNS panel now reports on.
+  //
+  // `.optional()` rather than `.default([])` on purpose: a default would make the
+  // field REQUIRED on the inferred output type, which every existing registry fixture
+  // would then have to grow a line for — an absent alias list and an empty one mean
+  // the same thing, so the type should say "may not be here" and the readers should
+  // say `?? []`.
+  domain_aliases: z.array(z.string()).optional(),
   db: z.string(),
   backend_tag: z.string().optional(),
   frontend_tag: z.string().optional(),
