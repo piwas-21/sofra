@@ -508,6 +508,11 @@ jobs:
             # the /admin/backups spec reads it and hard-ERRORS without it, since a
             # run that 401s on every call would verify nothing while exiting 0.
             echo "BACKUP_AGENT_SECRET=$(openssl rand -hex 16)"
+            # A SECOND box's credential (lib/backup-agent-auth.ts). The per-box
+            # binding spec needs a bearer that is VALID and belongs to another
+            # box — a wrong token cannot prove that binding, because it is
+            # refused for the ordinary reason.
+            echo "BACKUP_AGENT_SECRET_E2E_OTHER_BOX=$(openssl rand -hex 16)"
           } >> "$GITHUB_ENV"
       - name: Apply migrations
         run: node_modules/.bin/prisma migrate deploy
