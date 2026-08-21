@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { controlLocale } from "@/lib/control-locale";
-import ForgotPasswordForm from "@/components/control/ForgotPasswordForm";
+import EmailRequestForm from "@/components/control/EmailRequestForm";
+import { forgotPasswordAction } from "@/lib/actions/auth-actions";
 
 export default async function ForgotPage() {
   const locale = await controlLocale();
@@ -15,7 +16,8 @@ export default async function ForgotPage() {
       <h1 className="mt-8 font-display font-bold text-5xl">{t("forgotTitle")}</h1>
       <p className="mt-3 text-muted-foreground">{t("forgotIntro")}</p>
       <div className="mt-8 hand-drawn-border bg-card p-6">
-        <ForgotPasswordForm
+        <EmailRequestForm
+          action={forgotPasswordAction}
           labels={{
             email: t("email"),
             send: t("sendReset"),
