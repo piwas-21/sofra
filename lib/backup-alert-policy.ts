@@ -135,11 +135,16 @@ export function buildBackupAlert(input: {
   const quietBoxes = input.boxes
     .filter((b) => b.quiet)
     .map((b) => b.box)
-    .sort();
+    // An explicit comparator, not a bare `.sort()`: the default sorts by UTF-16
+    // code unit, and the box names are part of the SIGNATURE — a locale-dependent
+    // reordering would read as a changed situation and re-send an unchanged alert.
+    .sort((a, b) => a.localeCompare(b));
   const noBoxHasEverReported = input.boxes.length === 0;
 
   const critical = concerns.some(isCritical) || quietBoxes.length > 0 || noBoxHasEverReported;
-  const level: BackupAlertLevel = critical ? "critical" : concerns.length > 0 ? "warn" : "none";
+  let level: BackupAlertLevel = "none";
+  if (critical) level = "critical";
+  else if (concerns.length > 0) level = "warn";
 
   const alert = {
     level,

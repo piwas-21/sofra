@@ -13,6 +13,7 @@
 
 import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
 import { craftEmail, detailRows } from "@/lib/email-templates";
+import type { BackupHealth } from "@/lib/backup-health";
 import type { BackupAlert, BackupConcern } from "@/lib/backup-alert-policy";
 
 /** "RUMI Restaurant (rumi)" — the slug is always present because the slug is what
@@ -20,6 +21,15 @@ import type { BackupAlert, BackupConcern } from "@/lib/backup-alert-policy";
 function label(c: BackupConcern): string {
   return c.name ? `${c.name} (${c.slug})` : c.slug;
 }
+
+/** How a verdict reads in a subject-line-adjacent sentence. `unprotected` is the
+ *  only one shouted: it is the state where copies are aging out of existence. */
+const STATE_WORD: Record<BackupHealth, string> = {
+  never: "never backed up",
+  unprotected: "UNPROTECTED",
+  stale: "stale",
+  protected: "ok",
+};
 
 /** Hours, until hours stop being readable. */
 function age(hours: number): string {
@@ -33,8 +43,7 @@ function verdict(c: BackupConcern): string {
   const parts: string[] = [];
   if (c.health === "never") parts.push("no backup has ever been reported");
   else if (c.ageHours !== null) {
-    const state = c.health === "unprotected" ? "UNPROTECTED" : c.health === "stale" ? "stale" : "ok";
-    parts.push(`${state} — newest copy ${age(c.ageHours)} old`);
+    parts.push(`${STATE_WORD[c.health]} — newest copy ${age(c.ageHours)} old`);
   }
   if (c.singleSiteOnly) parts.push("every copy is on the box itself");
   if (c.boxQuiet) parts.push("box is quiet, so this age is a memory");
