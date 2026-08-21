@@ -60,9 +60,10 @@ export async function loadBackupOverview(now: Date): Promise<LoadedBackupOvervie
           name: r.name,
           status: r.status,
           box: r.box,
-          // `managed:` rides along because the ALARM needs it: the box skips
-          // `legacy` when it takes per-tenant dumps, so a legacy tenant with no
-          // artifact is expected, not a gap.
+          // `managed:` rides along because the alarm AND the page need it: the box
+          // skips `legacy` when it takes per-tenant dumps, so a legacy tenant with
+          // no artifact is expected, not a gap — and the page says what covers it
+          // instead rather than painting the absence red.
           managed: r.managed,
         }))
       : [],

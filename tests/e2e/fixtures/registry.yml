@@ -201,6 +201,20 @@ tenants:
     db: tenant_e2e_backup_none
     languages: [en]
     modules: [core]
+  # `managed: legacy` — the one tenant shape the box NEVER dumps on its own
+  # (ADR-006). Here because the page's answer for it is not a judgement about age
+  # but a statement about what covers it instead, and that was wrong in production
+  # on the alarm's first run (ADR-014 D5).
+  e2e-backup-legacy:
+    name: E2E Backup Cluster-Dump Restaurant
+    status: active
+    managed: legacy
+    box: e2e-backup-box
+    domain: e2e-backup-legacy.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_backup_legacy
+    languages: [en]
+    modules: [core]
   e2e-backup-local:
     name: E2E Backup Local-Only Restaurant
     status: active

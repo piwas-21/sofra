@@ -9,9 +9,10 @@
 import {
   backupHealth,
   boxIsQuiet,
-  healthSeverity,
+  isClusterDumpOnly,
   isSingleSiteOnly,
-  needsAttention,
+  rowNeedsAttention,
+  rowSeverity,
   totalBytes,
   type BackupHealth,
 } from "@/lib/backup-health";
@@ -61,6 +62,11 @@ export type BackupTenantRow = {
   newestTakenAt: Date | null;
   bytes: number;
   health: BackupHealth;
+  /** True when this tenant is never dumped on its own and rides the whole-cluster
+   *  dump instead (`managed: legacy`, ADR-006). Then `health` is answering a
+   *  question that does not apply to it, and both the page and the alarm say so
+   *  by staying quiet about the per-tenant view — see `isClusterDumpOnly`. */
+  clusterDumpOnly: boolean;
   singleSiteOnly: boolean;
   /** True when the box this tenant's artifacts came from has stopped reporting,
    *  so every age on this row is a memory rather than an observation. */
@@ -159,6 +165,7 @@ export function buildBackupOverview(input: {
       newestTakenAt: facts.newestTakenAt,
       bytes: totalBytes(artifacts.map((a) => a.sizeBytes)),
       health: backupHealth(facts, input.now),
+      clusterDumpOnly: isClusterDumpOnly(registry?.managed),
       singleSiteOnly: isSingleSiteOnly(facts),
       boxQuiet: box !== null && (quietByBox.get(box) ?? true),
       retention: backupRetentionView(
@@ -176,14 +183,15 @@ export function buildBackupOverview(input: {
 
   // Worst first, then alphabetical. A backup page sorted by name is a page whose
   // one urgent row is wherever the alphabet put it.
-  rows.sort(
-    (a, b) => healthSeverity(b.health) - healthSeverity(a.health) || a.slug.localeCompare(b.slug),
-  );
+  //
+  // A cluster-dump-only tenant sorts as calm whatever its age says — see
+  // `rowSeverity`.
+  rows.sort((a, b) => rowSeverity(b) - rowSeverity(a) || a.slug.localeCompare(b.slug));
 
   return {
     rows,
     boxes,
-    attention: rows.filter((r) => needsAttention(r.health)).length,
+    attention: rows.filter(rowNeedsAttention).length,
     quietBoxes: boxes.filter((b) => b.quiet).length,
   };
 }
