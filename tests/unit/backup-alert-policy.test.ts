@@ -87,17 +87,38 @@ describe("buildBackupAlert — what is worth an email", () => {
     expect(red.concerns[0]).toMatchObject({ health: "unprotected", ageHours: 80 });
   });
 
-  it("does NOT raise a tenant whose every copy merely LOOKS box-local", () => {
-    // Corrected on the first production run. The box agent hard-codes
-    // `location: "local"` for everything it can see, while backup-offsite.sh ships
-    // the whole dump directory into restic — so this flag is true for every tenant
-    // always, and alerting on it says something false every day until it is muted.
+  it("does NOT raise a tenant whose local copies simply have not shipped YET", () => {
+    // The false alarm that got this trigger removed on the first production run,
+    // and the one the re-armed rule must still not raise: fresh copies, no
+    // off-box twin, and tonight's ship has not run.
     const alert = alertFor({
       registry: [registry("rumi")],
       artifacts: [artifact({ tenantSlug: "rumi", location: "LOCAL" })],
     });
     expect(alert.level).toBe("none");
     expect(alert.concerns).toHaveLength(0);
+  });
+
+  it("RAISES a tenant that is dumped nightly and whose dumps never leave the box", () => {
+    // Re-armed 2026-08-21, once the agent could actually see a restic snapshot
+    // (deploy #139). Amber, not red: the data exists and is fresh — it is one
+    // box failure from gone, which is a different sentence to "it is aging out".
+    const alert = alertFor({
+      registry: [registry("obresse")],
+      artifacts: [
+        artifact({ tenantSlug: "obresse", location: "LOCAL", takenAt: hoursAgo(4) }),
+        artifact({ tenantSlug: "obresse", location: "LOCAL", takenAt: hoursAgo(40) }),
+      ],
+    });
+    expect(alert.level).toBe("warn");
+    expect(alert.concerns[0]).toMatchObject({
+      slug: "obresse",
+      health: "protected",
+      offBoxMissing: true,
+    });
+    // And it is visible in the signature, so the day a copy finally ships the
+    // reader is told the situation CHANGED rather than left with an old mail.
+    expect(alert.signature).toBe("warn|obresse:protected+offbox");
   });
 
   it("stays silent about the LEGACY tenant, which is never dumped per-tenant", () => {

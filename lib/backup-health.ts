@@ -78,7 +78,9 @@ export type TenantBackupFacts = {
   artifactCount: number;
   /** When the newest of them was taken. Null iff `artifactCount` is 0. */
   newestTakenAt: Date | null;
-  /** How many of them live in an encrypted OFF-box restic repository. */
+  /** How many of them live in an encrypted OFF-box restic repository. See
+   *  `backup-offbox.ts` for what is done with that — it is a different question
+   *  with a different clock, and it does not enter the health verdict. */
   offBoxCount: number;
 };
 
@@ -114,20 +116,6 @@ export function healthSeverity(health: BackupHealth): number {
 /** Everything except `protected` — what the page counts in its alarm line. */
 export function needsAttention(health: BackupHealth): boolean {
   return health !== "protected";
-}
-
-/**
- * A tenant whose every copy sits on the box that also runs it.
- *
- * Called out separately from staleness because it is a different kind of not-
- * protected and the two are easy to conflate: a nightly dump written next to the
- * database it came from is fresh, green by every age rule above, and gone with
- * the box. Only an off-box (restic) copy survives the failure people actually
- * take backups for. Silent when there are no artifacts at all — that is `never`,
- * and saying both would be two alarms for one problem.
- */
-export function isSingleSiteOnly(facts: TenantBackupFacts): boolean {
-  return facts.artifactCount > 0 && facts.offBoxCount === 0;
 }
 
 /**

@@ -8,15 +8,19 @@
 
 import {
   backupHealth,
-  boxIsQuiet,
   isClusterDumpOnly,
-  isSingleSiteOnly,
   rowNeedsAttention,
   rowSeverity,
   totalBytes,
   type BackupHealth,
 } from "@/lib/backup-health";
 import { backupRetentionView, type BackupRetentionView } from "@/lib/backup-retention";
+import { offBoxMissing } from "@/lib/backup-offbox";
+import { buildBoxRows, quietBoxMap, type BackupBoxRow, type BoxFact } from "@/lib/backup-boxes";
+
+// Re-exported so the page, the components and the alarm keep one import for the
+// whole shape of this feature's data.
+export type { BackupBoxRow, BoxFact };
 
 export type ArtifactFact = {
   tenantSlug: string;
@@ -42,10 +46,6 @@ export type RegistryFact = {
 
 export type PlanFact = { tenantSlug: string; trialEndsAt: Date | null; paying: boolean };
 
-export type BoxFact = { box: string; reportedAt: Date; receivedAt: Date };
-
-export type BackupBoxRow = { box: string; lastReportAt: Date | null; quiet: boolean; artifacts: number };
-
 export type BackupTenantRow = {
   slug: string;
   /** From the registry. Null for a tenant we hold data for but no longer list —
@@ -53,8 +53,8 @@ export type BackupTenantRow = {
    *  for. */
   name: string | null;
   registryStatus: string | null;
-  /** The registry's `managed:`, or null for a tenant with no entry. See
-   *  RegistryFact — `legacy` means no per-tenant artifact will ever exist. */
+  /** The registry's `managed:`, or null for a tenant with no entry. `legacy`
+   *  means no per-tenant artifact will ever exist — see RegistryFact. */
   managed: string | null;
   box: string | null;
   artifactCount: number;
@@ -67,7 +67,9 @@ export type BackupTenantRow = {
    *  question that does not apply to it, and both the page and the alarm say so
    *  by staying quiet about the per-tenant view — see `isClusterDumpOnly`. */
   clusterDumpOnly: boolean;
-  singleSiteOnly: boolean;
+  /** Dumped, and not leaving the box — see `backup-offbox.ts`. Not a health
+   *  verdict: these copies may be perfectly fresh, and gone with the box. */
+  offBoxMissing: boolean;
   /** True when the box this tenant's artifacts came from has stopped reporting,
    *  so every age on this row is a memory rather than an observation. */
   boxQuiet: boolean;
@@ -128,17 +130,8 @@ export function buildBackupOverview(input: {
   const registryBySlug = new Map(input.registry.map((r) => [r.slug, r]));
   const planBySlug = new Map(input.plans.map((p) => [p.tenantSlug, p]));
 
-  const quietByBox = new Map(
-    input.boxReports.map((b) => [b.box, boxIsQuiet(b.receivedAt, input.now)]),
-  );
-  const boxes: BackupBoxRow[] = input.boxReports
-    .map((b) => ({
-      box: b.box,
-      lastReportAt: b.receivedAt,
-      quiet: quietByBox.get(b.box) ?? true,
-      artifacts: input.artifacts.filter((a) => a.box === b.box).length,
-    }))
-    .sort((a, b) => a.box.localeCompare(b.box));
+  const quietByBox = quietBoxMap(input.boxReports, input.now);
+  const boxes = buildBoxRows(input.boxReports, input.artifacts, quietByBox);
 
   const slugs = new Set<string>([...registryBySlug.keys(), ...bySlug.keys()]);
 
@@ -148,10 +141,14 @@ export function buildBackupOverview(input: {
       .sort((a, b) => b.takenAt.getTime() - a.takenAt.getTime());
     const registry = registryBySlug.get(slug);
     const plan = planBySlug.get(slug);
+    const offBox = artifacts.filter((a) => a.location === "RESTIC");
     const facts = {
       artifactCount: artifacts.length,
       newestTakenAt: artifacts[0]?.takenAt ?? null,
-      offBoxCount: artifacts.filter((a) => a.location === "RESTIC").length,
+      offBoxCount: offBox.length,
+      // Sorted newest-first above, so [0] is newest and the last is oldest.
+      newestOffBoxTakenAt: offBox[0]?.takenAt ?? null,
+      oldestTakenAt: artifacts.at(-1)?.takenAt ?? null,
     };
     const box = boxFor(registry, artifacts);
     return {
@@ -166,7 +163,7 @@ export function buildBackupOverview(input: {
       bytes: totalBytes(artifacts.map((a) => a.sizeBytes)),
       health: backupHealth(facts, input.now),
       clusterDumpOnly: isClusterDumpOnly(registry?.managed),
-      singleSiteOnly: isSingleSiteOnly(facts),
+      offBoxMissing: offBoxMissing(facts, input.now),
       boxQuiet: box !== null && (quietByBox.get(box) ?? true),
       retention: backupRetentionView(
         {

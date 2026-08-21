@@ -832,7 +832,7 @@
           "newest": "nieuwste is {hours} uur oud",
           "newestNever": "er is nooit een kopie gemeld",
           "clusterDumpOnly": "Dit restaurant wordt nooit apart geback-upt — de database zit in de volledige serverback-up, die elke nacht samen met de rest van de server wordt weggestuurd. Er verschijnt hier nooit iets per restaurant.",
-          "offBoxNotReported": "De agent meldt alleen wat hij op de server vindt, dus kopieën buiten de server ontbreken in deze lijst. De nachtelijke back-upmap wordt ook naar de versleutelde opslag buiten de server gestuurd.",
+          "offBoxMissing": "Er is voor dit restaurant binnen de nachtelijke cyclus niets van deze server weggestuurd. Elke kopie die we zien staat op de server die het draait, en een storing die de server meeneemt, neemt de back-up mee.",
           "boxQuiet": "Server {box} meldt niets meer; deze cijfers zijn zijn laatste woord, niet de huidige stand."
         },
         "retention": {

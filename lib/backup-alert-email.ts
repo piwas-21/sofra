@@ -45,6 +45,9 @@ function verdict(c: BackupConcern): string {
   else if (c.ageHours !== null) {
     parts.push(`${STATE_WORD[c.health]} — newest copy ${age(c.ageHours)} old`);
   }
+  if (c.offBoxMissing) {
+    parts.push("NO OFF-BOX COPY within the nightly ship — every copy we can see is on the box that runs it");
+  }
   if (c.boxQuiet) parts.push("box is quiet, so this age is a memory");
   if (c.box) parts.push(`box: ${c.box}`);
   return parts.join(" · ");
@@ -84,7 +87,7 @@ export async function sendBackupAlertEmail(opts: {
 
   const lead = alert.noBoxHasEverReported
     ? "No box has ever pushed a backup inventory. Either the box-side agent is not deployed, or it cannot reach this container — until one reports, nothing on the platform is known to be backed up."
-    : `${alert.concerns.length} of ${alert.watched} tenants that should be dumped nightly are not in a protected state.`;
+    : `${alert.concerns.length} of ${alert.watched} tenants that should be dumped nightly are not fully protected — an aging copy, no copy, or no copy anywhere except the box that runs them.`;
 
   const neverNote = alert.concerns.some((c) => c.health === "never")
     ? "<p style=\"margin:0 0 12px;\">A tenant listed as <em>never</em> that went live in the last day may simply be waiting for its first nightly (02:15). One that has been live longer was never wired into the backup at all — a provisioning gap, which survives every green nightly run.</p>"
@@ -99,7 +102,7 @@ export async function sendBackupAlertEmail(opts: {
       bodyHtml: `<p style="margin:0 0 12px;">${escapeHtml(lead)}</p>
 ${detailRows(rows)}
 ${neverNote}
-<p style="margin:12px 0 0;">Thresholds: over 36h since the newest copy is stale, over 72h is unprotected, and a box that has not pushed an inventory in 6h is quiet.</p>`,
+<p style="margin:12px 0 0;">Thresholds: over 36h since the newest copy is stale, over 72h is unprotected, over 30h with nothing shipped off box means the nightly ship is not happening, and a box that has not pushed an inventory in 6h is quiet.</p>`,
       cta: { label: "Open /admin/backups", url: `${siteUrl()}/admin/backups` },
       footerNote:
         opts.reason === "reminder"
