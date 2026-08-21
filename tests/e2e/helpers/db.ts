@@ -382,6 +382,29 @@ export async function arrangeUserWithPassword(email: string, password: string): 
 }
 
 /**
+ * An INVITED owner with NO password and one already-expired invite token — the
+ * exact state a self-serve buyer is in 24 hours after signing up without clicking
+ * their link (G12). The stale token is what makes the re-send's retirement of old
+ * invites observable rather than assumed.
+ */
+export async function arrangeInvitedUser(email: string): Promise<string> {
+  const rows = await query<{ id: string }>(
+    `INSERT INTO "User" (id, email, "passwordHash", name, role, status, "createdAt")
+     VALUES (gen_random_uuid()::text, lower($1), NULL, 'E2E Invited Owner', 'OWNER', 'INVITED', now())
+     RETURNING id`,
+    [email],
+  );
+  if (rows.length !== 1) throw new Error(`arrangeInvitedUser: could not create "${email}"`);
+  const userId = rows[0].id;
+  await query(
+    `INSERT INTO "InviteToken" (id, "userId", "tokenHash", purpose, "expiresAt", "createdAt")
+     VALUES (gen_random_uuid()::text, $1, $2, 'invite', now() + interval '12 hours', now())`,
+    [userId, `e2e-stale-${userId}`],
+  );
+  return userId;
+}
+
+/**
  * An ADMIN with a password, seeded per spec.
  *
  * Not `E2E_ADMIN_EMAIL`, for the reason `arrangeUserWithPassword` documents: the

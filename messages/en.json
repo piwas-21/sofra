@@ -182,6 +182,13 @@
     "repeatPassword": "Repeat password",
     "setPassword": "Set password",
     "saving": "Saving…",
+    "resendTitle": "Resend your invite",
+    "resendIntro": "If your set-password link expired or never arrived, enter your account email and we'll send a fresh one.",
+    "sendInvite": "Send a new link",
+    "inviteSent": "If that address has an account, a new link is on its way.",
+    "resendHasPassword": "Already set a password?",
+    "neverGotInvite": "Never received your invite?",
+    "resendLink": "Send it again.",
     "errors": {
       "tooManyAttempts": "Too many attempts. Try again later.",
       "wrongCredentials": "Wrong email or password.",
@@ -746,7 +753,7 @@
           "reserved": "(reserved)",
           "taken": "(taken)"
         },
-        "welcomeFailed": "welcome email failed — hand the invite link over from /admin/onboard"
+        "welcomeFailed": "welcome email failed — the customer can ask for a fresh link at /invite/resend, or hand it over from /admin/onboard"
       },
       "provision": {
         "title": "Provision a tenant",

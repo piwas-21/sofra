@@ -182,6 +182,13 @@
     "repeatPassword": "Passwort wiederholen",
     "setPassword": "Passwort festlegen",
     "saving": "Wird gespeichert…",
+    "resendTitle": "Einladung erneut senden",
+    "resendIntro": "Wenn Ihr Link zum Festlegen des Passworts abgelaufen ist oder nie ankam, geben Sie die E-Mail-Adresse Ihres Kontos ein — wir schicken einen neuen.",
+    "sendInvite": "Neuen Link senden",
+    "inviteSent": "Falls es zu dieser Adresse ein Konto gibt, ist ein neuer Link unterwegs.",
+    "resendHasPassword": "Sie haben schon ein Passwort?",
+    "neverGotInvite": "Keine Einladung erhalten?",
+    "resendLink": "Erneut senden.",
     "errors": {
       "tooManyAttempts": "Zu viele Versuche. Versuchen Sie es später erneut.",
       "wrongCredentials": "Falsche E-Mail oder falsches Passwort.",
@@ -746,7 +753,7 @@
           "reserved": "(reserviert)",
           "taken": "(vergeben)"
         },
-        "welcomeFailed": "Willkommens-E-Mail fehlgeschlagen — Einladungslink über /admin/onboard weitergeben"
+        "welcomeFailed": "Willkommens-E-Mail fehlgeschlagen — der Kunde kann unter /invite/resend einen neuen Link anfordern, oder Sie geben ihn über /admin/onboard weiter"
       },
       "provision": {
         "title": "Mandanten bereitstellen",
