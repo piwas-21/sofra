@@ -17,8 +17,11 @@
 // Deliberately NOT here: a checksum for every country. Two reasons, and both are
 // failure modes rather than laziness — see `checksumOk` below.
 
-/** EU member states, by VAT prefix. Greece trades as `EL`, not `GR`. */
-const EU_VAT_PREFIXES = [
+/** EU member states, by VAT prefix. Greece trades as `EL`, not `GR`.
+ *  Exported so the country-code list can be checked AGAINST it: the two are keyed
+ *  differently (prefix vs ISO country), and an EU state present here but missing
+ *  there would silently turn a priceable customer into a NEEDS_REVIEW. */
+export const EU_VAT_PREFIXES = [
   "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES",
   "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT",
   "NL", "PL", "PT", "RO", "SE", "SI", "SK",
