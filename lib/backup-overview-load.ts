@@ -55,7 +55,16 @@ export async function loadBackupOverview(now: Date): Promise<LoadedBackupOvervie
 
   const overview = buildBackupOverview({
     registry: registry.ok
-      ? registry.tenants.map((r) => ({ slug: r.slug, name: r.name, status: r.status, box: r.box }))
+      ? registry.tenants.map((r) => ({
+          slug: r.slug,
+          name: r.name,
+          status: r.status,
+          box: r.box,
+          // `managed:` rides along because the ALARM needs it: the box skips
+          // `legacy` when it takes per-tenant dumps, so a legacy tenant with no
+          // artifact is expected, not a gap.
+          managed: r.managed,
+        }))
       : [],
     artifacts: artifacts as ArtifactFact[],
     plans: plans.map((p) => ({
