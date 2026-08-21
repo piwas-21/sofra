@@ -155,6 +155,25 @@ export function isClusterDumpOnly(managed: string | null | undefined): boolean {
   return managed?.toLowerCase() === NO_PER_TENANT_DUMP;
 }
 
+/** What the page needs to rank and count a row: its age verdict, and whether
+ *  that verdict applies to it at all. */
+export type RankedRow = { health: BackupHealth; clusterDumpOnly: boolean };
+
+/** Sort rank, worst first. A cluster-dump-only tenant ranks CALM whatever its
+ *  age says, because its age says nothing — ranking it by `never` would put the
+ *  one row nobody can act on above every row somebody can. */
+export function rowSeverity(row: RankedRow): number {
+  return row.clusterDumpOnly ? 0 : healthSeverity(row.health);
+}
+
+/** The page's headline count, excluding a cluster-dump-only tenant for the same
+ *  reason the ALARM's `expectsNightly` does (ADR-014 D5): its per-tenant verdict
+ *  is permanently, unfixably red. A headline reading "1 tenant needs attention"
+ *  beside a sweep that mails `healthy` teaches its reader to believe neither. */
+export function rowNeedsAttention(row: RankedRow): boolean {
+  return !row.clusterDumpOnly && needsAttention(row.health);
+}
+
 /** Has a box stopped reporting? `null` = it has never reported at all. */
 export function boxIsQuiet(lastReportAt: Date | null, now: Date): boolean {
   if (!lastReportAt) return true;

@@ -9,10 +9,10 @@
 import {
   backupHealth,
   boxIsQuiet,
-  healthSeverity,
   isClusterDumpOnly,
   isSingleSiteOnly,
-  needsAttention,
+  rowNeedsAttention,
+  rowSeverity,
   totalBytes,
   type BackupHealth,
 } from "@/lib/backup-health";
@@ -81,23 +81,6 @@ export type BackupOverview = {
   attention: number;
   quietBoxes: number;
 };
-
-/** Sort rank. See the comment at the `rows.sort` call. */
-function severity(row: BackupTenantRow): number {
-  return row.clusterDumpOnly ? 0 : healthSeverity(row.health);
-}
-
-/**
- * The headline count, and it excludes a cluster-dump-only tenant for the same
- * reason the ALARM does (ADR-014 D5): its per-tenant verdict is permanently,
- * unfixably red and nobody can act on it. A page whose headline says "1 tenant
- * needs attention" while the twice-daily sweep mails `healthy` is a page that
- * teaches its reader which of the two to believe — and the answer would be
- * neither.
- */
-function rowNeedsAttention(row: BackupTenantRow): boolean {
-  return !row.clusterDumpOnly && needsAttention(row.health);
-}
 
 function groupBySlug(artifacts: readonly ArtifactFact[]): Map<string, ArtifactFact[]> {
   const bySlug = new Map<string, ArtifactFact[]>();
@@ -201,10 +184,9 @@ export function buildBackupOverview(input: {
   // Worst first, then alphabetical. A backup page sorted by name is a page whose
   // one urgent row is wherever the alphabet put it.
   //
-  // A cluster-dump-only tenant sorts as calm whatever its age says, because its
-  // age says nothing: it has no per-tenant artifact and never will, so ranking it
-  // by `never` would put the one row that cannot be acted on at the very top.
-  rows.sort((a, b) => severity(b) - severity(a) || a.slug.localeCompare(b.slug));
+  // A cluster-dump-only tenant sorts as calm whatever its age says — see
+  // `rowSeverity`.
+  rows.sort((a, b) => rowSeverity(b) - rowSeverity(a) || a.slug.localeCompare(b.slug));
 
   return {
     rows,
