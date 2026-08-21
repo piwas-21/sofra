@@ -47,6 +47,10 @@ export type BackupConcern = {
    *  above is a memory rather than an observation. Annotation, not a trigger:
    *  the quiet box is already alerted on once, by name. */
   boxQuiet: boolean;
+  /** True when no off-box copy has arrived within the ship cycle. A trigger in
+   *  its own right — a tenant can be here with a perfectly fresh `protected`
+   *  verdict beside it, which is exactly the pair worth mailing about. */
+  offBoxMissing: boolean;
 };
 
 export type BackupAlert = {
@@ -82,21 +86,20 @@ export function expectsNightly(row: BackupTenantRow): boolean {
 }
 
 /**
- * Anything other than a recent copy. `boxQuiet` is not a trigger — the quiet box
- * is already alerted on once, by name.
+ * Anything other than a recent copy, ON the box or OFF it. `boxQuiet` is not a
+ * trigger — the quiet box is already alerted on once, by name.
  *
- * `singleSiteOnly` is not one either, and that is a CORRECTION from the first
- * production run: the agent CANNOT report an off-box copy (`bk_inventory_json`
- * walks the box filesystem and hard-codes `location: "local"`), while
- * `backup-offsite.sh` ships the whole dump directory into restic — so the flag is
- * permanently true for every tenant and those copies demonstrably do exist off
- * box. A reporting gap, not a protection state; alerting on it says something
- * false every day until it is muted. The page still shows it, beside the artifact
- * list where it can be read for what it is. Re-arm the day the agent enumerates
- * restic snapshots.
+ * `offBoxMissing` IS one again, as of 2026-08-21. It was dropped on this sweep's
+ * first production run because the agent could not see a restic snapshot and
+ * reported everything as `local`, which made the flag permanently true for every
+ * tenant while the off-box copies demonstrably existed (ADR-014 D5). The agent
+ * now enumerates the repository (deploy #139), so the flag says what it means,
+ * and it is a state nothing else catches: a tenant dumped perfectly every night
+ * whose copies have not LEFT the box since Monday is green by every age rule on
+ * this page and one hardware failure from gone.
  */
 function isConcerning(row: BackupTenantRow): boolean {
-  return needsAttention(row.health);
+  return needsAttention(row.health) || row.offBoxMissing;
 }
 
 function concernOf(row: BackupTenantRow, now: Date): BackupConcern {
@@ -107,6 +110,7 @@ function concernOf(row: BackupTenantRow, now: Date): BackupConcern {
     health: row.health,
     ageHours: row.newestTakenAt ? hoursSince(row.newestTakenAt, now) : null,
     boxQuiet: row.boxQuiet,
+    offBoxMissing: row.offBoxMissing,
   };
 }
 
@@ -128,7 +132,10 @@ function isCritical(c: BackupConcern): boolean {
 export function alertSignature(alert: Omit<BackupAlert, "signature">): string {
   const parts = [
     alert.level,
-    ...alert.concerns.map((c) => `${c.slug}:${c.health}`),
+    // The off-box half is part of WHAT is wrong, not of how long: a tenant that
+    // is `protected` and has nothing off box is a different situation to the same
+    // tenant once a copy ships, and the reader must be told when it changes.
+    ...alert.concerns.map((c) => `${c.slug}:${c.health}${c.offBoxMissing ? "+offbox" : ""}`),
     ...alert.quietBoxes.map((b) => `quiet:${b}`),
   ];
   if (alert.noBoxHasEverReported) parts.push("noBoxHasEverReported");

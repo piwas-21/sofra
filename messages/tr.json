@@ -832,7 +832,7 @@
           "newest": "en yenisi {hours} saatlik",
           "newestNever": "hiç kopya bildirilmedi",
           "clusterDumpOnly": "Bu restoran hiçbir zaman tek başına yedeklenmez — veritabanı, her gece sunucunun dışına gönderilen tüm sunucu yedeğinin içindedir. Burada restorana özel bir kopya hiçbir zaman görünmeyecek.",
-          "offBoxNotReported": "Aracı yalnızca sunucuda bulduklarını bildirir; bu yüzden sunucu dışındaki kopyalar bu listede görünmez. Gecelik yedek klasörü de sunucu dışındaki şifreli depoya gönderiliyor.",
+          "offBoxMissing": "Bu restoran için gecelik döngü içinde sunucu dışına hiçbir kopya gönderilmedi. Gördüğümüz bütün kopyalar onu çalıştıran sunucunun üzerinde ve sunucuyu götüren bir arıza yedeği de birlikte götürür.",
           "boxQuiet": "{box} sunucusu artık bildirim yapmıyor; bu sayılar onun son sözü, bugünün durumu değil."
         },
         "retention": {

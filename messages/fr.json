@@ -832,7 +832,7 @@
           "newest": "la plus récente date de {hours} h",
           "newestNever": "aucune copie n'a jamais été signalée",
           "clusterDumpOnly": "Ce restaurant n'est jamais sauvegardé séparément — sa base de données fait partie de la sauvegarde globale du serveur, envoyée hors du serveur chaque nuit avec le reste. Rien de spécifique à ce restaurant n'apparaîtra jamais ici.",
-          "offBoxNotReported": "L'agent ne signale que ce qu'il trouve sur le serveur : les copies hors serveur manquent donc dans cette liste. Le dossier de sauvegarde nocturne est lui aussi envoyé dans le dépôt chiffré hors serveur.",
+          "offBoxMissing": "Rien n'a été envoyé hors de ce serveur pour ce restaurant durant le cycle nocturne. Toutes les copies visibles se trouvent sur le serveur qui l'héberge, et une panne qui emporte le serveur emporte la sauvegarde avec lui.",
           "boxQuiet": "Le serveur {box} ne transmet plus : ces chiffres sont sa dernière parole, pas l'état actuel."
         },
         "retention": {
