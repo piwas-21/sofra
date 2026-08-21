@@ -1409,7 +1409,7 @@
       },
       "keep": {
         "title": "Ne kadar süre saklıyoruz",
-        "body": "Faturalar ve üzerlerindeki fatura bilgileri, Hollanda vergi mevzuatının öngördüğü süre boyunca saklanır. Giriş ve yönetim kayıtları 18 ay saklanır. Reddedilen bir partner başvurusu 12 ay saklanır, sonra silinir. Davet bağlantıları süresi dolunca 30 gün içinde silinir. Hesaplar ve CRM kayıtları ilişki sürdüğü sürece tutulur ve talep üzerine kaldırılır — bunlarda otomatik bir süre yoktur."
+        "body": "Faturalar ve üzerlerindeki fatura bilgileri, Hollanda vergi mevzuatının öngördüğü süre boyunca saklanır. Giriş ve yönetim kayıtları 18 ay saklanır. Reddedilen bir partner başvurusu 12 ay saklanır, sonra silinir. Davet bağlantıları süresi dolunca 30 gün içinde silinir. Hesaplar ve CRM kayıtları ilişki sürdüğü sürece tutulur ve talep üzerine kaldırılır — bunlarda otomatik bir süre yoktur. Restoranınız bizden ayrılırsa — ücretsiz deneme süresi sonunda ayrılmak da dahil — verilerinin şifrelenmiş bir yedeğini 24 ay saklarız; böylece geri dönerseniz kaldığınız yerden devam edebilirsiniz. Daha erken silmemizi isteyebilirsiniz; sileriz."
       },
       "rights": {
         "title": "Haklarınız",

@@ -1409,7 +1409,7 @@
       },
       "keep": {
         "title": "How long we keep it",
-        "body": "Invoices, and the billing details printed on them, are kept for the period Dutch tax law requires. Sign-in and administrative logs are kept for 18 months. A partner application we turned down is kept for 12 months, then deleted. Sign-up invitation links expire and are deleted after 30 days. Accounts and CRM records are kept while the relationship lasts, and we remove them on request — there is no automatic clock on those."
+        "body": "Invoices, and the billing details printed on them, are kept for the period Dutch tax law requires. Sign-in and administrative logs are kept for 18 months. A partner application we turned down is kept for 12 months, then deleted. Sign-up invitation links expire and are deleted after 30 days. Accounts and CRM records are kept while the relationship lasts, and we remove them on request — there is no automatic clock on those. If your restaurant leaves us — including at the end of a free trial — we keep one encrypted backup of its data for 24 months, so you can pick up where you left off if you come back. You can ask us to delete it sooner and we will."
       },
       "rights": {
         "title": "Your rights",
