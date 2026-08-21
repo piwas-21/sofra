@@ -19,3 +19,6 @@ playwright-report/
 
 # Vitest coverage (DEV-PHASES W2)
 coverage/
+
+# Agent git worktrees (kept inside the repo, so their build output is on eslint's path)
+.claude/worktrees/
