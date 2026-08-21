@@ -2,7 +2,6 @@
 
 import { AuthError } from "next-auth";
 import { hash } from "bcryptjs";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -12,17 +11,12 @@ import { craftEmail } from "@/lib/email-templates";
 import { createToken, findValidToken } from "@/lib/tokens";
 import { resendPlan } from "@/lib/invite-resend";
 import { sendInviteEmail } from "@/lib/self-serve-email";
-import { clientIpFromXff, rateLimit } from "@/lib/rate-limit";
+import { formEmail, limited, type FormState } from "@/lib/auth-form";
 
-/** `error` is a message key in the `auth.errors` namespace, translated at
- *  render by <ActionError /> (control-plane i18n, sofra #9). */
-export type FormState = { error?: string; ok?: boolean };
-
-async function limited(scope: string, max: number): Promise<boolean> {
-  const h = await headers();
-  const ip = clientIpFromXff(h.get("x-forwarded-for"));
-  return !rateLimit(`${scope}:${ip}`, max, 15 * 60 * 1000);
-}
+// Re-exported so every form component keeps ONE import for the auth flow it
+// belongs to. Type-only, so it does not violate the `"use server"` rule that a
+// module may export nothing but async functions.
+export type { FormState };
 
 export async function loginAction(_prev: FormState, formData: FormData): Promise<FormState> {
   if (await limited("login", 20)) return { error: "tooManyAttempts" };
@@ -80,10 +74,10 @@ export async function setPasswordAction(_prev: FormState, formData: FormData): P
 export async function forgotPasswordAction(_prev: FormState, formData: FormData): Promise<FormState> {
   if (await limited("forgot", 5)) return { error: "tooManyAttempts" };
 
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   // Always report success — no user enumeration via this form.
   const generic: FormState = { ok: true };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return generic;
+  const email = formEmail(formData);
+  if (!email) return generic;
 
   const user = await db.user.findUnique({ where: { email } });
   if (!user || user.status === "DISABLED") return generic;
@@ -135,9 +129,9 @@ export async function resendInviteAction(_prev: FormState, formData: FormData): 
   // sending domain deliver repeats to a stranger's inbox.
   if (await limited("resend-invite", 5)) return { error: "tooManyAttempts" };
 
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const generic: FormState = { ok: true };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return generic;
+  const email = formEmail(formData);
+  if (!email) return generic;
 
   const user = await db.user.findUnique({
     where: { email },

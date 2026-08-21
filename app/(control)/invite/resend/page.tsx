@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { controlLocale } from "@/lib/control-locale";
-import ResendInviteForm from "@/components/control/ResendInviteForm";
+import EmailRequestForm from "@/components/control/EmailRequestForm";
+import { resendInviteAction } from "@/lib/actions/auth-actions";
 
 // "My invite link died and nobody is watching" (G12) — the page /login points at.
 //
@@ -21,7 +22,8 @@ export default async function ResendInvitePage() {
       <h1 className="mt-8 font-display font-bold text-5xl">{t("resendTitle")}</h1>
       <p className="mt-3 text-muted-foreground">{t("resendIntro")}</p>
       <div className="mt-8 hand-drawn-border bg-card p-6">
-        <ResendInviteForm
+        <EmailRequestForm
+          action={resendInviteAction}
           labels={{
             email: t("email"),
             send: t("sendInvite"),

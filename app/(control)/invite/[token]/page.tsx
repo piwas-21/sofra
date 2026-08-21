@@ -3,7 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { findValidToken } from "@/lib/tokens";
 import { controlLocale } from "@/lib/control-locale";
 import SetPasswordForm from "@/components/control/SetPasswordForm";
-import ResendInviteForm from "@/components/control/ResendInviteForm";
+import EmailRequestForm from "@/components/control/EmailRequestForm";
+import { resendInviteAction } from "@/lib/actions/auth-actions";
 
 export default async function InvitePage({
   params,
@@ -48,7 +49,8 @@ export default async function InvitePage({
               difference between a recovered signup and an abandoned one. */}
           <p className="mt-3 text-muted-foreground">{t("inviteInvalid")}</p>
           <div className="mt-8 hand-drawn-border bg-card p-6">
-            <ResendInviteForm
+            <EmailRequestForm
+              action={resendInviteAction}
               labels={{
                 email: t("email"),
                 send: t("sendInvite"),
