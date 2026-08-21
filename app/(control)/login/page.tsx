@@ -47,6 +47,15 @@ export default async function LoginPage({
           }}
         />
       </div>
+      {/* For the owner who has an account and has never had a password — the
+          invite expired, or never arrived. "Forgot password" does not describe
+          them, so they never click it (G12). */}
+      <p className="mt-6 font-label text-sm text-muted-foreground">
+        {t("neverGotInvite")}{" "}
+        <Link className="underline" href="/invite/resend">
+          {t("resendLink")}
+        </Link>
+      </p>
     </main>
   );
 }

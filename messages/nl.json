@@ -182,6 +182,13 @@
     "repeatPassword": "Herhaal wachtwoord",
     "setPassword": "Wachtwoord instellen",
     "saving": "Opslaan…",
+    "resendTitle": "Uitnodiging opnieuw versturen",
+    "resendIntro": "Is je link om een wachtwoord in te stellen verlopen of nooit aangekomen? Vul het e-mailadres van je account in, dan sturen we een nieuwe.",
+    "sendInvite": "Nieuwe link sturen",
+    "inviteSent": "Als er bij dat adres een account hoort, is er een nieuwe link onderweg.",
+    "resendHasPassword": "Heb je al een wachtwoord?",
+    "neverGotInvite": "Nooit een uitnodiging ontvangen?",
+    "resendLink": "Stuur hem opnieuw.",
     "errors": {
       "tooManyAttempts": "Te veel pogingen. Probeer het later opnieuw.",
       "wrongCredentials": "Onjuist e-mailadres of wachtwoord.",
@@ -746,7 +753,7 @@
           "reserved": "(gereserveerd)",
           "taken": "(bezet)"
         },
-        "welcomeFailed": "welkomstmail mislukt — geef de uitnodigingslink door via /admin/onboard"
+        "welcomeFailed": "welkomstmail mislukt — de klant kan een nieuwe link vragen op /invite/resend, of geef hem door via /admin/onboard"
       },
       "provision": {
         "title": "Een tenant inrichten",

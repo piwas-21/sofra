@@ -182,6 +182,13 @@
     "repeatPassword": "Répétez le mot de passe",
     "setPassword": "Définir le mot de passe",
     "saving": "Enregistrement…",
+    "resendTitle": "Renvoyer votre invitation",
+    "resendIntro": "Si votre lien de création de mot de passe a expiré ou n'est jamais arrivé, saisissez l'e-mail de votre compte et nous en enverrons un nouveau.",
+    "sendInvite": "Envoyer un nouveau lien",
+    "inviteSent": "Si cette adresse correspond à un compte, un nouveau lien est en route.",
+    "resendHasPassword": "Vous avez déjà un mot de passe ?",
+    "neverGotInvite": "Vous n'avez jamais reçu votre invitation ?",
+    "resendLink": "Renvoyez-la.",
     "errors": {
       "tooManyAttempts": "Trop de tentatives. Réessayez plus tard.",
       "wrongCredentials": "E-mail ou mot de passe incorrect.",
@@ -746,7 +753,7 @@
           "reserved": "(réservé)",
           "taken": "(pris)"
         },
-        "welcomeFailed": "échec de l'e-mail de bienvenue — transmettez le lien d'invitation depuis /admin/onboard"
+        "welcomeFailed": "échec de l'e-mail de bienvenue — le client peut demander un nouveau lien sur /invite/resend, ou transmettez-le depuis /admin/onboard"
       },
       "provision": {
         "title": "Provisionner un établissement",

@@ -182,6 +182,13 @@
     "repeatPassword": "Şifreyi tekrarlayın",
     "setPassword": "Şifreyi belirle",
     "saving": "Kaydediliyor…",
+    "resendTitle": "Davetini yeniden gönder",
+    "resendIntro": "Parola oluşturma bağlantın süresi dolduysa veya hiç ulaşmadıysa, hesabının e-posta adresini yaz; yenisini gönderelim.",
+    "sendInvite": "Yeni bağlantı gönder",
+    "inviteSent": "Bu adrese ait bir hesap varsa, yeni bir bağlantı yolda.",
+    "resendHasPassword": "Parolanı zaten oluşturdun mu?",
+    "neverGotInvite": "Davetin hiç ulaşmadı mı?",
+    "resendLink": "Yeniden gönder.",
     "errors": {
       "tooManyAttempts": "Çok fazla deneme yapıldı. Daha sonra tekrar deneyin.",
       "wrongCredentials": "E-posta veya şifre hatalı.",
@@ -746,7 +753,7 @@
           "reserved": "(ayrılmış)",
           "taken": "(kullanımda)"
         },
-        "welcomeFailed": "karşılama e-postası gönderilemedi — davet bağlantısını /admin/onboard üzerinden iletin"
+        "welcomeFailed": "karşılama e-postası gönderilemedi — müşteri /invite/resend adresinden yeni bir bağlantı isteyebilir ya da /admin/onboard üzerinden elden verebilirsiniz"
       },
       "provision": {
         "title": "Kiracı sağla",

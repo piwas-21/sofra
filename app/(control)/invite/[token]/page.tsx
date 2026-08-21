@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { findValidToken } from "@/lib/tokens";
 import { controlLocale } from "@/lib/control-locale";
 import SetPasswordForm from "@/components/control/SetPasswordForm";
+import ResendInviteForm from "@/components/control/ResendInviteForm";
 
 export default async function InvitePage({
   params,
@@ -39,7 +40,24 @@ export default async function InvitePage({
           </div>
         </>
       ) : (
-        <p className="mt-3 text-muted-foreground">{t("inviteInvalid")}</p>
+        <>
+          {/* The dead end this page used to BE (G12). An expired invite is the
+              one moment where the person is present, motivated and locked out,
+              and it told them to reply to an email and wait for a human. The form
+              is here rather than a link away because a click is the whole
+              difference between a recovered signup and an abandoned one. */}
+          <p className="mt-3 text-muted-foreground">{t("inviteInvalid")}</p>
+          <div className="mt-8 hand-drawn-border bg-card p-6">
+            <ResendInviteForm
+              labels={{
+                email: t("email"),
+                send: t("sendInvite"),
+                sending: t("sending"),
+                sent: t("inviteSent"),
+              }}
+            />
+          </div>
+        </>
       )}
     </main>
   );
