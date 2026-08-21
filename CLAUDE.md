@@ -17,11 +17,12 @@
 
 | When | Read |
 |---|---|
-| Any architectural question | `docs/adr/` — ADRs 001–013 (tenancy, provisioning, control plane, partner model, modules, billing split, **billing identity + VAT + invoicing**) |
+| Any architectural question | `docs/adr/` — ADRs 001–014 (tenancy, provisioning, control plane, partner model, modules, billing split, **billing identity + VAT + invoicing**, **tenant backup visibility**) |
 | Partner program / CRM semantics | ADR-009 + workspace `docs/plans/SOFRA-PARTNER-PLAN.md` (Client = CRM row; Tenant = registry entry; joined only by `tenantSlug`) |
 | Billing work | ADR-005/ADR-011 + `lib/billing.ts` (fetch-and-verify, ACTIVATING claim, idempotency) |
 | **Anything about VAT, invoices, or a customer's legal details** | **ADR-013** + workspace `docs/plans/SOFRA-BILLING-IDENTITY-PLAN.md`. Three rules that are easy to break by accident: a VAT status belongs to the **number it was proven for** and an outage (`UNAVAILABLE`) must never overwrite a `VALID`; every reader resolves an identity through **`resolveIdentityForPlan`**, never `plan.billingIdentity`, or a form will overwrite a record it never displayed; and invoicing runs inside the Mollie webhook, so **it may never throw** — refusals are recorded and re-issued from `/admin/invoices`. Seller identity is env (`SOFRA_LEGAL_*`), and its absence blocks every invoice on purpose |
 | Deploy/migrate/ops | deploy repo `DEPLOYMENT.md` §Sofra control plane + the `operating-rumi-infra` skill |
+| **Anything about tenant backups** — the `/admin/backups` page, the box agent's three endpoints, or "do we still have that restaurant's data?" | **ADR-014** + `lib/backup-*.ts`. Three rules that are easy to break by accident: every credential points **BOX → SOFRA** and the control plane must never gain one that can reach a box (so no SSH and no `Actions: write` token — it cannot be narrowed to one workflow, so it would also dispatch `deprovision-tenant.yml --drop-db`); the whole-box push **PRUNES** what it stops listing, which is what makes an emptied repository visible and is the reason a partial push must never be sent; and the retention date is a **display** of the box's `restic forget` policy, so it may never promise longer than an artifact we can actually see. `delete` is implemented and **disabled** — `BACKUP_DELETE_ENABLED` — because retention already removes copies and a button does not |
 | Manual QA logins | workspace `docs/runbooks/sofra-test-accounts.md` (ADMIN + PARTNER test accounts; **never run billing flows from them** — the key is live) |
 
 ## §3 — Architecture (load-bearing patterns)

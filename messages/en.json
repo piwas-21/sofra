@@ -471,6 +471,7 @@
         "overview": "Overview",
         "signups": "Signups",
         "fleet": "Fleet",
+        "backups": "Backups",
         "invoices": "Invoices",
         "icp": "ICP",
         "billingDetails": "Billing details",
@@ -800,6 +801,95 @@
           "errors": "{count} errors"
         }
       },
+      "backups": {
+        "title": "Tenant backups",
+        "intro": "Every copy we hold of a tenant's data — and, first, every tenant we hold no recent copy of.",
+        "thresholds": "A tenant reads stale after {stale}h without a new copy, and unprotected after {unprotected}h. A departed tenant's data is kept for {days} days.",
+        "attention": "{count} of {total} tenants need attention.",
+        "allProtected": "All {count} tenants have a recent backup.",
+        "registryUnavailable": "The tenant registry could not be read, so live tenants and their names are missing from this list: {error}",
+        "tenants": "{count} tenants",
+        "empty": "No tenant and no artifact has been reported yet.",
+        "boxes": {
+          "title": "Boxes",
+          "none": "No box has ever reported an inventory, so nothing on this page is current — check that the backup agent is deployed. A box counts as quiet after {hours}h.",
+          "quiet": "Quiet — nothing reported for {hours}h",
+          "reporting": "Reporting",
+          "artifacts": "{count} artifacts",
+          "lastReport": "last report {date}"
+        },
+        "health": {
+          "protected": "Protected",
+          "stale": "Stale",
+          "unprotected": "UNPROTECTED",
+          "never": "NEVER BACKED UP"
+        },
+        "tenant": {
+          "notInRegistry": "No longer in the registry — data kept for a tenant that has left",
+          "box": "box {box}",
+          "artifacts": "{count} artifacts",
+          "newest": "newest is {hours}h old",
+          "newestNever": "no artifact has ever been reported",
+          "localOnly": "Every copy sits on the box that runs this tenant. A failure that takes the box takes the backup with it.",
+          "boxQuiet": "Box {box} has stopped reporting, so these figures are the last thing it told us rather than what is true now."
+        },
+        "retention": {
+          "reason": {
+            "trialLapsed": "their free period ended",
+            "deprovisioned": "the tenant was taken down",
+            "departed": "the tenant no longer exists"
+          },
+          "retained": "Kept because {reason} — we still have their data until {until}, {days} days from now.",
+          "expired": "Kept because {reason} — the window closed on {until}, so the box has most likely pruned it already.",
+          "nothingHeld": "Kept because {reason} — but we hold no copy at all. There is nothing to restore."
+        },
+        "artifact": {
+          "kind": {
+            "SCHEDULED": "Nightly",
+            "MANUAL": "On request",
+            "DEPROVISION": "Taken at shutdown",
+            "ARCHIVE": "Archive"
+          },
+          "location": {
+            "RESTIC": "Off-box, encrypted",
+            "LOCAL": "On the box"
+          }
+        },
+        "create": {
+          "button": "Back up now",
+          "pending": "Queueing…",
+          "queued": "Queued for {slug} — the box picks it up on its next poll, about five minutes."
+        },
+        "delete": {
+          "reveal": "Delete this copy…",
+          "warning": "This asks the box to destroy this copy permanently. There is no undo.",
+          "warningLastCopy": "This is the ONLY copy of {slug}'s data. Destroying it is permanent and there is no undo.",
+          "confirmLabel": "Type {slug} to confirm",
+          "reasonLabel": "Why — recorded in the audit log",
+          "override": "Yes, destroy the last remaining copy of this tenant's data",
+          "confirm": "Queue deletion",
+          "pending": "Queueing…",
+          "queued": "Deletion queued for {slug} — the box carries it out on its next poll."
+        },
+        "jobs": {
+          "title": "Queued work",
+          "empty": "Nothing has been asked of a box yet.",
+          "deleteEnabled": "Deletion is switched ON here. Retention on the box is still the normal way copies are removed.",
+          "deleteDisabled": "Deletion is switched off. Copies are removed by retention on the box — reviewable in the deploy repo, and impossible to fire by a stray click.",
+          "requestedBy": "requested by {name}",
+          "failed": "Failed: {error}",
+          "action": {
+            "CREATE": "Back up",
+            "DELETE": "Delete"
+          },
+          "status": {
+            "PENDING": "Queued",
+            "CLAIMED": "In progress",
+            "DONE": "Done",
+            "FAILED": "Failed"
+          }
+        }
+      },
       "identity": {
         "title": "Billing identity",
         "intro": "The legal entity this tenant's invoices are addressed to.",
@@ -976,6 +1066,16 @@
         "invalidOwnDomain": "That doesn't look like a domain the restaurant could own — e.g. thebistro.ch.",
         "ownDomainIsOurs": "That's one of our own addresses. Pick the first option instead.",
         "tenantExists": "This restaurant is already set up. Its address can still change, but that's a rebuild — ask us below."
+      },
+      "backup": {
+        "registryUnavailable": "The tenant registry could not be read, so there is no way to tell which box this tenant lives on.",
+        "unknownTenant": "That tenant is not in the registry.",
+        "tooManyPending": "That box already has as much queued work as it is allowed. Wait for it to catch up.",
+        "deleteDisabled": "Deleting backups is switched off on this environment.",
+        "confirmSlugMismatch": "The typed slug does not match this artifact's tenant.",
+        "reasonRequired": "A reason is required, and it has to say something.",
+        "lastArtifact": "This is the only copy of that tenant's data. Tick the override if you really mean it.",
+        "artifactNotFound": "That artifact no longer exists."
       }
     },
     "plan": {

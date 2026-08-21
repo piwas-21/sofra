@@ -87,6 +87,9 @@ model User {
   // The legal entity this user is invoiced as (B1). One per user: a party has
   // one set of registration details at a time.
   billingIdentity BillingIdentity?
+  // Backup jobs this admin queued for a box to run. Kept so a destructive
+  // request can be attributed to a person, not merely to "the control plane".
+  backupJobs      BackupJob[]       @relation("BackupRequester")
 }
 
 model PartnerApplication {
@@ -570,5 +573,133 @@ model FleetDevice {
   updatedAt            DateTime  @updatedAt
 
   @@unique([tenantSlug, deviceId])
+  @@index([tenantSlug])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tenant backups — the OWNER'S WINDOW onto backups that already exist.
+//
+// Nothing here takes a backup. Both boxes have dumped nightly at 02:15 and
+// shipped cross-box into encrypted restic repositories at 03:00 since long
+// before this table; what was missing was any way to SEE that from outside an
+// SSH session, and therefore any way to notice a tenant that had fallen out of
+// it. These three tables are that window, plus a queue.
+//
+// CREDENTIAL DIRECTION (ADR-012 invariant 2, and the reason for the queue's
+// shape): every credential points BOX → SOFRA. The control plane holds nothing
+// that can reach a box, so it cannot SSH and does not dispatch a GitHub workflow
+// either — `Actions: write` cannot be narrowed to one workflow, so such a token
+// could also fire `deprovision-tenant.yml --drop-db`, and a backup feature must
+// not ship a tenant-destruction primitive. The box PUSHES its inventory and
+// PULLS its jobs. See lib/backup-contract.ts.
+//
+// PII: metadata only — slugs, sizes, timestamps, a snapshot ref, a checksum.
+// A dump's CONTENTS never enter this database and no surface renders them. What
+// is here is still customer-identifying (which restaurants we hold data for),
+// so every human-facing view is behind requireAdmin().
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Why an artifact was taken. `DEPROVISION` is the one that matters most: the
+/// dump taken as a tenant is torn down is the only copy of a departed
+/// restaurant's menu.
+enum BackupKind {
+  SCHEDULED
+  MANUAL
+  DEPROVISION
+  ARCHIVE
+}
+
+/// Where the copy physically is. `LOCAL` is on the box that produced it and dies
+/// with it; `RESTIC` is an encrypted off-box repository. Not interchangeable.
+enum BackupLocation {
+  RESTIC
+  LOCAL
+}
+
+enum BackupJobAction {
+  CREATE
+  DELETE
+}
+
+enum BackupJobStatus {
+  PENDING
+  CLAIMED
+  DONE
+  FAILED
+}
+
+/// One row per box: when it last told us anything at all. Its own table rather
+/// than a MAX() over artifacts, because the interesting case is a box with no
+/// artifacts to take the MAX of — a repository that has been emptied reports an
+/// EMPTY inventory, which must read as "reported, and it is empty" rather than
+/// as silence. Without this row those two are indistinguishable.
+model BackupInventory {
+  id            String   @id @default(cuid())
+  box           String   @unique
+  reportedAt    DateTime // the box's own snapshot time
+  receivedAt    DateTime @default(now()) // sofra ingest time
+  artifactCount Int      @default(0)
+  updatedAt     DateTime @updatedAt
+}
+
+/// One artifact the box holds. Keyed on the registry slug, NOT a FK — same
+/// rationale as TenantBilling.tenantSlug and FleetSummary: the registry
+/// graduates to a table only at >3 tenants (ADR-007). That is load-bearing here
+/// rather than incidental: we deliberately keep artifacts for tenants that no
+/// longer have a registry entry, and a FK would delete exactly the departed
+/// customer's backup this feature exists to preserve.
+model BackupArtifact {
+  id         String         @id @default(cuid())
+  box        String
+  tenantSlug String
+  kind       BackupKind
+  location   BackupLocation
+  ref        String // restic snapshot id, or a dump filename
+  takenAt    DateTime
+  sizeBytes  BigInt // BigInt, not Int: Int caps at 2.1 GB, which a tenant dump will pass
+  sha256     String?
+  firstSeenAt DateTime      @default(now())
+  /// Mark-and-sweep marker: set to the ingest time on EVERY push that still
+  /// lists this artifact. The whole-box push then deletes this box's rows that
+  /// were not re-marked — which is how an artifact the box no longer holds
+  /// disappears here without the ingest having to name what is missing.
+  lastSeenAt  DateTime      @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  // Identity of an artifact on the wire. `ref` alone is not unique — a local
+  // filename can repeat across boxes, and the same restic id can appear in two
+  // repositories — so the natural key is the triple, and it is what makes the
+  // whole-box push an idempotent upsert.
+  @@unique([box, location, ref])
+  @@index([tenantSlug])
+  @@index([box])
+}
+
+/// Work the founder has asked a box to do. The box POLLS this (see the header):
+/// sofra never initiates a connection toward a box.
+model BackupJob {
+  id            String          @id @default(cuid())
+  box           String
+  action        BackupJobAction
+  tenantSlug    String
+  /// The artifact a DELETE targets. Always null for CREATE.
+  ref           String?
+  status        BackupJobStatus @default(PENDING)
+  /// Required for DELETE and recorded verbatim in the audit log — a destructive
+  /// act with no written why is unauditable six months later.
+  reason        String?
+  /// The founder explicitly accepted destroying a tenant's LAST copy.
+  override      Boolean         @default(false)
+  requestedById String?
+  requestedBy   User?           @relation("BackupRequester", fields: [requestedById], references: [id], onDelete: SetNull)
+  claimedAt     DateTime?
+  finishedAt    DateTime?
+  /// What the box said went wrong. Never shown to the box; the founder is the
+  /// only reader.
+  error         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([box, status])
   @@index([tenantSlug])
 }

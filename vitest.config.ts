@@ -106,6 +106,17 @@ export default defineConfig({
         // whether it is verified, because an authorization decision made in a pure
         // helper is one that can be bypassed by calling the helper differently.
         "lib/client-domain-choice.ts",
+        // Tenant backups (ADR-014). All five pure halves of the feature are in
+        // scope, and deliberately: this is the surface whose whole job is to say
+        // "this restaurant's data is NOT protected", so an untested branch here
+        // is one that renders a red condition as calm green text. The DB halves
+        // (backup-inventory.ts, backup-jobs.ts) stay out and are E2E targets,
+        // the same split as vies/vies-result and fleet's.
+        "lib/backup-contract.ts",
+        "lib/backup-health.ts",
+        "lib/backup-retention.ts",
+        "lib/backup-job-policy.ts",
+        "lib/backup-overview.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

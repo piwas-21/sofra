@@ -471,6 +471,7 @@
         "overview": "Overzicht",
         "signups": "Aanmeldingen",
         "fleet": "Vloot",
+        "backups": "Back-ups",
         "invoices": "Facturen",
         "icp": "ICP",
         "billingDetails": "Factuurgegevens",
@@ -800,6 +801,95 @@
           "errors": "{count} fouten"
         }
       },
+      "backups": {
+        "title": "Back-ups van tenants",
+        "intro": "Elke kopie die we van de gegevens van een restaurant hebben — en vooral: elk restaurant waarvan we géén recente kopie hebben.",
+        "thresholds": "Een restaurant heet verouderd na {stale} uur zonder nieuwe kopie en onbeschermd na {unprotected} uur. Gegevens van een vertrokken restaurant bewaren we {days} dagen.",
+        "attention": "{count} van de {total} restaurants vragen aandacht.",
+        "allProtected": "Alle {count} restaurants hebben een recente back-up.",
+        "registryUnavailable": "Het tenantregister kon niet worden gelezen, dus actieve restaurants en hun namen ontbreken in deze lijst: {error}",
+        "tenants": "{count} restaurants",
+        "empty": "Er is nog geen restaurant en geen kopie gemeld.",
+        "boxes": {
+          "title": "Servers",
+          "none": "Geen enkele server heeft ooit een inventaris gemeld, dus niets op deze pagina is actueel — controleer of de back-upagent is uitgerold. Een server heet stil na {hours} uur.",
+          "quiet": "Stil — al {hours} uur niets gemeld",
+          "reporting": "Meldt",
+          "artifacts": "{count} kopieën",
+          "lastReport": "laatste melding {date}"
+        },
+        "health": {
+          "protected": "Beschermd",
+          "stale": "Verouderd",
+          "unprotected": "ONBESCHERMD",
+          "never": "NOOIT GEBACKUPT"
+        },
+        "tenant": {
+          "notInRegistry": "Niet meer in het register — gegevens van een vertrokken restaurant",
+          "box": "server {box}",
+          "artifacts": "{count} kopieën",
+          "newest": "nieuwste is {hours} uur oud",
+          "newestNever": "er is nooit een kopie gemeld",
+          "localOnly": "Elke kopie staat op de server die dit restaurant draait. Een storing die de server meeneemt, neemt de back-up mee.",
+          "boxQuiet": "Server {box} meldt niets meer; deze cijfers zijn zijn laatste woord, niet de huidige stand."
+        },
+        "retention": {
+          "reason": {
+            "trialLapsed": "hun gratis periode is afgelopen",
+            "deprovisioned": "het restaurant is afgebroken",
+            "departed": "het restaurant bestaat niet meer"
+          },
+          "retained": "Bewaard omdat {reason} — we hebben hun gegevens nog tot {until}, nog {days} dagen.",
+          "expired": "Bewaard omdat {reason} — het venster sloot op {until}; de server heeft ze hoogstwaarschijnlijk al opgeruimd.",
+          "nothingHeld": "Bewaard omdat {reason} — maar we hebben helemaal geen kopie. Er valt niets terug te zetten."
+        },
+        "artifact": {
+          "kind": {
+            "SCHEDULED": "Nachtelijk",
+            "MANUAL": "Op verzoek",
+            "DEPROVISION": "Bij afbouw genomen",
+            "ARCHIVE": "Archief"
+          },
+          "location": {
+            "RESTIC": "Buiten de server, versleuteld",
+            "LOCAL": "Op de server"
+          }
+        },
+        "create": {
+          "button": "Nu back-uppen",
+          "pending": "In de wachtrij…",
+          "queued": "In de wachtrij voor {slug} — de server pakt hem bij de volgende ronde op, ongeveer vijf minuten."
+        },
+        "delete": {
+          "reveal": "Deze kopie verwijderen…",
+          "warning": "Dit vraagt de server deze kopie definitief te vernietigen. Er is geen weg terug.",
+          "warningLastCopy": "Dit is de ENIGE kopie van de gegevens van {slug}. Vernietigen is definitief en er is geen weg terug.",
+          "confirmLabel": "Typ {slug} om te bevestigen",
+          "reasonLabel": "Reden — vastgelegd in het auditlogboek",
+          "override": "Ja, vernietig de laatst overgebleven kopie van de gegevens van dit restaurant",
+          "confirm": "Verwijdering in de wachtrij zetten",
+          "pending": "In de wachtrij…",
+          "queued": "Verwijdering in de wachtrij voor {slug} — de server voert hem bij de volgende ronde uit."
+        },
+        "jobs": {
+          "title": "Werk in de wachtrij",
+          "empty": "Er is nog niets aan een server gevraagd.",
+          "deleteEnabled": "Verwijderen staat hier AAN. Bewaartermijnen op de server blijven de normale manier om kopieën te verwijderen.",
+          "deleteDisabled": "Verwijderen staat uit. Kopieën worden verwijderd door de bewaartermijn op de server — na te lezen in de deploy-repo en niet met één verkeerde klik af te vuren.",
+          "requestedBy": "aangevraagd door {name}",
+          "failed": "Mislukt: {error}",
+          "action": {
+            "CREATE": "Back-uppen",
+            "DELETE": "Verwijderen"
+          },
+          "status": {
+            "PENDING": "In de wachtrij",
+            "CLAIMED": "Bezig",
+            "DONE": "Klaar",
+            "FAILED": "Mislukt"
+          }
+        }
+      },
       "identity": {
         "title": "Facturatie-identiteit",
         "intro": "De rechtspersoon aan wie de facturen van deze tenant zijn gericht.",
@@ -976,6 +1066,16 @@
         "invalidOwnDomain": "Dat lijkt geen domein dat het restaurant zou kunnen bezitten — bijv. hetbistro.ch.",
         "ownDomainIsOurs": "Dat is een van onze eigen adressen. Kies dan liever de eerste optie.",
         "tenantExists": "Dit restaurant is al ingericht. Het adres kan nog veranderen, maar dat is een herbouw — vraag het ons hieronder."
+      },
+      "backup": {
+        "registryUnavailable": "Het tenantregister kon niet worden gelezen, dus is niet vast te stellen op welke server dit restaurant draait.",
+        "unknownTenant": "Dat restaurant staat niet in het register.",
+        "tooManyPending": "Die server heeft al zoveel werk in de wachtrij als is toegestaan. Laat hem eerst bijkomen.",
+        "deleteDisabled": "Het verwijderen van back-ups staat uit op deze omgeving.",
+        "confirmSlugMismatch": "De getypte slug hoort niet bij het restaurant van deze kopie.",
+        "reasonRequired": "Een reden is verplicht, en hij moet iets zeggen.",
+        "lastArtifact": "Dit is de enige kopie van de gegevens van dat restaurant. Vink de uitzondering aan als je het echt meent.",
+        "artifactNotFound": "Die kopie bestaat niet meer."
       }
     },
     "plan": {
