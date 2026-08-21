@@ -28,7 +28,11 @@ const JOBS = `/api/backups/jobs?box=${BOX}`;
 function agentSecret(): string {
   // A hard error, not a skip: without the secret every call would 401 and the
   // spec would report green having exercised nothing at all.
-  return required("BACKUP_AGENT_SECRET");
+  //
+  // PER BOX since ADR-014 D1a — `BACKUP_AGENT_SECRET_<BOX>` for the box this spec
+  // pushes as. There is no shared value to fall back on any more, which is the
+  // point: a bearer is an identity, not a pass.
+  return required("BACKUP_AGENT_SECRET_E2E_BACKUP_BOX");
 }
 
 const authHeaders = () => ({ Authorization: `Bearer ${agentSecret()}` });
