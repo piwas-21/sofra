@@ -822,7 +822,8 @@
           "protected": "Korunuyor",
           "stale": "Eskimiş",
           "unprotected": "KORUMASIZ",
-          "never": "HİÇ YEDEKLENMEDİ"
+          "never": "HİÇ YEDEKLENMEDİ",
+          "clusterDump": "Sunucunun tümünü kapsayan yedeğe dâhil"
         },
         "tenant": {
           "notInRegistry": "Artık kayıtta yok — ayrılmış bir restoran için saklanan veri",
@@ -830,7 +831,8 @@
           "artifacts": "{count} kopya",
           "newest": "en yenisi {hours} saatlik",
           "newestNever": "hiç kopya bildirilmedi",
-          "localOnly": "Bütün kopyalar bu restoranı çalıştıran sunucunun üzerinde. Sunucuyu götüren bir arıza yedeği de birlikte götürür.",
+          "clusterDumpOnly": "Bu restoran hiçbir zaman tek başına yedeklenmez — veritabanı, her gece sunucunun dışına gönderilen tüm sunucu yedeğinin içindedir. Burada restorana özel bir kopya hiçbir zaman görünmeyecek.",
+          "offBoxNotReported": "Aracı yalnızca sunucuda bulduklarını bildirir; bu yüzden sunucu dışındaki kopyalar bu listede görünmez. Gecelik yedek klasörü de sunucu dışındaki şifreli depoya gönderiliyor.",
           "boxQuiet": "{box} sunucusu artık bildirim yapmıyor; bu sayılar onun son sözü, bugünün durumu değil."
         },
         "retention": {

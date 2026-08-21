@@ -130,6 +130,50 @@ export function isSingleSiteOnly(facts: TenantBackupFacts): boolean {
   return facts.artifactCount > 0 && facts.offBoxCount === 0;
 }
 
+/**
+ * `managed: legacy` — the registry value for a tenant the box never dumps ON ITS
+ * OWN (tenant 1, ADR-006). `bk_registry_tenants` skips it and its database rides
+ * the whole-cluster dump instead, which is shipped off-box with the rest.
+ *
+ * Here rather than in the alarm because both the alarm and the PAGE need it and
+ * they must not be able to disagree: the alarm learned this on its first
+ * production run (ADR-014 D5) and went quiet about `rumi`, while the page kept
+ * rendering the same tenant red `never` — one fact, two answers, and the red one
+ * is the one that teaches a reader to ignore the colour.
+ */
+const NO_PER_TENANT_DUMP = "legacy";
+
+/**
+ * Is this tenant covered ONLY by the whole-cluster dump?
+ *
+ * Not a health state and deliberately not part of `backupHealth`: the health of
+ * a per-tenant artifact that will never exist is not `never`, it is a question
+ * that does not apply. Callers use this to stop asking it — the alarm to skip
+ * the row, the page to say what covers the tenant instead.
+ */
+export function isClusterDumpOnly(managed: string | null | undefined): boolean {
+  return managed?.toLowerCase() === NO_PER_TENANT_DUMP;
+}
+
+/** What the page needs to rank and count a row: its age verdict, and whether
+ *  that verdict applies to it at all. */
+export type RankedRow = { health: BackupHealth; clusterDumpOnly: boolean };
+
+/** Sort rank, worst first. A cluster-dump-only tenant ranks CALM whatever its
+ *  age says, because its age says nothing — ranking it by `never` would put the
+ *  one row nobody can act on above every row somebody can. */
+export function rowSeverity(row: RankedRow): number {
+  return row.clusterDumpOnly ? 0 : healthSeverity(row.health);
+}
+
+/** The page's headline count, excluding a cluster-dump-only tenant for the same
+ *  reason the ALARM's `expectsNightly` does (ADR-014 D5): its per-tenant verdict
+ *  is permanently, unfixably red. A headline reading "1 tenant needs attention"
+ *  beside a sweep that mails `healthy` teaches its reader to believe neither. */
+export function rowNeedsAttention(row: RankedRow): boolean {
+  return !row.clusterDumpOnly && needsAttention(row.health);
+}
+
 /** Has a box stopped reporting? `null` = it has never reported at all. */
 export function boxIsQuiet(lastReportAt: Date | null, now: Date): boolean {
   if (!lastReportAt) return true;

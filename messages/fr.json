@@ -822,7 +822,8 @@
           "protected": "Protégé",
           "stale": "Ancienne",
           "unprotected": "NON PROTÉGÉ",
-          "never": "JAMAIS SAUVEGARDÉ"
+          "never": "JAMAIS SAUVEGARDÉ",
+          "clusterDump": "Couvert par la sauvegarde globale du serveur"
         },
         "tenant": {
           "notInRegistry": "Absent du registre — données conservées pour un restaurant parti",
@@ -830,7 +831,8 @@
           "artifacts": "{count} copies",
           "newest": "la plus récente date de {hours} h",
           "newestNever": "aucune copie n'a jamais été signalée",
-          "localOnly": "Toutes les copies se trouvent sur le serveur qui héberge ce restaurant. Une panne qui emporte le serveur emporte la sauvegarde avec lui.",
+          "clusterDumpOnly": "Ce restaurant n'est jamais sauvegardé séparément — sa base de données fait partie de la sauvegarde globale du serveur, envoyée hors du serveur chaque nuit avec le reste. Rien de spécifique à ce restaurant n'apparaîtra jamais ici.",
+          "offBoxNotReported": "L'agent ne signale que ce qu'il trouve sur le serveur : les copies hors serveur manquent donc dans cette liste. Le dossier de sauvegarde nocturne est lui aussi envoyé dans le dépôt chiffré hors serveur.",
           "boxQuiet": "Le serveur {box} ne transmet plus : ces chiffres sont sa dernière parole, pas l'état actuel."
         },
         "retention": {

@@ -822,7 +822,8 @@
           "protected": "Protected",
           "stale": "Stale",
           "unprotected": "UNPROTECTED",
-          "never": "NEVER BACKED UP"
+          "never": "NEVER BACKED UP",
+          "clusterDump": "Covered by the cluster dump"
         },
         "tenant": {
           "notInRegistry": "No longer in the registry — data kept for a tenant that has left",
@@ -830,7 +831,8 @@
           "artifacts": "{count} artifacts",
           "newest": "newest is {hours}h old",
           "newestNever": "no artifact has ever been reported",
-          "localOnly": "Every copy sits on the box that runs this tenant. A failure that takes the box takes the backup with it.",
+          "clusterDumpOnly": "This tenant is never dumped on its own — its database is part of the whole-cluster dump, which is shipped off the box every night with the rest. Nothing per-tenant will ever be listed here.",
+          "offBoxNotReported": "The agent reports only what it finds on the box, so off-box copies are missing from this list. The nightly dump directory is shipped into the encrypted off-box repository as well.",
           "boxQuiet": "Box {box} has stopped reporting, so these figures are the last thing it told us rather than what is true now."
         },
         "retention": {
