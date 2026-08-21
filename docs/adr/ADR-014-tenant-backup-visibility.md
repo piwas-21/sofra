@@ -220,6 +220,25 @@ Both were structural — they would have fired every day forever. The run cost
 nothing and is the argument for dispatching a new alarm by hand rather than waiting
 for its first schedule.
 
+### D6 — Restore is NOT a button here, and that is the same decision as D1.
+
+The obvious next feature after "see the backups" is "press restore". It is not built,
+and the reason is not effort: a restore writes into a tenant's live database on a box,
+and **the control plane holds no credential that can reach a box** (D1, ADR-012
+invariant 2). Building it would mean either giving sofra that credential — the one
+thing this whole design exists to avoid — or routing it through the job queue, which
+would put *"overwrite this restaurant's live database"* on the same rail as *"take a
+backup"*, reachable from the public internet-facing container. The `delete` job is
+already shipped **disabled** for a weaker version of that argument (D3); an overwrite
+is strictly worse, because there is no second copy of what it replaces.
+
+So restore stays an on-box, deliberate act — `deploy/restore-tenant.sh`, which
+**rehearses into a throwaway database by default** and needs `--into <db> --force` to
+touch anything real, and whose weekly unmocked run (`backup-rehearsal.yml`) is what
+turns "we have a backup" from a hope into a measurement. What the control plane owes
+this flow is the ANSWER to *"do we still have their data, and until when?"* (D4) — and,
+since D5, the alarm when we would not. The founder then opens a terminal, on purpose.
+
 ## Privacy (D7)
 
 An inventory is **metadata, never contents**. No dump's contents enter this
