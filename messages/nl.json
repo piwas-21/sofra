@@ -1298,6 +1298,28 @@
       "recordValue": "Wijst naar",
       "recordValueUnknown": "We sturen je het adres waar het naartoe moet wijzen.",
       "footerNote": "Dit is een voorstel. SofraPiwas richt het restaurant in en bevestigt het adres."
+    },
+    "tenantDns": {
+      "title": "DNS voor dit adres",
+      "intro": "Deze records moeten bestaan voordat het adres kan werken. Zolang er één ontbreekt, krijgen we er geen certificaat voor en zien bezoekers een beveiligingswaarschuwing in plaats van het restaurant.",
+      "whoPartner": "Deze publiceert u zelf, in de DNS van {zone}.",
+      "whoRestaurant": "Deze publiceert het restaurant, daar waar de DNS van {zone} wordt beheerd.",
+      "recordType": "Type",
+      "recordName": "Naam",
+      "recordValue": "Wijst naar",
+      "recordTtl": "TTL",
+      "fqdnNote": "Sommige DNS-editors willen juist de volledige naam: {host}",
+      "valueUnknown": "Vraag ons om het adres — het is hier niet ingesteld.",
+      "aliasNote": "Een ouder adres dat blijft werken, zodat bestaande links en gedrukte QR-codes ergens uitkomen.",
+      "status": {
+        "ok": "Gepubliceerd, wijst naar ons",
+        "elsewhere": "Wijst ergens anders heen",
+        "missing": "Nog niet gepubliceerd",
+        "unknown": "Kon nu niet gecontroleerd worden"
+      },
+      "elsewhereNote": "We zien dat het naar {addresses} wijst. Zolang het niet naar het adres hieronder wijst, laadt het restaurant niet.",
+      "missingNote": "We zien dit record nog niet. Voeg het toe in uw DNS-editor — verspreiding duurt meestal een paar minuten.",
+      "footerNote": "DNS-wijzigingen hebben een paar minuten nodig. Dit paneel controleert opnieuw elke keer dat u de pagina opent."
     }
   },
   "signup": {

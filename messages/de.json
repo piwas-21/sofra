@@ -1298,6 +1298,28 @@
       "recordValue": "Zeigt auf",
       "recordValueUnknown": "Wir senden Ihnen die Adresse, auf die gezeigt werden soll.",
       "footerNote": "Das ist ein Vorschlag. SofraPiwas richtet das Restaurant ein und bestätigt die Adresse."
+    },
+    "tenantDns": {
+      "title": "DNS für diese Adresse",
+      "intro": "Diese Einträge müssen vorhanden sein, damit die Adresse funktioniert. Solange einer fehlt, bekommen wir kein Zertifikat dafür, und Besucher sehen eine Sicherheitswarnung statt des Restaurants.",
+      "whoPartner": "Diesen veröffentlichen Sie selbst, im DNS von {zone}.",
+      "whoRestaurant": "Diesen veröffentlicht das Restaurant, dort wo das DNS von {zone} verwaltet wird.",
+      "recordType": "Typ",
+      "recordName": "Name",
+      "recordValue": "Zeigt auf",
+      "recordTtl": "TTL",
+      "fqdnNote": "Manche DNS-Editoren wollen stattdessen den vollständigen Namen: {host}",
+      "valueUnknown": "Fragen Sie uns nach der Adresse — sie ist hier nicht hinterlegt.",
+      "aliasNote": "Eine ältere Adresse, die weiter funktioniert, damit bestehende Links und gedruckte QR-Codes nicht ins Leere führen.",
+      "status": {
+        "ok": "Veröffentlicht, zeigt auf uns",
+        "elsewhere": "Zeigt woandershin",
+        "missing": "Noch nicht veröffentlicht",
+        "unknown": "Konnte gerade nicht geprüft werden"
+      },
+      "elsewhereNote": "Wir sehen ihn auf {addresses} zeigen. Solange er nicht auf die untenstehende Adresse zeigt, lädt das Restaurant nicht.",
+      "missingNote": "Wir sehen diesen Eintrag noch nicht. Legen Sie ihn in Ihrem DNS-Editor an — die Verbreitung dauert meist ein paar Minuten.",
+      "footerNote": "DNS-Änderungen brauchen ein paar Minuten. Dieses Feld prüft bei jedem Öffnen der Seite neu."
     }
   },
   "signup": {

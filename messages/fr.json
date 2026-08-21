@@ -1298,6 +1298,28 @@
       "recordValue": "Pointe vers",
       "recordValueUnknown": "Nous vous enverrons l'adresse vers laquelle pointer.",
       "footerNote": "Ceci est une proposition. SofraPiwas prépare le restaurant et confirme l'adresse."
+    },
+    "tenantDns": {
+      "title": "DNS pour cette adresse",
+      "intro": "Ces enregistrements doivent exister pour que l'adresse fonctionne. Tant qu'il en manque un, nous ne pouvons pas obtenir de certificat et les visiteurs voient un avertissement de sécurité au lieu du restaurant.",
+      "whoPartner": "C'est à vous de le publier, dans la zone DNS de {zone}.",
+      "whoRestaurant": "C'est au restaurant de le publier, là où le DNS de {zone} est géré.",
+      "recordType": "Type",
+      "recordName": "Nom",
+      "recordValue": "Pointe vers",
+      "recordTtl": "TTL",
+      "fqdnNote": "Certains éditeurs DNS demandent plutôt le nom complet : {host}",
+      "valueUnknown": "Demandez-nous l'adresse — elle n'est pas configurée ici.",
+      "aliasNote": "Une ancienne adresse, maintenue en service pour que les liens existants et les QR codes imprimés mènent toujours quelque part.",
+      "status": {
+        "ok": "Publié, pointe vers nous",
+        "elsewhere": "Pointe ailleurs",
+        "missing": "Pas encore publié",
+        "unknown": "Vérification impossible pour l'instant"
+      },
+      "elsewhereNote": "Nous le voyons pointer vers {addresses}. Tant qu'il ne pointe pas vers l'adresse ci-dessous, le restaurant ne s'affichera pas.",
+      "missingNote": "Nous ne voyons pas encore cet enregistrement. Ajoutez-le dans votre éditeur DNS — la propagation prend généralement quelques minutes.",
+      "footerNote": "Les modifications DNS mettent quelques minutes à se propager. Ce panneau revérifie à chaque ouverture de la page."
     }
   },
   "signup": {
