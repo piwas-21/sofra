@@ -1,0 +1,85 @@
+name: backup-alert-cron
+
+# Tells a human that a restaurant's data is not protected (POST /api/cron/backup-alerts
+# on the live sofra). /admin/backups already knew — but a page is only read by someone
+# who already suspects, and the tenant that has silently fallen out of the nightly is
+# exactly the one nobody opens the page for.
+#
+# The sweep is idempotent by construction (audit-log marker + a signature of WHAT is
+# wrong), so it mails on a change, on a first occurrence, and then at most daily while
+# it stays true — never once per run. Safe to merge, safe to dispatch by hand.
+#
+# Setup (one-time, owner): the same shared bearer secret the other three crons use —
+# must equal CRON_SECRET in the box env for the request to authorize:
+#   gh secret set CRON_SECRET -R piwas-21/sofra
+# Until it is set, the job logs a warning and exits cleanly (sends nothing).
+# The mail goes to WAITLIST_TO in the box env; without it the job FAILS rather than
+# passing quietly, because an alarm with no recipient is worse than no alarm.
+
+on:
+  schedule:
+    # TWICE daily, ~05:47 and ~15:47 UTC. Both times are derived, not picked:
+    #  * the boxes dump at 02:15 and ship cross-box at 03:00, and the agent pushes its
+    #    inventory hourly — so by 05:47 the night's evidence is in.
+    #  * staleness is crossed 36h after a 02:15 nightly, i.e. at 14:15. A once-daily
+    #    morning sweep would sit on a fresh amber for fifteen hours; the afternoon run
+    #    catches it inside two. It costs nothing in mail: an unchanged situation is not
+    #    re-sent, and the reminder cadence is measured in hours, not in runs.
+    # The minute is offset from the other crons so no two sweeps contend for the same
+    # single-container database.
+    - cron: "47 5,15 * * *"
+  workflow_dispatch: {} # manual run for testing
+
+permissions:
+  contents: read
+
+concurrency:
+  # The marker is written AFTER the mail leaves, so two overlapping sweeps could both
+  # read "not yet said" for the same situation. The group makes a manual dispatch queue
+  # behind a scheduled run instead of racing it.
+  group: backup-alert-cron
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    name: alert on unprotected tenants
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: POST /api/cron/backup-alerts
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -uo pipefail
+          if [ -z "${CRON_SECRET}" ]; then
+            echo "::warning::CRON_SECRET not set — skipping (endpoint would 401)."
+            exit 0
+          fi
+          resp=$(curl -sS --max-time 60 --retry 2 --retry-delay 10 --retry-all-errors \
+            -X POST "https://sofrapiwas.com/api/cron/backup-alerts" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -w "\n%{http_code}")
+          code=$(printf '%s' "$resp" | tail -n1)
+          body=$(printf '%s' "$resp" | sed '$d')
+          echo "HTTP $code"
+          echo "$body"
+          {
+            echo "### Backup alert sweep"
+            echo "HTTP $code"
+            echo '```json'
+            echo "$body"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$code" != "200" ]; then
+            echo "::error::backup alert sweep failed (HTTP $code)"
+            exit 1
+          fi
+          # THE ALARM FOR THE ALARM. `skipped` means the sweep ran and could not do its
+          # job — an unreadable registry (it would have judged blind), no founder inbox,
+          # or a send that failed. Each one is silence where a mail was owed, so it must
+          # turn this run red rather than scroll past in a log nobody reads.
+          skipped=$(printf '%s' "$body" | jq -r '.skipped // empty')
+          if [ -n "$skipped" ]; then
+            echo "::error::backup alert sweep could not alert: ${skipped}"
+            exit 1
+          fi

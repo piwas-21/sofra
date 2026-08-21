@@ -120,6 +120,43 @@ and every date shown is derived from an artifact we actually hold, so the worst
 case is under-promising about a copy the box still has. A tenant we hold **zero**
 artifacts for is told "there is nothing to restore" — never given a window.
 
+### D5 — The page shouts; a twice-daily sweep is what reaches a human.
+
+D2 says the product is the tenant that is NOT there. That was half-built: a page is
+only opened by someone who already suspects, and the tenant that has silently
+fallen out of the nightly is exactly the one nobody thinks to look for. So the same
+verdicts are swept twice a day (`POST /api/cron/backup-alerts`, CRON_SECRET bearer,
+`.github/workflows/backup-alert-cron.yml`) and mailed to the founder inbox.
+
+Four decisions carry it, and all four are about an alarm that stays worth reading:
+
+1. **It alerts only where a nightly is EXPECTED.** A registry entry that is
+   `retired`, `deprovisioned`, `archived` or still `provisioning` is skipped — a
+   departed tenant's copies are an archive by design (D4) and are permanently,
+   unfixably `unprotected` to an age rule. Alerting on them would produce a red
+   mail nobody can ever act on, which is how an alarm gets muted. An **unknown**
+   status is watched, not skipped: a registry typo must make this noisier, never
+   quieter.
+2. **It is keyed on a SIGNATURE of what is wrong, not on the run.** The marker is
+   an audit row (`backup.alert.raised` / `.cleared` on `Platform/backups`) carrying
+   a readable signature — `critical|rumi:unprotected|quiet:prod`. The same news is
+   not re-sent; a *changed* situation is; an unchanged one is repeated at most
+   daily while red and every three days while amber. Ages are deliberately absent
+   from the signature, or every run would look like news.
+3. **It closes its own loop.** One all-clear when everything recovers, then
+   silence. An alarm you never hear the end of is one that gets filtered.
+4. **An unreadable registry STOPS it.** The page degrades instead of blanking,
+   which is right for a page. For the alarm it would be catastrophic: with no
+   registry no tenant is "expected" any more, the concern list empties, and it
+   would mail a cheerful all-clear at the moment it went blind. So a registry
+   fault — like a missing recipient or a send that failed — sends nothing, writes
+   no marker, and is reported as `skipped`, **on which the workflow fails its
+   run**. That red Action is the alarm for the alarm.
+
+A failed send writes **no** marker, the opposite of the trial-warning sweep
+(re-mailing a *partner* is the worse mistake; here the recipient is the founder and
+the subject is data loss, so a retry beats a silence).
+
 ## Privacy (D7)
 
 An inventory is **metadata, never contents**. No dump's contents enter this
@@ -146,4 +183,12 @@ of personal data, but it is a new *location*.
   key: artifacts are kept for tenants with no registry entry, which is precisely
   the departed customer this feature exists for. A FK would delete them.
 - If a box agent is never deployed, the page says so loudly (no box has ever
-  reported) rather than rendering an empty, reassuring list.
+  reported) rather than rendering an empty, reassuring list — and since D5 the
+  sweep mails that exact sentence, because "no box has ever reported" and "no
+  backups yet" look identical from the outside.
+- The page and the sweep read the database through ONE loader
+  (`lib/backup-overview-load.ts`). Two copies of that query would eventually
+  disagree, and the failure is silent: the page red, the mail green.
+- Alerting adds no privilege and no new credential. It reads what is already
+  stored and writes an audit row; the box is still the only side that can reach
+  data.
