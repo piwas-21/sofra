@@ -1409,7 +1409,7 @@
       },
       "keep": {
         "title": "Durée de conservation",
-        "body": "Les factures, et les informations de facturation qui y figurent, sont conservées pendant la durée imposée par le droit fiscal néerlandais. Les journaux de connexion et d'administration sont conservés 18 mois. Une candidature de partenaire refusée est conservée 12 mois, puis supprimée. Les liens d'invitation expirent et sont supprimés après 30 jours. Les comptes et fiches CRM sont conservés le temps de la relation et supprimés sur demande — aucune échéance automatique ne s'y applique."
+        "body": "Les factures, et les informations de facturation qui y figurent, sont conservées pendant la durée imposée par le droit fiscal néerlandais. Les journaux de connexion et d'administration sont conservés 18 mois. Une candidature de partenaire refusée est conservée 12 mois, puis supprimée. Les liens d'invitation expirent et sont supprimés après 30 jours. Les comptes et fiches CRM sont conservés le temps de la relation et supprimés sur demande — aucune échéance automatique ne s'y applique. Si votre restaurant nous quitte — y compris à la fin d'une période d'essai gratuite — nous conservons une sauvegarde chiffrée de ses données pendant 24 mois, afin que vous puissiez reprendre là où vous en étiez si vous revenez. Vous pouvez nous demander de la supprimer plus tôt, et nous le ferons."
       },
       "rights": {
         "title": "Vos droits",
