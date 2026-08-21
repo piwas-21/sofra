@@ -51,6 +51,37 @@ endpoints sharing one bearer secret (`BACKUP_AGENT_SECRET`), the same posture as
 Latency is one poll (~5 minutes) and that is accepted: a backup is not
 interactive, and nothing on this page is an action where five minutes matters.
 
+### D1a — One credential per BOX, not per environment.
+
+The three endpoints shipped with ONE shared `BACKUP_AGENT_SECRET`, held by both
+boxes. That is one credential for two principals, and it quietly undid the rule
+`DEPLOYMENT.md` states about its own SSH keys — *"Staging never gets a key to prod
+— no privilege-escalation path from the weaker box to the client box"* — because
+through the control plane there was one. A compromise of the staging box yielded a
+bearer that could **push an inventory FOR PROD**, and the push **PRUNES what it
+stops listing** (D1), so it could erase the control plane's entire record of the
+paying tenant's backups; it could also **lease away prod's jobs** and answer for
+them. Neither destroys a backup — deletion is a per-box opt-in on the box itself —
+but both make the one surface that answers *"is this restaurant's data safe?"* lie,
+including the alarm added in D5.
+
+So the bearer names a box: **`BACKUP_AGENT_SECRET_<BOX>`** (uppercased, `-` → `_`),
+and every endpoint checks that the box the caller claims — in the body, in the
+query, or on the job row — is the box it authenticated as. A mismatch is **403**
+("the credential is real, it is simply not yours") except on a job result, which
+answers **404**: a box that does not own a job may not learn that it exists.
+
+**The box side needs no change at all.** Each box already reads its own `.env`, so
+per-box secrets are simply different values under the same name there; only the
+control plane learns more than one. The legacy shared secret is still accepted, as
+ANY box, and is removed in a follow-up once both per-box values are set and both
+agents have been observed pushing — shipping the strict form alone would require
+the code and both boxes' `.env` to change in the same instant, and the failure mode
+of getting that wrong is every box going silent, which D5 reads as unprotected.
+
+An **ambiguous** credential (two boxes configured with the same value) authenticates
+as nothing: picking one would make an identity depend on object key order.
+
 ### D2 — The page's product is the tenant that is NOT there.
 
 A backup page that lists successes is how people find out too late. `/admin/backups`

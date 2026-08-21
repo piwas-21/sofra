@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
-import { bearerAuthorized } from "@/lib/cron-auth";
+import { authenticatedBox, backupAgentConfigured, boxAuthorized } from "@/lib/backup-agent-auth";
 import { backupBoxQuerySchema } from "@/lib/backup-contract";
 import { claimJobsForBox } from "@/lib/backup-jobs";
 
-// The box PULLS its work from here. Bearer-authed with BACKUP_AGENT_SECRET; no
+// The box PULLS its work from here. Bearer-authed PER BOX
+// (`BACKUP_AGENT_SECRET_<BOX>`, the shared `BACKUP_AGENT_SECRET` still accepted
+// during the rollout) — a box may claim only its OWN jobs, because claiming LEASES
+// them and a lease taken by the wrong box is work the right one never runs; no
 // session path, and no RBAC bypass through it — nothing a founder can do on
 // /admin/backups is reachable on this route, and nothing here reads a cookie.
 //
@@ -27,16 +30,20 @@ import { claimJobsForBox } from "@/lib/backup-jobs";
 // re-offered.
 
 export async function GET(request: Request) {
-  if (!process.env.BACKUP_AGENT_SECRET) {
+  if (!backupAgentConfigured()) {
     return NextResponse.json({ error: "backup jobs not configured" }, { status: 503 });
   }
-  if (!bearerAuthorized(request, process.env.BACKUP_AGENT_SECRET)) {
+  const agent = authenticatedBox(request);
+  if (!agent) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
   const box = backupBoxQuerySchema.safeParse(new URL(request.url).searchParams.get("box"));
   if (!box.success) {
     return NextResponse.json({ error: "box is required" }, { status: 400 });
+  }
+  if (!boxAuthorized(agent, box.data)) {
+    return NextResponse.json({ error: "box mismatch" }, { status: 403 });
   }
 
   const jobs = await claimJobsForBox(box.data);
