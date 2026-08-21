@@ -69,6 +69,17 @@ E2E_PARTNER_PASSWORD="$(openssl rand -hex 12)"; export E2E_PARTNER_PASSWORD
 # /api/cron/* answers 503 and the spec would assert nothing; a fresh random value
 # per run keeps it out of the repo and out of any scanner's way.
 CRON_SECRET="$(openssl rand -hex 16)"; export CRON_SECRET
+# The backup agent's bearer (ADR-014), for the /admin/backups spec. Without it all
+# three machine endpoints answer 503 and the spec HARD-ERRORS rather than skipping —
+# a 401-everywhere run would report green having verified nothing. Fresh and random
+# per run, like the rest: a constant here is a secret-scanner hit that teaches people
+# to ignore the scanner.
+BACKUP_AGENT_SECRET="$(openssl rand -hex 16)"; export BACKUP_AGENT_SECRET
+# DESTRUCTIVE, and OFF in production by decision (lib/backup-job-policy.ts). It is on
+# HERE, and only here, because the guards are the feature: the last-copy refusal and
+# the typed-slug check cannot be proven end to end against a surface that does not
+# render. The spec asserts the refusals, not a successful destruction.
+export BACKUP_DELETE_ENABLED=true
 # The suite's own registry, not the sibling deploy repo: `taken` needs a
 # known-occupied slug, and an ABSENT registry is not neutral — since O2 an
 # unreadable one makes the signup fail closed.

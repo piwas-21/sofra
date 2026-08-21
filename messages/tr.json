@@ -471,6 +471,7 @@
         "overview": "Genel bakış",
         "signups": "Kayıtlar",
         "fleet": "Filo",
+        "backups": "Yedekler",
         "invoices": "Faturalar",
         "icp": "ICP",
         "billingDetails": "Fatura bilgileri",
@@ -800,6 +801,95 @@
           "errors": "{count} hata"
         }
       },
+      "backups": {
+        "title": "Kiracı yedekleri",
+        "intro": "Bir restoranın verisinden elimizde tuttuğumuz her kopya — ve önce, güncel bir kopyasını tutmadığımız her restoran.",
+        "thresholds": "Yeni kopya gelmeden {stale} saat geçen restoran «eskimiş», {unprotected} saat geçen «korumasız» sayılır. Ayrılan bir restoranın verisi {days} gün saklanır.",
+        "attention": "{total} restorandan {count} tanesi ilgi bekliyor.",
+        "allProtected": "{count} restoranın hepsinin güncel bir yedeği var.",
+        "registryUnavailable": "Kiracı kaydı okunamadı; bu yüzden yayında olan restoranlar ve adları bu listede eksik: {error}",
+        "tenants": "{count} restoran",
+        "empty": "Henüz hiçbir restoran ve hiçbir kopya bildirilmedi.",
+        "boxes": {
+          "title": "Sunucular",
+          "none": "Hiçbir sunucu bugüne dek envanter bildirmedi; dolayısıyla bu sayfadaki hiçbir bilgi güncel değil — yedekleme aracının kurulu olduğunu doğrulayın. Bir sunucu {hours} saat sonra sessiz sayılır.",
+          "quiet": "Sessiz — {hours} saattir hiçbir şey bildirmedi",
+          "reporting": "Bildiriyor",
+          "artifacts": "{count} kopya",
+          "lastReport": "son bildirim {date}"
+        },
+        "health": {
+          "protected": "Korunuyor",
+          "stale": "Eskimiş",
+          "unprotected": "KORUMASIZ",
+          "never": "HİÇ YEDEKLENMEDİ"
+        },
+        "tenant": {
+          "notInRegistry": "Artık kayıtta yok — ayrılmış bir restoran için saklanan veri",
+          "box": "sunucu {box}",
+          "artifacts": "{count} kopya",
+          "newest": "en yenisi {hours} saatlik",
+          "newestNever": "hiç kopya bildirilmedi",
+          "localOnly": "Bütün kopyalar bu restoranı çalıştıran sunucunun üzerinde. Sunucuyu götüren bir arıza yedeği de birlikte götürür.",
+          "boxQuiet": "{box} sunucusu artık bildirim yapmıyor; bu sayılar onun son sözü, bugünün durumu değil."
+        },
+        "retention": {
+          "reason": {
+            "trialLapsed": "ücretsiz dönemleri bittiği",
+            "deprovisioned": "restoran kapatıldığı",
+            "departed": "restoran artık var olmadığı"
+          },
+          "retained": "{reason} için saklanıyor — verileri {until} tarihine kadar, yani {days} gün daha bizde.",
+          "expired": "{reason} için saklanıyordu — süre {until} tarihinde doldu; sunucu büyük olasılıkla çoktan temizledi.",
+          "nothingHeld": "{reason} için saklanıyor — ama elimizde hiçbir kopya yok. Geri yüklenecek bir şey bulunmuyor."
+        },
+        "artifact": {
+          "kind": {
+            "SCHEDULED": "Gecelik",
+            "MANUAL": "İstek üzerine",
+            "DEPROVISION": "Kapatılırken alınan",
+            "ARCHIVE": "Arşiv"
+          },
+          "location": {
+            "RESTIC": "Sunucu dışı, şifreli",
+            "LOCAL": "Sunucunun üzerinde"
+          }
+        },
+        "create": {
+          "button": "Şimdi yedekle",
+          "pending": "Sıraya alınıyor…",
+          "queued": "{slug} için sıraya alındı — sunucu bir sonraki yoklamasında, yaklaşık beş dakika içinde alacak."
+        },
+        "delete": {
+          "reveal": "Bu kopyayı sil…",
+          "warning": "Bu, sunucudan bu kopyayı kalıcı olarak yok etmesini ister. Geri dönüşü yoktur.",
+          "warningLastCopy": "Bu, {slug} verisinin TEK kopyası. Yok etmek kalıcıdır ve geri dönüşü yoktur.",
+          "confirmLabel": "Onaylamak için {slug} yazın",
+          "reasonLabel": "Gerekçe — denetim kaydına yazılır",
+          "override": "Evet, bu restoranın verisinin kalan son kopyasını yok et",
+          "confirm": "Silmeyi sıraya al",
+          "pending": "Sıraya alınıyor…",
+          "queued": "{slug} için silme sıraya alındı — sunucu bir sonraki yoklamasında uygulayacak."
+        },
+        "jobs": {
+          "title": "Sıradaki işler",
+          "empty": "Henüz bir sunucudan hiçbir şey istenmedi.",
+          "deleteEnabled": "Silme burada AÇIK. Kopyaların normal yoldan kaldırılması yine sunucudaki saklama kuralıyla olur.",
+          "deleteDisabled": "Silme kapalı. Kopyalar sunucudaki saklama kuralıyla kaldırılır — deploy deposunda gözden geçirilebilir ve yanlış bir tıklamayla tetiklenemez.",
+          "requestedBy": "isteyen {name}",
+          "failed": "Başarısız: {error}",
+          "action": {
+            "CREATE": "Yedekle",
+            "DELETE": "Sil"
+          },
+          "status": {
+            "PENDING": "Sırada",
+            "CLAIMED": "Sürüyor",
+            "DONE": "Bitti",
+            "FAILED": "Başarısız"
+          }
+        }
+      },
       "identity": {
         "title": "Fatura kimliği",
         "intro": "Bu kiracının faturalarının düzenlendiği tüzel kişilik.",
@@ -976,6 +1066,16 @@
         "invalidOwnDomain": "Bu, restoranın sahip olabileceği bir alan adına benzemiyor — örn. bistro.ch.",
         "ownDomainIsOurs": "Bu bizim kendi adreslerimizden biri. Bunun yerine ilk seçeneği seçin.",
         "tenantExists": "Bu restoran zaten kurulmuş. Adresi hâlâ değişebilir ama bu yeniden kurulum demek — aşağıdan bize sorun."
+      },
+      "backup": {
+        "registryUnavailable": "Kiracı kaydı okunamadı; bu restoranın hangi sunucuda olduğunu söylemenin bir yolu yok.",
+        "unknownTenant": "Bu restoran kayıtta yok.",
+        "tooManyPending": "O sunucunun sırasında izin verilen kadar iş zaten var. Yetişmesini bekleyin.",
+        "deleteDisabled": "Bu ortamda yedek silme kapalı.",
+        "confirmSlugMismatch": "Yazılan kısa ad bu kopyanın restoranıyla eşleşmiyor.",
+        "reasonRequired": "Gerekçe zorunlu ve bir şey söylemesi gerekiyor.",
+        "lastArtifact": "Bu, o restoranın verisinin tek kopyası. Gerçekten istiyorsanız istisnayı işaretleyin.",
+        "artifactNotFound": "O kopya artık mevcut değil."
       }
     },
     "plan": {

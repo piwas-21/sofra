@@ -442,6 +442,11 @@ jobs:
       # addresses from every signup the suite performs.
       RESEND_API_KEY: ""
       WAITLIST_TO: e2e-founder@example.com
+      # DESTRUCTIVE, and off in production by decision (lib/backup-job-policy.ts).
+      # On here, and only here, because the guards ARE the feature: the last-copy
+      # refusal and the typed-slug check cannot be proven end to end against a
+      # surface that does not render. The spec asserts the refusals.
+      BACKUP_DELETE_ENABLED: "true"
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -494,6 +499,10 @@ jobs:
             # trial-warning spec reads it from the environment and hard-ERRORS
             # without it — a 401 that skips would verify nothing.
             echo "CRON_SECRET=$(openssl rand -hex 16)"
+            # The backup agent's bearer (ADR-014). Same reasoning as CRON_SECRET:
+            # the /admin/backups spec reads it and hard-ERRORS without it, since a
+            # run that 401s on every call would verify nothing while exiting 0.
+            echo "BACKUP_AGENT_SECRET=$(openssl rand -hex 16)"
           } >> "$GITHUB_ENV"
       - name: Apply migrations
         run: node_modules/.bin/prisma migrate deploy
