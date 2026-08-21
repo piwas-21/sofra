@@ -165,6 +165,34 @@ describe("determineTaxTreatment — country handling", () => {
     }
   });
 
+  it("stops on a well-formed code that is not a country, instead of zero-rating it", () => {
+    // The defect this rule was written for. `SW` is not assigned to anything, so
+    // every EU test below it is false and the old code answered OUTSIDE_SCOPE at
+    // 0% — with a confident reason naming a country that does not exist. For the
+    // Swiss buyer it was stored on, the verdict was right and the evidence was
+    // wrong; for a mistyped EU country it would be an immutable under-charge.
+    for (const buyerCountry of ["SW", "UK", "XX", "QQ"]) {
+      const result = determineTaxTreatment(sale({ buyerCountry }));
+      expect(result.treatment, buyerCountry).toBe("NEEDS_REVIEW");
+      expect(result.rateBps, buyerCountry).toBeNull();
+      expect(result.reason, buyerCountry).toContain("not an assigned ISO 3166-1 code");
+    }
+  });
+
+  it("keeps Switzerland outside the scope once it is spelled CH", () => {
+    // The same customer, correctly recorded: still 0%, but now on a country the
+    // reason can name and an auditor can check.
+    const result = determineTaxTreatment(sale({ buyerCountry: "CH" }));
+    expect(result.treatment).toBe("OUTSIDE_SCOPE");
+    expect(result.rateBps).toBe(0);
+  });
+
+  it("says a missing country is missing, rather than calling it unassigned", () => {
+    expect(determineTaxTreatment(sale({ buyerCountry: "" })).reason).toBe(
+      "buyer country is missing",
+    );
+  });
+
   it("stops if the seller is not NL — the whole matrix is Dutch-establishment law", () => {
     const result = determineTaxTreatment(sale({ sellerCountry: "BE" }));
     expect(result.treatment).toBe("NEEDS_REVIEW");

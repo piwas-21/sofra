@@ -58,6 +58,15 @@ describe("isInvoiceable", () => {
       expect(isInvoiceable(facts({ countryCode })), countryCode).toBe(false);
     }
   });
+
+  it("refuses two letters that name no country, however well-formed", () => {
+    // The stored value that prompted this: `SW` for Switzerland. It passed the
+    // shape test, so the row was invoiceable and the invoice printed a country
+    // code that no register knows.
+    for (const countryCode of ["SW", "UK", "XX", "EL"]) {
+      expect(isInvoiceable(facts({ countryCode })), countryCode).toBe(false);
+    }
+  });
 });
 
 describe("nextVatStatus — an outage must never erase a proven VALID", () => {
@@ -207,6 +216,22 @@ describe("billingIdentitySchema", () => {
         false,
       );
     }
+  });
+
+  it("rejects two letters that are not a country — the live SW defect", () => {
+    // `SW` sat on the one reseller identity in production for nine days: it has
+    // the right shape, it is assigned to nothing, and it decides the tax
+    // treatment. The old `/^[A-Z]{2}$/` accepted it.
+    for (const countryCode of ["SW", "UK", "XX", "QQ", "EL"]) {
+      expect(billingIdentitySchema.safeParse({ ...valid, countryCode }).success, countryCode).toBe(
+        false,
+      );
+    }
+  });
+
+  it("accepts the country that one was meant to be", () => {
+    const parsed = billingIdentitySchema.safeParse({ ...valid, countryCode: "ch" });
+    expect(parsed.success && parsed.data.countryCode).toBe("CH");
   });
 
   it("does NOT format-check the VAT number", () => {

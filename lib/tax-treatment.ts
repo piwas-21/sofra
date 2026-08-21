@@ -23,6 +23,7 @@
 // `nlVat` — rather than a guess or a permanent stall. See it below.
 
 import { isEuVatPrefix } from "@/lib/vat-number";
+import { isAssignedCountryCode } from "@/lib/country-code";
 import { OUTSIDE_SCOPE_NOTE, REVERSE_CHARGE_NOTE } from "@/lib/tax-notes";
 import { euUnverifiedTreatment } from "@/lib/eu-no-vat";
 
@@ -115,8 +116,24 @@ export function determineTaxTreatment(input: TaxTreatmentInput): TaxTreatmentRes
   if (seller !== "NL") {
     return needsReview(`seller country ${seller || "(unset)"} is not modelled — only NL is`);
   }
-  if (!/^[A-Z]{2}$/.test(buyer)) {
-    return needsReview("buyer country is missing or not a 2-letter ISO code");
+  // MEMBERSHIP, not shape. A two-letter code that ISO assigns to nothing is not
+  // "outside the EU" — it is unreadable, and the difference is the whole point:
+  // the shape test let `SW` (a live row, meant as Switzerland) fall past every
+  // EU branch below and be answered OUTSIDE_SCOPE at 0% with a confident reason.
+  // For a Swiss buyer that verdict is right and the evidence is wrong; mistype an
+  // EU country into an unassigned code and the same path issues an immutable 0%
+  // invoice to a customer who owed 21% or a reverse charge. Stopping is the only
+  // safe reading of a country we cannot identify.
+  // `EL` is the exception and stays one: it is Greece's VAT prefix rather than an
+  // ISO country code, and callers have always been allowed to spell Greece either
+  // way here (see the EU test below). Accepting it in the readability check keeps
+  // that contract; adding it to the country LIST would have made it a country.
+  if (!isAssignedCountryCode(buyer) && buyer !== "EL") {
+    return needsReview(
+      buyer
+        ? `buyer country ${buyer} is not an assigned ISO 3166-1 code`
+        : "buyer country is missing",
+    );
   }
 
   if (buyer === "NL") {
