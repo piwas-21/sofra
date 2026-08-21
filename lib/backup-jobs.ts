@@ -110,13 +110,21 @@ export type JobCompletion = "recorded" | "notFound";
  *
  * Idempotent: re-POSTing a result for a finished job overwrites the same values.
  * The box may retry a result it is unsure landed, and it must be able to.
+ *
+ * `mayComplete` is the caller's per-box authorization, applied AFTER the lookup
+ * and reported as `notFound`: a box that does not own a job may not learn that it
+ * exists. It lives here rather than in the route because the job's box is not
+ * knowable until the row is read, and an authorization check that the caller could
+ * forget to make is one that will eventually be forgotten.
  */
 export async function completeJob(
   id: string,
   result: BackupJobResult,
+  mayComplete: (job: { box: string }) => boolean = () => true,
 ): Promise<JobCompletion> {
   const job = await db.backupJob.findUnique({ where: { id } });
   if (!job) return "notFound";
+  if (!mayComplete(job)) return "notFound";
 
   await db.$transaction(async (tx) => {
     await tx.backupJob.update({

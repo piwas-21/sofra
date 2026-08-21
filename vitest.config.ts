@@ -123,6 +123,11 @@ export default defineConfig({
         // Both are decidable here, and nowhere else.
         "lib/backup-alert-policy.ts",
         "lib/backup-alert-cadence.ts",
+        // One credential per PRINCIPAL. In scope because the branch that matters —
+        // "this bearer is real but it is not that box's" — is the difference
+        // between a compromised staging box being contained and it being able to
+        // erase the control plane's record of the paying tenant's backups.
+        "lib/backup-agent-auth.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

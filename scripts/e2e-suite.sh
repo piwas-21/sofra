@@ -75,6 +75,11 @@ CRON_SECRET="$(openssl rand -hex 16)"; export CRON_SECRET
 # per run, like the rest: a constant here is a secret-scanner hit that teaches people
 # to ignore the scanner.
 BACKUP_AGENT_SECRET="$(openssl rand -hex 16)"; export BACKUP_AGENT_SECRET
+# A SECOND box's credential, for the per-box binding spec: it is a real, valid agent
+# secret that simply belongs to another box. That is the only way to prove the thing
+# that matters — that a valid bearer cannot act as a box it is not — and a wrong
+# token cannot prove it, because a wrong token is refused for the ordinary reason.
+BACKUP_AGENT_SECRET_E2E_OTHER_BOX="$(openssl rand -hex 16)"; export BACKUP_AGENT_SECRET_E2E_OTHER_BOX
 # DESTRUCTIVE, and OFF in production by decision (lib/backup-job-policy.ts). It is on
 # HERE, and only here, because the guards are the feature: the last-copy refusal and
 # the typed-slug check cannot be proven end to end against a surface that does not
