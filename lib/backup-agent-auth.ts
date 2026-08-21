@@ -28,17 +28,14 @@
 
 import { bearerAuthorized } from "@/lib/cron-auth";
 
-/**
- * The legacy shared secret authenticates as **any** box.
- *
- * Kept deliberately for the rollout: shipping the strict form alone would mean the
- * code and both boxes' `.env` had to change in the same instant, and the failure
- * mode of getting that wrong is every box going silent — the exact state the alarm
- * reads as "unprotected". With this, the order is safe in any sequence, and the
- * fallback is removed in a follow-up once both per-box values are set and both
- * agents have been observed pushing.
- */
-export const ANY_BOX = "*";
+// The shared `BACKUP_AGENT_SECRET` fallback is GONE (2026-08-21), on schedule and
+// on evidence: it existed only so the code and both boxes' `.env` did not have to
+// change in the same instant, and it was removed the moment both agents had been
+// observed pushing with their own bearer (`BackupInventory.receivedAt` moving for
+// `prod` and `staging`, and a cross-box call refused 403 from both directions,
+// measured against production). While it existed, the old value — the one BOTH
+// boxes held — still authenticated as any box, so leaving it in place would have
+// left the whole hole open behind a closed door.
 
 const PREFIX = "BACKUP_AGENT_SECRET_";
 
@@ -54,7 +51,6 @@ type Env = Record<string, string | undefined>;
  *  keeps "not configured" and "wrong token" distinguishable to an operator
  *  without being distinguishable to a caller. */
 export function backupAgentConfigured(env: Env = process.env): boolean {
-  if (env.BACKUP_AGENT_SECRET) return true;
   return Object.entries(env).some(([k, v]) => k.startsWith(PREFIX) && !!v);
 }
 
@@ -66,15 +62,15 @@ export function backupAgentConfigured(env: Env = process.env): boolean {
  * identity that depends on `Object.keys` ordering. If more than one matches, the
  * request is refused: an ambiguous credential is not an identity.
  *
- * `ANY_BOX` means the legacy shared secret was presented (see above).
+ * A box whose secret this control plane does not hold gets `null` — 401 — and then
+ * goes quiet, which the backup alarm reports (D5). That is the intended failure
+ * mode for a new box nobody configured: loud, and in the surface built to be loud.
  */
 export function authenticatedBox(request: Request, env: Env = process.env): string | null {
   const matches = Object.entries(env)
     .filter(([k, v]) => k.startsWith(PREFIX) && !!v && bearerAuthorized(request, v))
     .map(([k]) => k.slice(PREFIX.length).toLowerCase());
-  if (matches.length > 1) return null;
-  if (matches.length === 1) return matches[0];
-  return bearerAuthorized(request, env.BACKUP_AGENT_SECRET) ? ANY_BOX : null;
+  return matches.length === 1 ? matches[0] : null;
 }
 
 /**
@@ -87,7 +83,6 @@ export function authenticatedBox(request: Request, env: Env = process.env): stri
  */
 export function boxAuthorized(authenticated: string | null, claimed: string): boolean {
   if (!authenticated) return false;
-  if (authenticated === ANY_BOX) return true;
   const norm = (s: string) => s.trim().toLowerCase().replace(/[^a-z0-9]/g, "_");
   return norm(authenticated) === norm(claimed);
 }

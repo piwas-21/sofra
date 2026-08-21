@@ -73,11 +73,20 @@ answers **404**: a box that does not own a job may not learn that it exists.
 
 **The box side needs no change at all.** Each box already reads its own `.env`, so
 per-box secrets are simply different values under the same name there; only the
-control plane learns more than one. The legacy shared secret is still accepted, as
-ANY box, and is removed in a follow-up once both per-box values are set and both
-agents have been observed pushing — shipping the strict form alone would require
-the code and both boxes' `.env` to change in the same instant, and the failure mode
-of getting that wrong is every box going silent, which D5 reads as unprotected.
+control plane learns more than one.
+
+The legacy shared secret was accepted for exactly as long as the rollout needed —
+shipping the strict form alone would have required the code and both boxes' `.env`
+to change in the same instant, and the failure mode of getting that wrong is every
+box going silent, which D5 reads as unprotected. It was **retired the same day**
+(2026-08-21), on evidence rather than on a date: both agents observed pushing with
+their own bearer, and a cross-box call refused **403 from both directions** against
+production. Leaving it would have kept the whole hole open behind a closed door,
+because the retired value is the one value BOTH boxes hold.
+
+A box whose per-box secret this control plane does not hold gets **401**, and then
+goes **quiet** — which D5 reports. That is the intended failure mode for a new box
+nobody configured: loud, in the surface built to be loud.
 
 An **ambiguous** credential (two boxes configured with the same value) authenticates
 as nothing: picking one would make an identity depend on object key order.
