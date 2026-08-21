@@ -79,6 +79,20 @@ tenants:
     modules: [core, reservations, online-payments]
     template: craft
     stripe_account: acct_1E2ePartnerLive
+  # The ordinary case, and the one the DNS panel must stay SILENT about: a tenant on
+  # our own base domain rides the `*.sofrapiwas.com` wildcard and needs no record.
+  # Asking a partner to publish one would send him to break something that works.
+  e2e-partner-ours:
+    name: E2E Partner Ours Restaurant
+    status: active
+    managed: sofra
+    box: staging
+    domain: e2e-partner-ours.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_e2e_partner_ours
+    languages: [en]
+    modules: [core]
+
   e2e-partner-note:
     name: E2E Partner Note Restaurant
     status: active
@@ -139,6 +153,10 @@ tenants:
     modules: [core]
   # A partner-zone entry, so `lib/tenant-registry.ts` parsing `base_domain` is asserted
   # against a real fixture rather than only in a unit test. Nothing here is provisioned.
+  # It also drives the partner's DNS panel, which is the only surface that has to tell
+  # a human which record to publish — hence the alias below: an address the tenant was
+  # moved OFF, kept as a 301. It rides OUR wildcard, so the panel must NOT list it, and
+  # that silence is asserted in partner-tenant-dns.spec.ts.
   e2e-partner-zone:
     name: E2E Partner Zone Restaurant
     status: active
@@ -147,6 +165,7 @@ tenants:
     domain: e2e-partner-zone.solutioneva.example
     domain_mode: subdomain
     base_domain: solutioneva.example
+    domain_aliases: [e2e-partner-zone.sofrapiwas.com]
     db: tenant_e2e_partner_zone
     languages: [en]
     modules: [core]

@@ -1298,6 +1298,28 @@
       "recordValue": "Şuna işaret eder",
       "recordValueUnknown": "İşaret edilecek adresi size göndereceğiz.",
       "footerNote": "Bu bir öneridir. Restoranı SofraPiwas kurar ve adresi teyit eder."
+    },
+    "tenantDns": {
+      "title": "Bu adres için DNS",
+      "intro": "Adresin çalışabilmesi için bu kayıtların var olması gerekir. Biri eksik olduğu sürece sertifika alamayız ve ziyaretçiler restoran yerine güvenlik uyarısı görür.",
+      "whoPartner": "Bunu siz yayınlarsınız, {zone} alan adının DNS ayarlarında.",
+      "whoRestaurant": "Bunu restoran yayınlar, {zone} alan adının DNS'i nerede yönetiliyorsa orada.",
+      "recordType": "Tür",
+      "recordName": "Ad",
+      "recordValue": "Şunu gösterir",
+      "recordTtl": "TTL",
+      "fqdnNote": "Bazı DNS düzenleyicileri bunun yerine tam adı ister: {host}",
+      "valueUnknown": "Adresi bizden isteyin — burada tanımlı değil.",
+      "aliasNote": "Eski bir adres; mevcut bağlantılar ve basılmış QR kodları bir yere ulaşmaya devam etsin diye çalışır tutuluyor.",
+      "status": {
+        "ok": "Yayında, bizi gösteriyor",
+        "elsewhere": "Başka bir yeri gösteriyor",
+        "missing": "Henüz yayınlanmadı",
+        "unknown": "Şu anda kontrol edilemedi"
+      },
+      "elsewhereNote": "{addresses} adresini gösterdiğini görüyoruz. Aşağıdaki adresi göstermediği sürece restoran açılmaz.",
+      "missingNote": "Bu kaydı henüz göremiyoruz. DNS düzenleyicinizden ekleyin — yayılması genellikle birkaç dakika sürer.",
+      "footerNote": "DNS değişikliklerinin yayılması birkaç dakika sürer. Bu panel, sayfayı her açtığınızda yeniden kontrol eder."
     }
   },
   "signup": {

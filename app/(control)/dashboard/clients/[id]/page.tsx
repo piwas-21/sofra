@@ -14,6 +14,9 @@ import { verifiedBaseDomains } from "@/lib/partner-domain-access";
 import { suggestSlug } from "@/lib/slug-availability";
 import ClientTenantPanel from "@/components/control/ClientTenantPanel";
 import ClientDomainChooser from "@/components/control/ClientDomainChooser";
+import TenantDnsPanel from "@/components/control/TenantDnsPanel";
+import { tenantDnsRecords } from "@/lib/tenant-dns-record";
+import { checkDnsRecord } from "@/lib/tenant-dns-check";
 import ClientPlanPanel from "@/components/control/ClientPlanPanel";
 import ClientChangeRequestForm from "@/components/control/ClientChangeRequestForm";
 import NoteForm from "@/components/control/NoteForm";
@@ -62,6 +65,21 @@ export default async function ClientDetailPage({
     tenantSlug: client.tenantSlug,
     registry,
   });
+  // What DNS this tenant's addresses still depend on, and whether it is published.
+  // Only for a LIVE entry: every other branch has no registry entry to read, and a
+  // tenant on our own base domain yields an empty list and renders nothing. The
+  // lookups are bounded (3s, 2 tries each) and fail SOFT — a resolver hiccup shows
+  // "we could not check", never "your record is missing".
+  const dnsRows =
+    view.kind === "live"
+      ? await Promise.all(
+          tenantDnsRecords(view.tenant).map(async (record) => ({
+            record,
+            state: await checkDnsRecord(record.host, process.env.TENANT_BOX_IP),
+          })),
+        )
+      : [];
+
   // `resolveIdentityForPlan` resolves the payer through `client.partnerId`; the
   // relation is re-attached here rather than re-queried, because the plan's client is
   // the row we just loaded.
@@ -87,6 +105,12 @@ export default async function ClientDetailPage({
       </div>
 
       <ClientTenantPanel locale={locale} view={view} />
+
+      {/* The record the partner has to publish, for as long as the tenant exists.
+          It used to appear only as the transient answer to the chooser below, which
+          a reload erased and provisioning hid for good — so a partner whose client
+          could not get a certificate had no way to find out why. */}
+      <TenantDnsPanel locale={locale} rows={dnsRows} boxIp={process.env.TENANT_BOX_IP} />
 
       {/* Before a tenant exists, the partner gets to say where it should live (D2).
           After it exists this disappears on purpose: the domain is baked into a
