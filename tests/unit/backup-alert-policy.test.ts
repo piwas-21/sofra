@@ -1,13 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { buildBackupOverview, type ArtifactFact } from "@/lib/backup-overview";
+import { alertSignature, buildBackupAlert, expectsNightly } from "@/lib/backup-alert-policy";
 import {
   REMINDER_HOURS,
-  alertSignature,
-  buildBackupAlert,
   decideBackupAlert,
-  expectsNightly,
   type BackupAlertMarker,
-} from "@/lib/backup-alert-policy";
+} from "@/lib/backup-alert-cadence";
 
 // The alarm. Two failures are worth more than every other assertion here: it
 // stays silent while a restaurant is unprotected, or it repeats itself until the
@@ -28,11 +26,12 @@ const artifact = (over: Partial<ArtifactFact> & { tenantSlug: string }): Artifac
   ...over,
 });
 
-const registry = (slug: string, over: Partial<{ status: string; box: string }> = {}) => ({
+const registry = (slug: string, over: Partial<{ status: string; box: string; managed: string }> = {}) => ({
   slug,
   name: `${slug} Restaurant`,
   status: "active",
   box: "staging",
+  managed: "scripts",
   ...over,
 });
 
@@ -88,13 +87,27 @@ describe("buildBackupAlert — what is worth an email", () => {
     expect(red.concerns[0]).toMatchObject({ health: "unprotected", ageHours: 80 });
   });
 
-  it("raises a fresh tenant whose every copy sits on the box that runs it", () => {
+  it("does NOT raise a tenant whose every copy merely LOOKS box-local", () => {
+    // Corrected on the first production run. The box agent hard-codes
+    // `location: "local"` for everything it can see, while backup-offsite.sh ships
+    // the whole dump directory into restic — so this flag is true for every tenant
+    // always, and alerting on it says something false every day until it is muted.
     const alert = alertFor({
       registry: [registry("rumi")],
       artifacts: [artifact({ tenantSlug: "rumi", location: "LOCAL" })],
     });
-    expect(alert.level).toBe("warn");
-    expect(alert.concerns[0]).toMatchObject({ health: "protected", singleSiteOnly: true });
+    expect(alert.level).toBe("none");
+    expect(alert.concerns).toHaveLength(0);
+  });
+
+  it("stays silent about the LEGACY tenant, which is never dumped per-tenant", () => {
+    // Also measured in production: the first run alerted `rumi: never`, and the box
+    // was right — `bk_registry_tenants` skips `managed: legacy`, whose database rides
+    // the whole-cluster dump. An age rule there is permanently, unfixably red.
+    const alert = alertFor({ registry: [registry("rumi", { managed: "legacy" })] });
+    expect(alert).toMatchObject({ level: "none", watched: 0 });
+    // …while an ordinary tenant in the same state is still alerted.
+    expect(alertFor({ registry: [registry("obresse")] }).level).toBe("critical");
   });
 
   it("stays SILENT about a departed tenant whose copies are an archive", () => {
@@ -113,7 +126,7 @@ describe("buildBackupAlert — what is worth an email", () => {
 
   it("WATCHES an unknown status — a registry typo must not silence the alarm", () => {
     const alert = alertFor({ registry: [registry("odd", { status: "actve" })] });
-    expect(expectsNightly({ registryStatus: "actve" } as never)).toBe(true);
+    expect(expectsNightly({ registryStatus: "actve", managed: "scripts" } as never)).toBe(true);
     expect(alert.level).toBe("critical");
   });
 
@@ -142,6 +155,15 @@ describe("buildBackupAlert — what is worth an email", () => {
     expect(alert).toMatchObject({ level: "critical", quietBoxes: ["staging"] });
     // The tenant's own age is now a memory, and the concern says so.
     expect(alert.concerns).toHaveLength(0);
+  });
+
+  it("names quiet boxes in a stable order, so an unchanged alarm stays unchanged", () => {
+    const quiet = (box: string) => ({ box, reportedAt: hoursAgo(9), receivedAt: hoursAgo(9) });
+    const alert = alertFor({ boxReports: [quiet("staging"), quiet("prod")] });
+    // Sorted with an explicit comparator: the names are part of the signature, so a
+    // reordering would read as a changed situation and re-send the same news.
+    expect(alert.quietBoxes).toEqual(["prod", "staging"]);
+    expect(alert.signature).toContain("quiet:prod|quiet:staging");
   });
 
   it("is CRITICAL when no box has ever reported — the agent may not exist", () => {

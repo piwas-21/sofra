@@ -17,11 +17,12 @@ const artifact = (over: Partial<ArtifactFact> & { tenantSlug: string }): Artifac
   ...over,
 });
 
-const registry = (slug: string, over: Partial<{ status: string; box: string }> = {}) => ({
+const registry = (slug: string, over: Partial<{ status: string; box: string; managed: string }> = {}) => ({
   slug,
   name: `${slug} Restaurant`,
   status: "active",
   box: "staging",
+  managed: "scripts",
   ...over,
 });
 

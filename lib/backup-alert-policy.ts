@@ -1,10 +1,8 @@
 // WHEN a backup problem is worth an email, and when it has already been said.
 //
-// `/admin/backups` shouts; nothing reached anybody. A page is only read by
-// someone who already suspects — the tenant that has silently fallen out of the
-// nightly is exactly the one nobody opens the page for. This module is the half
-// of the fix that can be reasoned about: it turns the overview into a verdict, a
-// list of what is wrong, and a SIGNATURE, then answers "send, or stay quiet?".
+// `/admin/backups` shouts; nothing reached anybody, because a page is only read
+// by someone who already suspects. This module turns the overview into a verdict,
+// a list of what is wrong, and a SIGNATURE, then answers "send, or stay quiet?".
 //
 // Pure by construction — `now`, the rows and the previous marker are all passed
 // in. Nothing here reads a clock, a database or the environment, because the two
@@ -31,17 +29,16 @@ import type { BackupBoxRow, BackupTenantRow } from "@/lib/backup-overview";
 const NO_NIGHTLY_EXPECTED = new Set(["provisioning", "retired", "deprovisioned", "archived"]);
 
 /**
- * How long the same unchanged problem waits before being said again.
- *
- * Not the sweep's cadence — the sweep runs more often than this, and on most
- * runs it decides to say nothing. `critical` re-nags daily because a restaurant
- * whose data is aging out is a thing that must not slip a day; `warn` waits
- * three, because one missed nightly usually heals on the next one and a mail per
- * day about a self-healing blip is the fastest way to train someone to ignore
- * the sender. A `warn` that does NOT heal crosses 72h and becomes `critical` by
- * itself, which is when the cadence tightens.
+ * `managed: legacy` — tenant 1 (ADR-006). MEASURED on this sweep's first
+ * production run, which alerted `rumi: never`: the deploy repo's
+ * `bk_registry_tenants` SKIPS `legacy` when taking per-tenant dumps, because that
+ * database is covered by the whole-cluster dump instead. No per-tenant artifact
+ * will ever appear for it, so an age rule applied to it is permanently, unfixably
+ * red — the exact "mail nobody can act on" this module exists to avoid, missed in
+ * the one case that was live in production. Silence about the per-tenant VIEW,
+ * not about the tenant: the cluster dump and the restic ship still cover it.
  */
-export const REMINDER_HOURS: Record<"warn" | "critical", number> = { warn: 72, critical: 24 };
+const NO_PER_TENANT_DUMP = "legacy";
 
 export type BackupAlertLevel = "none" | "warn" | "critical";
 
@@ -53,7 +50,6 @@ export type BackupConcern = {
   health: BackupHealth;
   /** Age of the newest artifact, or null when there has never been one. */
   ageHours: number | null;
-  singleSiteOnly: boolean;
   /** True when the box this tenant sits on has stopped reporting, so the age
    *  above is a memory rather than an observation. Annotation, not a trigger:
    *  the quiet box is already alerted on once, by name. */
@@ -79,13 +75,26 @@ export type BackupAlert = {
 /** Is a nightly expected for this row at all? See NO_NIGHTLY_EXPECTED. */
 export function expectsNightly(row: BackupTenantRow): boolean {
   if (row.registryStatus === null) return false;
+  if (row.managed?.toLowerCase() === NO_PER_TENANT_DUMP) return false;
   return !NO_NIGHTLY_EXPECTED.has(row.registryStatus.toLowerCase());
 }
 
-/** Anything other than a fresh, off-box copy. `boxQuiet` is deliberately not a
- *  trigger here — see BackupConcern. */
+/**
+ * Anything other than a recent copy. `boxQuiet` is not a trigger — the quiet box
+ * is already alerted on once, by name.
+ *
+ * `singleSiteOnly` is not one either, and that is a CORRECTION from the first
+ * production run: the agent CANNOT report an off-box copy (`bk_inventory_json`
+ * walks the box filesystem and hard-codes `location: "local"`), while
+ * `backup-offsite.sh` ships the whole dump directory into restic — so the flag is
+ * permanently true for every tenant and those copies demonstrably do exist off
+ * box. A reporting gap, not a protection state; alerting on it says something
+ * false every day until it is muted. The page still shows it, beside the artifact
+ * list where it can be read for what it is. Re-arm the day the agent enumerates
+ * restic snapshots.
+ */
 function isConcerning(row: BackupTenantRow): boolean {
-  return needsAttention(row.health) || row.singleSiteOnly;
+  return needsAttention(row.health);
 }
 
 function concernOf(row: BackupTenantRow, now: Date): BackupConcern {
@@ -95,7 +104,6 @@ function concernOf(row: BackupTenantRow, now: Date): BackupConcern {
     box: row.box,
     health: row.health,
     ageHours: row.newestTakenAt ? hoursSince(row.newestTakenAt, now) : null,
-    singleSiteOnly: row.singleSiteOnly,
     boxQuiet: row.boxQuiet,
   };
 }
@@ -118,7 +126,7 @@ function isCritical(c: BackupConcern): boolean {
 export function alertSignature(alert: Omit<BackupAlert, "signature">): string {
   const parts = [
     alert.level,
-    ...alert.concerns.map((c) => `${c.slug}:${c.health}${c.singleSiteOnly ? "+localOnly" : ""}`),
+    ...alert.concerns.map((c) => `${c.slug}:${c.health}`),
     ...alert.quietBoxes.map((b) => `quiet:${b}`),
   ];
   if (alert.noBoxHasEverReported) parts.push("noBoxHasEverReported");
@@ -154,39 +162,4 @@ export function buildBackupAlert(input: {
     watched: watchedRows.length,
   };
   return { ...alert, signature: alertSignature(alert) };
-}
-
-/** The last alert actually SENT — read from the audit log by the sweep. */
-export type BackupAlertMarker = { level: BackupAlertLevel; signature: string; at: Date };
-
-export type BackupAlertDecision =
-  | { send: false; reason: "healthy" | "unchanged" }
-  | { send: true; kind: "raised"; reason: "new" | "changed" | "reminder" }
-  | { send: true; kind: "cleared"; reason: "recovered" };
-
-/**
- * Say it, say it again, or say nothing.
- *
- * The `recovered` branch is the one that is easy to leave out and is what makes
- * the rest trustworthy: an alarm you never hear the end of is one you stop
- * reading, so the sweep closes its own loop exactly once and then goes quiet.
- * Its marker is what makes the NEXT problem read as `new` rather than as more of
- * the old one.
- */
-export function decideBackupAlert(input: {
-  alert: Pick<BackupAlert, "level" | "signature">;
-  last: BackupAlertMarker | null;
-  now: Date;
-}): BackupAlertDecision {
-  const { alert, last, now } = input;
-  if (alert.level === "none") {
-    if (last && last.level !== "none") return { send: true, kind: "cleared", reason: "recovered" };
-    return { send: false, reason: "healthy" };
-  }
-  if (!last || last.level === "none") return { send: true, kind: "raised", reason: "new" };
-  if (last.signature !== alert.signature) return { send: true, kind: "raised", reason: "changed" };
-  if (hoursSince(last.at, now) >= REMINDER_HOURS[alert.level]) {
-    return { send: true, kind: "raised", reason: "reminder" };
-  }
-  return { send: false, reason: "unchanged" };
 }

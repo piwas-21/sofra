@@ -122,6 +122,7 @@ export default defineConfig({
         // unprotected, and repeating itself until the reader mutes the sender.
         // Both are decidable here, and nowhere else.
         "lib/backup-alert-policy.ts",
+        "lib/backup-alert-cadence.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial
