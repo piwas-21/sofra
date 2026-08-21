@@ -26,6 +26,21 @@ export const dynamic = "force-dynamic";
  *  box is the place to enumerate a repository. */
 const ARTIFACTS_PER_TENANT = 5;
 
+/**
+ * A ceiling on the rows this page reads at all.
+ *
+ * Ordered newest-first, so the truncation is honest where it matters: the health
+ * verdict for every tenant is derived from its NEWEST artifact, which survives
+ * the cut. Only the per-tenant counts and totals would truncate, and only on a
+ * platform holding more than two thousand artifacts — against a measured
+ * inventory of eleven. It exists so this page cannot become the thing that
+ * out-of-memories the container the day retention is loosened on a box.
+ *
+ * The delete guard does NOT read this list (it counts in the database), so a
+ * truncated page can never make a last copy look like one of many.
+ */
+const MAX_ARTIFACT_ROWS = 2000;
+
 export default async function AdminBackupsPage() {
   await requireAdmin();
   const locale = await controlLocale();
@@ -33,7 +48,7 @@ export default async function AdminBackupsPage() {
 
   const [registry, artifacts, boxReports, plans, jobs] = await Promise.all([
     loadTenantRegistry(),
-    db.backupArtifact.findMany({ orderBy: { takenAt: "desc" } }),
+    db.backupArtifact.findMany({ orderBy: { takenAt: "desc" }, take: MAX_ARTIFACT_ROWS }),
     db.backupInventory.findMany(),
     db.tenantBilling.findMany({
       select: { tenantSlug: true, trialEndsAt: true, subscriptions: { select: { status: true } } },
