@@ -26,7 +26,18 @@ export type ArtifactFact = {
   sizeBytes: bigint;
 };
 
-export type RegistryFact = { slug: string; name: string; status: string; box: string };
+export type RegistryFact = {
+  slug: string;
+  name: string;
+  status: string;
+  box: string;
+  /** The registry's `managed:` — `scripts` for a provisioned tenant, `legacy` for
+   *  tenant 1 (ADR-006). Load-bearing rather than descriptive: the box's own
+   *  `bk_registry_tenants` skips `legacy`, so a legacy tenant NEVER gains a
+   *  per-tenant artifact and any age rule applied to it is answering a question
+   *  nobody asked. Its data rides the whole-cluster dump instead. */
+  managed: string;
+};
 
 export type PlanFact = { tenantSlug: string; trialEndsAt: Date | null; paying: boolean };
 
@@ -41,6 +52,9 @@ export type BackupTenantRow = {
    *  for. */
   name: string | null;
   registryStatus: string | null;
+  /** The registry's `managed:`, or null for a tenant with no entry. See
+   *  RegistryFact — `legacy` means no per-tenant artifact will ever exist. */
+  managed: string | null;
   box: string | null;
   artifactCount: number;
   offBoxCount: number;
@@ -138,6 +152,7 @@ export function buildBackupOverview(input: {
       slug,
       name: registry?.name ?? null,
       registryStatus: registry?.status ?? null,
+      managed: registry?.managed ?? null,
       box,
       artifactCount: facts.artifactCount,
       offBoxCount: facts.offBoxCount,

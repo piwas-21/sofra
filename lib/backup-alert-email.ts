@@ -45,7 +45,6 @@ function verdict(c: BackupConcern): string {
   else if (c.ageHours !== null) {
     parts.push(`${STATE_WORD[c.health]} — newest copy ${age(c.ageHours)} old`);
   }
-  if (c.singleSiteOnly) parts.push("every copy is on the box itself");
   if (c.boxQuiet) parts.push("box is quiet, so this age is a memory");
   if (c.box) parts.push(`box: ${c.box}`);
   return parts.join(" · ");

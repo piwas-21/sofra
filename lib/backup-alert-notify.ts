@@ -1,6 +1,7 @@
 // The scheduled half of backup alerting (ADR-014 D5). Three modules, one job:
 //   backup-overview-load.ts   — reads what the page reads
-//   backup-alert-policy.ts    — decides WHETHER, and what is true when it does
+//   backup-alert-policy.ts    — what is wrong, and how to sign it
+//   backup-alert-cadence.ts   — whether that is worth saying again
 //   this file                 — says it, and records that it was said
 //
 // TWO RULES CARRY THIS FILE, and both are about staying honest when something
@@ -24,14 +25,12 @@ import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
 import { founderInbox } from "@/lib/email";
 import { loadBackupOverview } from "@/lib/backup-overview-load";
+import { buildBackupAlert, type BackupAlert, type BackupAlertLevel } from "@/lib/backup-alert-policy";
 import {
-  buildBackupAlert,
   decideBackupAlert,
-  type BackupAlert,
   type BackupAlertDecision,
-  type BackupAlertLevel,
   type BackupAlertMarker,
-} from "@/lib/backup-alert-policy";
+} from "@/lib/backup-alert-cadence";
 import { sendBackupAlertEmail, sendBackupClearedEmail } from "@/lib/backup-alert-email";
 
 /** One audit action per kind, so "what was last said?" is an indexed query on a

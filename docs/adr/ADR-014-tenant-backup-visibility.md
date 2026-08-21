@@ -157,6 +157,29 @@ A failed send writes **no** marker, the opposite of the trial-warning sweep
 (re-mailing a *partner* is the worse mistake; here the recipient is the founder and
 the subject is data loss, so a retry beats a silence).
 
+**What the first production run corrected (2026-08-21).** The sweep was dispatched
+by hand the moment it was live and mailed `critical, 3 concerns of 3 watched`. Both
+halves of that were the alarm being wrong, and in the exact way rule 1 exists to
+prevent — a red mail nobody can act on:
+
+- **`rumi: never`.** The deploy repo's `bk_registry_tenants` **skips
+  `managed: legacy`** when taking per-tenant dumps: tenant 1's database rides the
+  whole-cluster dump instead (ADR-006), so a per-tenant artifact for it will never
+  exist. `expectsNightly` now skips `managed: legacy` as well as the four statuses
+  — silence about the per-tenant *view*, not about the tenant.
+- **`single-site only` on both staging tenants.** The box agent **cannot report an
+  off-box copy at all**: `bk_inventory_json` walks the box filesystem and hard-codes
+  `location: "local"`, while `backup-offsite.sh` ships the whole dump directory into
+  restic — so the flag is permanently true for every tenant while those copies
+  demonstrably do exist off-box. It is a reporting gap, not a protection state, and
+  it is no longer an alert trigger. The **page still shows it**, beside the artifact
+  list where it can be read for what it is; re-arm the alert the day the agent
+  enumerates restic snapshots.
+
+Both were structural — they would have fired every day forever. The run cost
+nothing and is the argument for dispatching a new alarm by hand rather than waiting
+for its first schedule.
+
 ## Privacy (D7)
 
 An inventory is **metadata, never contents**. No dump's contents enter this
