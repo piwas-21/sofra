@@ -121,6 +121,17 @@ describe("redactAddresses — the regex is pointed at text we do not control", (
     expect(Date.now() - started).toBeLessThan(250);
   });
 
+it("stays fast on a token that is nothing but punctuation", async () => {
+    // The anchored `[…]+$` this replaced retried from every offset, so a long run
+    // of quotes and commas was quadratic — reachable from a provider body, which
+    // is text we do not write and do not bound.
+    const punctuation = '"'.repeat(50_000);
+    const started = Date.now();
+    redactAddresses(punctuation);
+    redactAddresses(`${punctuation}owner@example.com${punctuation}`);
+    expect(Date.now() - started).toBeLessThan(250);
+  });
+
   it("leaves an @mention alone — it is not an address and a digest would only hurt", () => {
     expect(redactAddresses("cc @here about the 403")).toBe("cc @here about the 403");
   });

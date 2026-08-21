@@ -45,11 +45,25 @@ export const NO_RECIPIENT = "(none)";
  * judgement happens on a bounded token.
  */
 const TOKEN = /\S+/g;
-/** Wrapping punctuation a provider is likely to quote an address inside. */
-const LEADING_PUNCTUATION = /^[<("'[]+/;
-const TRAILING_PUNCTUATION = /[>)"'\],;:.]+$/;
+/** Wrapping punctuation a provider is likely to quote an address inside. Peeled
+ *  with an index walk rather than an anchored regex: `[…]+$` is itself
+ *  super-linear on a long run of punctuation (it retries from every offset), and
+ *  the whole point of the token scan above is that a hostile body cannot make
+ *  this expensive. Two character sets and two while-loops are provably linear and
+ *  need no argument. */
+const LEADING_PUNCTUATION = `<("'[`;
+const TRAILING_PUNCTUATION = `>)"'],;:.`;
 /** A dotted TLD is what separates an address from `@mention` noise. */
 const LOOKS_LIKE_ADDRESS = /\.[a-z]{2,}$/i;
+
+/** `[start, end)` of `token` with wrapping punctuation removed. */
+function unwrapped(token: string): { start: number; end: number } {
+  let start = 0;
+  let end = token.length;
+  while (start < end && LEADING_PUNCTUATION.includes(token[start])) start += 1;
+  while (end > start && TRAILING_PUNCTUATION.includes(token[end - 1])) end -= 1;
+  return { start, end };
+}
 
 let processSalt: string | null = null;
 
@@ -88,17 +102,14 @@ export function recipientTag(address: string | null | undefined): string {
  */
 export function redactAddresses(text: string): string {
   return text.replace(TOKEN, (token) => {
-    const lead = LEADING_PUNCTUATION.exec(token)?.[0] ?? "";
-    const withoutLead = token.slice(lead.length);
-    const trail = TRAILING_PUNCTUATION.exec(withoutLead)?.[0] ?? "";
-    const core = withoutLead.slice(0, withoutLead.length - trail.length);
+    const { start, end } = unwrapped(token);
+    const core = token.slice(start, end);
     // Exactly one `@`, with something on each side, and a dotted TLD. Anything
     // else is left alone: turning `@here` — or a token carrying two `@` — into a
     // digest would make the line harder to read and buy no privacy at all.
     const at = core.indexOf("@");
-    if (at <= 0 || at === core.length - 1) return token;
-    if (core.indexOf("@", at + 1) !== -1) return token;
+    if (at <= 0 || at === core.length - 1 || core.lastIndexOf("@") !== at) return token;
     if (!LOOKS_LIKE_ADDRESS.test(core)) return token;
-    return `${lead}${recipientTag(core)}${trail}`;
+    return `${token.slice(0, start)}${recipientTag(core)}${token.slice(end)}`;
   });
 }
