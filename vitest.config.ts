@@ -117,6 +117,11 @@ export default defineConfig({
         "lib/backup-retention.ts",
         "lib/backup-job-policy.ts",
         "lib/backup-overview.ts",
+        // D5 — the alarm. In scope for the same reason as the rest of them, only
+        // more so: its two failure modes are staying silent while a restaurant is
+        // unprotected, and repeating itself until the reader mutes the sender.
+        // Both are decidable here, and nowhere else.
+        "lib/backup-alert-policy.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

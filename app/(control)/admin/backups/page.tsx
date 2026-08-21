@@ -2,8 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
-import { loadTenantRegistry } from "@/lib/tenant-registry";
-import { buildBackupOverview, type ArtifactFact } from "@/lib/backup-overview";
+import { loadBackupOverview } from "@/lib/backup-overview-load";
 import { backupRetentionDays } from "@/lib/backup-retention";
 import { backupDeleteEnabled } from "@/lib/backup-job-policy";
 import { STALE_AFTER_HOURS, UNPROTECTED_AFTER_HOURS } from "@/lib/backup-health";
@@ -26,65 +25,26 @@ export const dynamic = "force-dynamic";
  *  box is the place to enumerate a repository. */
 const ARTIFACTS_PER_TENANT = 5;
 
-/**
- * A ceiling on the rows this page reads at all.
- *
- * Ordered newest-first, so the truncation is honest where it matters: the health
- * verdict for every tenant is derived from its NEWEST artifact, which survives
- * the cut. Only the per-tenant counts and totals would truncate, and only on a
- * platform holding more than two thousand artifacts — against a measured
- * inventory of eleven. It exists so this page cannot become the thing that
- * out-of-memories the container the day retention is loosened on a box.
- *
- * The delete guard does NOT read this list (it counts in the database), so a
- * truncated page can never make a last copy look like one of many.
- */
-const MAX_ARTIFACT_ROWS = 2000;
-
 export default async function AdminBackupsPage() {
   await requireAdmin();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.admin.backups" });
 
-  const [registry, artifacts, boxReports, plans, jobs] = await Promise.all([
-    loadTenantRegistry(),
-    db.backupArtifact.findMany({ orderBy: { takenAt: "desc" }, take: MAX_ARTIFACT_ROWS }),
-    db.backupInventory.findMany(),
-    db.tenantBilling.findMany({
-      select: { tenantSlug: true, trialEndsAt: true, subscriptions: { select: { status: true } } },
-    }),
+  // The four reads and the join live in `backup-overview-load.ts` because the
+  // scheduled alert sweep asks the same question, and two copies of that query
+  // would eventually disagree — this page rendering a tenant red while the mail
+  // computed it green. An unreadable registry does NOT blank this page, unlike
+  // /admin/fleet's: half of what matters here is knowable without it, and a
+  // backup page that goes blank on an ops fault is one nobody trusts. (The
+  // ALARM makes the opposite choice and refuses to judge — see the sweep.)
+  const [{ overview, artifacts, registry }, jobs] = await Promise.all([
+    loadBackupOverview(new Date()),
     db.backupJob.findMany({
       take: 20,
       orderBy: { createdAt: "desc" },
       include: { requestedBy: { select: { name: true } } },
     }),
   ]);
-
-  // An unreadable registry does NOT blank this page, unlike /admin/fleet's.
-  // Half of what matters here is knowable without it: the artifacts we hold, the
-  // boxes still reporting, and every departed tenant's retention date — which is
-  // exactly the tenant that has no registry entry anyway. Failing closed would
-  // hide the data at the moment the mount broke, and a backup page that goes
-  // blank on an ops fault is a backup page nobody trusts.
-  const registryTenants = registry.ok
-    ? registry.tenants.map((r) => ({ slug: r.slug, name: r.name, status: r.status, box: r.box }))
-    : [];
-
-  const overview = buildBackupOverview({
-    registry: registryTenants,
-    artifacts: artifacts as ArtifactFact[],
-    plans: plans.map((p) => ({
-      tenantSlug: p.tenantSlug,
-      trialEndsAt: p.trialEndsAt,
-      // "Paying" is derived from the same subscription rows /admin/billing
-      // renders, so the two surfaces cannot disagree about whether a tenant is
-      // in an archive window or simply a customer.
-      paying: p.subscriptions.some((s) => s.status === "ACTIVE"),
-    })),
-    boxReports,
-    now: new Date(),
-    retentionDays: backupRetentionDays(),
-  });
 
   const bySlug = new Map<string, ArtifactRow[]>();
   for (const a of artifacts) {
