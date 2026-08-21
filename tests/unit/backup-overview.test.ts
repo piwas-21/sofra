@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildBackupOverview, type ArtifactFact } from "@/lib/backup-overview";
+import { expectsNightly } from "@/lib/backup-alert-policy";
 
 // The page, as data. The property that matters most is that a tenant the
 // registry knows and we hold NOTHING for is present in the output — the whole
@@ -123,6 +124,40 @@ describe("buildBackupOverview", () => {
       daysLeft: 178,
     });
     expect(rows.get("payer")!.retention).toEqual({ kind: "notApplicable" });
+  });
+
+  it("does not paint a cluster-dump-only tenant red for artifacts it can never have", () => {
+    // `managed: legacy` (rumi, ADR-006): `bk_registry_tenants` skips it, so no
+    // per-tenant artifact will EVER exist. The page used to render it `never` in
+    // red and count it in the headline while the twice-daily sweep — which
+    // already skips it — mailed `healthy`. One fact, two answers.
+    const { rows, attention } = build({ registry: [registry("legacytenant", { managed: "legacy" })] });
+    expect(rows[0]).toMatchObject({ slug: "legacytenant", clusterDumpOnly: true, health: "never" });
+    expect(attention).toBe(0);
+  });
+
+  it("sorts a cluster-dump-only tenant as calm, not into the alarm slot at the top", () => {
+    // Ranked by `never` it would sit above every row a human can actually do
+    // something about.
+    const { rows } = build({
+      registry: [registry("aaa-legacy", { managed: "legacy" }), registry("zzz-empty")],
+    });
+    expect(rows.map((r) => r.slug)).toEqual(["zzz-empty", "aaa-legacy"]);
+  });
+
+  it("agrees with the ALARM about who is cluster-dump-only", () => {
+    // Asserted across the two modules rather than inside either, because the bug
+    // this fixes was not in either one: each was self-consistent and they
+    // disagreed. They now share one predicate, and this is the test that fails if
+    // a future edit gives the page its own copy of the rule.
+    const { rows } = build({
+      registry: [registry("legacytenant", { managed: "legacy" }), registry("normal")],
+    });
+    const bySlug = new Map(rows.map((r) => [r.slug, r]));
+    expect(bySlug.get("legacytenant")!.clusterDumpOnly).toBe(true);
+    expect(expectsNightly(bySlug.get("legacytenant")!)).toBe(false);
+    expect(bySlug.get("normal")!.clusterDumpOnly).toBe(false);
+    expect(expectsNightly(bySlug.get("normal")!)).toBe(true);
   });
 
   it("counts a box's artifacts and reports an empty world without crashing", () => {

@@ -822,7 +822,8 @@
           "protected": "Geschützt",
           "stale": "Veraltet",
           "unprotected": "UNGESCHÜTZT",
-          "never": "NIE GESICHERT"
+          "never": "NIE GESICHERT",
+          "clusterDump": "Durch die Gesamtsicherung des Servers abgedeckt"
         },
         "tenant": {
           "notInRegistry": "Nicht mehr im Register — Daten eines ausgeschiedenen Restaurants",
@@ -830,7 +831,8 @@
           "artifacts": "{count} Kopien",
           "newest": "neueste ist {hours} h alt",
           "newestNever": "es wurde nie eine Kopie gemeldet",
-          "localOnly": "Jede Kopie liegt auf dem Server, der dieses Restaurant betreibt. Ein Ausfall, der den Server mitnimmt, nimmt die Sicherung mit.",
+          "clusterDumpOnly": "Dieser Mandant wird nie einzeln gesichert — seine Datenbank ist Teil der Gesamtsicherung des Servers, die jede Nacht zusammen mit dem Rest vom Server weggeschickt wird. Etwas Mandantenspezifisches erscheint hier nie.",
+          "offBoxNotReported": "Der Agent meldet nur, was er auf dem Server findet; Kopien außerhalb des Servers fehlen deshalb in dieser Liste. Das nächtliche Sicherungsverzeichnis wird ebenfalls in das verschlüsselte Repository außerhalb des Servers geschickt.",
           "boxQuiet": "Server {box} meldet nichts mehr; diese Zahlen sind sein letzter Stand, nicht die Gegenwart."
         },
         "retention": {

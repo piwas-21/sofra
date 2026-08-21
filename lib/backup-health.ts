@@ -130,6 +130,31 @@ export function isSingleSiteOnly(facts: TenantBackupFacts): boolean {
   return facts.artifactCount > 0 && facts.offBoxCount === 0;
 }
 
+/**
+ * `managed: legacy` — the registry value for a tenant the box never dumps ON ITS
+ * OWN (tenant 1, ADR-006). `bk_registry_tenants` skips it and its database rides
+ * the whole-cluster dump instead, which is shipped off-box with the rest.
+ *
+ * Here rather than in the alarm because both the alarm and the PAGE need it and
+ * they must not be able to disagree: the alarm learned this on its first
+ * production run (ADR-014 D5) and went quiet about `rumi`, while the page kept
+ * rendering the same tenant red `never` — one fact, two answers, and the red one
+ * is the one that teaches a reader to ignore the colour.
+ */
+const NO_PER_TENANT_DUMP = "legacy";
+
+/**
+ * Is this tenant covered ONLY by the whole-cluster dump?
+ *
+ * Not a health state and deliberately not part of `backupHealth`: the health of
+ * a per-tenant artifact that will never exist is not `never`, it is a question
+ * that does not apply. Callers use this to stop asking it — the alarm to skip
+ * the row, the page to say what covers the tenant instead.
+ */
+export function isClusterDumpOnly(managed: string | null | undefined): boolean {
+  return managed?.toLowerCase() === NO_PER_TENANT_DUMP;
+}
+
 /** Has a box stopped reporting? `null` = it has never reported at all. */
 export function boxIsQuiet(lastReportAt: Date | null, now: Date): boolean {
   if (!lastReportAt) return true;

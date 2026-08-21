@@ -220,6 +220,37 @@ Both were structural — they would have fired every day forever. The run cost
 nothing and is the argument for dispatching a new alarm by hand rather than waiting
 for its first schedule.
 
+**D5a — and then the PAGE had to be told the same two things (2026-08-21, later).**
+Correcting the alarm alone left the two surfaces disagreeing about one fact: the
+sweep mailed `healthy` while `/admin/backups` went on rendering `rumi` as a red
+`NEVER BACKED UP` in its headline count, and stamped *"every copy sits on the box
+that runs this tenant"* on every tenant it listed. A page that contradicts its own
+alarm does not make the reader cautious, it makes him pick one — and the red one is
+the one that teaches him to stop reading colours. So:
+
+- **`isClusterDumpOnly` moved into `backup-health.ts`** and is now imported by BOTH
+  the alarm's `expectsNightly` and the page's row builder. Not deduplication for
+  its own sake: the defect was never inside either module, each was self-consistent,
+  and the only durable fix is that there is one rule to be consistent with. A unit
+  test asserts the two agree, so a future edit that re-forks the rule fails.
+- A cluster-dump-only row now reads **"Covered by the cluster dump"** in muted
+  type, with a sentence saying what covers it, is **excluded from the headline
+  count** (the same exclusion the sweep already makes), **sorts as calm** rather
+  than into the alarm slot at the top, and **offers no "Back up now"** —
+  `backup-tenant.sh` refuses anything that is not `managed: scripts`, so that
+  button could only ever queue a job that comes back FAILED.
+- The single-site line stays, moves **under the artifact list** where it reads as a
+  caveat about that list, loses its `role="alert"` and its red, and now says what
+  is actually known: *the agent reports only what it finds on the box, so off-box
+  copies are missing from this list.* Re-arm it as an alert — as red, as a
+  protection state — the day the agent enumerates restic snapshots and the signal
+  becomes true (follow-up B-b).
+
+The general lesson, and the reason this is written down rather than fixed quietly:
+**when an alarm learns something, the page it was derived from has not.** Sharing
+the query (`backup-overview-load.ts`) was never enough; the JUDGEMENT has to be
+shared too, or the two drift the first time one of them is corrected.
+
 ### D6 — Restore is NOT a button here, and that is the same decision as D1.
 
 The obvious next feature after "see the backups" is "press restore". It is not built,

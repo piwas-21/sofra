@@ -123,13 +123,28 @@ test("the page shows what is protected and, first, what is not", async ({ page }
   await expect(card("e2e-backup-stale")).toHaveAttribute("data-health", "unprotected");
   await expect(card("e2e-backup-fresh")).toHaveAttribute("data-health", "protected");
 
-  // Fresh, green by every age rule, and gone with the box it sits on. A separate
-  // alarm because it is a different kind of unprotected.
+  // The single-site line, as a NOTE and no longer an alarm: the agent cannot see
+  // a restic snapshot, so it reports every artifact `local` while the nightly dump
+  // directory is shipped off box anyway. It is a reporting gap, it is true for
+  // every tenant, and a red alert that is permanently on is how a page teaches its
+  // reader to skip red (ADR-014 D5; B-b re-arms it).
   await expect(card("e2e-backup-local")).toHaveAttribute("data-health", "protected");
-  await expect(card("e2e-backup-local").getByRole("alert")).toContainText(
-    /copy sits on the box/i,
-  );
+  await expect(card("e2e-backup-local")).toContainText(/off-box copies are missing/i);
+  await expect(card("e2e-backup-local").getByRole("alert")).toHaveCount(0);
   await expect(card("e2e-backup-fresh").getByRole("alert")).toHaveCount(0);
+
+  // A `managed: legacy` tenant: no per-tenant copy exists or ever will, so the
+  // page says what DOES cover it instead of rendering the loudest badge it has for
+  // a question that does not apply. The alarm already skips it — this is the page
+  // catching up with its own mail.
+  const legacy = card("e2e-backup-legacy");
+  await expect(legacy).toHaveAttribute("data-cluster-dump-only", "true");
+  await expect(legacy).toContainText(/cluster dump/i);
+  await expect(legacy).not.toContainText("NEVER BACKED UP");
+  await expect(legacy.getByRole("alert")).toHaveCount(0);
+  // …and no "back up now": `backup-tenant.sh` refuses anything that is not
+  // `managed: scripts`, so the button could only ever queue a job that fails.
+  await expect(legacy.getByRole("button", { name: /back up now/i })).toHaveCount(0);
 
   // The trial link — the sentence the owner asked for. A lapsed trial gets a date
   // and a countdown, not a shrug.

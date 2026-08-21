@@ -10,6 +10,7 @@ import {
   backupHealth,
   boxIsQuiet,
   healthSeverity,
+  isClusterDumpOnly,
   isSingleSiteOnly,
   needsAttention,
   totalBytes,
@@ -61,6 +62,11 @@ export type BackupTenantRow = {
   newestTakenAt: Date | null;
   bytes: number;
   health: BackupHealth;
+  /** True when this tenant is never dumped on its own and rides the whole-cluster
+   *  dump instead (`managed: legacy`, ADR-006). Then `health` is answering a
+   *  question that does not apply to it, and both the page and the alarm say so
+   *  by staying quiet about the per-tenant view — see `isClusterDumpOnly`. */
+  clusterDumpOnly: boolean;
   singleSiteOnly: boolean;
   /** True when the box this tenant's artifacts came from has stopped reporting,
    *  so every age on this row is a memory rather than an observation. */
@@ -75,6 +81,23 @@ export type BackupOverview = {
   attention: number;
   quietBoxes: number;
 };
+
+/** Sort rank. See the comment at the `rows.sort` call. */
+function severity(row: BackupTenantRow): number {
+  return row.clusterDumpOnly ? 0 : healthSeverity(row.health);
+}
+
+/**
+ * The headline count, and it excludes a cluster-dump-only tenant for the same
+ * reason the ALARM does (ADR-014 D5): its per-tenant verdict is permanently,
+ * unfixably red and nobody can act on it. A page whose headline says "1 tenant
+ * needs attention" while the twice-daily sweep mails `healthy` is a page that
+ * teaches its reader which of the two to believe — and the answer would be
+ * neither.
+ */
+function rowNeedsAttention(row: BackupTenantRow): boolean {
+  return !row.clusterDumpOnly && needsAttention(row.health);
+}
 
 function groupBySlug(artifacts: readonly ArtifactFact[]): Map<string, ArtifactFact[]> {
   const bySlug = new Map<string, ArtifactFact[]>();
@@ -159,6 +182,7 @@ export function buildBackupOverview(input: {
       newestTakenAt: facts.newestTakenAt,
       bytes: totalBytes(artifacts.map((a) => a.sizeBytes)),
       health: backupHealth(facts, input.now),
+      clusterDumpOnly: isClusterDumpOnly(registry?.managed),
       singleSiteOnly: isSingleSiteOnly(facts),
       boxQuiet: box !== null && (quietByBox.get(box) ?? true),
       retention: backupRetentionView(
@@ -176,14 +200,16 @@ export function buildBackupOverview(input: {
 
   // Worst first, then alphabetical. A backup page sorted by name is a page whose
   // one urgent row is wherever the alphabet put it.
-  rows.sort(
-    (a, b) => healthSeverity(b.health) - healthSeverity(a.health) || a.slug.localeCompare(b.slug),
-  );
+  //
+  // A cluster-dump-only tenant sorts as calm whatever its age says, because its
+  // age says nothing: it has no per-tenant artifact and never will, so ranking it
+  // by `never` would put the one row that cannot be acted on at the very top.
+  rows.sort((a, b) => severity(b) - severity(a) || a.slug.localeCompare(b.slug));
 
   return {
     rows,
     boxes,
-    attention: rows.filter((r) => needsAttention(r.health)).length,
+    attention: rows.filter(rowNeedsAttention).length,
     quietBoxes: boxes.filter((b) => b.quiet).length,
   };
 }

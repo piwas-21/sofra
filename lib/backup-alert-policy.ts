@@ -10,7 +10,12 @@
 // nothing when a restaurant is unprotected, or it says the same thing every day
 // until the reader filters it into a folder.
 
-import { hoursSince, needsAttention, type BackupHealth } from "@/lib/backup-health";
+import {
+  hoursSince,
+  isClusterDumpOnly,
+  needsAttention,
+  type BackupHealth,
+} from "@/lib/backup-health";
 import type { BackupBoxRow, BackupTenantRow } from "@/lib/backup-overview";
 
 /**
@@ -27,18 +32,6 @@ import type { BackupBoxRow, BackupTenantRow } from "@/lib/backup-overview";
  * this noisier, never quieter.
  */
 const NO_NIGHTLY_EXPECTED = new Set(["provisioning", "retired", "deprovisioned", "archived"]);
-
-/**
- * `managed: legacy` — tenant 1 (ADR-006). MEASURED on this sweep's first
- * production run, which alerted `rumi: never`: the deploy repo's
- * `bk_registry_tenants` SKIPS `legacy` when taking per-tenant dumps, because that
- * database is covered by the whole-cluster dump instead. No per-tenant artifact
- * will ever appear for it, so an age rule applied to it is permanently, unfixably
- * red — the exact "mail nobody can act on" this module exists to avoid, missed in
- * the one case that was live in production. Silence about the per-tenant VIEW,
- * not about the tenant: the cluster dump and the restic ship still cover it.
- */
-const NO_PER_TENANT_DUMP = "legacy";
 
 export type BackupAlertLevel = "none" | "warn" | "critical";
 
@@ -72,10 +65,19 @@ export type BackupAlert = {
   signature: string;
 };
 
-/** Is a nightly expected for this row at all? See NO_NIGHTLY_EXPECTED. */
+/**
+ * Is a nightly expected for this row at all? See NO_NIGHTLY_EXPECTED.
+ *
+ * `managed: legacy` is skipped too, and that rule now lives in `backup-health.ts`
+ * (`isClusterDumpOnly`) rather than here — MEASURED on this sweep's first
+ * production run, which alerted `rumi: never` because the deploy repo's
+ * `bk_registry_tenants` SKIPS `legacy` when taking per-tenant dumps. Sharing the
+ * predicate with the page is the point: the alarm going quiet about a tenant the
+ * page still paints red is two answers to one fact.
+ */
 export function expectsNightly(row: BackupTenantRow): boolean {
   if (row.registryStatus === null) return false;
-  if (row.managed?.toLowerCase() === NO_PER_TENANT_DUMP) return false;
+  if (isClusterDumpOnly(row.managed)) return false;
   return !NO_NIGHTLY_EXPECTED.has(row.registryStatus.toLowerCase());
 }
 
