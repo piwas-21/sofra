@@ -6,6 +6,7 @@
 
 import { z } from "zod";
 import type { BuyerVatStatus } from "@/lib/tax-treatment";
+import { isAssignedCountryCode, isCanonicalCountryCode } from "@/lib/country-code";
 
 /**
  * What a form must supply to record an identity.
@@ -17,8 +18,12 @@ import type { BuyerVatStatus } from "@/lib/tax-treatment";
  * later. Same file, same list, one place to change.
  *
  * `countryCode` is the load-bearing field — it decides the entire tax treatment
- * (lib/tax-treatment.ts) — so it is pinned to the ISO-3166-1 alpha-2 shape rather
- * than left as free text. `vatNumber` is optional and NOT format-checked: a Swiss
+ * (lib/tax-treatment.ts) — so it is checked for MEMBERSHIP of ISO 3166-1 alpha-2,
+ * not merely for its two-letter shape. The shape check is what let `SW` (assigned
+ * to nothing; Switzerland is `CH`) sit on the live reseller identity and be read
+ * as a country by every surface — see lib/country-code.ts for why an unassigned
+ * code is more dangerous than an empty one. `vatNumber` is optional and NOT
+ * format-checked: a Swiss
  * or British customer has a real national number that is simply not an EU VAT id,
  * and refusing to record it would lose true data. Its EU-shape check happens
  * where it matters — before a VIES call, and before a reverse charge.
@@ -36,7 +41,7 @@ export const billingIdentitySchema = z.object({
     .string()
     .trim()
     .toUpperCase()
-    .regex(/^[A-Z]{2}$/, "2-letter ISO country code, e.g. FR"),
+    .refine(isAssignedCountryCode, "2-letter ISO 3166-1 country code, e.g. FR (CH for Switzerland)"),
   billingEmail: z.string().trim().max(200).email(),
   vatNumber: z.string().trim().max(30).optional().or(z.literal("")),
 });
@@ -69,7 +74,12 @@ export function isInvoiceable(identity: IdentityFacts | null | undefined): boole
     identity.city,
     identity.billingEmail,
   ];
-  return required.every((f) => f.trim().length > 0) && /^[A-Z]{2}$/.test(identity.countryCode);
+  // The country must be a COUNTRY, not just two letters: it is the only field
+  // here that decides money, and an invoice addressed to a code no register
+  // knows is one nobody can defend at an audit. The CANONICAL test, not the
+  // forgiving one — this reads a stored row, and a lowercase value there means
+  // the row did not come through the schema that uppercases it.
+  return required.every((f) => f.trim().length > 0) && isCanonicalCountryCode(identity.countryCode);
 }
 
 /**
