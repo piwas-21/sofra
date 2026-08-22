@@ -68,13 +68,16 @@ describe("redactAddresses (provider text we did not write)", () => {
   it("removes the address from Resend's real sandbox-sender 403", () => {
     const body = JSON.stringify({
       statusCode: 403,
+      // Resend's real sandbox-sender sentence, with the address it quotes back
+      // replaced by a fixture one: the shape is what is under test, and a real
+      // mailbox does not belong in a test file (CLAUDE.md §5.8).
       message:
-        "You can only send testing emails to your own email address (mahmutkaya.nl@gmail.com). " +
+        "You can only send testing emails to your own email address (owner@example.test). " +
         "To send emails to other recipients, please verify a domain.",
     });
     const out = redactAddresses(body);
-    expect(out).not.toContain("mahmutkaya.nl@gmail.com");
-    expect(out).toContain(recipientTag("mahmutkaya.nl@gmail.com"));
+    expect(out).not.toContain("owner@example.test");
+    expect(out).toContain(recipientTag("owner@example.test"));
     // The diagnosis survives — the whole point of logging the body at all.
     expect(out).toContain("please verify a domain");
     expect(out).toContain("403");
