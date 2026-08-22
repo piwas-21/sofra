@@ -81,6 +81,11 @@ export async function sendBillingDetailsNeeded(opts: {
   locale: string;
 }): Promise<{ sent: boolean }> {
   const t = await emailTranslator(opts.locale, "emails.billingDetails");
+  // Hoisted for the same reason as the other templates (Sonar S4624).
+  const received = t("received", {
+    amount: eur(opts.grossCents),
+    restaurant: escapeHtml(opts.tenantSlug),
+  });
   return sendEmail({
     to: opts.to,
     subject: t("subject"),
@@ -88,10 +93,7 @@ export async function sendBillingDetailsNeeded(opts: {
       kicker: t("kicker"),
       title: t("title"),
       bodyHtml:
-        `<p style="margin:0 0 12px;">${t("received", {
-          amount: eur(opts.grossCents),
-          restaurant: escapeHtml(opts.tenantSlug),
-        })}</p>` +
+        `<p style="margin:0 0 12px;">${received}</p>` +
         `<p style="margin:0 0 12px;">${t("ask")}</p>` +
         `<p style="margin:0;">${t("vat")}</p>`,
       cta: { label: t("cta"), url: `${siteUrl()}/dashboard/billing/details` },

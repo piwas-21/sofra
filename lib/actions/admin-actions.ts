@@ -63,13 +63,16 @@ export async function approveApplicationAction(
   // In the language they APPLIED in (G9): the application row holds it, and this
   // is the first thing we ever send them.
   const t = await emailTranslator(user.locale, "emails.partnerApproved");
+  // Hoisted out of the HTML for the same reason as the other templates: no
+  // translator call nested inside a template literal (Sonar S4624).
+  const greeting = t("greeting", { name: escapeHtml(user.name) });
   const invite = await sendEmail({
     to: user.email,
     subject: t("subject"),
     html: craftEmail({
       kicker: t("kicker"),
       title: t("title"),
-      bodyHtml: `<p style="margin:0 0 12px;">${t("greeting", { name: escapeHtml(user.name) })}</p>
+      bodyHtml: `<p style="margin:0 0 12px;">${greeting}</p>
 <p style="margin:0;">${t("lead")}</p>`,
       cta: { label: t("cta"), url: inviteLink },
       footerNote: t("footerNote"),
