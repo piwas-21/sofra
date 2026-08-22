@@ -45,10 +45,9 @@ export type OnboardActionState = {
  *  returned regardless of whether the send succeeded, because this flow's whole
  *  point is that the founder can hand it over manually. */
 async function emailOnboardInvite(
-  user: { id: string; name: string; status: string },
+  user: { id: string; name: string; status: string; locale: string },
   email: string,
   restaurantName: string,
-  ownerFlow: boolean,
   actorId: string,
 ): Promise<string> {
   const needsPassword = user.status === "INVITED";
@@ -58,7 +57,10 @@ async function emailOnboardInvite(
     name: user.name,
     restaurantName,
     inviteToken,
-    kicker: ownerFlow ? "Welcome to SofraPiwas" : "Partner program",
+    // The account's own language (G9). A founder-created account has no intake to
+    // inherit one from, so it is `en` until they set their password — which is
+    // exactly when we learn it.
+    locale: user.locale,
   });
 
   // This flow does not LIE when the send fails — the link comes back and the page
@@ -148,7 +150,7 @@ export async function onboardPartnerAction(
     actorId: admin.id,
   });
 
-  const inviteLink = await emailOnboardInvite(user, email, input.restaurantName, ownerFlow, admin.id);
+  const inviteLink = await emailOnboardInvite(user, email, input.restaurantName, admin.id);
   await audit(admin.id, ownerFlow ? "owner.onboarded" : "partner.onboarded", "User", user.id, {
     tenantSlug,
     clientId,

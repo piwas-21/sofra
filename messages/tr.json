@@ -275,7 +275,7 @@
       }
     },
     "runs": {
-      "title": "RUMI, SofraPiwas'da neleri çalıştırıyor",
+      "title": "RUMI, SofraPiwas'ta neleri çalıştırıyor",
       "intro": "Ne pilot ne de kısmi kullanım — restoranın günlük servisi platform üzerinde dönüyor:",
       "items": {
         "ordering": {
@@ -429,8 +429,8 @@
   },
   "changelog": {
     "meta": {
-      "title": "SofraPiwas'da neler yeni — değişiklik günlüğü",
-      "description": "SofraPiwas'daki yeniliklere dair tarihli notlar: özellikler, diller, faturalama, güvenlik ve güvenilirlik. Kısa ve dürüst — burada yazıyorsa, yayında."
+      "title": "SofraPiwas'ta neler yeni — değişiklik günlüğü",
+      "description": "SofraPiwas'taki yeniliklere dair tarihli notlar: özellikler, diller, faturalama, güvenlik ve güvenilirlik. Kısa ve dürüst — burada yazıyorsa, yayında."
     },
     "label": "Mutfaktan taze",
     "title": "Neler yeni",
@@ -438,7 +438,7 @@
     "entries": {
       "currency": {
         "title": "Para biriminiz, uçtan uca",
-        "body": "SofraPiwas'daki her restoran artık kendi para birimiyle çalışıyor — menü, siparişler, fişler ve makbuzlar aynı dili konuşuyor. Ayrıca restorana özel görünümlerin temelini attık: klasik ve zanaatkâr olmak üzere iki şablon yolda."
+        "body": "SofraPiwas'taki her restoran artık kendi para birimiyle çalışıyor — menü, siparişler, fişler ve makbuzlar aynı dili konuşuyor. Ayrıca restorana özel görünümlerin temelini attık: klasik ve zanaatkâr olmak üzere iki şablon yolda."
       },
       "hardening": {
         "title": "Güvenlik ve güvenilirlik haftası",
@@ -1091,10 +1091,10 @@
       "title": "Aboneliğiniz",
       "intro": "SofraPiwas aboneliğiniz ve ödeme geçmişiniz.",
       "empty": "Henüz abonelik yok — sizinle iletişime geçeceğiz.",
-      "welcomeKicker": "SofraPiwas'ya hoş geldiniz",
+      "welcomeKicker": "SofraPiwas'a hoş geldiniz",
       "welcomeTitle": "Hoş geldiniz, {name} 🎉",
-      "liveSince": "{restaurant} {date} tarihinden beri SofraPiwas'da yayında.",
-      "liveSinceUnknown": "{restaurant} SofraPiwas'da yayında.",
+      "liveSince": "{restaurant} {date} tarihinden beri SofraPiwas'ta yayında.",
+      "liveSinceUnknown": "{restaurant} SofraPiwas'ta yayında.",
       "amountLine": "{amount} / {interval}",
       "firstChargeNote": "İlk ayı şimdi ödersiniz, ardından otomatik olarak yenilenir. İstediğiniz zaman iptal edebilirsiniz.",
       "startPayment": "Otomatik aylık ödemeyi başlat",
@@ -1491,6 +1491,71 @@
       "rowPlan": "Aylık",
       "cta": "Fatura sayfanızı açın",
       "footerNote": "Daha fazla süreye mi ihtiyacınız var ya da fiyatla ilgili bir sorunuz mu var? Bu e-postayı yanıtlamanız yeterli — mesajı bir insan okuyor."
+    },
+    "invite": {
+      "kicker": "SofraPiwas'a hoş geldiniz",
+      "subject": {
+        "setPassword": "SofraPiwas'a hoş geldiniz — şifrenizi belirleyin",
+        "ready": "SofraPiwas — {restaurant} aboneliğiniz için hazır"
+      },
+      "title": {
+        "setPassword": "Aramıza hoş geldiniz 🎉",
+        "ready": "Yeni bir abonelik sizi bekliyor"
+      },
+      "greeting": "Merhaba {name},",
+      "lead": {
+        "setPassword": "{restaurant} SofraPiwas'ta kuruldu. Panelinizi açmak ve aylık aboneliği başlatmak için şifrenizi belirleyin — afiyet olsun.",
+        "ready": "{restaurant} SofraPiwas'ta kuruldu. Panelinize giriş yapın ve aylık aboneliği başlatın — afiyet olsun."
+      },
+      "cta": {
+        "setPassword": "Şifrenizi belirleyin",
+        "ready": "Panelinizi açın"
+      },
+      "footerNote": "Bağlantı tek kullanımlıktır ve 24 saat sonra geçersiz olur.",
+      "rowAddress": "Web adresiniz",
+      "rowPlan": "Aboneliğiniz"
+    },
+    "partnerApproved": {
+      "kicker": "Partner programı",
+      "subject": "SofraPiwas partner programına hoş geldiniz",
+      "title": "Aramıza hoş geldiniz 🎉",
+      "greeting": "Merhaba {name},",
+      "lead": "SofraPiwas partner başvurunuz onaylandı. Partner panelinizi açmak için şifrenizi belirleyin — afiyet olsun.",
+      "cta": "Şifrenizi belirleyin",
+      "footerNote": "Bağlantı tek kullanımlıktır ve 24 saat sonra geçersiz olur."
+    },
+    "reset": {
+      "kicker": {
+        "partner": "Partner alanı",
+        "account": "Hesabınız"
+      },
+      "subject": "SofraPiwas — şifrenizi sıfırlayın",
+      "title": "Şifrenizi sıfırlayın",
+      "greeting": "Merhaba {name},",
+      "lead": {
+        "partner": "Biri (umarız sizsiniz) SofraPiwas partner şifrenizin sıfırlanmasını istedi. Bu siz değilseniz bu e-postayı dikkate almayabilirsiniz.",
+        "account": "Biri (umarız sizsiniz) SofraPiwas şifrenizin sıfırlanmasını istedi. Bu siz değilseniz bu e-postayı dikkate almayabilirsiniz."
+      },
+      "cta": "Yeni şifre belirle",
+      "footerNote": "Bağlantı tek kullanımlıktır ve 24 saat sonra geçersiz olur."
+    },
+    "invoice": {
+      "kicker": "Faturalandırma",
+      "subject": "Fatura {number} — SofraPiwas",
+      "title": "Fatura {number}",
+      "rowInvoice": "Fatura numarası",
+      "rowService": "Restoran",
+      "rowTotal": "Toplam",
+      "cta": "Faturanızı görüntüleyin"
+    },
+    "billingDetails": {
+      "kicker": "Faturalandırma",
+      "subject": "Faturanız için fatura bilgileriniz gerekiyor — SofraPiwas",
+      "title": "Faturanız birkaç bilgi için bekliyor",
+      "received": "{restaurant} için {amount} tutarındaki ödemenizi aldık. Teşekkürler.",
+      "ask": "Size usulüne uygun bir fatura gönderebilmemiz için faturanın düzenleneceği şirketi bilmemiz gerekiyor — ticari unvan, adres ve ülke. Bir dakika sürer; bilgileri kaydeder kaydetmez fatura düzenlenir.",
+      "vat": "Şirketinizin AB KDV numarası varsa onu da ekleyin; KDV'yi sizden tahsil etmek yerine tersine tahsilat (reverse charge) uygularız.",
+      "cta": "Fatura bilgilerinizi ekleyin"
     }
   }
 }

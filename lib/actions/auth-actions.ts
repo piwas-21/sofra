@@ -6,10 +6,11 @@ import { redirect } from "next/navigation";
 import { signIn, signOut } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
-import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
-import { craftEmail } from "@/lib/email-templates";
+import { siteUrl } from "@/lib/email";
 import { createToken, findValidToken } from "@/lib/tokens";
 import { resendPlan } from "@/lib/invite-resend";
+import { controlLocale } from "@/lib/control-locale";
+import { sendPasswordResetEmail } from "@/lib/reset-email";
 import { sendInviteEmail } from "@/lib/self-serve-email";
 import { formEmail, limited, type FormState } from "@/lib/auth-form";
 
@@ -58,12 +59,24 @@ export async function setPasswordAction(_prev: FormState, formData: FormData): P
   }
 
   const passwordHash = await hash(password, 12);
+  // The one moment a customer is CERTAINLY present with a language chosen (G9):
+  // they are on our page, having followed a link from a mail, with the site's own
+  // locale cookie set. The account's stored locale came from an intake row that
+  // may be months old — or, for a founder-created account, from nothing at all —
+  // so this is where it stops being a guess. Written inside the same transaction
+  // as the password: a locale that lands only when a separate write succeeds is a
+  // locale that silently disagrees with what the person just read.
+  const locale = await controlLocale();
   await db.$transaction([
     db.user.update({
       where: { id: token.userId },
       // Only the INVITED→ACTIVE transition; an already-ACTIVE user resetting
       // their password keeps their current status.
-      data: { passwordHash, ...(token.user.status === "INVITED" ? { status: "ACTIVE" as const } : {}) },
+      data: {
+        passwordHash,
+        locale,
+        ...(token.user.status === "INVITED" ? { status: "ACTIVE" as const } : {}),
+      },
     }),
     db.inviteToken.update({ where: { id: token.id }, data: { usedAt: new Date() } }),
   ]);
@@ -88,22 +101,21 @@ export async function forgotPasswordAction(_prev: FormState, formData: FormData)
   // success to everyone, on purpose, so it cannot be used to probe which addresses exist — which is
   // exactly why the failure has to land somewhere a human will see it. A locked-out owner who is
   // told "check your email" for a mail that never left has no next move at all.
-  const reset = await sendEmail({
+  // The template lives in lib/reset-email.ts — in the reader's own language (G9)
+  // and no longer calling every recipient a PARTNER (G10).
+  //
+  // Caught for the anti-enumeration property this form exists to have: `fetch`
+  // REJECTS on a DNS/connect failure, so an unreachable transport would throw for
+  // an address that HAS an account while an address that does not still answers
+  // the generic success above — a live "is this registered" oracle, during exactly
+  // the incident nobody is watching. It also saves the `emailed: false` row, which
+  // is the failure most worth recording.
+  const reset = await sendPasswordResetEmail({
     to: user.email,
-    subject: "SofraPiwas — reset your password",
-    html: craftEmail({
-      kicker: "Partner area",
-      title: "Reset your password",
-      bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(user.name)},</p>
-<p style="margin:0;">Someone (hopefully you) asked to reset your SofraPiwas partner password. If this wasn't you, you can safely ignore this email.</p>`,
-      cta: { label: "Set a new password", url: link },
-      footerNote: "The link works once and expires in 24 hours.",
-    }),
-    // Caught for the anti-enumeration property this form exists to have: `fetch` REJECTS on a
-    // DNS/connect failure, so an unreachable transport would throw for an address that HAS an
-    // account while an address that does not still answers the generic success above — a live
-    // "is this registered" oracle, during exactly the incident nobody is watching. It also saves
-    // the `emailed: false` row, which is the failure most worth recording.
+    name: user.name,
+    role: user.role,
+    locale: user.locale,
+    url: link,
   }).catch(() => ({ sent: false }));
   await audit(user.id, "password.reset.requested", "User", user.id, { emailed: reset.sent });
   return generic;
@@ -162,7 +174,7 @@ export async function resendInviteAction(_prev: FormState, formData: FormData): 
     name: user.name,
     restaurantName: user.billingsPaid[0]?.tenantSlug ?? "Your restaurant",
     inviteToken: token,
-    kicker: "Welcome to SofraPiwas",
+    locale: user.locale,
     // Caught for the same reason `forgotPasswordAction` catches: `fetch` REJECTS on
     // a DNS/connect failure, so an unreachable transport would throw for an address
     // that HAS an account while an unknown address still got the generic success —

@@ -1491,6 +1491,71 @@
       "rowPlan": "Per maand",
       "cta": "Open uw factuurpagina",
       "footerNote": "Meer tijd nodig of een vraag over de prijs? Beantwoord deze e-mail gewoon — een mens leest hem."
+    },
+    "invite": {
+      "kicker": "Welkom bij SofraPiwas",
+      "subject": {
+        "setPassword": "Welkom bij SofraPiwas — stel uw wachtwoord in",
+        "ready": "SofraPiwas — {restaurant} is klaar voor uw abonnement"
+      },
+      "title": {
+        "setPassword": "Welkom aan boord 🎉",
+        "ready": "Er staat een abonnement klaar"
+      },
+      "greeting": "Hallo {name},",
+      "lead": {
+        "setPassword": "{restaurant} staat klaar op SofraPiwas. Stel uw wachtwoord in om uw dashboard te openen en het maandabonnement te starten — afiyet olsun.",
+        "ready": "{restaurant} staat klaar op SofraPiwas. Log in op uw dashboard en start het maandabonnement — afiyet olsun."
+      },
+      "cta": {
+        "setPassword": "Wachtwoord instellen",
+        "ready": "Open uw dashboard"
+      },
+      "footerNote": "De link werkt één keer en verloopt na 24 uur.",
+      "rowAddress": "Uw webadres",
+      "rowPlan": "Uw abonnement"
+    },
+    "partnerApproved": {
+      "kicker": "Partnerprogramma",
+      "subject": "Welkom bij het SofraPiwas-partnerprogramma",
+      "title": "Welkom aan boord 🎉",
+      "greeting": "Hallo {name},",
+      "lead": "Uw aanmelding als SofraPiwas-partner is goedgekeurd. Stel uw wachtwoord in om uw partnerdashboard te openen — afiyet olsun.",
+      "cta": "Wachtwoord instellen",
+      "footerNote": "De link werkt één keer en verloopt na 24 uur."
+    },
+    "reset": {
+      "kicker": {
+        "partner": "Partneromgeving",
+        "account": "Uw account"
+      },
+      "subject": "SofraPiwas — wachtwoord opnieuw instellen",
+      "title": "Wachtwoord opnieuw instellen",
+      "greeting": "Hallo {name},",
+      "lead": {
+        "partner": "Iemand (hopelijk u) heeft gevraagd om het wachtwoord van uw SofraPiwas-partneraccount opnieuw in te stellen. Was u dit niet, dan kunt u deze e-mail gerust negeren.",
+        "account": "Iemand (hopelijk u) heeft gevraagd om uw SofraPiwas-wachtwoord opnieuw in te stellen. Was u dit niet, dan kunt u deze e-mail gerust negeren."
+      },
+      "cta": "Nieuw wachtwoord instellen",
+      "footerNote": "De link werkt één keer en verloopt na 24 uur."
+    },
+    "invoice": {
+      "kicker": "Facturatie",
+      "subject": "Factuur {number} — SofraPiwas",
+      "title": "Factuur {number}",
+      "rowInvoice": "Factuurnummer",
+      "rowService": "Restaurant",
+      "rowTotal": "Totaal",
+      "cta": "Bekijk uw factuur"
+    },
+    "billingDetails": {
+      "kicker": "Facturatie",
+      "subject": "We hebben uw factuurgegevens nodig — SofraPiwas",
+      "title": "Uw factuur wacht nog op een paar gegevens",
+      "received": "We hebben uw betaling van {amount} voor {restaurant} ontvangen. Bedankt.",
+      "ask": "Om u een correcte factuur te sturen hebben we het bedrijf nodig waaraan die gericht moet worden — de statutaire naam, het adres en het land. Het kost een minuut, en de factuur wordt opgemaakt zodra u ze hebt opgeslagen.",
+      "vat": "Heeft uw bedrijf een EU-btw-nummer? Vul dat er ook bij in, dan verleggen we de btw in plaats van die in rekening te brengen.",
+      "cta": "Vul uw factuurgegevens in"
     }
   }
 }

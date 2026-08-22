@@ -17,6 +17,8 @@ import { euNoVatFallback, sellerIdentity } from "@/lib/seller-identity";
 import { buyerSnapshot, sellerSnapshot } from "@/lib/invoice-snapshot";
 import { resolveIdentityForPlan } from "@/lib/identity-upsert";
 import { sendInvoiceIssued } from "@/lib/invoice-email";
+import { emailLocale } from "@/lib/email-locale";
+import { payerLocale } from "@/lib/payer-contact";
 import { recordBlockedInvoice } from "@/lib/invoice-blocked";
 import type { Prisma } from "@/lib/generated/prisma/client";
 
@@ -78,7 +80,14 @@ export async function issueInvoiceForPayment(molliePaymentId: string): Promise<I
       where: { molliePaymentId },
       include: {
         billing: {
-          include: { billingIdentity: true, client: { select: { partnerId: true } } },
+          include: {
+            billingIdentity: true,
+            // `partnerId` for `resolveIdentityForPlan`, `locale` for the language the
+            // invoice mail is written in (G9) — the PARTNER's, on a reseller plan,
+            // because the partner is who pays and who reads it.
+            client: { select: { partnerId: true, partner: { select: { locale: true } } } },
+            payer: { select: { locale: true } },
+          },
         },
       },
     });
@@ -112,6 +121,7 @@ export async function issueInvoiceForPayment(molliePaymentId: string): Promise<I
         reason,
         tenantSlug: payment.billing.tenantSlug,
         payerEmail: payment.billing.email,
+        payerLocale: emailLocale(payerLocale(payment.billing)),
         grossCents: payment.amountCents,
       });
       return { issued: false, reason };
@@ -165,6 +175,7 @@ export async function issueInvoiceForPayment(molliePaymentId: string): Promise<I
         number: invoice.number,
         tenantSlug: payment.billing.tenantSlug,
         grossCents: invoice.grossCents,
+        locale: emailLocale(payerLocale(payment.billing)),
         taxNote: invoice.taxNote,
       }).catch(() => ({ sent: false }))
     ).sent;

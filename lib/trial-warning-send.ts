@@ -8,7 +8,7 @@
 // mailing the same partner again.
 
 import { emailLocale } from "@/lib/email-locale";
-import { payerGreetingName, type PayerContact } from "@/lib/payer-contact";
+import { payerGreetingName, payerLocale, type PayerContact } from "@/lib/payer-contact";
 import { sendTrialEndingEmail, sendTrialEndingFounderEmail } from "@/lib/trial-warning-email";
 import type { TrialWarningVerdict } from "@/lib/trial-warning-policy";
 
@@ -52,17 +52,23 @@ export async function sendFounderNotice(
   }).catch(() => caught);
 }
 
-/** The payer's own warning, in the language the control plane holds for them. */
+/** The payer's own warning, in the language the control plane holds for them.
+ *
+ *  Since G9 that language is on the ACCOUNT (`User.locale`, resolved by
+ *  `payerLocale` in the same order as the address), so this no longer depends on
+ *  matching the payer's address back to the intake row it was captured on — a join
+ *  by lower-cased email that silently downgraded a francophone partner to English
+ *  whenever an admin had typed the address in a different case. The lead's own
+ *  locale stays as the fallback for a plan whose payer is not a user at all. */
 export async function sendPayerWarning(
   to: string,
   plan: WarnablePlan,
   sub: WarnableSubscription,
   verdict: DueWarning,
-  heldLocale: string | undefined,
 ): Promise<{ sent: boolean }> {
   return sendTrialEndingEmail({
     to,
-    locale: emailLocale(heldLocale, plan.signupRequest?.locale),
+    locale: emailLocale(payerLocale(plan), plan.signupRequest?.locale),
     contactName: payerGreetingName(plan),
     restaurantName: plan.name,
     phase: verdict.phase,

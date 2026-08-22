@@ -39,9 +39,13 @@ export async function submitSignup(
     contactName?: string;
     modules?: string[];
     city?: string;
+    /** Which language the visitor fills the form in. The form carries it, the lead
+     *  stores it, and since G9 so does the ACCOUNT — which is what decides the
+     *  language of every mail that follows. */
+    locale?: string;
   },
 ): Promise<void> {
-  await page.goto("/en/signup", { waitUntil: "domcontentloaded" });
+  await page.goto(`/${opts.locale ?? "en"}/signup`, { waitUntil: "domcontentloaded" });
   await page.fill('input[name="restaurantName"]', opts.restaurantName ?? "E2E Restaurant");
   await page.fill('input[name="contactName"]', opts.contactName ?? "E2E Owner");
   await page.fill('input[name="email"]', opts.email);
@@ -65,8 +69,21 @@ export async function submitSignup(
  * regression test: restore the old unconditional message and every one of these
  * specs fails.
  */
-export async function expectAccountCreated(page: Page): Promise<void> {
-  await expect(page.getByText(/our welcome email didn't get through/i)).toBeVisible();
+export async function expectAccountCreated(
+  page: Page,
+  opts: { locale?: string } = {},
+): Promise<void> {
+  // The same sentence, in the language the visitor filled the form in. Matched per
+  // locale rather than loosened to a shared substring: a signup submitted on
+  // `/fr/signup` that answered in English would be the exact G9 defect this suite
+  // is here to catch, and a laxer matcher would pass through it.
+  const SUCCESS_NO_EMAIL: Record<string, RegExp> = {
+    en: /our welcome email didn't get through/i,
+    fr: /notre e-mail de bienvenue n'est pas parti/i,
+  };
+  const pattern = SUCCESS_NO_EMAIL[opts.locale ?? "en"];
+  if (!pattern) throw new Error(`no success-copy matcher for locale ${opts.locale}`);
+  await expect(page.getByText(pattern)).toBeVisible();
 }
 
 /**
