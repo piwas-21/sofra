@@ -368,14 +368,19 @@ jobs:
     # SEPARATE runners in parallel, so the floor is paid concurrently, not
     # serially, and the arithmetic is 128 + ~42 + an aggregate job, not
     # 2 x 213. Playwright splits at file granularity for these specs (verified
-    # with `playwright test --shard=i/2 --list`). Re-listed 2026-08-21, when the
-    # backup-alert spec joined: shard 1 = admin-backups + admin-tenants +
-    # backup-alert-cron + billing-mollie (skips without a Mollie key) +
-    # control-auth + health + login-timing + owner-dashboard +
-    # owner-payments-pending + partner-base-domain = 32 tests, shard 2 =
-    # partner-client-domain + partner-tenant-panel + partner-trial +
-    # self-serve-signup + trial-warning-cron = 32 tests. The seconds above are
+    # with `playwright test --shard=i/2 --list`). Re-listed 2026-08-22, when the
+    # contact-intake spec joined (and the invite-resend / partner-tenant-dns /
+    # backup-agent-box-binding specs that had landed since the previous listing
+    # were found missing from it): shard 1 = admin-backups + admin-tenants +
+    # backup-agent-box-binding + backup-alert-cron + billing-mollie (skips
+    # without a Mollie key) + contact-intake + control-auth + health +
+    # invite-resend + login-timing + owner-dashboard + owner-payments-pending +
+    # partner-base-domain = 41 tests, shard 2 = partner-client-domain +
+    # partner-tenant-dns + partner-tenant-panel + partner-trial +
+    # self-serve-signup + trial-warning-cron = 34 tests. The seconds above are
     # the 2026-08-17 run's, not this split's — the balance is what was re-checked.
+    # The count imbalance is smaller than it reads: shard 2 carries
+    # self-serve-signup, which is 15 of its 34 and the slowest file in the suite.
     # Do NOT raise the shard count without re-measuring: at 3 shards the
     # residual per-shard test time (~27s) is a fifth of the floor, so the win
     # collapses while the compute cost keeps rising.
