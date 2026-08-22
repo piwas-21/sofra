@@ -72,6 +72,10 @@ export default defineConfig({
         // halves only: `lib/vies.ts` owns the fetch and stays out of scope, which
         // is exactly why the judgement it depends on was split into
         // `vies-result.ts` — the part that is easy to get wrong is measurable here.
+        // B1/B3 — whether a country code names a country. In scope because the
+        // branch it adds is the one that decides between "0%, outside the EU" and
+        // "stop, we cannot read this", on an invoice that is immutable once issued.
+        "lib/country-code.ts",
         "lib/vat-number.ts",
         "lib/vies-result.ts",
         "lib/vies-retry.ts",
@@ -81,6 +85,11 @@ export default defineConfig({
         "lib/icp.ts",
         "lib/plan-deletion.ts",
         "lib/tax-notes.ts",
+        // G15 — what a log line may say about a recipient. In scope because the
+        // failure it prevents is silent by construction: a leak here is only ever
+        // discovered by reading months of container logs, and the module is pure
+        // apart from one env read.
+        "lib/log-recipient.ts",
         // G16 — the delivery-verdict rule. Its query wrapper (`email-delivery.ts`) stays out, same
         // split as vies/vies-result above.
         "lib/email-delivery-verdicts.ts",

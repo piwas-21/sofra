@@ -61,6 +61,8 @@ test.describe("the public signup creates a payable account", () => {
     expect(user!.status).toBe("INVITED");
     expect(user!.hasPassword).toBe(false);
     expect(await countInviteTokens(user!.id)).toBe(1);
+    // Filled in English, so English it is (G9). The interesting half is below.
+    expect(user!.locale).toBe("en");
 
     const plan = await findPlan(slug);
     expect(plan, "the signup must have created a plan").not.toBeNull();
@@ -363,5 +365,25 @@ test.describe("the founder can see which mails did not get delivered (G16)", () 
     const lead = page.locator("li").filter({ hasText: restaurantName });
     await expect(lead).toContainText(/welcome email failed/i);
     await expect(lead).toContainText(/admin\/onboard/i);
+  });
+});
+
+test.describe("the account remembers which language the customer speaks (G9)", () => {
+  test("a signup filled in French mints a French account", async ({ page }) => {
+    // Not a cosmetic assertion: `User.locale` is what the invite, the re-send, the
+    // password reset and the invoice are written in. Before it existed, the lead row
+    // held the language and nothing addressed to the PERSON could reach it — so a
+    // francophone owner in Geneva got one mail in French (the trial warning, which
+    // looked its language up by email in the intake table) and every other mail in
+    // English. Two answers to the same question, from one control plane.
+    const slug = uniq.slug("fr");
+    const email = uniq.email("fr");
+
+    await submitSignup(page, { slug, email, restaurantName: "Chez E2E", locale: "fr" });
+    await expectAccountCreated(page, { locale: "fr" });
+
+    const user = await findUser(email);
+    expect(user, "the signup must have created a user").not.toBeNull();
+    expect(user!.locale).toBe("fr");
   });
 });

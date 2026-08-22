@@ -41,6 +41,22 @@ function nextClientIp(parallelIndex: number): string {
   return `198.18.${parallelIndex % 256}.${(seq % 254) + 1}`;
 }
 
+/**
+ * The same per-test identity, for `page.request` calls.
+ *
+ * `page.setExtraHTTPHeaders` below covers requests the BROWSER makes; it does
+ * NOT reach `page.request`, Playwright's API client. Measured, not assumed: the
+ * contact-intake spec's three tests all landed in ONE rate-limit bucket
+ * (`clientIp()` falls back to the literal "unknown" with no `x-forwarded-for`),
+ * so the second and third tests were refused 429 by the first test's own calls.
+ *
+ * Call it ONCE per test and reuse the result across that test's requests — the
+ * point is a bucket per test, not per request.
+ */
+export function apiClientHeaders(): Record<string, string> {
+  return { "x-forwarded-for": nextClientIp(base.info().parallelIndex) };
+}
+
 // The second fixture argument is positional, so it is NOT named `use`: eslint's
 // react-hooks/rules-of-hooks reads a call to `use(...)` inside a function called
 // `page` as a misplaced React hook and errors. Renaming is cheaper than an

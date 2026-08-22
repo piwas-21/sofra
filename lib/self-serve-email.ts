@@ -1,4 +1,5 @@
-// The two emails a self-serve signup sends (SOFRA-ONBOARDING-PLAN O2).
+// The two emails a self-serve signup sends (SOFRA-ONBOARDING-PLAN O2), and the
+// invite template the founder's own onboarding path shares with it.
 //
 // Split out of the intake route so the route reads as the flow it is (guard →
 // validate → decide → mint → notify) rather than interleaving two templates with
@@ -8,9 +9,15 @@
 // committed by the time these run, so a Resend outage must not turn a paid-up
 // customer into a 500. The founder notification is the backstop — it names the
 // restaurant and the plan, so a missed welcome email is recoverable by hand.
+//
+// LANGUAGE (G9). The customer-facing half is localized and the founder-facing
+// half is not, and that asymmetry is the whole rule: the founder is one person who
+// reads English, while the invite is the FIRST thing a restaurant owner in Geneva
+// ever receives from us and the only route into an account with no password.
 
 import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
 import { craftEmail, detailRows } from "@/lib/email-templates";
+import { emailTranslator } from "@/lib/email-locale";
 import { eur } from "@/lib/format";
 
 /**
@@ -39,49 +46,63 @@ export async function sendInviteEmail(opts: {
   name: string;
   restaurantName: string;
   inviteToken: string | null;
-  kicker: string;
+  /** The language this person is written to in — `User.locale`, or the intake's
+   *  own locale for an account that does not exist yet. */
+  locale: string;
   /** Extra `detailRows` beneath the copy; omit for the founder path. */
   rows?: [string, string][];
 }): Promise<{ sent: boolean }> {
+  const t = await emailTranslator(opts.locale, "emails.invite");
   const needsPassword = opts.inviteToken !== null;
+  // ONE variant key, used for the subject, the title, the lead and the button, so
+  // the four cannot drift into describing different situations to one reader.
+  const variant = needsPassword ? "setPassword" : "ready";
   const link = needsPassword ? `${siteUrl()}/invite/${opts.inviteToken}` : `${siteUrl()}/login`;
+  // Escaped BEFORE interpolation (lib/email-templates.ts's contract): the message
+  // catalogue is ours and trusted, a restaurant name typed into a form is not.
+  const restaurant = escapeHtml(opts.restaurantName);
+  // Resolved before the template for the same reason `reset-email.ts` does it: no
+  // nested template literals inside the HTML (Sonar S4624), and each line of copy
+  // reads as one sentence rather than as an expression.
+  const greeting = t("greeting", { name: escapeHtml(opts.name) });
+  const lead = t(`lead.${variant}`, { restaurant });
   return sendEmail({
     to: opts.to,
-    subject: needsPassword
-      ? "Welcome to SofraPiwas — set your password"
-      : `SofraPiwas — ${opts.restaurantName} is ready for your subscription`,
+    subject: t(`subject.${variant}`, { restaurant: opts.restaurantName }),
     html: craftEmail({
-      kicker: opts.kicker,
-      title: needsPassword ? "Welcome aboard 🎉" : "A new plan is waiting",
-      bodyHtml: `<p style="margin:0 0 12px;">Hi ${escapeHtml(opts.name)},</p>
-<p style="margin:0 0 12px;">${escapeHtml(opts.restaurantName)} is set up on SofraPiwas. ${
-        needsPassword ? "Set your password to open your dashboard" : "Sign in to your dashboard"
-      } and start the monthly subscription — afiyet olsun.</p>
+      kicker: t("kicker"),
+      title: t(`title.${variant}`),
+      bodyHtml: `<p style="margin:0 0 12px;">${greeting}</p>
+<p style="margin:0 0 12px;">${lead}</p>
 ${opts.rows ? detailRows(opts.rows) : ""}`,
-      cta: { label: needsPassword ? "Set your password" : "Open your dashboard", url: link },
-      footerNote: needsPassword ? "The link works once and expires in 24 hours." : undefined,
+      cta: { label: t(`cta.${variant}`), url: link },
+      footerNote: needsPassword ? t("footerNote") : undefined,
     }),
   });
 }
 
 /** The self-serve caller's shape: same template, plus the address and the total. */
-export function sendOwnerWelcome(opts: {
+export async function sendOwnerWelcome(opts: {
   to: string;
   contactName: string;
   restaurantName: string;
   slug: string;
   amountCents: number;
   inviteToken: string | null;
+  locale: string;
 }): Promise<{ sent: boolean }> {
+  const t = await emailTranslator(opts.locale, "emails.invite");
   return sendInviteEmail({
     to: opts.to,
     name: opts.contactName,
     restaurantName: opts.restaurantName,
     inviteToken: opts.inviteToken,
-    kicker: "Welcome to SofraPiwas",
+    locale: opts.locale,
     rows: [
-      ["Your web address", `${opts.slug}.sofrapiwas.com`],
-      ["Your plan", `${eur(opts.amountCents)}/month`],
+      [t("rowAddress"), `${opts.slug}.sofrapiwas.com`],
+      // The amount stays as `eur()` formats it — the price is the same number in
+      // every language, and `Intl` already localizes the separator inside it.
+      [t("rowPlan"), `${eur(opts.amountCents)}/month`],
     ],
   });
 }
@@ -91,6 +112,9 @@ export function sendOwnerWelcome(opts: {
  * account was created. Self-serve means nobody is watching the queue for a lead
  * that quietly failed to become one, so the outcome is stated rather than
  * inferred from the presence of a row.
+ *
+ * English, deliberately: it goes to the founder's own inbox (M5/M8 are the same),
+ * and translating an operational notice would only make it harder to grep.
  */
 export async function sendFounderSignupNotice(opts: {
   to: string;

@@ -86,8 +86,11 @@ function plansInWindow(now: Date) {
       },
       payments: { where: { sequenceType: "first" }, select: { sequenceType: true, status: true } },
       billingIdentity: { select: { billingEmail: true } },
-      client: { select: { partner: { select: { name: true, email: true } } } },
-      payer: { select: { name: true, email: true } },
+      // `locale` since G9: the account itself now holds the language, so the
+      // sweep no longer has to look the payer's address up in the intake table it
+      // was captured on.
+      client: { select: { partner: { select: { name: true, email: true, locale: true } } } },
+      payer: { select: { name: true, email: true, locale: true } },
       signupRequest: { select: { locale: true } },
     },
   });

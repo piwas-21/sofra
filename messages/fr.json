@@ -1491,6 +1491,71 @@
       "rowPlan": "Par mois",
       "cta": "Ouvrir votre page de facturation",
       "footerNote": "Besoin de plus de temps ou une question sur le prix ? Répondez simplement à cet e-mail — une personne le lit."
+    },
+    "invite": {
+      "kicker": "Bienvenue chez SofraPiwas",
+      "subject": {
+        "setPassword": "Bienvenue chez SofraPiwas — définissez votre mot de passe",
+        "ready": "SofraPiwas — {restaurant} est prêt pour votre abonnement"
+      },
+      "title": {
+        "setPassword": "Bienvenue à bord 🎉",
+        "ready": "Un nouvel abonnement vous attend"
+      },
+      "greeting": "Bonjour {name},",
+      "lead": {
+        "setPassword": "{restaurant} est configuré sur SofraPiwas. Définissez votre mot de passe pour ouvrir votre tableau de bord et démarrer l'abonnement mensuel — afiyet olsun.",
+        "ready": "{restaurant} est configuré sur SofraPiwas. Connectez-vous à votre tableau de bord et démarrez l'abonnement mensuel — afiyet olsun."
+      },
+      "cta": {
+        "setPassword": "Définir votre mot de passe",
+        "ready": "Ouvrir votre tableau de bord"
+      },
+      "footerNote": "Le lien fonctionne une seule fois et expire dans 24 heures.",
+      "rowAddress": "Votre adresse web",
+      "rowPlan": "Votre abonnement"
+    },
+    "partnerApproved": {
+      "kicker": "Programme partenaires",
+      "subject": "Bienvenue dans le programme partenaires SofraPiwas",
+      "title": "Bienvenue à bord 🎉",
+      "greeting": "Bonjour {name},",
+      "lead": "Votre candidature de partenaire SofraPiwas est approuvée. Définissez votre mot de passe pour ouvrir votre tableau de bord partenaire — afiyet olsun.",
+      "cta": "Définir votre mot de passe",
+      "footerNote": "Le lien fonctionne une seule fois et expire dans 24 heures."
+    },
+    "reset": {
+      "kicker": {
+        "partner": "Espace partenaires",
+        "account": "Votre compte"
+      },
+      "subject": "SofraPiwas — réinitialisez votre mot de passe",
+      "title": "Réinitialiser votre mot de passe",
+      "greeting": "Bonjour {name},",
+      "lead": {
+        "partner": "Quelqu'un (vous, on l'espère) a demandé la réinitialisation du mot de passe de votre compte partenaire SofraPiwas. Si ce n'est pas vous, vous pouvez ignorer cet e-mail sans souci.",
+        "account": "Quelqu'un (vous, on l'espère) a demandé la réinitialisation de votre mot de passe SofraPiwas. Si ce n'est pas vous, vous pouvez ignorer cet e-mail sans souci."
+      },
+      "cta": "Définir un nouveau mot de passe",
+      "footerNote": "Le lien fonctionne une seule fois et expire dans 24 heures."
+    },
+    "invoice": {
+      "kicker": "Facturation",
+      "subject": "Facture {number} — SofraPiwas",
+      "title": "Facture {number}",
+      "rowInvoice": "Numéro de facture",
+      "rowService": "Restaurant",
+      "rowTotal": "Total",
+      "cta": "Voir votre facture"
+    },
+    "billingDetails": {
+      "kicker": "Facturation",
+      "subject": "Il nous manque vos informations de facturation — SofraPiwas",
+      "title": "Votre facture attend quelques informations",
+      "received": "Nous avons bien reçu votre paiement de {amount} pour {restaurant}. Merci.",
+      "ask": "Pour vous envoyer une facture en bonne et due forme, nous avons besoin de la société à laquelle l'adresser — la raison sociale, l'adresse et le pays. Cela prend une minute, et la facture est émise dès que vous les avez enregistrées.",
+      "vat": "Si votre société a un numéro de TVA intracommunautaire, ajoutez-le : nous appliquerons l'autoliquidation de la TVA au lieu de la facturer.",
+      "cta": "Ajouter vos informations de facturation"
     }
   }
 }

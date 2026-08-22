@@ -19,6 +19,9 @@ export async function recordBlockedInvoice(opts: {
   reason: IssueBlocker | "taxNeedsReview";
   tenantSlug: string;
   payerEmail: string;
+  /** The language to ask in (G9). The caller resolves it the same way it resolves
+   *  the address, so the request and the invoice that follows it are one voice. */
+  payerLocale: string;
   grossCents: number;
 }): Promise<void> {
   let notified = false;
@@ -51,6 +54,7 @@ export async function recordBlockedInvoice(opts: {
         to: opts.payerEmail,
         tenantSlug: opts.tenantSlug,
         grossCents: opts.grossCents,
+        locale: opts.payerLocale,
       }).catch(() => ({ sent: false }))
     ).sent;
   }

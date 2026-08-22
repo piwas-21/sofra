@@ -21,7 +21,6 @@
 // window, so a marker cannot age out from under a trial that is still running.
 
 import { audit } from "@/lib/audit";
-import { db } from "@/lib/db";
 import { founderInbox } from "@/lib/email";
 import { payerAddress } from "@/lib/payer-contact";
 import type { TrialWarning } from "@/lib/trial-warning-policy";
@@ -48,40 +47,18 @@ export interface TrialWarningSweepResult {
 /** What one attempted milestone did: two of these are successes, the rest reasons. */
 type Outcome = "founder" | "payer" | "noRecipient" | "noFounderInbox" | "sendFailed";
 
-/**
- * The language the control plane HOLDS for each payer: the partner application their
- * address was captured on. One query for the batch; the self-serve fallback
- * (`signupRequest.locale`) rides along on the plan already.
- */
-async function heldLocales(todo: TrialWarningTodo[]): Promise<Map<string, string>> {
-  const applications = await db.partnerApplication.findMany({
-    // Lowercased on both sides: the intake stores `data.email.toLowerCase()` while a
-    // plan's address may be admin-typed in any case, and a mismatch here silently
-    // downgrades a francophone partner to English.
-    where: { email: { in: todo.map((t) => payerAddress(t.plan)?.toLowerCase() ?? "") } },
-    orderBy: { createdAt: "desc" },
-    select: { email: true, locale: true },
-  });
-  const held = new Map<string, string>();
-  for (const a of applications) {
-    if (!held.has(a.email.toLowerCase())) held.set(a.email.toLowerCase(), a.locale);
-  }
-  return held;
-}
-
 /** The send itself. `null` means there was nobody to write to — the one case that
  *  must NOT leave a marker behind, because it is not a thing we have said. */
 async function attempt(
   item: TrialWarningTodo,
   warning: TrialWarning,
   inbox: string | undefined,
-  locales: Map<string, string>,
   to: string | null,
 ): Promise<{ sent: boolean } | null> {
   const { plan, sub, verdict } = item;
   if (warning === "founder") return sendFounderNotice(inbox, plan, sub, verdict);
   if (!to) return null;
-  return sendPayerWarning(to, plan, sub, verdict, locales.get(to.toLowerCase()));
+  return sendPayerWarning(to, plan, sub, verdict);
 }
 
 /**
@@ -95,10 +72,9 @@ async function deliver(
   item: TrialWarningTodo,
   warning: TrialWarning,
   inbox: string | undefined,
-  locales: Map<string, string>,
 ): Promise<Outcome> {
   const { plan, verdict } = item;
-  const result = await attempt(item, warning, inbox, locales, payerAddress(plan));
+  const result = await attempt(item, warning, inbox, payerAddress(plan));
   if (!result) return "noRecipient";
 
   await audit(null, TRIAL_WARNING_ACTIONS[warning], "TenantBilling", plan.id, {
@@ -121,7 +97,6 @@ export async function runTrialWarningSweep(
     return { considered: 0, founderNotices: 0, payerWarnings: 0, skipped };
   }
 
-  const locales = await heldLocales(todo);
   const inbox = founderInbox();
   let founderNotices = 0;
   let payerWarnings = 0;
@@ -134,7 +109,7 @@ export async function runTrialWarningSweep(
         // `due` is ordered founder-first, and this loop is why: the owner made the
         // partner's warning conditional on his own chance to extend, so even on the
         // one run where both come due he is still told first.
-        const outcome = await deliver(item, warning, inbox, locales);
+        const outcome = await deliver(item, warning, inbox);
         if (outcome === "founder") founderNotices += 1;
         else if (outcome === "payer") payerWarnings += 1;
         else bump(skipped, outcome);

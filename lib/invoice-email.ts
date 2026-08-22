@@ -13,8 +13,9 @@
 // Resend plan upgrade plus a verified sofrapiwas.com sending domain — and when it
 // lands, these start working with no code change.
 
-import { sendEmail, siteUrl } from "@/lib/email";
+import { sendEmail, escapeHtml, siteUrl } from "@/lib/email";
 import { craftEmail, detailRows } from "@/lib/email-templates";
+import { emailTranslator } from "@/lib/email-locale";
 import { eur } from "@/lib/format";
 
 /**
@@ -30,24 +31,32 @@ export async function sendInvoiceIssued(opts: {
   number: string;
   tenantSlug: string;
   grossCents: number;
+  /** The language the payer is written to in (`User.locale`). */
+  locale: string;
   /** The sentence from lib/tax-treatment.ts, when there is one. Printed verbatim
    *  so the email and the invoice cannot disagree about the VAT treatment. */
   taxNote: string | null;
 }): Promise<{ sent: boolean }> {
+  const t = await emailTranslator(opts.locale, "emails.invoice");
   return sendEmail({
     to: opts.to,
-    subject: `Invoice ${opts.number} — SofraPiwas`,
+    subject: t("subject", { number: opts.number }),
     html: craftEmail({
-      kicker: "Billing",
-      title: `Invoice ${opts.number}`,
+      kicker: t("kicker"),
+      title: t("title", { number: opts.number }),
       bodyHtml:
         detailRows([
-          ["Invoice", opts.number],
-          ["Service", opts.tenantSlug],
-          ["Total", eur(opts.grossCents)],
+          [t("rowInvoice"), opts.number],
+          [t("rowService"), opts.tenantSlug],
+          [t("rowTotal"), eur(opts.grossCents)],
         ]) +
-        (opts.taxNote ? `<p style="margin:12px 0 0;">${opts.taxNote}</p>` : ""),
-      cta: { label: "View your invoice", url: `${siteUrl()}/invoices/${opts.invoiceId}` },
+        // The tax note stays in the language the INVOICE carries it in, which is
+        // the language it was stored in at issue time (lib/tax-notes.ts). It is a
+        // legal sentence that substantiates a reverse charge, the document shows
+        // exactly this string, and translating one of the two copies would make
+        // the mail and the invoice disagree about the VAT treatment.
+        (opts.taxNote ? `<p style="margin:12px 0 0;">${escapeHtml(opts.taxNote)}</p>` : ""),
+      cta: { label: t("cta"), url: `${siteUrl()}/invoices/${opts.invoiceId}` },
     }),
   });
 }
@@ -68,22 +77,26 @@ export async function sendBillingDetailsNeeded(opts: {
   to: string;
   tenantSlug: string;
   grossCents: number;
+  /** The language the payer is written to in (`User.locale`). */
+  locale: string;
 }): Promise<{ sent: boolean }> {
+  const t = await emailTranslator(opts.locale, "emails.billingDetails");
+  // Hoisted for the same reason as the other templates (Sonar S4624).
+  const received = t("received", {
+    amount: eur(opts.grossCents),
+    restaurant: escapeHtml(opts.tenantSlug),
+  });
   return sendEmail({
     to: opts.to,
-    subject: "We need your billing details to issue your invoice — SofraPiwas",
+    subject: t("subject"),
     html: craftEmail({
-      kicker: "Billing",
-      title: "Your invoice is waiting on a few details",
+      kicker: t("kicker"),
+      title: t("title"),
       bodyHtml:
-        `<p style="margin:0 0 12px;">We received your payment of ${eur(opts.grossCents)} for ` +
-        `${opts.tenantSlug}. Thank you.</p>` +
-        `<p style="margin:0 0 12px;">To send you a proper invoice we need the company it should ` +
-        `be addressed to — the legal name, address and country. It takes a minute, and the ` +
-        `invoice is issued as soon as you have saved them.</p>` +
-        `<p style="margin:0;">If your company has an EU VAT number, add it too and we will ` +
-        `reverse-charge the VAT instead of charging it.</p>`,
-      cta: { label: "Add your billing details", url: `${siteUrl()}/dashboard/billing/details` },
+        `<p style="margin:0 0 12px;">${received}</p>` +
+        `<p style="margin:0 0 12px;">${t("ask")}</p>` +
+        `<p style="margin:0;">${t("vat")}</p>`,
+      cta: { label: t("cta"), url: `${siteUrl()}/dashboard/billing/details` },
     }),
   });
 }
