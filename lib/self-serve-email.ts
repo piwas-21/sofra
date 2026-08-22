@@ -61,14 +61,19 @@ export async function sendInviteEmail(opts: {
   // Escaped BEFORE interpolation (lib/email-templates.ts's contract): the message
   // catalogue is ours and trusted, a restaurant name typed into a form is not.
   const restaurant = escapeHtml(opts.restaurantName);
+  // Resolved before the template for the same reason `reset-email.ts` does it: no
+  // nested template literals inside the HTML (Sonar S4624), and each line of copy
+  // reads as one sentence rather than as an expression.
+  const greeting = t("greeting", { name: escapeHtml(opts.name) });
+  const lead = t(`lead.${variant}`, { restaurant });
   return sendEmail({
     to: opts.to,
     subject: t(`subject.${variant}`, { restaurant: opts.restaurantName }),
     html: craftEmail({
       kicker: t("kicker"),
       title: t(`title.${variant}`),
-      bodyHtml: `<p style="margin:0 0 12px;">${t("greeting", { name: escapeHtml(opts.name) })}</p>
-<p style="margin:0 0 12px;">${t(`lead.${variant}`, { restaurant })}</p>
+      bodyHtml: `<p style="margin:0 0 12px;">${greeting}</p>
+<p style="margin:0 0 12px;">${lead}</p>
 ${opts.rows ? detailRows(opts.rows) : ""}`,
       cta: { label: t(`cta.${variant}`), url: link },
       footerNote: needsPassword ? t("footerNote") : undefined,
