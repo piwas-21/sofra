@@ -163,7 +163,7 @@ export type RenderableBrand = Omit<StoredBrand, "publishToTenants">;
  * It ships now so that when something does, the gate is already the only door.
  */
 export function renderableBrand(brand: StoredBrand | null | undefined): RenderableBrand | null {
-  if (!brand || !brand.publishToTenants) return null;
+  if (!brand?.publishToTenants) return null;
   return {
     displayName: brand.displayName,
     tagline: brand.tagline,

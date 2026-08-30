@@ -43,8 +43,9 @@ export default async function AdminPartnerDetailPage({
   if (!partner) notFound();
 
   const balance = partner.commissions.reduce((s, c) => s + c.amountCents, 0);
-  // Joined once so an all-empty address renders nothing at all rather than a row
+  // Joined once each so an all-empty line renders nothing at all rather than a row
   // of separators.
+  const contact = [partner.brand?.email, partner.brand?.phone].filter(Boolean).join(" · ");
   const address = [
     partner.brand?.addressLine1,
     partner.brand?.postalCode,
@@ -137,11 +138,7 @@ export default async function AdminPartnerDetailPage({
                 {partner.brand.websiteUrl}
               </a>
             )}
-            {[partner.brand.email, partner.brand.phone].filter(Boolean).length > 0 && (
-              <span className="text-muted-foreground">
-                {[partner.brand.email, partner.brand.phone].filter(Boolean).join(" · ")}
-              </span>
-            )}
+            {contact && <span className="text-muted-foreground">{contact}</span>}
             {address.length > 0 && <span className="text-muted-foreground">{address}</span>}
             <span className={partner.brand.publishToTenants ? "" : "text-muted-foreground"}>
               {tb(partner.brand.publishToTenants ? "adminPublishAsked" : "adminPublishOff")}
