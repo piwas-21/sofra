@@ -482,7 +482,8 @@
         "invoices": "Faturalar",
         "icp": "ICP",
         "billingDetails": "Fatura bilgileri",
-        "domains": "Alan adları"
+        "domains": "Alan adları",
+        "brand": "Marka"
       },
       "groups": {
         "pipeline": "Süreç",
@@ -1232,6 +1233,33 @@
       "submit": "Talebi gönder",
       "sending": "Gönderiliyor…",
       "sent": "Gönderildi — size döneceğiz."
+    },
+    "brand": {
+      "title": "Herkese açık bilgileriniz",
+      "intro": "Bir restoranın misafirlerinin, sitelerinin arkasındaki şirket olarak görebileceği ad ve iletişim bilgileri. Yalnızca seçtikleriniz herkese açık olsun diye bunları burada siz yazarsınız.",
+      "privacyNote": "Bunlar fatura bilgilerinizden bilerek ayrı tutulur. Fatura adresiniz ve sicil numaranız gizli kalır ve bizden başka kimseye gösterilmez.",
+      "prefillNote": "Başlangıç olarak ticari adınızı doldurduk. Fatura bilgilerinizden başka hiçbir şey kopyalanmaz — misafirlerin görmesini istediğiniz bilgileri yazın.",
+      "fields": {
+        "displayName": "Görünen ad",
+        "tagline": "Slogan (isteğe bağlı)",
+        "websiteUrl": "Web sitesi (https://…)",
+        "email": "İletişim e-postası",
+        "phone": "Telefon",
+        "addressLine1": "Adres",
+        "postalCode": "Posta kodu",
+        "city": "Şehir",
+        "countryCode": "Ülke (2 harf)"
+      },
+      "publishLabel": "Bu bilgileri, sattığınız her restoran sitesinin alt bilgisinde gösterin.",
+      "publishMeaning": "Müşterilerinizin misafirleri bunları görecek.",
+      "publishUnavailable": "Henüz kullanılamıyor — platform sahibi etkinleştirene kadar yayınlama kapalı kalır. Bilgileriniz yine de kaydedilir.",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor…",
+      "saved": "Kaydedildi.",
+      "adminTitle": "Herkese açık markası",
+      "adminEmpty": "Herkese açık bilgi girilmemiş.",
+      "adminPublishAsked": "Restoranlarının sitelerinde gösterilmek istiyor.",
+      "adminPublishOff": "Herkese açık gösterilmeyi istemedi."
     },
     "baseDomain": {
       "title": "Kendi alan adlarınız",

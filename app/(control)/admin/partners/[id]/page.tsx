@@ -17,6 +17,10 @@ export default async function AdminPartnerDetailPage({
   await requireAdmin();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.admin.partnerDetail" });
+  // The partner-facing namespace, reused here on purpose: the founder should read
+  // the same words for these fields that the partner does, or the two pages drift
+  // into describing the same record differently (§11).
+  const tb = await getTranslations({ locale, namespace: "control.brand" });
   const { id } = await params;
   const partner = await db.user.findFirst({
     where: { id, role: "PARTNER" },
@@ -29,11 +33,26 @@ export default async function AdminPartnerDetailPage({
       // surfaced rather than acted on — nothing auto-revokes (lib/base-domain-
       // verification.ts). This is where "is that still theirs?" gets asked.
       baseDomains: { orderBy: [{ verifiedAt: "desc" }, { createdAt: "desc" }] },
+      // Read-only here (§11). The founder needs to see what a partner would be
+      // published AS — and, more to the point, whether they have ASKED to be
+      // published — before the owner decision in §11e is taken. Nothing on this
+      // page writes it: the record belongs to the partner.
+      brand: true,
     },
   });
   if (!partner) notFound();
 
   const balance = partner.commissions.reduce((s, c) => s + c.amountCents, 0);
+  // Joined once so an all-empty address renders nothing at all rather than a row
+  // of separators.
+  const address = [
+    partner.brand?.addressLine1,
+    partner.brand?.postalCode,
+    partner.brand?.city,
+    partner.brand?.countryCode,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   // One clock for the whole render, so two domains never disagree about staleness.
   const now = new Date();
 
@@ -95,6 +114,42 @@ export default async function AdminPartnerDetailPage({
             <li className="font-label text-muted-foreground">{t("noBaseDomains")}</li>
           )}
         </ul>
+      </section>
+
+      <section>
+        <h2 className="font-hand text-3xl font-bold">{tb("adminTitle")}</h2>
+        {partner.brand ? (
+          <div className="mt-4 grid gap-1 font-label text-sm">
+            <span className="font-bold">{partner.brand.displayName}</span>
+            {partner.brand.tagline && (
+              <span className="text-muted-foreground">{partner.brand.tagline}</span>
+            )}
+            {partner.brand.websiteUrl && (
+              // `rel="noopener noreferrer"` because this is a partner-supplied
+              // address opened from an admin page; the https-only check at the write
+              // schema is the other half (lib/partner-brand.ts).
+              <a
+                href={partner.brand.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground underline w-fit"
+              >
+                {partner.brand.websiteUrl}
+              </a>
+            )}
+            {[partner.brand.email, partner.brand.phone].filter(Boolean).length > 0 && (
+              <span className="text-muted-foreground">
+                {[partner.brand.email, partner.brand.phone].filter(Boolean).join(" · ")}
+              </span>
+            )}
+            {address.length > 0 && <span className="text-muted-foreground">{address}</span>}
+            <span className={partner.brand.publishToTenants ? "" : "text-muted-foreground"}>
+              {tb(partner.brand.publishToTenants ? "adminPublishAsked" : "adminPublishOff")}
+            </span>
+          </div>
+        ) : (
+          <p className="mt-4 font-label text-muted-foreground">{tb("adminEmpty")}</p>
+        )}
       </section>
 
       <section className="hand-drawn-border bg-card p-6">
