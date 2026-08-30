@@ -87,13 +87,14 @@ export default function PartnerBrandForm({
         </p>
       )}
       {field("displayName", { required: true, maxLength: 80 })}
+      {/* `<output>` rather than `role="status"`: same live region, and the native
+          element is announced by assistive tech that does not implement the ARIA
+          role (S6819). It is a live region on purpose — the partner types and the
+          verdict changes under them, so it has to be spoken, not merely rendered. */}
       {echoesLegalName && (
-        <p
-          role="status"
-          className="sm:col-span-2 font-label text-sm text-craft-error-text"
-        >
+        <output className="sm:col-span-2 font-label text-sm text-craft-error-text">
           {t("legalNameNotPublished")}
-        </p>
+        </output>
       )}
       {field("tagline", { maxLength: 120 })}
       {field("websiteUrl", { type: "url", maxLength: 200 })}
