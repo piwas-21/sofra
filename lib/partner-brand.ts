@@ -1,4 +1,8 @@
-// A partner's PUBLIC brand — the pure rules about it (SOFRA-PARTNER-PLAN §11).
+// A partner's PUBLIC brand — the WRITE rules about it (SOFRA-PARTNER-PLAN §11).
+//
+// What may be SHOWN moved to lib/partner-brand-publish.ts when the pair outgrew
+// one file's LOC limit (CLAUDE.md §4) and is re-exported at the foot of this
+// file, so `@/lib/partner-brand` is still the only import path anyone needs.
 //
 // Pure by construction: no `db` import, no I/O, nothing that can read a session.
 // Everything here is either "is this input acceptable" or "may this record be
@@ -14,6 +18,7 @@
 
 import { z } from "zod";
 import { isAssignedCountryCode } from "@/lib/country-code";
+import { isHttpsUrl } from "@/lib/partner-brand-publish";
 
 /**
  * An empty form field is ABSENT, not the empty string.
@@ -28,26 +33,6 @@ const blankToUndefined = (value: unknown): unknown =>
 
 const optionalText = (max: number) =>
   z.preprocess(blankToUndefined, z.string().trim().max(max).optional());
-
-/**
- * `https://` and nothing else.
- *
- * This value ends up in an `href` on a page served to the public, so the scheme
- * is the security boundary, not a formatting preference. `javascript:` is script
- * execution in the reader's page; `http:` is a downgrade we would be advertising
- * on someone else's site. A bare host (`example.com`) is refused rather than
- * silently prefixed: guessing a scheme for a partner is exactly how `http` gets
- * published by accident, and the form asks for the full address.
- *
- * `URL` does the parsing, so no regex has to be right about hosts.
- */
-function isHttpsUrl(value: string): boolean {
-  try {
-    return new URL(value).protocol === "https:";
-  } catch {
-    return false;
-  }
-}
 
 /**
  * What a partner must supply to record a public brand.
@@ -129,50 +114,13 @@ export function prefillFromBillingIdentity(
   return name ? { displayName: name } : null;
 }
 
-/** What is stored. Structural, for the same reason as `IdentityNames`. */
-export type StoredBrand = {
-  displayName: string;
-  tagline: string | null;
-  websiteUrl: string | null;
-  email: string | null;
-  phone: string | null;
-  addressLine1: string | null;
-  postalCode: string | null;
-  city: string | null;
-  countryCode: string | null;
-  publishToTenants: boolean;
-};
-
-/** Exactly the fields a public surface may render. */
-export type RenderableBrand = Omit<StoredBrand, "publishToTenants">;
-
-/**
- * The ONLY way an unpublished brand can reach a public surface: it cannot.
- *
- * A single choke point on purpose. The alternative — every future caller
- * remembering to test `publishToTenants` before it renders — is a rule that holds
- * until the first caller that forgets, and the failure is silent: a partner who
- * never opted in appears in a footer and nothing goes red. Here, forgetting means
- * calling this function and getting `null`.
- *
- * It also RE-PROJECTS rather than spreading the row, so a column added to
- * PartnerBrand later (a founder note, an internal flag) is not published by the
- * mere fact of having been added.
- *
- * Nothing consumes this yet — the publishing half is gated on an owner decision.
- * It ships now so that when something does, the gate is already the only door.
- */
-export function renderableBrand(brand: StoredBrand | null | undefined): RenderableBrand | null {
-  if (!brand?.publishToTenants) return null;
-  return {
-    displayName: brand.displayName,
-    tagline: brand.tagline,
-    websiteUrl: brand.websiteUrl,
-    email: brand.email,
-    phone: brand.phone,
-    addressLine1: brand.addressLine1,
-    postalCode: brand.postalCode,
-    city: brand.city,
-    countryCode: brand.countryCode,
-  };
-}
+// The PUBLISH half, re-exported so `@/lib/partner-brand` stays the one import
+// path for this feature. It lives in its own file only because the pair outgrew
+// the 200-LOC limit (CLAUDE.md §4); `renderableBrand` is still the single door.
+export {
+  isHttpsUrl,
+  isLegalNameEcho,
+  renderableBrand,
+  type RenderableBrand,
+  type StoredBrand,
+} from "@/lib/partner-brand-publish";

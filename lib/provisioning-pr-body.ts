@@ -8,6 +8,9 @@
 // checklist against it.
 
 import { splitDeferredModules, tenantDomain, type TenantProvisionInput } from "./provisioning-registry";
+// The conditional sections live next door (LOC limit, CLAUDE.md §4). Each returns an
+// empty array when it does not apply, so this file spreads them unconditionally.
+import { baseDomainSection, deferredSection, partnerSection } from "./provisioning-pr-blocks";
 
 // Close the quote, emit an escaped apostrophe, reopen: the only way to get a
 // literal ' inside a POSIX single-quoted argument.
@@ -77,65 +80,6 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
         "two commands below are **required**, not a fallback. Still check the entry first:",
       ];
 
-  // Named, not silent. The entry omits a module they PAID for, so the body has to say
-  // so where the founder is already reading — otherwise the checklist above quietly
-  // contradicts the receipt, and the gap is discovered by a customer asking why card
-  // payment does not work. Empty for every tenant that bought nothing deferred.
-  const deferredBlock = deferred.length
-    ? [
-        "",
-        `### ⚠️ Bought but deliberately NOT in this entry: \`${deferred.join(", ")}\``,
-        "",
-        `They paid for \`${deferred.join(", ")}\` and they keep it — the plan, the price and the`,
-        "subscription are unchanged. It is out of **this** entry because `provision-tenant.sh`",
-        "refuses the pair `online-payments` without `stripe_account:`, and refuses it *before*",
-        "the database, the compose project or the image — so proposing both here would not give",
-        "them a restaurant lacking card payment, it would give them **no restaurant at all**.",
-        "",
-        "No account was supplied with this proposal. If you are the founder and you already",
-        "hold their `acct_` — runbook §2b has you create it *before* proposing, exactly so",
-        "this does not happen — the fix is one shot, not two: add both fields in **Files",
-        "changed** before merging and delete this section's premise. Otherwise the account",
-        "genuinely cannot exist yet, because only the restaurant can create it, through",
-        "Stripe's hosted onboarding, which cannot be pre-filled. In that case provision them",
-        "now on everything else, then, once they have finished Stripe and you have their id, open a",
-        "**second** registry PR that adds BOTH halves together — one without the other trips",
-        "the same guard. Only these two fields change; the rest of the entry stays as merged:",
-        "",
-        "```yaml",
-        `  ${slug}:`,
-        "    stripe_account: acct_XXXXXXXXXXXX",
-        `    modules: [${[...granted, ...deferred].join(", ")}]`,
-        "```",
-        "",
-        `…then re-run provisioning (\`gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=${slug}\`)`,
-        "and restart the tenant so it picks up the Stripe env. Full recipe — account creation,",
-        "the KYC sitting, TWINT, the box env — workspace `docs/runbooks/signup-to-live-tenant.md`",
-        "**§2b**, which is written to be followed BEFORE this second PR.",
-      ]
-    : [];
-
-  // The one thing that can go wrong with a partner-zone entry and cannot be fixed after
-  // the merge: the name has to RESOLVE before provisioning, because the certificate is
-  // issued per hostname over HTTP-01 and there is no way to pre-issue one. A tenant
-  // provisioned ahead of its A record sits without TLS, which looks exactly like a
-  // broken product to the restaurant that was just handed a link.
-  const baseDomainBlock = input.baseDomain
-    ? [
-        "",
-        `### ⚠️ Partner zone — \`base_domain: ${input.baseDomain}\`, so the wildcard does NOT cover it`,
-        "",
-        `\`\`\`bash\ndig +short ${domain}   # must already answer with this box's IP\n\`\`\``,
-        "",
-        "The partner publishes that A record in their own zone (plan §D1a: per-client A record —",
-        "a delegated subzone is impossible, not merely worse). An empty answer means merging will",
-        "stand the tenant up and then fail to get a certificate, which are issued per hostname over",
-        "HTTP-01 and cannot be pre-issued: **wait for the record rather than merge and retry.** And",
-        "note `NEXT_PUBLIC_*` are baked per domain, so changing this domain later is a rebuild plus",
-        "a re-provision, not a registry edit.",
-      ]
-    : [];
-
   const after = chained
     ? [
         "The chain provisions **first-time only**, and reports back on this PR when it is done —",
@@ -159,6 +103,11 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
     }`,
     `- **box** \`${box}\` · status starts at \`provisioning\`${
       input.baseDomain ? ` · **base_domain** \`${input.baseDomain}\` (a partner's own zone)` : ""
+    }${
+      // In the summary as well as its own section below: this is the line a founder
+      // skims, and a name becoming public is the one thing in the diff that is about
+      // a third party rather than about the tenant.
+      input.partnerBrand ? ` · **partner credit** \`${input.partnerBrand.displayName}\` (public)` : ""
     }`,
     "",
     ...header,
@@ -172,8 +121,11 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
       : `- [ ] **modules** \`${granted.join(", ")}\` match what they actually paid for — they are enforced at runtime now, so a missing id is a feature they bought and will not get`,
     tagCheck,
     `- [ ] **template** \`${input.template}\` and **currency** \`${input.currency}\` are right — the template is baked into the image at build time, so changing it later is a rebuild`,
-    ...deferredBlock,
-    ...baseDomainBlock,
+    ...deferredSection(slug, granted, deferred),
+    ...baseDomainSection(input.baseDomain, domain),
+    // Only when a publishable partner brand reached the entry — `renderableBrand`
+    // decided that, not this file.
+    ...(input.partnerBrand ? partnerSection(slug, input.partnerBrand) : []),
     "",
     ...after,
     "",

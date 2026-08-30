@@ -1239,6 +1239,8 @@
       "intro": "Der Name und die Kontaktdaten, die Gäste eines Restaurants als das Unternehmen hinter der Website sehen könnten. Sie geben sie hier ein, damit nur das öffentlich wird, was Sie auswählen.",
       "privacyNote": "Sie sind bewusst von Ihren Rechnungsdaten getrennt. Ihre Rechnungsadresse und Ihre Registernummer bleiben privat und werden niemandem außer uns gezeigt.",
       "prefillNote": "Wir haben Ihren Handelsnamen als Anfang eingetragen. Sonst wird nichts aus Ihren Rechnungsdaten übernommen — bitte geben Sie ein, was Gäste sehen dürfen.",
+      "noTradeNameNote": "Ihre Rechnungsdaten enthalten einen amtlichen Namen, aber keinen Handelsnamen. Einen Personennamen dürfen wir nicht auf der Website eines Restaurants veröffentlichen — bitte geben Sie die Marke ein, die die Gäste Ihrer Kunden sehen sollen.",
+      "legalNameNotPublished": "Das ist Ihr amtlicher Name; er wird auf keiner Restaurant-Website angezeigt. Ihre Angaben werden trotzdem gespeichert — geben Sie einen Markennamen ein, um genannt zu werden.",
       "fields": {
         "displayName": "Anzeigename",
         "tagline": "Slogan (optional)",

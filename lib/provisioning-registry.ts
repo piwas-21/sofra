@@ -84,6 +84,19 @@ export interface TenantProvisionInput {
   /** The tenant's Stripe connected account (`acct_…`), when they already have one.
    *  Absent on the self-serve path; present when the founder followed runbook §2b. */
   stripeAccount?: string;
+  /**
+   * The reseller credit this tenant's footer may carry (§11e) — and it is typed as
+   * the OUTPUT of `renderableBrand`, not as a partner id or a brand row, on purpose.
+   * That choke point is where `publishToTenants` and the D-B1a legal-name refusal
+   * are decided, so a caller cannot reach this field without having passed them:
+   * the only way to obtain a value of this shape is to have been allowed one.
+   *
+   * Optional, and ABSENCE IS THE CONTRACT, exactly as `baseDomain` above: without it
+   * the generator emits precisely what it emitted before this field existed — no
+   * `partner_name:`, no `partner_url:` — which is every entry in the registry today.
+   * The proof is that every pre-existing test of this function passes unchanged.
+   */
+  partnerBrand?: { displayName: string; websiteUrl?: string };
   city?: string;
   /** Which box the tenant belongs on; provision-tenant.sh refuses a mismatch. */
   box?: string;
@@ -163,6 +176,17 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): {
       ...(stripeAccount ? { stripe_account: stripeAccount } : {}),
       // Only emit city when set — the registry field is optional.
       ...(input.city ? { city: input.city } : {}),
+      // The partner credit, emitted only when there is a publishable one. NOT
+      // `partner_attribution:` — absent means true (D-B2), so writing it on every
+      // entry would be a no-op line on all of them and a diff on all of them. It is
+      // the RESTAURANT's switch, hand-added on their behalf when they ask for it, and
+      // resolved in `provision-tenant.sh` so the tenant env carries one meaning only.
+      ...(input.partnerBrand
+        ? {
+            partner_name: input.partnerBrand.displayName,
+            ...(input.partnerBrand.websiteUrl ? { partner_url: input.partnerBrand.websiteUrl } : {}),
+          }
+        : {}),
     },
   };
   const block = stringify(entry)

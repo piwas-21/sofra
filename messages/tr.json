@@ -1239,6 +1239,8 @@
       "intro": "Bir restoranın misafirlerinin, sitelerinin arkasındaki şirket olarak görebileceği ad ve iletişim bilgileri. Yalnızca seçtikleriniz herkese açık olsun diye bunları burada siz yazarsınız.",
       "privacyNote": "Bunlar fatura bilgilerinizden bilerek ayrı tutulur. Fatura adresiniz ve sicil numaranız gizli kalır ve bizden başka kimseye gösterilmez.",
       "prefillNote": "Başlangıç olarak ticari adınızı doldurduk. Fatura bilgilerinizden başka hiçbir şey kopyalanmaz — misafirlerin görmesini istediğiniz bilgileri yazın.",
+      "noTradeNameNote": "Fatura bilgilerinizde yasal ad var ama ticari ad yok. Bir kişinin adını restoran web sitesinde yayımlayamayız; lütfen müşterilerinizin misafirlerinin göreceği marka adını girin.",
+      "legalNameNotPublished": "Bu, yasal adınızla aynı; hiçbir restoran sitesinde gösterilmeyecek. Bilgileriniz yine de kaydedilir — adınızın anılması için bir marka adı girin.",
       "fields": {
         "displayName": "Görünen ad",
         "tagline": "Slogan (isteğe bağlı)",

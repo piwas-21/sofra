@@ -115,3 +115,38 @@ test("a partner cannot write another partner's brand, even by naming them", asyn
   expect(await findPartnerBrand(mineId)).toMatchObject({ displayName: "My Brand" });
   expect(await findPartnerBrand(theirsId)).toMatchObject({ displayName: "Their Brand" });
 });
+
+test("a sole trader is told why their own name cannot be published (D-B1a)", async ({ page }) => {
+  const email = uniq.email("brandsole");
+  const partnerId = await arrangePartnerUser(email, PASSWORD);
+  // The case §11b is about: a legal record naming a PERSON, with no trade name. The
+  // prefill therefore offers that person's own name — correct for a field they are
+  // about to read and edit, and catastrophic if it were quietly published.
+  await arrangeBillingIdentityFor(partnerId, {
+    legalName: "Mustafa Vural",
+    tradeName: null,
+    addressLine1: "Chemin Privé 7",
+  });
+
+  await login(page, { email, password: PASSWORD });
+  await page.waitForURL("**/dashboard");
+  await page.goto("/dashboard/brand");
+
+  // Said before they type, not after they save.
+  await expect(page.getByText(/no trading name/i)).toBeVisible();
+  await expect(page.getByText(/will not be shown on any restaurant/i)).toBeVisible();
+
+  // The save still SUCCEEDS — it is their record, and refusing the write would leave
+  // them unable to record anything at all. What is refused is publishing it, and the
+  // page says so rather than accepting the value and dropping it out of sight.
+  await page.getByRole("button", { name: /^save$/i }).click();
+  await expect(page.getByText(/^saved\.$/i)).toBeVisible();
+  expect(await findPartnerBrand(partnerId)).toMatchObject({ displayName: "Mustafa Vural" });
+
+  // Type a real brand and the warning goes; type the legal name back, in another
+  // case and with stray spaces, and it returns — the comparison is normalised.
+  await page.getByLabel(/display name/i).fill("Solution Eva");
+  await expect(page.getByText(/will not be shown on any restaurant/i)).toHaveCount(0);
+  await page.getByLabel(/display name/i).fill("  mustafa   VURAL ");
+  await expect(page.getByText(/will not be shown on any restaurant/i)).toBeVisible();
+});

@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   savePartnerBrandAction,
   type PartnerBrandState,
 } from "@/lib/actions/partner-brand-actions";
+import { isLegalNameEcho } from "@/lib/partner-brand";
 import ActionError from "./ActionError";
 
 /** What the page hands in — either the stored row or, for a partner who has none
@@ -38,12 +39,23 @@ type TextField = Exclude<keyof BrandDefaults, "publishToTenants">;
  */
 export default function PartnerBrandForm({
   defaults,
-}: Readonly<{ defaults?: BrandDefaults }>) {
+  legalName,
+  hasTradeName,
+}: Readonly<{ defaults?: BrandDefaults; legalName?: string | null; hasTradeName?: boolean }>) {
   const t = useTranslations("control.brand");
   const [state, action, pending] = useActionState<PartnerBrandState, FormData>(
     savePartnerBrandAction,
     {},
   );
+
+  // Watched, so the partner is told BEFORE they save rather than after — and the
+  // same predicate the publish choke point uses (lib/partner-brand.ts), so the UI
+  // cannot promise something `renderableBrand` would then refuse. Saving is still
+  // allowed: it is their record, and refusing the write would leave them with no way
+  // to record their own name. What is refused is PUBLISHING it, and the note says so
+  // rather than the form accepting it silently and dropping it later (D-B1a).
+  const [displayName, setDisplayName] = useState(defaults?.displayName ?? "");
+  const echoesLegalName = isLegalNameEcho(displayName, legalName);
 
   const field = (
     name: TextField,
@@ -57,6 +69,7 @@ export default function PartnerBrandForm({
         required={opts.required}
         maxLength={opts.maxLength ?? 200}
         defaultValue={defaults?.[name] ?? ""}
+        onChange={name === "displayName" ? (e) => setDisplayName(e.target.value) : undefined}
         className="input-primary"
       />
     </label>
@@ -64,7 +77,25 @@ export default function PartnerBrandForm({
 
   return (
     <form action={action} className="grid gap-4 sm:grid-cols-2">
+      {/* Said once, up front, to the partner it applies to: a sole trader whose
+          billing record has no trade name has nothing we could publish, because the
+          only other name we hold is their own (§11b). Better here, where they are
+          about to type, than as a refusal after they save. */}
+      {legalName && !hasTradeName && (
+        <p className="sm:col-span-2 font-label text-sm text-muted-foreground">
+          {t("noTradeNameNote")}
+        </p>
+      )}
       {field("displayName", { required: true, maxLength: 80 })}
+      {/* `<output>` rather than `role="status"`: same live region, and the native
+          element is announced by assistive tech that does not implement the ARIA
+          role (S6819). It is a live region on purpose — the partner types and the
+          verdict changes under them, so it has to be spoken, not merely rendered. */}
+      {echoesLegalName && (
+        <output className="sm:col-span-2 font-label text-sm text-craft-error-text">
+          {t("legalNameNotPublished")}
+        </output>
+      )}
       {field("tagline", { maxLength: 120 })}
       {field("websiteUrl", { type: "url", maxLength: 200 })}
       {field("email", { type: "email" })}
