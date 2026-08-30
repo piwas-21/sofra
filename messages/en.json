@@ -1239,6 +1239,8 @@
       "intro": "The name and contact details a restaurant's guests could be shown as the company behind their website. You type them here, so only what you choose is ever public.",
       "privacyNote": "These are kept separate from your billing details on purpose. Your invoice address and registration number stay private and are never shown to anyone but us.",
       "prefillNote": "We have filled in your trading name to start you off. Nothing else is copied from your billing details — please type what you are happy for guests to see.",
+      "noTradeNameNote": "Your billing details give a legal name but no trading name. We cannot publish a personal name on a restaurant's website, so please enter the brand your clients' guests should see.",
+      "legalNameNotPublished": "This is the same as your legal name, so it will not be shown on any restaurant's site. Your details are still saved — enter a brand name to be credited.",
       "fields": {
         "displayName": "Display name",
         "tagline": "Tagline (optional)",

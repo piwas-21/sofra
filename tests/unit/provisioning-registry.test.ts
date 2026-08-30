@@ -480,3 +480,94 @@ describe("the PR body describes the entry it ships with", () => {
     expect(body).not.toContain("dig +short");
   });
 });
+
+describe("a partner credit in the generated entry (§11e, S3a)", () => {
+  // Same regression proof as `base_domain` above, and it is the important half of this
+  // block: every test in this file that predates `partnerBrand` still passes UNCHANGED.
+  // Absence is the contract — an entry with no credit is byte-identical to one built
+  // before the field existed, which is what every entry in the live registry is.
+  const withBrand = (partnerBrand?: { displayName: string; websiteUrl?: string }) =>
+    asTenant(
+      buildTenantRegistryEntry({
+        slug: "obresse",
+        name: "O'Bresse",
+        adminEmail: "chef@obresse.example",
+        template: "craft",
+        currency: "CHF",
+        languages: ["fr"],
+        modules: ["core"],
+        partnerBrand,
+      }),
+      "obresse",
+    ) as Record<string, unknown>;
+
+  it("emits partner_name and partner_url as flat keys", () => {
+    // Flat, not a nested `partner:` map: `provision-tenant.sh` reads a fixed key list
+    // and flattens each value with `str(v)`, so a map would arrive in the shell as a
+    // stringified Python dict (plan §11d2).
+    const t = withBrand({ displayName: "Solution Eva", websiteUrl: "https://solutioneva.com" });
+    expect(t.partner_name).toBe("Solution Eva");
+    expect(t.partner_url).toBe("https://solutioneva.com");
+  });
+
+  it("emits the name alone when the partner recorded no website", () => {
+    const t = withBrand({ displayName: "Solution Eva" });
+    expect(t.partner_name).toBe("Solution Eva");
+    expect(t).not.toHaveProperty("partner_url");
+  });
+
+  // THE absence case. Not "partner_name is empty" — the key must not be there at all,
+  // because an empty value is a thing someone set and an absent key is the default the
+  // deploy script already implements.
+  it("emits NEITHER key when there is no publishable brand", () => {
+    const t = withBrand();
+    expect(t).not.toHaveProperty("partner_name");
+    expect(t).not.toHaveProperty("partner_url");
+  });
+
+  // D-B2: absent means attribution is ON, so writing the key on every entry would be a
+  // no-op line on all of them. It is the RESTAURANT's switch, hand-added by the founder
+  // on their behalf, and `provision-tenant.sh` is where the boolean is resolved.
+  it("never emits partner_attribution, credited or not", () => {
+    expect(withBrand({ displayName: "Solution Eva" })).not.toHaveProperty("partner_attribution");
+    expect(withBrand()).not.toHaveProperty("partner_attribution");
+  });
+
+  it("escapes a brand name that would otherwise break the YAML", () => {
+    const t = withBrand({ displayName: "Eva: #1 \"partner\"\nname: pwned" });
+    expect(t.partner_name).toBe("Eva: #1 \"partner\"\nname: pwned");
+    expect(t.name).toBe("O'Bresse");
+  });
+
+  it("says so in the PR body — the founder's review checkpoint (ADR-012)", () => {
+    const input = {
+      slug: "obresse",
+      name: "O'Bresse",
+      adminEmail: "chef@obresse.example",
+      template: "craft" as const,
+      currency: "CHF",
+      languages: ["fr"],
+      modules: ["core"],
+      partnerBrand: { displayName: "Solution Eva", websiteUrl: "https://solutioneva.com" },
+    };
+    const body = buildProvisioningPrBody(input);
+    expect(body).toContain("Solution Eva");
+    expect(body).toContain("https://solutioneva.com");
+    // The line that makes the section actionable: the founder is the only party who can
+    // turn it off on the restaurant's behalf, and the key only ever appears to do that.
+    expect(body).toContain("partner_attribution: false");
+    // …and stays silent otherwise, rather than printing an empty section.
+    const quiet = buildProvisioningPrBody({ ...input, partnerBrand: undefined });
+    expect(quiet).not.toContain("partner_attribution");
+    expect(quiet).not.toContain("Solution Eva");
+
+    // A credit with no link says so, rather than describing a link the entry has
+    // not got: the founder is being asked what the footer will read.
+    const unlinked = buildProvisioningPrBody({
+      ...input,
+      partnerBrand: { displayName: "Solution Eva" },
+    });
+    expect(unlinked).toContain("no link");
+    expect(unlinked).not.toContain("https://solutioneva.com");
+  });
+});

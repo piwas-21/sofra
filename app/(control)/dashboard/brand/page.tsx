@@ -33,14 +33,20 @@ export default async function PartnerBrandPage() {
   // answering a question nobody asked. Nothing from this record is stored by
   // loading the page; the partner sees the value in an editable field and saves it
   // themselves (lib/partner-brand.ts explains why only this one field crosses).
-  const prefill = brand
-    ? null
-    : prefillFromBillingIdentity(
-        await db.billingIdentity.findUnique({
-          where: { userId: partner.id },
-          select: { legalName: true, tradeName: true },
-        }),
-      );
+  // Read whether or not there is a brand already, because it now answers TWO
+  // questions and only the first is about prefilling. The second is D-B1a: a
+  // display name that IS the legal name will not be published, so the form has to
+  // know the legal name to be able to say so — and a partner whose record has no
+  // TRADE name is the one who needs telling before they type, since the only other
+  // name we hold is their own. Nothing from this record is stored by loading the
+  // page, and none of it is rendered: `legalName` reaches the client as a
+  // comparison input, which is a value the partner typed into their own billing
+  // record and is being shown their own copy of.
+  const identity = await db.billingIdentity.findUnique({
+    where: { userId: partner.id },
+    select: { legalName: true, tradeName: true },
+  });
+  const prefill = brand ? null : prefillFromBillingIdentity(identity);
 
   return (
     <div className="grid gap-8">
@@ -54,7 +60,11 @@ export default async function PartnerBrandPage() {
         {!brand && prefill && (
           <p className="font-label text-sm text-muted-foreground">{t("prefillNote")}</p>
         )}
-        <PartnerBrandForm defaults={brand ?? prefill ?? undefined} />
+        <PartnerBrandForm
+          defaults={brand ?? prefill ?? undefined}
+          legalName={identity?.legalName}
+          hasTradeName={Boolean(identity?.tradeName?.trim())}
+        />
       </section>
     </div>
   );

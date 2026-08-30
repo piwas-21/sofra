@@ -44,6 +44,10 @@ export default defineConfig({
         // have quietly moved already-covered code out of the floor's scope, which reads
         // as a passing gate rather than as lost coverage.
         "lib/provisioning-pr-body.ts",
+        // Its conditional sections, split out for the same limit and listed for the
+        // same reason. Every branch here is a warning the founder either gets or does
+        // not get at the one reviewable moment before a tenant is stood up.
+        "lib/provisioning-pr-blocks.ts",
         "lib/module-catalog.ts",
         "lib/tenant-options.ts",
         "lib/signup-configuration.ts",
@@ -115,6 +119,11 @@ export default defineConfig({
         // looks like a footer with a name in it. The https-only and ISO-country
         // refusals are decidable here too, and nowhere cheaper.
         "lib/partner-brand.ts",
+        // The publish half, split out of it for the LOC limit. Listed explicitly for
+        // the reason provisioning-pr-body.ts is: leaving it off would quietly move
+        // already-covered code OUT of the floor's scope, which reads as a passing gate
+        // rather than as lost coverage — and this is the file holding the refusals.
+        "lib/partner-brand-publish.ts",
         "lib/base-domain-verification.ts",
         // D2 — which of the four domain shapes a partner proposed, and what DNS it
         // needs. Pure by construction: it cannot see whose base domain it was handed or
