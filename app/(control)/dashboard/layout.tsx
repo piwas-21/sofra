@@ -48,6 +48,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
     // let them claim their FIRST zone, so hiding it until they have one would hide
     // the only way to get one (SOFRA-PARTNER-FLEXIBILITY-PLAN D1).
     { href: "/dashboard/domains", label: t("nav.domains") },
+    // Always present too, and for the same documented reason: the page's job is to
+    // let a partner enter their public details for the FIRST time, so gating the
+    // link on already having them would hide the only way to get them
+    // (SOFRA-PARTNER-PLAN §11).
+    { href: "/dashboard/brand", label: t("nav.brand") },
   ];
   if (hasBilling) {
     nav.push({ href: "/dashboard/billing", label: t("nav.plan") });

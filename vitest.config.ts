@@ -109,6 +109,12 @@ export default defineConfig({
         // and whether a resolver's answer actually proves control of it. The transport
         // (`base-domain-dns.ts`) stays out, same split as vies/vies-result.
         "lib/base-domain.ts",
+        // §11 — a partner's PUBLIC brand. In scope because its whole job is a
+        // negative: `renderableBrand` is the single door an unpublished record
+        // must not get through, and a leak there is silent by construction — it
+        // looks like a footer with a name in it. The https-only and ISO-country
+        // refusals are decidable here too, and nowhere cheaper.
+        "lib/partner-brand.ts",
         "lib/base-domain-verification.ts",
         // D2 — which of the four domain shapes a partner proposed, and what DNS it
         // needs. Pure by construction: it cannot see whose base domain it was handed or

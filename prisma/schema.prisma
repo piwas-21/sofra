@@ -90,6 +90,9 @@ model User {
   billingsPaid    TenantBilling[]   @relation("BillingPayer")
   // Base domains a PARTNER has claimed for their own clients (D1).
   baseDomains     PartnerDomain[]
+  // The PUBLIC brand a PARTNER may show to their clients' guests (§11). Kept
+  // apart from `billingIdentity` below on purpose — see PartnerBrand.
+  brand           PartnerBrand?
   // The legal entity this user is invoiced as (B1). One per user: a party has
   // one set of registration details at a time.
   billingIdentity BillingIdentity?
@@ -344,6 +347,67 @@ model PartnerDomain {
 
   @@unique([partnerId, domain])
   @@index([partnerId])
+}
+
+// The PUBLIC face of a partner — what a diner may be shown
+// (workspace docs/plans/SOFRA-PARTNER-PLAN.md §11, slice S1).
+//
+// This is a DIFFERENT THING from `BillingIdentity`, which sits a hundred lines
+// above it, and the separation is the entire point of the model rather than a
+// tidiness preference. BillingIdentity is the PRIVATE legal and tax record: the
+// name a member state registered, the address an invoice is posted to, a
+// registration number, a VAT number. For a sole trader — the shape of the first
+// reseller — `legalName` is a NATURAL PERSON and `addressLine1` is where that
+// person lives. Publishing it because it happened to be the only company data we
+// held would put someone's home address in the footer of a restaurant website.
+//
+// So a partner types their public details a SECOND time, deliberately, and the
+// two records are never joined. A field can only ever become public by being
+// entered here. `prefillFromBillingIdentity` (lib/partner-brand.ts) carries
+// across exactly ONE field, the trade name, and documents why it carries nothing
+// else.
+//
+// Its own model rather than columns on PartnerProfile, for the reason
+// PartnerDomain states below: PartnerProfile is a founder-facing CRM row that
+// carries `notes`, which are never rendered to the partner — a founder-facing
+// row is the wrong home for a field whose audience is the public.
+//
+// `publishToTenants` defaults to FALSE and **NOTHING CONSUMES IT YET.** No tenant
+// site reads this table; the publishing half is gated on an owner decision about
+// what a restaurant's guests may be shown about a third party. The column exists
+// so the partner's intent is recorded rather than inferred later, and the single
+// reader that will ever exist is `renderableBrand()`.
+model PartnerBrand {
+  partnerId String @id
+  partner   User   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  /// The brand as a DINER reads it ("Solution Eva"). Not BillingIdentity.legalName,
+  /// which for a sole trader is a person's own name.
+  displayName String
+  /// One line under the name. Optional; most partners will not want one.
+  tagline     String?
+  /// `https://` only — see lib/partner-brand.ts. A public link that a tenant page
+  /// would render, so the scheme is validated rather than assumed.
+  websiteUrl  String?
+
+  /// Contact a guest may be given. A WORK address by intent: the partner typed it
+  /// here knowing it is public, which is precisely what the billing record's
+  /// equivalents were never told.
+  email        String?
+  phone        String?
+  addressLine1 String?
+  postalCode   String?
+  city         String?
+  /// ISO 3166-1 alpha-2, UPPERCASE when present. Same membership check as the
+  /// billing record (lib/country-code.ts), but it decides nothing about tax here —
+  /// it is only ever displayed.
+  countryCode  String?
+
+  /// Opt-in, off by default, and READ BY NOTHING TODAY. See the note above.
+  publishToTenants Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Client {
