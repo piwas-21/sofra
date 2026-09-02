@@ -706,3 +706,45 @@ export async function findBackupJobs(tenantSlug: string): Promise<BackupJobRow[]
     [tenantSlug],
   );
 }
+
+/** A partner's public brand row — what a save must have written, and what a
+ *  cross-partner attempt must NOT have touched (SOFRA-PARTNER-PLAN §11). */
+export async function findPartnerBrand(
+  partnerId: string,
+): Promise<{ displayName: string; city: string | null; publish: boolean } | null> {
+  const rows = await query<{ displayName: string; city: string | null; publish: boolean }>(
+    `SELECT "displayName", city, "publishToTenants" AS publish
+       FROM "PartnerBrand" WHERE "partnerId" = $1`,
+    [partnerId],
+  );
+  return rows[0] ?? null;
+}
+
+/** An existing brand, so the edit path is exercised rather than the create path. */
+export async function arrangePartnerBrand(
+  partnerId: string,
+  displayName: string,
+): Promise<void> {
+  await query(
+    `INSERT INTO "PartnerBrand" ("partnerId", "displayName", "updatedAt")
+     VALUES ($1, $2, now())
+     ON CONFLICT ("partnerId") DO UPDATE SET "displayName" = EXCLUDED."displayName"`,
+    [partnerId, displayName],
+  );
+}
+
+/** The legal record, so the prefill can be shown to carry the TRADE name and
+ *  nothing else — the address below is what must never appear on the brand page. */
+export async function arrangeBillingIdentityFor(
+  userId: string,
+  opts: { legalName: string; tradeName?: string | null; addressLine1: string },
+): Promise<void> {
+  await query(
+    `INSERT INTO "BillingIdentity"
+       (id, "userId", "legalName", "tradeName", "addressLine1", "postalCode", city,
+        "countryCode", "billingEmail", "updatedAt")
+     VALUES (gen_random_uuid()::text, $1, $2, $3, $4, '1204', 'Genève', 'CH',
+             'billing@example.com', now())`,
+    [userId, opts.legalName, opts.tradeName ?? null, opts.addressLine1],
+  );
+}

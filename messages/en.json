@@ -482,7 +482,8 @@
         "invoices": "Invoices",
         "icp": "ICP",
         "billingDetails": "Billing details",
-        "domains": "Domains"
+        "domains": "Domains",
+        "brand": "Brand"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -1232,6 +1233,35 @@
       "submit": "Send request",
       "sending": "Sending…",
       "sent": "Sent — we'll come back to you."
+    },
+    "brand": {
+      "title": "Your public details",
+      "intro": "The name and contact details a restaurant's guests could be shown as the company behind their website. You type them here, so only what you choose is ever public.",
+      "privacyNote": "These are kept separate from your billing details on purpose. Your invoice address and registration number stay private and are never shown to anyone but us.",
+      "prefillNote": "We have filled in your trading name to start you off. Nothing else is copied from your billing details — please type what you are happy for guests to see.",
+      "noTradeNameNote": "Your billing details give a legal name but no trading name. We cannot publish a personal name on a restaurant's website, so please enter the brand your clients' guests should see.",
+      "legalNameNotPublished": "This is the same as your legal name, so it will not be shown on any restaurant's site. Your details are still saved — enter a brand name to be credited.",
+      "fields": {
+        "displayName": "Display name",
+        "tagline": "Tagline (optional)",
+        "websiteUrl": "Website (https://…)",
+        "email": "Contact email",
+        "phone": "Phone",
+        "addressLine1": "Address",
+        "postalCode": "Postcode",
+        "city": "City",
+        "countryCode": "Country (2 letters)"
+      },
+      "publishLabel": "Show these details in the footer of every restaurant site you resell.",
+      "publishMeaning": "Your customers' guests will see them.",
+      "publishUnavailable": "Not available yet — publishing stays off until the platform owner enables it. Your details are saved either way.",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved.",
+      "adminTitle": "Their public brand",
+      "adminEmpty": "No public details entered.",
+      "adminPublishAsked": "Asked to be shown on their restaurants' sites.",
+      "adminPublishOff": "Has not asked to be shown publicly."
     },
     "baseDomain": {
       "title": "Your own domains",

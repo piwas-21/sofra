@@ -7,6 +7,7 @@
 // (invariant 2).
 
 import { buildProvisioningPrBody } from "@/lib/provisioning-pr-body";
+import { tenantPartnerBrand } from "@/lib/partner-brand-lookup";
 import { buildTenantRegistryEntry, type TenantProvisionInput } from "@/lib/provisioning-registry";
 
 const OWNER = "piwas-21";
@@ -82,11 +83,20 @@ export async function openProvisioningPr(
     throw new ProvisioningApiError(`registry already has a '${input.slug}' entry`);
   }
 
+  // The reseller credit for the tenant's footer (SOFRA-PARTNER-PLAN §11e), resolved
+  // HERE rather than accepted from a caller. It is DERIVED from the slug — nobody
+  // types it, and it is not the founder's to type — so filling it at the one place
+  // that writes a registry entry means no caller can forget it, no caller can inject
+  // one, and a third path added later inherits it. Whatever the input carried is
+  // deliberately overwritten: `renderableBrand` behind this lookup is the only thing
+  // allowed to decide that a name may be published (D-B1/D-B1a).
+  const partnerBrand = await tenantPartnerBrand(input.slug);
+
   // `deferred` is returned to the caller rather than only rendered into the PR body: a
   // deferral means a customer is being BILLED for a module their tenant will not have
   // until a second registry PR lands, and a prose section in one PR is not a record
   // anyone can query later. The callers put it in the audit trail.
-  const { entry, deferred } = buildTenantRegistryEntry(input);
+  const { entry, deferred } = buildTenantRegistryEntry({ ...input, partnerBrand });
   // trimEnd() (no regex) drops any trailing whitespace/newlines, then we re-add
   // exactly two — avoids the ReDoS-prone `\n*$`, and the blank line keeps the
   // new tenant from butting against the previous one's trailing comment, which
@@ -132,7 +142,10 @@ export async function openProvisioningPr(
       title: `Provision tenant: ${input.slug}`,
       head: branch,
       base: BASE,
-      body: buildProvisioningPrBody(input),
+      // The SAME resolved credit the entry carries: a body that describes a partner
+      // the diff does not name (or omits one it does) is worse than no body — the
+      // founder ticks the checklist against it.
+      body: buildProvisioningPrBody({ ...input, partnerBrand }),
     }),
   });
   return { prUrl: pr.html_url, deferred };

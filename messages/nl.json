@@ -482,7 +482,8 @@
         "invoices": "Facturen",
         "icp": "ICP",
         "billingDetails": "Factuurgegevens",
-        "domains": "Domeinen"
+        "domains": "Domeinen",
+        "brand": "Merk"
       },
       "groups": {
         "pipeline": "Pijplijn",
@@ -1232,6 +1233,35 @@
       "submit": "Verzoek versturen",
       "sending": "Versturen…",
       "sent": "Verstuurd — we komen bij je terug."
+    },
+    "brand": {
+      "title": "Uw publieke gegevens",
+      "intro": "De naam en contactgegevens die gasten van een restaurant kunnen zien als het bedrijf achter hun website. U typt ze hier, zodat alleen wat u kiest openbaar wordt.",
+      "privacyNote": "Deze staan bewust los van uw factuurgegevens. Uw factuuradres en registratienummer blijven privé en worden aan niemand anders dan ons getoond.",
+      "prefillNote": "We hebben uw handelsnaam alvast ingevuld. Verder wordt er niets uit uw factuurgegevens overgenomen — typ wat u gasten wilt laten zien.",
+      "noTradeNameNote": "Uw factuurgegevens bevatten wel een juridische naam maar geen handelsnaam. Een persoonsnaam mogen we niet op de website van een restaurant publiceren — vul het merk in dat de gasten van uw klanten moeten zien.",
+      "legalNameNotPublished": "Dit is uw juridische naam; die wordt op geen enkele restaurantsite getoond. Uw gegevens worden wel bewaard — vul een merknaam in om vermeld te worden.",
+      "fields": {
+        "displayName": "Weergavenaam",
+        "tagline": "Slogan (optioneel)",
+        "websiteUrl": "Website (https://…)",
+        "email": "Contact-e-mail",
+        "phone": "Telefoon",
+        "addressLine1": "Adres",
+        "postalCode": "Postcode",
+        "city": "Plaats",
+        "countryCode": "Land (2 letters)"
+      },
+      "publishLabel": "Toon deze gegevens in de voettekst van elke restaurantsite die u doorverkoopt.",
+      "publishMeaning": "De gasten van uw klanten zien ze.",
+      "publishUnavailable": "Nog niet beschikbaar — publiceren blijft uit tot de eigenaar van het platform het inschakelt. Uw gegevens worden hoe dan ook bewaard.",
+      "save": "Opslaan",
+      "saving": "Opslaan…",
+      "saved": "Opgeslagen.",
+      "adminTitle": "Hun publieke merk",
+      "adminEmpty": "Geen publieke gegevens ingevuld.",
+      "adminPublishAsked": "Wil getoond worden op de sites van hun restaurants.",
+      "adminPublishOff": "Heeft niet gevraagd om publiek getoond te worden."
     },
     "baseDomain": {
       "title": "Je eigen domeinen",

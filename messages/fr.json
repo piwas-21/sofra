@@ -482,7 +482,8 @@
         "invoices": "Factures",
         "icp": "ICP",
         "billingDetails": "Infos de facturation",
-        "domains": "Domaines"
+        "domains": "Domaines",
+        "brand": "Marque"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -1232,6 +1233,35 @@
       "submit": "Envoyer la demande",
       "sending": "Envoi…",
       "sent": "Envoyé — nous revenons vers vous."
+    },
+    "brand": {
+      "title": "Vos coordonnées publiques",
+      "intro": "Le nom et les coordonnées que les clients d'un restaurant pourraient voir comme l'entreprise derrière leur site. Vous les saisissez ici, afin que seul ce que vous choisissez soit public.",
+      "privacyNote": "Elles sont volontairement distinctes de vos données de facturation. Votre adresse de facturation et votre numéro d'enregistrement restent privés et ne sont montrés à personne d'autre que nous.",
+      "prefillNote": "Nous avons prérempli votre nom commercial pour commencer. Rien d'autre n'est copié depuis vos données de facturation — saisissez ce que vous acceptez de montrer aux clients.",
+      "noTradeNameNote": "Vos données de facturation indiquent une raison sociale mais aucun nom commercial. Nous ne pouvons pas publier un nom de personne sur le site d'un restaurant : saisissez la marque que les clients de vos établissements doivent voir.",
+      "legalNameNotPublished": "C'est votre raison sociale : elle ne sera affichée sur le site d'aucun restaurant. Vos informations sont tout de même enregistrées — saisissez un nom de marque pour être crédité.",
+      "fields": {
+        "displayName": "Nom affiché",
+        "tagline": "Slogan (facultatif)",
+        "websiteUrl": "Site web (https://…)",
+        "email": "E-mail de contact",
+        "phone": "Téléphone",
+        "addressLine1": "Adresse",
+        "postalCode": "Code postal",
+        "city": "Ville",
+        "countryCode": "Pays (2 lettres)"
+      },
+      "publishLabel": "Afficher ces coordonnées dans le pied de page de chaque site de restaurant que vous revendez.",
+      "publishMeaning": "Les clients de vos restaurants les verront.",
+      "publishUnavailable": "Pas encore disponible — la publication reste désactivée jusqu'à ce que le propriétaire de la plateforme l'active. Vos coordonnées sont enregistrées dans tous les cas.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Enregistré.",
+      "adminTitle": "Sa marque publique",
+      "adminEmpty": "Aucune coordonnée publique saisie.",
+      "adminPublishAsked": "A demandé à être affiché sur les sites de ses restaurants.",
+      "adminPublishOff": "N'a pas demandé à être affiché publiquement."
     },
     "baseDomain": {
       "title": "Vos propres domaines",
