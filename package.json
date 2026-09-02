@@ -52,10 +52,12 @@
     "deepmerge-ts": "^8.0.1",
     "postcss": "^8.5.23",
     "@hono/node-server": "^2.0.5",
-    "fast-uri": "^3.1.4",
+    "fast-uri": "^3.1.6",
     "sharp": "^0.35.0",
     "brace-expansion": "^5.0.8",
     "@auth/core": "^0.41.3",
-    "valibot": "^1.4.2"
+    "valibot": "^1.4.2",
+    "mysql2": "^3.22.0",
+    "browserslist": "^4.28.7"
   }
 }
