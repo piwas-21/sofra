@@ -161,6 +161,15 @@ export default defineConfig({
         // between a compromised staging box being contained and it being able to
         // erase the control plane's record of the paying tenant's backups.
         "lib/backup-agent-auth.ts",
+        // ADR-011 amendment consequence 1 — "fee follows the refund". Pure,
+        // clock-free (`nowSeconds` is always passed in, same discipline as
+        // trial.ts) verification of the `Stripe-Signature` header. Its
+        // sibling `lib/stripe-fee-refund.ts` stays OUT of scope on purpose,
+        // same split as vies.ts/vies-result.ts: the orchestration half calls
+        // Stripe over the network and writes to the DB, which §7 forbids
+        // mocking, so only the pure arithmetic half (`feeRefundAmount`) is
+        // unit-tested and it is measured by the test file, not by this list.
+        "lib/stripe-signature.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial
