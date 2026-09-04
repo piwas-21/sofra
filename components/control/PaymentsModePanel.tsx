@@ -62,9 +62,13 @@ export default async function PaymentsModePanel({
           : t("flatSummary")}
       </p>
       {effective.pending && (
-        <p role="status" className="mt-2 font-label text-sm text-craft-warning-text dark:text-craft-warning">
+        // <output>, not <p role="status">: it carries the same implicit ARIA role
+        // while being the element browsers and assistive tech already understand
+        // (Sonar S6819). `block` because <output> is inline by default and this is
+        // a paragraph-shaped notice.
+        <output className="mt-2 block font-label text-sm text-craft-warning-text dark:text-craft-warning">
           {t("pendingNote")}
-        </p>
+        </output>
       )}
       {/* Render nothing numeric at 0 bps — commission costs nothing no matter the
           turnover, which is a different statement from "the crossover is very
