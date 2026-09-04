@@ -66,38 +66,53 @@ export default function PaymentsModeChoice({
     <fieldset className="hand-drawn-border bg-card p-4">
       <legend className="font-label px-1 text-sm text-muted-foreground">{t("title")}</legend>
       <div className="grid gap-2">
-        <label className="flex items-start gap-2 font-label text-sm">
+        {/* htmlFor + a hint OUTSIDE the label, rather than a wrapping <label>.
+            A wrapping label folds its whole subtree into the accessible NAME, so
+            the hint would be read as part of the option's name instead of as a
+            description of it. Split this way the name is just the option and the
+            hint is an aria-describedby DESCRIPTION, which is what each actually is. */}
+        <div className="flex items-start gap-2 font-label text-sm">
           <input
+            id="paymentsMode-flat"
             type="radio"
             name="paymentsMode"
             value="flat"
             checked={mode === "flat"}
             onChange={() => onChange("flat")}
+            aria-describedby="paymentsMode-flat-hint"
             className="mt-1 accent-primary"
           />
           <span>
-            <span className="font-bold">
+            <label htmlFor="paymentsMode-flat" className="font-bold">
               {t("flatLabel", { price: eur(ONLINE_PAYMENTS_PRICE_CENTS) })}
-            </span>
+            </label>
             <br />
-            <span className="text-muted-foreground">{t("flatHint")}</span>
+            <span id="paymentsMode-flat-hint" className="text-muted-foreground">
+              {t("flatHint")}
+            </span>
           </span>
-        </label>
-        <label className="flex items-start gap-2 font-label text-sm">
+        </div>
+        <div className="flex items-start gap-2 font-label text-sm">
           <input
+            id="paymentsMode-commission"
             type="radio"
             name="paymentsMode"
             value="commission"
             checked={mode === "commission"}
             onChange={() => onChange("commission")}
+            aria-describedby="paymentsMode-commission-hint"
             className="mt-1 accent-primary"
           />
           <span>
-            <span className="font-bold">{t("commissionLabel", { percent })}</span>
+            <label htmlFor="paymentsMode-commission" className="font-bold">
+              {t("commissionLabel", { percent })}
+            </label>
             <br />
-            <span className="text-muted-foreground">{t("commissionHint")}</span>
+            <span id="paymentsMode-commission-hint" className="text-muted-foreground">
+              {t("commissionHint")}
+            </span>
           </span>
-        </label>
+        </div>
       </div>
       {crossover !== null && (
         <p className="font-label text-xs text-muted-foreground mt-2">
