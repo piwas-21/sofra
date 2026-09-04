@@ -1019,6 +1019,19 @@
         "prOpened": "تم فتح طلب سحب للسجل — ادمجه، ثم أعد تجهيز المستأجر.",
         "alreadySet": "كان السجل يحمل هذا المعدل بالفعل. لم يلزم فتح طلب سحب."
       },
+      "commissionEarnings": {
+        "title": "العمولة المحصَّلة",
+        "intro": "ما حصّله حساب هذا المستأجر المرتبط فعليًا من رسوم المنصة، بجانب ما تمت إعادته. ساعة Stripe نفسها وعملة عملية الدفع — وليست دفاتر Sofra باليورو.",
+        "period": "من {from} إلى {to} (الشهر التقويمي السابق والحالي، بتوقيت UTC).",
+        "earned": "المحصَّل",
+        "refunded": "المُعاد",
+        "net": "الصافي",
+        "fees": "{count} رسوم",
+        "empty": "هذا الحساب تحت المراقبة ولم يحصّل شيئًا في هذه الفترة.",
+        "noAccount": "لا يحمل سجل هذا المستأجر أي stripe_account، لذا لا يوجد حساب تُعرض رسومه. هذه هي الحالة الطبيعية إلى أن يُكمل المطعم تسجيله لدى Stripe.",
+        "registryUnavailable": "تعذّرت قراءة سجل المستأجرين، لذا فإن الحساب المرتبط غير معروف الآن. لا يُعرض أي رقم بدلًا من عرض رقم خاطئ.",
+        "unmatchedRefunds": "{count} من عمليات الاسترداد في هذه الفترة ليس لها رسوم مسجَّلة — فرسومها سابقة لبدء التسجيل، لذا فالصافي أعلاه أقل من الحقيقة."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",

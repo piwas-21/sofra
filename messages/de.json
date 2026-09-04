@@ -1019,6 +1019,19 @@
         "prOpened": "Registry-PR geöffnet — zusammenführen, dann den Tenant erneut bereitstellen.",
         "alreadySet": "Die Registry enthielt diesen Satz bereits. Kein PR war nötig."
       },
+      "commissionEarnings": {
+        "title": "Verdiente Kommission",
+        "intro": "Was das verbundene Konto dieses Mandanten tatsächlich an Plattformgebühren eingenommen hat, neben dem, was zurückgegeben wurde. Stripes eigene Uhr und die Währung der Zahlung — nicht Sofras EUR-Bücher.",
+        "period": "{from} bis {to} (der vorherige und der laufende Kalendermonat, UTC).",
+        "earned": "Eingenommen",
+        "refunded": "Zurückgegeben",
+        "net": "Netto",
+        "fees": "{count} Gebühren",
+        "empty": "Dieses Konto wird beobachtet und hat in diesem Zeitraum nichts eingenommen.",
+        "noAccount": "Der Registry-Eintrag dieses Mandanten trägt kein stripe_account, es gibt also kein Konto, für das Gebühren gemeldet werden könnten. Das ist der normale Zustand, solange das Restaurant das Stripe-Onboarding nicht abgeschlossen hat.",
+        "registryUnavailable": "Die Mandanten-Registry konnte nicht gelesen werden, das verbundene Konto ist daher derzeit unbekannt. Es wird keine Zahl angezeigt statt einer falschen.",
+        "unmatchedRefunds": "{count} Rückerstattungen in diesem Zeitraum haben keine erfasste Gebühr — ihre Gebühren liegen vor der Erfassung, das Netto oben ist also niedriger als die Wahrheit."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",

@@ -1019,6 +1019,19 @@
         "prOpened": "Registry PR opened — merge it, then re-provision the tenant.",
         "alreadySet": "The registry already carried that rate. No PR was needed."
       },
+      "commissionEarnings": {
+        "title": "Commission earned",
+        "intro": "What this tenant's connected account actually collected in application fees, next to what was returned. Stripe's own clock and the charge's currency — not Sofra's EUR books.",
+        "period": "{from} to {to} (the previous and current calendar months, UTC).",
+        "earned": "Earned",
+        "refunded": "Returned",
+        "net": "Net",
+        "fees": "{count} fees",
+        "empty": "This account is being watched and has collected nothing in this period.",
+        "noAccount": "This tenant's registry entry carries no stripe_account, so there is no account to report fees for. That is the normal state until the restaurant has completed Stripe onboarding.",
+        "registryUnavailable": "The tenant registry could not be read, so this tenant's connected account is unknown right now. No figure is shown rather than a wrong one.",
+        "unmatchedRefunds": "{count} refunds in this period have no recorded fee — their fees predate fee recording, so the net above is lower than the truth."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",

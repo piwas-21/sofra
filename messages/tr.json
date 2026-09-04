@@ -1019,6 +1019,19 @@
         "prOpened": "Kayıt PR'si açıldı — birleştirin, ardından tenant'ı yeniden sağlayın.",
         "alreadySet": "Kayıt zaten bu oranı taşıyordu. PR gerekmedi."
       },
+      "commissionEarnings": {
+        "title": "Kazanılan komisyon",
+        "intro": "Bu kiracının bağlı hesabının platform ücreti olarak gerçekte topladığı tutar ve yanında iade edilen tutar. Stripe'ın kendi saati ve ödemenin para birimi — Sofra'nın EUR defterleri değil.",
+        "period": "{from} - {to} (önceki ve içinde bulunulan takvim ayı, UTC).",
+        "earned": "Toplanan",
+        "refunded": "İade edilen",
+        "net": "Net",
+        "fees": "{count} ücret",
+        "empty": "Bu hesap izleniyor ve bu dönemde hiçbir tutar toplamadı.",
+        "noAccount": "Bu kiracının kayıt girdisinde stripe_account yok, dolayısıyla ücret raporlanacak bir hesap da yok. Restoran Stripe kaydını tamamlayana kadar bu normal durumdur.",
+        "registryUnavailable": "Kiracı kaydı okunamadı, bu yüzden bağlı hesap şu an bilinmiyor. Yanlış bir rakam yerine hiçbir rakam gösterilmiyor.",
+        "unmatchedRefunds": "Bu dönemdeki {count} iadenin kayıtlı ücreti yok — ücretleri kayıt tutulmadan öncesine ait, bu nedenle yukarıdaki net gerçekte olduğundan düşüktür."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",
