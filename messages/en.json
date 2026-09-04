@@ -752,6 +752,9 @@
         "chosenLanguages": "Languages",
         "chosenCurrency": "Currency",
         "quoted": "Quoted",
+        "chosenPaymentsMode": "Payments mode",
+        "paymentsModeFlat": "Flat",
+        "paymentsModeCommission": "Commission ({percent})",
         "openProvisioning": "Open provisioning →",
         "slugVerdict": {
           "invalid": "(invalid)",
@@ -1479,6 +1482,15 @@
       "bundle": {
         "counter": "Counter",
         "full-service": "Full service"
+      },
+      "paymentsMode": {
+        "title": "How you pay for online payments",
+        "flatLabel": "Flat fee — {price}/month",
+        "flatHint": "One fixed price, whatever you take online.",
+        "commissionLabel": "No monthly fee — {percent} per order",
+        "commissionHint": "Nothing until a guest actually pays online.",
+        "crossover": "Below about {amount} a month of online orders, the {percent} rate costs less than the flat fee; above that, the flat fee is cheaper.",
+        "deferredNote": "Online payments needs your own Stripe account, which only you can set up — we'll send you the link once you're live. Until then this is just your preference; it switches on right after."
       }
     }
   },

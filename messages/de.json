@@ -752,6 +752,9 @@
         "chosenLanguages": "Sprachen",
         "chosenCurrency": "Währung",
         "quoted": "Angebot",
+        "chosenPaymentsMode": "Zahlungsmodus",
+        "paymentsModeFlat": "Pauschal",
+        "paymentsModeCommission": "Provision ({percent})",
         "openProvisioning": "Bereitstellung öffnen →",
         "slugVerdict": {
           "invalid": "(ungültig)",
@@ -1479,6 +1482,15 @@
       "bundle": {
         "counter": "Theke",
         "full-service": "Voller Service"
+      },
+      "paymentsMode": {
+        "title": "So bezahlen Sie für Online-Zahlungen",
+        "flatLabel": "Festpreis — {price}/Monat",
+        "flatHint": "Ein fester Preis, unabhängig von Ihrem Online-Umsatz.",
+        "commissionLabel": "Keine monatliche Gebühr — {percent} pro Bestellung",
+        "commissionHint": "Nichts, bis ein Gast tatsächlich online bezahlt.",
+        "crossover": "Unter etwa {amount} Online-Umsatz im Monat kostet der Satz von {percent} weniger als der Festpreis; darüber ist der Festpreis günstiger.",
+        "deferredNote": "Online-Zahlungen benötigen Ihr eigenes Stripe-Konto, das nur Sie einrichten können — wir schicken Ihnen den Link, sobald Sie live sind. Bis dahin ist dies nur Ihre Präferenz; sie wird direkt danach aktiviert."
       }
     }
   },

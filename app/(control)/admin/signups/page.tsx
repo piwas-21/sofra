@@ -6,6 +6,7 @@ import { eur } from "@/lib/format";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { checkSlug } from "@/lib/slug-availability";
 import { failedByAction } from "@/lib/email-delivery";
+import { formatCommissionPercent } from "@/lib/payments-pricing";
 import SignupActions from "@/components/control/SignupActions";
 
 // Direct-restaurant signup pipeline (ADR-004). Leads land here via POST
@@ -101,6 +102,20 @@ export default async function AdminSignupsPage() {
                   <>
                     <dt className="text-muted-foreground">{t("quoted")}</dt>
                     <dd className="font-bold">{eur(s.quotedCents)}</dd>
+                  </>
+                )}
+                {/* S3: absent on every lead captured before the payments pricing
+                    mode choice shipped, same reasoning as the fields above. */}
+                {s.paymentsMode !== null && (
+                  <>
+                    <dt className="text-muted-foreground">{t("chosenPaymentsMode")}</dt>
+                    <dd className="font-mono">
+                      {s.paymentsMode === "commission"
+                        ? t("paymentsModeCommission", {
+                            percent: formatCommissionPercent(s.paymentsCommissionBps ?? 0),
+                          })
+                        : t("paymentsModeFlat")}
+                    </dd>
                   </>
                 )}
               </dl>

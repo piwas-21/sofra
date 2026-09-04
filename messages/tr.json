@@ -752,6 +752,9 @@
         "chosenLanguages": "Diller",
         "chosenCurrency": "Para birimi",
         "quoted": "Teklif",
+        "chosenPaymentsMode": "Ödeme modu",
+        "paymentsModeFlat": "Sabit ücret",
+        "paymentsModeCommission": "Komisyon ({percent})",
         "openProvisioning": "Kurulumu aç →",
         "slugVerdict": {
           "invalid": "(geçersiz)",
@@ -1479,6 +1482,15 @@
       "bundle": {
         "counter": "Tezgah",
         "full-service": "Tam servis"
+      },
+      "paymentsMode": {
+        "title": "Online ödemeler için nasıl ücretlendirilirsiniz",
+        "flatLabel": "Sabit ücret — aylık {price}",
+        "flatHint": "Çevrimiçi cironuz ne olursa olsun tek bir sabit fiyat.",
+        "commissionLabel": "Aylık ücret yok — sipariş başına {percent}",
+        "commissionHint": "Bir misafir gerçekten online ödeme yapana kadar hiçbir ücret alınmaz.",
+        "crossover": "Aylık yaklaşık {amount} altındaki çevrimiçi ciroda {percent} oranı sabit ücretten daha ucuza gelir; bunun üzerinde sabit ücret daha avantajlıdır.",
+        "deferredNote": "Online ödemeler, yalnızca sizin oluşturabileceğiniz kendi Stripe hesabınızı gerektirir — yayına girer girmez bağlantıyı size göndereceğiz. O zamana kadar bu yalnızca tercihinizdir; hemen ardından devreye girer."
       }
     }
   },

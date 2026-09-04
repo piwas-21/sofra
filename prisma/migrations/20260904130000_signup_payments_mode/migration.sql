@@ -1,0 +1,35 @@
+-- Record the payments pricing mode a signup was shown/chose (workspace
+-- docs/plans/SOFRA-PAYMENTS-PRICING-MODE-PLAN.md, S3 — the public
+-- configurator). Two columns on SignupRequest, alongside the existing
+-- configurator answers (modules/languages/template/currency/quotedCents,
+-- 20260729120000_signup_configurator).
+--
+-- ADDITIVE AND SAFE ON A DB WITH LIVE ROWS: two new nullable columns, no
+-- default, no backfill. Every row that exists today predates this choice
+-- entirely, and NULL is the honest reading of that — not "flat", which would
+-- claim the lead was shown a choice that did not exist yet. It is the exact
+-- same reasoning the configurator columns next to it already use: null means
+-- "the founder still chooses", not "chose the default".
+--
+-- paymentsMode carries "flat" or "commission" (lib/payments-pricing.ts
+-- PaymentsMode) — a plain TEXT column, not an enum, matching every other
+-- column on this table and the repo's handwritten-migration workflow
+-- (sofra/CLAUDE.md §5.2). No CHECK constraint for the same reason
+-- TenantBilling.paymentsMode has none (20260904090000_payments_pricing_mode):
+-- the read path (lib/payments-pricing.ts asPaymentsMode) is total and treats
+-- anything other than the literal "commission" as "flat", so a constraint here
+-- would be a second copy of a rule that already has exactly one place to live.
+--
+-- paymentsCommissionBps carries the RATE, even though the buyer never picks a
+-- number — DEFAULT_COMMISSION_BPS is applied on their behalf. It is stored
+-- anyway because that default is not a constant of nature: it is a product
+-- decision (lib/payments-pricing.ts) that can change, and a historical signup
+-- whose meaning silently shifted the day the default moved would be a record
+-- of nothing — nobody could tell, six months from now, what rate a buyer
+-- actually saw on the page. So this column is the rate they were SHOWN, not a
+-- rate that binds anything: onboarding still re-derives what a tenant is
+-- actually billed from TenantBilling, exactly as quotedCents is a record of
+-- what was shown and never a price that binds.
+
+ALTER TABLE "SignupRequest" ADD COLUMN "paymentsMode"          TEXT;
+ALTER TABLE "SignupRequest" ADD COLUMN "paymentsCommissionBps" INTEGER;
