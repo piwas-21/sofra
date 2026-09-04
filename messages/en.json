@@ -1041,6 +1041,7 @@
     "errors": {
       "invalidClient": "Restaurant name is required (email must be valid).",
       "clientNotFound": "Client not found.",
+      "clientNotProvisioned": "That client doesn't have its own app yet, so there is no pricing to change.",
       "statusManaged": "This client's status is managed by SofraPiwas now.",
       "invalidStatus": "Invalid status.",
       "invalidNote": "Note can't be empty (max 2000 chars).",
@@ -1196,6 +1197,24 @@
       "settingUpBody": "Your setup is queued for a final check, then your app is built and started. This usually takes about fifteen minutes.",
       "almostReadyTitle": "Almost there",
       "almostReadyBody": "Your app is starting up. As soon as it answers, this page will show you how to sign in."
+    },
+    "clientPaymentsMode": {
+      "title": "Online payments pricing",
+      "flatSummary": "Flat — €19/mo for online payments, and your client keeps every cent of every order (minus Stripe's own fee).",
+      "commissionSummary": "Commission — {percent} of every online order, and no monthly fee for the online-payments module.",
+      "pendingNote": "This is asked for, not applied yet. SofraPiwas has to merge the change and re-provision your client's app before it takes effect — until then they are billed and charged the old way.",
+      "crossover": "At {percent}, commission costs the same as the flat module (€19/mo) at about {amount} of monthly online turnover. Below that your client pays less on commission than on flat; above it, more.",
+      "modeLabel": "Pricing",
+      "modeFlat": "Flat (€19/mo)",
+      "modeCommission": "Commission",
+      "rateLabel": "Rate (basis points, 100 = 1%)",
+      "rateHint": "e.g. 150 = 1.50%. Ceiling {max} bps.",
+      "notEligibleRegistryUnavailable": "We can't check this client's setup right now, so commission stays off for the moment.",
+      "notEligibleNotPaired": "Commission needs this client to have the online-payments module and their own Stripe account. Ask us for both, and this switch opens up.",
+      "submit": "Save",
+      "saving": "Saving…",
+      "prOpened": "Sent to SofraPiwas. We apply it to your client's app and confirm — nothing has changed at their checkout yet.",
+      "alreadySet": "Your client's app already runs that rate. Nothing to send."
     },
     "paymentsPending": {
       "kicker": "Card payments",

@@ -1041,6 +1041,7 @@
     "errors": {
       "invalidClient": "Restaurantnaam is verplicht (e-mail moet geldig zijn).",
       "clientNotFound": "Klant niet gevonden.",
+      "clientNotProvisioned": "Deze klant heeft nog geen eigen app, dus er is geen prijsstelling om te wijzigen.",
       "statusManaged": "De status van deze klant wordt nu door SofraPiwas beheerd.",
       "invalidStatus": "Ongeldige status.",
       "invalidNote": "De notitie mag niet leeg zijn (max. 2000 tekens).",
@@ -1196,6 +1197,24 @@
       "settingUpBody": "Je configuratie staat klaar voor een laatste controle; daarna wordt je app gebouwd en gestart. Dit duurt meestal zo'n vijftien minuten.",
       "almostReadyTitle": "Bijna klaar",
       "almostReadyBody": "Je app wordt opgestart. Zodra hij antwoordt, laat deze pagina zien hoe je inlogt."
+    },
+    "clientPaymentsMode": {
+      "title": "Prijs voor online betalingen",
+      "flatSummary": "Vast — €19/maand voor online betalingen, en uw klant houdt elke cent van elke bestelling (minus de kosten van Stripe).",
+      "commissionSummary": "Commissie — {percent} van elke online bestelling, en geen maandelijkse kosten voor de module online betalingen.",
+      "pendingNote": "Dit is aangevraagd, nog niet toegepast. SofraPiwas moet de wijziging samenvoegen en de app van uw klant opnieuw inrichten voordat die ingaat — tot dan blijft de oude facturering gelden.",
+      "crossover": "Bij {percent} kost commissie evenveel als de vaste module (€19/maand), bij ongeveer {amount} maandelijkse online omzet. Daaronder betaalt uw klant minder op commissie dan op vast; daarboven meer.",
+      "modeLabel": "Prijsvorm",
+      "modeFlat": "Vast (€19/maand)",
+      "modeCommission": "Commissie",
+      "rateLabel": "Tarief (basispunten, 100 = 1%)",
+      "rateHint": "bijv. 150 = 1,50%. Maximum {max} basispunten.",
+      "notEligibleRegistryUnavailable": "We kunnen de inrichting van deze klant nu niet controleren, dus commissie blijft voorlopig uit.",
+      "notEligibleNotPaired": "Voor commissie heeft deze klant de module online betalingen en een eigen Stripe-account nodig. Vraag ons om beide, dan gaat deze keuze open.",
+      "submit": "Opslaan",
+      "saving": "Opslaan…",
+      "prOpened": "Verstuurd naar SofraPiwas. Wij passen het toe op de app van uw klant en bevestigen — bij hun kassa is nog niets veranderd.",
+      "alreadySet": "De app van uw klant draait dat tarief al. Niets te versturen."
     },
     "paymentsPending": {
       "kicker": "Kaartbetalingen",

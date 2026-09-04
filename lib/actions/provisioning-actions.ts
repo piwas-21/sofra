@@ -23,7 +23,7 @@ import {
   ProvisioningNotConfiguredError,
   ProvisioningApiError,
 } from "@/lib/provisioning";
-import { proposeCommissionChange, recordPaymentsModeIntent } from "./payments-mode-change";
+import { applyPaymentsModeChange, type PaymentsModeActionState } from "./payments-mode-change";
 
 /** `error` is a message key in `control.errors` (rendered by <ActionError />);
  *  GitHub API errors pass through raw. `prUrl` on success. */
@@ -99,20 +99,15 @@ export async function openProvisioningPrAction(
   }
 }
 
-/** `error` is a message key in `control.errors`; GitHub API errors pass through
- *  raw. `prUrl` when a PR was opened; `alreadySet` when the registry already
- *  carried the requested rate and no PR was needed. */
-export type PaymentsModeActionState = {
-  error?: string;
-  ok?: boolean;
-  prUrl?: string;
-  alreadySet?: boolean;
-};
-
 /**
- * Amend an EXISTING tenant's payments mode + commission rate
- * (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2a — the mechanism only; the `/admin`
- * surface itself is a separate slice).
+ * Amend an EXISTING tenant's payments mode + commission rate as the OWNER
+ * (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2a/S2b).
+ *
+ * The founder may name any tenant, so the slug is read straight from the form and
+ * `requireAdmin()` is the whole authorization story. The partner counterpart
+ * (S4, `lib/actions/partner-payments-actions.ts`) may not, and takes the slug off
+ * a row it loaded scoped by `partnerId` instead — everything AFTER that point is
+ * the shared `applyPaymentsModeChange`.
  */
 export async function updatePaymentsModeAction(
   _prev: PaymentsModeActionState,
@@ -129,37 +124,15 @@ export async function updatePaymentsModeAction(
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "invalidInput" };
   const { tenantSlug, mode, commissionBps } = parsed.data;
 
-  const billing = await db.tenantBilling.findUnique({ where: { tenantSlug } });
-  if (!billing) return { error: "billingNotFound" };
-  if (billing.paymentsMode === mode && billing.paymentsCommissionBps === commissionBps) {
-    return { error: "paymentsModeUnchanged" };
-  }
-  const { paymentsMode: oldMode, paymentsCommissionBps: oldBps } = billing;
-
-  // ORDER MATTERS, and is commented because it is easy to get backwards: open
-  // the registry PR FIRST, write the Prisma intent SECOND. The PR is the
-  // proposal that reaches a human; `TenantBilling` is our own record of what
-  // we asked for. Writing Prisma first and having the PR call fail afterwards
-  // would record an intent we never actually proposed to anyone. This order's
-  // failure mode is the recoverable one instead — an open PR the intent
-  // doesn't point at yet — never the other way round.
-  const proposal = await proposeCommissionChange(tenantSlug, commissionBps);
-  if (!proposal.ok) return { error: proposal.error };
-  const { prUrl } = proposal;
-
-  await recordPaymentsModeIntent({ tenantSlug, mode, commissionBps, prUrl });
-
-  await audit(admin.id, "tenant.paymentsMode.changed", "TenantBilling", billing.id, {
+  const { state, billingId } = await applyPaymentsModeChange({
+    actorId: admin.id,
+    initiator: "owner",
     tenantSlug,
-    oldMode,
-    oldBps,
-    newMode: mode,
-    newBps: commissionBps,
-    prUrl,
+    mode,
+    commissionBps,
   });
 
   revalidatePath("/admin/billing");
-  revalidatePath(`/admin/billing/${billing.id}`);
-  // prUrl is null exactly when the registry already carried this rate, so no PR was opened.
-  return prUrl ? { ok: true, prUrl } : { ok: true, alreadySet: true };
+  if (billingId) revalidatePath(`/admin/billing/${billingId}`);
+  return state;
 }
