@@ -103,19 +103,30 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
         "per-box boundary), so run the commands from a machine that has it.",
       ];
 
+  // Built as statements rather than inline: nesting a conditional inside a template
+  // literal that is itself inside a conditional is the shape Sonar rejects (S3358),
+  // and it is genuinely hard to read — the "(not written)" caveat below belongs to the
+  // commission, not to the deferred module list it would otherwise sit beside.
+  const deferredSuffix = deferred.length
+    ? ` · **deferred** \`${deferred.join(", ")}\` (see below)`
+    : "";
+
+  // A rate is only WRITTEN into the entry when online-payments actually survives the
+  // grant/defer split — provision-tenant.sh refuses a non-zero rate without the module
+  // and a stripe_account, and refuses it before the database. So when the module is
+  // deferred the number is still worth showing (it is what the second PR will carry)
+  // but must be labelled as not yet written, or a reviewer reads it as live.
+  let commissionSuffix = "";
+  if (input.paymentsCommissionBps) {
+    const caveat = grantsOnlinePayments ? "" : " (not written — see below)";
+    commissionSuffix = ` · **commission** \`${input.paymentsCommissionBps} bps\`${caveat}`;
+  }
+
   return [
     `Adds the \`${slug}\` tenant to \`tenants/registry.yml\`, proposed by the control plane (sofra ADR-012).`,
     "",
     `- **domain** \`${domain}\` · **template** \`${input.template}\` · **currency** \`${input.currency}\``,
-    `- **languages** \`${input.languages.join(", ")}\` · **modules** \`${granted.join(", ")}\`${
-      deferred.length ? ` · **deferred** \`${deferred.join(", ")}\` (see below)` : ""
-    }${
-      input.paymentsCommissionBps
-        ? ` · **commission** \`${input.paymentsCommissionBps} bps\`${
-            grantsOnlinePayments ? "" : " (not written — see below)"
-          }`
-        : ""
-    }`,
+    `- **languages** \`${input.languages.join(", ")}\` · **modules** \`${granted.join(", ")}\`${deferredSuffix}${commissionSuffix}`,
     `- **box** \`${box}\` · status starts at \`provisioning\`${
       input.baseDomain ? ` · **base_domain** \`${input.baseDomain}\` (a partner's own zone)` : ""
     }${
