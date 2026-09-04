@@ -89,7 +89,12 @@ export function isCommissionBps(value: number): boolean {
 // ("prices every module id exactly once") asserts MODULES carries every id in
 // MODULE_IDS, `online-payments` included, so this can only fail if that test is
 // also failing — at which point CI is already red for the right reason.
-const ONLINE_PAYMENTS_PRICE_CENTS = MODULES.find((m) => m.id === "online-payments")!.priceCents;
+//
+// Exported (S2b): the admin form needs the same price to quote a LIVE crossover
+// preview as the admin types a rate, and `registry-commission-pr.ts` already reads
+// this exact lookup for its own PR-body crossover — a third private copy would be
+// the duplication DRY forbids, not less of it.
+export const ONLINE_PAYMENTS_PRICE_CENTS = MODULES.find((m) => m.id === "online-payments")!.priceCents;
 
 /**
  * Adjust a tenant's monthly module quote for its payments mode.
@@ -148,4 +153,27 @@ export function paymentsModeQuote(
 export function crossoverCentsPerMonth(bps: number, flatCents: number): number | null {
   if (bps === 0) return null;
   return Math.round((flatCents * 10000) / bps);
+}
+
+/**
+ * `bps` as the percentage string every UI surface quotes it with — `150` ->
+ * `"1.50%"`. Two decimal places always: a rate can be as fine as 1 basis point
+ * (0.01%), and rounding to one decimal would silently collapse it to `"0.0%"`.
+ */
+export function formatCommissionPercent(bps: number): string {
+  return `${(bps / 100).toFixed(2)}%`;
+}
+
+/**
+ * Narrow `TenantBilling.paymentsMode` (S2b) — a plain Prisma `String` column,
+ * per this repo's handwritten-migration workflow (§5.2), not an enum — to
+ * {@link PaymentsMode}. Anything other than the literal `"commission"` reads as
+ * `"flat"`: the value every row defaulted to before this column existed, and
+ * the safe reading of a value that should never occur outside a hand-edited
+ * row. Every admin surface that reads the column goes through this rather than
+ * an inline cast, so a typo in a future caller fails a type check instead of
+ * silently widening to `string`.
+ */
+export function asPaymentsMode(value: string): PaymentsMode {
+  return value === "commission" ? "commission" : "flat";
 }

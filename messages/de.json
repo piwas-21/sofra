@@ -701,7 +701,10 @@
         "modules": "Module: {list}",
         "template": "Template: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Kauft Online-Zahlungen, aber dieser Eintrag enthält kein stripe_account — die Provisionierung lehnt das Paar ab und bricht vor der Datenbank ab, ein erneutes Provisionieren dieses Tenants bewirkt also gar nichts. Konto zum Eintrag hinzufügen oder das Modul entfernen."
+        "stripeAccountMissing": "Kauft Online-Zahlungen, aber dieser Eintrag enthält kein stripe_account — die Provisionierung lehnt das Paar ab und bricht vor der Datenbank ab, ein erneutes Provisionieren dieses Tenants bewirkt also gar nichts. Konto zum Eintrag hinzufügen oder das Modul entfernen.",
+        "paymentsModeFlat": "Zahlungen: pauschal",
+        "paymentsModeCommission": "Zahlungen: Provision ({percent})",
+        "paymentsModePending": "(ausstehend — Registry noch nicht aktualisiert)"
       },
       "onboard": {
         "title": "Partner onboarden",
@@ -994,6 +997,24 @@
         "submit": "Gratiszeitraum verlängern",
         "saving": "Wird gespeichert…",
         "saved": "Gespeichert."
+      },
+      "paymentsMode": {
+        "title": "Zahlungspreismodus",
+        "flatSummary": "Pauschal abgerechnet — 19 €/Monat für Online-Zahlungen.",
+        "commissionSummary": "Nach Provision abgerechnet — {percent} von jeder Online-Bestellung, keine monatliche Modulgebühr.",
+        "pendingNote": "Die Registry hat das noch nicht nachvollzogen — ein Registry-PR muss zusammengeführt und der Tenant erneut bereitgestellt werden, bevor es wirksam wird. Ein einfacher Neustart liest nichts neu ein.",
+        "crossover": "Bei {percent} kostet die Provision genauso viel wie das pauschale Modul (19 €/Monat), bei etwa {amount} monatlichem Online-Umsatz. Darunter zahlt dieser Tenant bei Provision weniger als pauschal; darüber mehr.",
+        "modeLabel": "Modus",
+        "modeFlat": "Pauschal (19 €/Monat)",
+        "modeCommission": "Provision",
+        "rateLabel": "Satz (Basispunkte, 100 = 1 %)",
+        "rateHint": "z. B. 150 = 1,50 %. Obergrenze {max} Basispunkte.",
+        "notEligibleRegistryUnavailable": "Das Tenant-Registry konnte nicht gelesen werden, daher kann die Provisionsberechtigung gerade nicht geprüft werden.",
+        "notEligibleNotPaired": "Der Registry-Eintrag dieses Tenants enthält nicht beide, online-payments UND ein stripe_account — die Provisionierung lehnt einen Satz über null ohne dieses Paar ab, noch vor der Datenbank. Provision bleibt aus, bis beides vorhanden ist.",
+        "submit": "Speichern",
+        "saving": "Wird gespeichert…",
+        "prOpened": "Registry-PR geöffnet — zusammenführen, dann den Tenant erneut bereitstellen.",
+        "alreadySet": "Die Registry enthielt diesen Satz bereits. Kein PR war nötig."
       },
       "cron": {
         "title": "Scheduled sweeps",

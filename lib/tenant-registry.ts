@@ -57,6 +57,17 @@ const tenantSchema = z.object({
   // hand-edited account we do not recognise must still render, not blank the
   // whole page.
   stripe_account: z.string().optional(),
+  // The per-transaction commission rate (bps) this entry enforces
+  // (SOFRA-PAYMENTS-PRICING-MODE-PLAN §3) — absent or `0` means `flat`, the same
+  // convention `lib/registry-commission-edit.ts` and `effectivePaymentsMode` both
+  // already use. Optional and unvalidated beyond `number`: the registry is the
+  // source of truth (ADR-003/007) — but it has to be listed here at all because
+  // zod STRIPS unknown keys, the SAME trap `stripe_account` fell into just above.
+  // Without this line, `effectivePaymentsMode` would read `undefined` for every
+  // tenant regardless of what the registry actually says, and every tenant whose
+  // billing intent is `commission` would render as permanently "pending" against
+  // a registry state this app could never actually observe.
+  payments_commission_bps: z.number().optional(),
   city: z.string().optional(),
   // Go-live date (YYYY-MM-DD), optional — the durable source for the onboard
   // form's "Live since" pre-fill (deploy repo owns the value; read-only here).

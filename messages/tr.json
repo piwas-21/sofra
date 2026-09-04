@@ -701,7 +701,10 @@
         "modules": "modüller: {list}",
         "template": "şablon: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Çevrimiçi ödeme satın alınmış ama bu kayıtta stripe_account yok — provizyon bu ikiliyi reddeder ve veritabanından önce durur, dolayısıyla bu tenant'ı yeniden provizyonlamak hiçbir şey yapmaz. Hesabı kayda ekleyin ya da modülü çıkarın."
+        "stripeAccountMissing": "Çevrimiçi ödeme satın alınmış ama bu kayıtta stripe_account yok — provizyon bu ikiliyi reddeder ve veritabanından önce durur, dolayısıyla bu tenant'ı yeniden provizyonlamak hiçbir şey yapmaz. Hesabı kayda ekleyin ya da modülü çıkarın.",
+        "paymentsModeFlat": "ödemeler: sabit ücret",
+        "paymentsModeCommission": "ödemeler: komisyon ({percent})",
+        "paymentsModePending": "(beklemede — kayıt henüz güncellenmedi)"
       },
       "onboard": {
         "title": "İş ortağı kaydı",
@@ -994,6 +997,24 @@
         "submit": "Ücretsiz dönemi uzat",
         "saving": "Kaydediliyor…",
         "saved": "Kaydedildi."
+      },
+      "paymentsMode": {
+        "title": "Ödeme fiyatlandırma modu",
+        "flatSummary": "Sabit ücretle faturalanır — çevrimiçi ödemeler için ayda 19 €.",
+        "commissionSummary": "Komisyonla faturalanır — her çevrimiçi siparişin {percent}'i, aylık modül ücreti yok.",
+        "pendingNote": "Kayıt dosyası bunu henüz yansıtmıyor — yürürlüğe girmeden önce bir kayıt PR'sinin birleştirilmesi ve tenant'ın yeniden sağlanması gerekir. Basit bir yeniden başlatma hiçbir şeyi yeniden okumaz.",
+        "crossover": "{percent} oranında, komisyon aylık yaklaşık {amount} çevrimiçi ciroda sabit modülle (ayda 19 €) aynı maliyeti taşır. Bunun altında bu tenant komisyonda sabitten daha az öder; üstünde daha fazla.",
+        "modeLabel": "Mod",
+        "modeFlat": "Sabit (ayda 19 €)",
+        "modeCommission": "Komisyon",
+        "rateLabel": "Oran (baz puan, 100 = %1)",
+        "rateHint": "örn. 150 = %1,50. Tavan {max} baz puan.",
+        "notEligibleRegistryUnavailable": "Tenant kaydı okunamadığı için komisyon uygunluğu şu anda kontrol edilemiyor.",
+        "notEligibleNotPaired": "Bu tenant'ın kayıt girişi hem online-payments hem de bir stripe_account içermiyor — provizyon, bu ikili olmadan sıfırın üzerindeki bir oranı veritabanından önce reddeder. Her ikisi de olmadan komisyon kapalı kalır.",
+        "submit": "Kaydet",
+        "saving": "Kaydediliyor…",
+        "prOpened": "Kayıt PR'si açıldı — birleştirin, ardından tenant'ı yeniden sağlayın.",
+        "alreadySet": "Kayıt zaten bu oranı taşıyordu. PR gerekmedi."
       },
       "cron": {
         "title": "Scheduled sweeps",

@@ -66,6 +66,9 @@ export default defineConfig({
         // payments-pending.ts just below it.
         "lib/registry-commission-edit.ts",
         "lib/payments-mode-effective.ts",
+        // S2b — the admin form's own eligibility gate, same pure shape and same
+        // fail-quiet direction as `payments-mode-effective.ts` just above it.
+        "lib/commission-eligibility.ts",
         "lib/tenant-options.ts",
         "lib/signup-configuration.ts",
         "lib/checkout-window.ts",

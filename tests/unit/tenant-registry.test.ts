@@ -72,6 +72,26 @@ describe("loadTenantRegistry", () => {
     }
   });
 
+  it("surfaces payments_commission_bps, which zod silently stripped before S2b", async () => {
+    // The regression this guards is invisible by inspection, same as the
+    // stripe_account case above: the key IS in registry.yml and IS read by
+    // provision-tenant.sh, and `effectivePaymentsMode` reads it as `undefined`
+    // the moment the schema line is dropped — which renders EVERY tenant on
+    // `commission` as permanently "pending", not merely one field blank.
+    process.env.TENANT_REGISTRY_PATH = fixture("registry-valid.yml");
+    const res = await loadTenantRegistry();
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.tenants.find((t) => t.slug === "commissioned")!.payments_commission_bps).toBe(
+        200,
+      );
+      // Optional — absent for every entry that never set a rate, same
+      // convention `currentRegistryCommissionBps` (registry-commission-edit.ts)
+      // and `effectivePaymentsMode` both already read `undefined` as.
+      expect(res.tenants.find((t) => t.slug === "rumi")!.payments_commission_bps).toBeUndefined();
+    }
+  });
+
   it("returns ok:false when a template value is outside classic|craft", async () => {
     process.env.TENANT_REGISTRY_PATH = fixture("registry-bad-template.yml");
     const res = await loadTenantRegistry();

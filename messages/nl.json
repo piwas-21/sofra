@@ -701,7 +701,10 @@
         "modules": "modules: {list}",
         "template": "sjabloon: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Koopt online betalingen, maar deze entry bevat geen stripe_account — provisionering weigert dit paar en stopt vóór de database, dus dit tenant opnieuw provisioneren doet helemaal niets. Voeg het account toe aan de entry, of haal de module eruit."
+        "stripeAccountMissing": "Koopt online betalingen, maar deze entry bevat geen stripe_account — provisionering weigert dit paar en stopt vóór de database, dus dit tenant opnieuw provisioneren doet helemaal niets. Voeg het account toe aan de entry, of haal de module eruit.",
+        "paymentsModeFlat": "betalingen: vast",
+        "paymentsModeCommission": "betalingen: commissie ({percent})",
+        "paymentsModePending": "(in behandeling — register nog niet bijgewerkt)"
       },
       "onboard": {
         "title": "Partner onboarden",
@@ -994,6 +997,24 @@
         "submit": "Gratis periode verlengen",
         "saving": "Opslaan…",
         "saved": "Opgeslagen."
+      },
+      "paymentsMode": {
+        "title": "Betalingsprijsmodus",
+        "flatSummary": "Vast tarief — €19/maand voor online betalingen.",
+        "commissionSummary": "Op commissie — {percent} van elke online bestelling, geen maandelijkse modulekosten.",
+        "pendingNote": "Het register loopt hier nog niet in mee — een registry-PR moet worden samengevoegd en het tenant moet opnieuw worden ingericht voordat dit ingaat. Een gewone herstart leest niets opnieuw in.",
+        "crossover": "Bij {percent} kost commissie evenveel als de vaste module (€19/maand), bij ongeveer {amount} maandelijkse online omzet. Daaronder betaalt dit tenant minder op commissie dan op vast; daarboven meer.",
+        "modeLabel": "Modus",
+        "modeFlat": "Vast (€19/maand)",
+        "modeCommission": "Commissie",
+        "rateLabel": "Tarief (basispunten, 100 = 1%)",
+        "rateHint": "bijv. 150 = 1,50%. Maximum {max} basispunten.",
+        "notEligibleRegistryUnavailable": "Het tenant-register kon niet worden gelezen, dus de commissie-geschiktheid kan nu niet worden gecontroleerd.",
+        "notEligibleNotPaired": "De registry-entry van dit tenant bevat niet zowel online-payments als een stripe_account — provisionering weigert een tarief boven nul zonder dat paar, vóór de database. Commissie blijft uit totdat beide aanwezig zijn.",
+        "submit": "Opslaan",
+        "saving": "Opslaan…",
+        "prOpened": "Registry-PR geopend — voeg samen en richt het tenant opnieuw in.",
+        "alreadySet": "Het register bevatte dat tarief al. Geen PR nodig."
       },
       "cron": {
         "title": "Scheduled sweeps",
