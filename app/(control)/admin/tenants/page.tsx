@@ -10,6 +10,8 @@ import {
   missingPairedStripeAccount,
   type RegistryTenant,
 } from "@/lib/tenant-registry";
+import { effectivePaymentsMode } from "@/lib/payments-mode-effective";
+import { asPaymentsMode, formatCommissionPercent } from "@/lib/payments-pricing";
 
 // The registry file changes underneath us (rsync on deploy-repo push) — always
 // re-read instead of serving a build-time snapshot.
@@ -19,6 +21,8 @@ export const dynamic = "force-dynamic";
 type BillingSummary = {
   id: string;
   subscriptions: { status: string; amountCents: number; interval: string }[];
+  paymentsMode: string;
+  paymentsCommissionBps: number;
 };
 
 // Shape of the "control.admin" translator handed down to the row helpers.
@@ -53,6 +57,27 @@ function BillingCell({ billing, t }: { billing?: BillingSummary; t: Translator }
           : t("tenants.noActivePlan")}
     </Link>
   );
+}
+
+/**
+ * Read-only payments-mode label (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2b) — the
+ * EFFECTIVE mode, derived the same way the billing page's own panel derives it,
+ * never `billing.paymentsMode` alone: this page's whole reason to exist is
+ * showing what the box actually enforces, and the control that CHANGES it lives
+ * on `/admin/billing/[id]`, not here.
+ */
+function paymentsModeLabel(tenant: RegistryTenant, billing: BillingSummary | undefined, t: Translator) {
+  const intended = billing ? asPaymentsMode(billing.paymentsMode) : "flat";
+  const effective = effectivePaymentsMode({
+    intended,
+    registryBps: tenant.payments_commission_bps,
+    registryReadable: true, // this page only ever renders inside the registry.ok branch
+  });
+  const base =
+    effective.mode === "commission"
+      ? t("tenants.paymentsModeCommission", { percent: formatCommissionPercent(tenant.payments_commission_bps ?? 0) })
+      : t("tenants.paymentsModeFlat");
+  return effective.pending ? `${base} ${t("tenants.paymentsModePending")}` : base;
 }
 
 function TenantCard({
@@ -96,6 +121,7 @@ function TenantCard({
             {/* classic/craft is a technical identifier — rendered raw like status */}
             {t("tenants.template", { template: tenant.template ?? "classic" })}
           </span>
+          <span className="block text-muted-foreground">{paymentsModeLabel(tenant, billing, t)}</span>
           {/* An `acct_…` is a Stripe identifier, not a secret, and it is the one
               fact that says whether this tenant can take a card at all. */}
           {tenant.stripe_account && (
@@ -124,6 +150,8 @@ export default async function AdminTenantsPage() {
       id: true,
       tenantSlug: true,
       subscriptions: { select: { status: true, amountCents: true, interval: true } },
+      paymentsMode: true,
+      paymentsCommissionBps: true,
     },
   });
   const billingBySlug = new Map(billings.map((b) => [b.tenantSlug, b]));

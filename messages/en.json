@@ -701,7 +701,10 @@
         "modules": "modules: {list}",
         "template": "template: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Buys online payments, but this entry records no stripe_account — provisioning refuses the pair and stops before the database, so re-provisioning this tenant does nothing at all. Add the account to the entry, or drop the module."
+        "stripeAccountMissing": "Buys online payments, but this entry records no stripe_account — provisioning refuses the pair and stops before the database, so re-provisioning this tenant does nothing at all. Add the account to the entry, or drop the module.",
+        "paymentsModeFlat": "payments: flat",
+        "paymentsModeCommission": "payments: commission ({percent})",
+        "paymentsModePending": "(pending — registry not yet updated)"
       },
       "onboard": {
         "title": "Onboard a partner",
@@ -994,6 +997,24 @@
         "submit": "Extend free period",
         "saving": "Saving…",
         "saved": "Saved."
+      },
+      "paymentsMode": {
+        "title": "Payments pricing mode",
+        "flatSummary": "Billed flat — €19/mo for online payments.",
+        "commissionSummary": "Billed by commission — {percent} of every online order, no monthly module fee.",
+        "pendingNote": "The registry has not caught up with this yet — a registry PR has to merge and the tenant has to be re-provisioned before it takes effect. A plain restart re-reads nothing.",
+        "crossover": "At {percent}, commission costs the same as the flat module (€19/mo) at about {amount} of monthly online turnover. Below that this tenant pays less on commission than on flat; above it, more.",
+        "modeLabel": "Mode",
+        "modeFlat": "Flat (€19/mo)",
+        "modeCommission": "Commission",
+        "rateLabel": "Rate (basis points, 100 = 1%)",
+        "rateHint": "e.g. 150 = 1.50%. Ceiling {max} bps.",
+        "notEligibleRegistryUnavailable": "The tenant registry could not be read, so commission eligibility cannot be checked right now.",
+        "notEligibleNotPaired": "This tenant's registry entry does not carry both online-payments and a stripe_account — provisioning refuses a non-zero rate without that pair, before the database. Commission stays off until both are there.",
+        "submit": "Save",
+        "saving": "Saving…",
+        "prOpened": "Registry PR opened — merge it, then re-provision the tenant.",
+        "alreadySet": "The registry already carried that rate. No PR was needed."
       },
       "cron": {
         "title": "Scheduled sweeps",

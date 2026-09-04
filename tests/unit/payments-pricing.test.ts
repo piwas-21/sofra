@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_COMMISSION_BPS,
   MAX_COMMISSION_BPS,
+  asPaymentsMode,
   crossoverCentsPerMonth,
+  formatCommissionPercent,
   isCommissionBps,
   paymentsModeQuote,
 } from "@/lib/payments-pricing";
@@ -81,5 +83,39 @@ describe("crossoverCentsPerMonth", () => {
   // cents (€10), so the crossover for a €10 flat fee at 1% is exactly €1000/mo.
   it("computes an exact round-number crossover with no rounding involved", () => {
     expect(crossoverCentsPerMonth(100, 1000)).toBe(100000);
+  });
+});
+
+describe("formatCommissionPercent", () => {
+  it("formats the shipped default at two decimal places", () => {
+    expect(formatCommissionPercent(DEFAULT_COMMISSION_BPS)).toBe("1.50%");
+  });
+
+  it("keeps two decimals even for a whole percent", () => {
+    expect(formatCommissionPercent(100)).toBe("1.00%");
+  });
+
+  it("does not collapse the finest rate (1 bp) to 0.0%", () => {
+    expect(formatCommissionPercent(1)).toBe("0.01%");
+  });
+
+  it("formats 0 as a real 0.00%, not an empty string", () => {
+    expect(formatCommissionPercent(0)).toBe("0.00%");
+  });
+});
+
+describe("asPaymentsMode", () => {
+  it("reads the literal 'commission' as commission", () => {
+    expect(asPaymentsMode("commission")).toBe("commission");
+  });
+
+  it("reads 'flat' as flat", () => {
+    expect(asPaymentsMode("flat")).toBe("flat");
+  });
+
+  it("reads anything else as flat — the safe default for a value that should never occur", () => {
+    expect(asPaymentsMode("")).toBe("flat");
+    expect(asPaymentsMode("COMMISSION")).toBe("flat");
+    expect(asPaymentsMode("garbage")).toBe("flat");
   });
 });

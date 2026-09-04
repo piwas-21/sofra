@@ -16,6 +16,9 @@ import { planDeletionVerdict, settledOrInFlight } from "@/lib/plan-deletion";
 import DeletePlanForm from "@/components/control/DeletePlanForm";
 import TrialPanel from "@/components/control/TrialPanel";
 import PlanPaymentsList from "@/components/control/PlanPaymentsList";
+import PaymentsModePanel from "@/components/control/PaymentsModePanel";
+import { asPaymentsMode } from "@/lib/payments-pricing";
+import { loadTenantRegistry } from "@/lib/tenant-registry";
 
 // Mollie interval string → control.admin.intervals key (display only).
 const intervalKey = (mollie: string) =>
@@ -64,6 +67,10 @@ export default async function AdminBillingDetailPage({
   const openCheckout = billing.payments.find(
     (p) => p.checkoutUrl && (p.status === "open" || p.status === "pending"),
   );
+
+  // Read-only seam (ADR-007) — shows what the box actually enforces, never writes it.
+  const registry = await loadTenantRegistry();
+  const registryTenant = registry.ok ? registry.tenants.find((t) => t.slug === billing.tenantSlug) : undefined;
 
   return (
     <div className="grid gap-10">
@@ -122,6 +129,15 @@ export default async function AdminBillingDetailPage({
       {/* The free period, and the only control that changes it (T-c). Above the
           subscriptions on purpose: whether money is owed comes before what it costs. */}
       <TrialPanel locale={locale} billingId={billing.id} trialEndsAt={billing.trialEndsAt} />
+
+      <PaymentsModePanel
+        locale={locale}
+        tenantSlug={billing.tenantSlug}
+        billingMode={asPaymentsMode(billing.paymentsMode)}
+        billingBps={billing.paymentsCommissionBps}
+        registryTenant={registryTenant}
+        registryReadable={registry.ok}
+      />
 
       <section>
         <h2 className="font-hand text-3xl font-bold">{t("billingDetail.subscriptions")}</h2>

@@ -701,7 +701,10 @@
         "modules": "modules : {list}",
         "template": "modèle : {template}",
         "stripeAccount": "Stripe : {account}",
-        "stripeAccountMissing": "Achète les paiements en ligne, mais cette entrée n'indique aucun stripe_account — le provisionnement refuse ce couple et s'arrête avant la base de données : reprovisionner ce tenant ne fait donc rien du tout. Ajoutez le compte à l'entrée, ou retirez le module."
+        "stripeAccountMissing": "Achète les paiements en ligne, mais cette entrée n'indique aucun stripe_account — le provisionnement refuse ce couple et s'arrête avant la base de données : reprovisionner ce tenant ne fait donc rien du tout. Ajoutez le compte à l'entrée, ou retirez le module.",
+        "paymentsModeFlat": "paiements : forfait",
+        "paymentsModeCommission": "paiements : commission ({percent})",
+        "paymentsModePending": "(en attente — registre pas encore mis à jour)"
       },
       "onboard": {
         "title": "Intégrer un partenaire",
@@ -994,6 +997,24 @@
         "submit": "Prolonger la période gratuite",
         "saving": "Enregistrement…",
         "saved": "Enregistré."
+      },
+      "paymentsMode": {
+        "title": "Mode de tarification des paiements",
+        "flatSummary": "Facturé au forfait — 19 €/mois pour les paiements en ligne.",
+        "commissionSummary": "Facturé à la commission — {percent} de chaque commande en ligne, sans frais de module mensuel.",
+        "pendingNote": "Le registre n'a pas encore intégré ce changement — une PR de registre doit être fusionnée et le tenant reprovisionné avant que cela prenne effet. Un simple redémarrage ne relit rien.",
+        "crossover": "À {percent}, la commission coûte autant que le module au forfait (19 €/mois) à environ {amount} de chiffre d'affaires en ligne mensuel. En dessous, ce tenant paie moins en commission qu'au forfait ; au-dessus, plus.",
+        "modeLabel": "Mode",
+        "modeFlat": "Forfait (19 €/mois)",
+        "modeCommission": "Commission",
+        "rateLabel": "Taux (points de base, 100 = 1 %)",
+        "rateHint": "ex. 150 = 1,50 %. Plafond {max} points de base.",
+        "notEligibleRegistryUnavailable": "Le registre des tenants n'a pas pu être lu, l'éligibilité à la commission ne peut donc pas être vérifiée pour l'instant.",
+        "notEligibleNotPaired": "L'entrée de registre de ce tenant ne comporte pas à la fois online-payments et un stripe_account — le provisionnement refuse un taux non nul sans ce couple, avant même la base de données. La commission reste désactivée tant que les deux ne sont pas présents.",
+        "submit": "Enregistrer",
+        "saving": "Enregistrement…",
+        "prOpened": "PR de registre ouverte — fusionnez-la, puis reprovisionnez le tenant.",
+        "alreadySet": "Le registre contenait déjà ce taux. Aucune PR n'était nécessaire."
       },
       "cron": {
         "title": "Scheduled sweeps",
