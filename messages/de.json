@@ -1041,6 +1041,7 @@
     "errors": {
       "invalidClient": "Der Restaurantname ist erforderlich (die E-Mail muss gültig sein).",
       "clientNotFound": "Kunde nicht gefunden.",
+      "clientNotProvisioned": "Dieser Kunde hat noch keine eigene App, es gibt also keine Preisgestaltung zu ändern.",
       "statusManaged": "Der Status dieses Kunden wird jetzt von SofraPiwas verwaltet.",
       "invalidStatus": "Ungültiger Status.",
       "invalidNote": "Die Notiz darf nicht leer sein (max. 2000 Zeichen).",
@@ -1196,6 +1197,24 @@
       "settingUpBody": "Ihre Konfiguration wartet auf eine letzte Prüfung, danach wird Ihre App erstellt und gestartet. Das dauert in der Regel etwa fünfzehn Minuten.",
       "almostReadyTitle": "Fast geschafft",
       "almostReadyBody": "Ihre App wird gestartet. Sobald sie antwortet, zeigt Ihnen diese Seite, wie Sie sich anmelden."
+    },
+    "clientPaymentsMode": {
+      "title": "Preise für Online-Zahlungen",
+      "flatSummary": "Pauschal — 19 €/Monat für Online-Zahlungen, und Ihr Kunde behält jeden Cent jeder Bestellung (abzüglich Stripe-Gebühr).",
+      "commissionSummary": "Provision — {percent} jeder Online-Bestellung, und keine monatliche Gebühr für das Online-Zahlungsmodul.",
+      "pendingNote": "Das ist beantragt, noch nicht angewendet. SofraPiwas muss die Änderung zusammenführen und die App Ihres Kunden erneut bereitstellen, bevor sie wirksam wird — bis dahin bleibt die alte Abrechnung.",
+      "crossover": "Bei {percent} kostet die Provision genauso viel wie das pauschale Modul (19 €/Monat), bei etwa {amount} monatlichem Online-Umsatz. Darunter zahlt Ihr Kunde bei Provision weniger als pauschal; darüber mehr.",
+      "modeLabel": "Preismodell",
+      "modeFlat": "Pauschal (19 €/Monat)",
+      "modeCommission": "Provision",
+      "rateLabel": "Satz (Basispunkte, 100 = 1 %)",
+      "rateHint": "z. B. 150 = 1,50 %. Obergrenze {max} Basispunkte.",
+      "notEligibleRegistryUnavailable": "Wir können die Einrichtung dieses Kunden gerade nicht prüfen, deshalb bleibt die Provision vorerst aus.",
+      "notEligibleNotPaired": "Für die Provision braucht dieser Kunde das Online-Zahlungsmodul und ein eigenes Stripe-Konto. Fragen Sie uns nach beidem, dann steht diese Wahl offen.",
+      "submit": "Speichern",
+      "saving": "Wird gespeichert…",
+      "prOpened": "An SofraPiwas gesendet. Wir wenden es auf die App Ihres Kunden an und bestätigen — an der Kasse hat sich noch nichts geändert.",
+      "alreadySet": "Die App Ihres Kunden läuft bereits mit diesem Satz. Nichts zu senden."
     },
     "paymentsPending": {
       "kicker": "Kartenzahlung",

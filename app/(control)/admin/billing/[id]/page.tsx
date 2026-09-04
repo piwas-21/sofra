@@ -16,7 +16,7 @@ import { planDeletionVerdict, settledOrInFlight } from "@/lib/plan-deletion";
 import DeletePlanForm from "@/components/control/DeletePlanForm";
 import TrialPanel from "@/components/control/TrialPanel";
 import PlanPaymentsList from "@/components/control/PlanPaymentsList";
-import PaymentsModePanel from "@/components/control/PaymentsModePanel";
+import AdminPaymentsModePanel from "@/components/control/AdminPaymentsModePanel";
 import { asPaymentsMode } from "@/lib/payments-pricing";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 
@@ -130,7 +130,7 @@ export default async function AdminBillingDetailPage({
           subscriptions on purpose: whether money is owed comes before what it costs. */}
       <TrialPanel locale={locale} billingId={billing.id} trialEndsAt={billing.trialEndsAt} />
 
-      <PaymentsModePanel
+      <AdminPaymentsModePanel
         locale={locale}
         tenantSlug={billing.tenantSlug}
         billingMode={asPaymentsMode(billing.paymentsMode)}

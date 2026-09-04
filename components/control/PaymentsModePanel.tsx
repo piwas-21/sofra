@@ -7,15 +7,26 @@ import {
   type PaymentsMode,
 } from "@/lib/payments-pricing";
 import { effectivePaymentsMode } from "@/lib/payments-mode-effective";
+import type {
+  PaymentsModeActionState,
+  PaymentsModeTarget,
+} from "@/lib/actions/payments-mode-change";
 import { commissionEligibility } from "@/lib/commission-eligibility";
 import type { RegistryTenant } from "@/lib/tenant-registry";
 import PaymentsModeForm from "./PaymentsModeForm";
 
 /**
- * One tenant's payments pricing mode (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2b) — the
- * owner's `/admin/billing/[id]` control. Server component: it renders the facts
- * the page already has and decides nothing about submission; `PaymentsModeForm`
- * is the only client code here.
+ * One tenant's payments pricing mode (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2b, S4) —
+ * the owner's `/admin/billing/[id]` control AND, with a different `target`,
+ * `action` and vocabulary, the partner's control for a client they sold. Server
+ * component: it renders the facts the page already has and decides nothing about
+ * submission; `PaymentsModeForm` is the only client code here.
+ *
+ * Shared rather than mirrored on purpose. The plan (§2) requires EVERY surface
+ * that offers the switch to state the crossover turnover, and a second copy of
+ * this panel is how one of them would quietly stop doing that. The two audiences
+ * still read different words — `namespace` selects the vocabulary — but they
+ * cannot be shown different FACTS.
  *
  * The headline figure is the EFFECTIVE mode (`effectivePaymentsMode`), never
  * `billingMode`/`billingBps` directly — those are only what we INTEND to bill,
@@ -26,20 +37,28 @@ import PaymentsModeForm from "./PaymentsModeForm";
  */
 export default async function PaymentsModePanel({
   locale,
-  tenantSlug,
+  namespace,
+  target,
+  submitAction,
   billingMode,
   billingBps,
   registryTenant,
   registryReadable,
 }: {
   readonly locale: string;
-  readonly tenantSlug: string;
+  /** Which message block this audience reads — the panel and its form share it. */
+  readonly namespace: string;
+  readonly target: PaymentsModeTarget;
+  readonly submitAction: (
+    prev: PaymentsModeActionState,
+    formData: FormData,
+  ) => Promise<PaymentsModeActionState>;
   readonly billingMode: PaymentsMode;
   readonly billingBps: number;
   readonly registryTenant: RegistryTenant | undefined;
   readonly registryReadable: boolean;
 }) {
-  const t = await getTranslations({ locale, namespace: "control.admin.paymentsMode" });
+  const t = await getTranslations({ locale, namespace });
 
   const effective = effectivePaymentsMode({
     intended: billingMode,
@@ -80,7 +99,9 @@ export default async function PaymentsModePanel({
       )}
       <div className="mt-4">
         <PaymentsModeForm
-          tenantSlug={tenantSlug}
+          target={target}
+          submitAction={submitAction}
+          namespace={namespace}
           currentMode={billingMode}
           currentBps={billingBps}
           eligibility={eligibility}

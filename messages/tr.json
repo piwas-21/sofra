@@ -1041,6 +1041,7 @@
     "errors": {
       "invalidClient": "Restoran adı zorunludur (e-posta geçerli olmalı).",
       "clientNotFound": "Müşteri bulunamadı.",
+      "clientNotProvisioned": "Bu müşterinin henüz kendi uygulaması yok, bu yüzden değiştirilecek bir fiyatlandırma da yok.",
       "statusManaged": "Bu müşterinin durumu artık SofraPiwas tarafından yönetiliyor.",
       "invalidStatus": "Geçersiz durum.",
       "invalidNote": "Not boş olamaz (en fazla 2000 karakter).",
@@ -1196,6 +1197,24 @@
       "settingUpBody": "Yapılandırmanız son bir kontrol için sırada; ardından uygulamanız oluşturulup başlatılır. Bu genellikle on beş dakika kadar sürer.",
       "almostReadyTitle": "Neredeyse hazır",
       "almostReadyBody": "Uygulamanız başlatılıyor. Yanıt verdiği anda bu sayfa nasıl giriş yapacağınızı gösterecek."
+    },
+    "clientPaymentsMode": {
+      "title": "Çevrimiçi ödeme fiyatlandırması",
+      "flatSummary": "Sabit — çevrimiçi ödemeler için ayda 19 €, ve müşteriniz her siparişin her kuruşunu alıkoyar (Stripe'ın kendi ücreti hariç).",
+      "commissionSummary": "Komisyon — her çevrimiçi siparişin {percent}'i, çevrimiçi ödeme modülü için aylık ücret yok.",
+      "pendingNote": "Bu talep edildi, henüz uygulanmadı. Yürürlüğe girmesi için SofraPiwas'ın değişikliği birleştirmesi ve müşterinizin uygulamasını yeniden sağlaması gerekir — o zamana kadar eski fiyatlandırma geçerlidir.",
+      "crossover": "{percent} oranında, komisyon aylık yaklaşık {amount} çevrimiçi ciroda sabit modülle (ayda 19 €) aynı maliyeti taşır. Bunun altında müşteriniz komisyonda sabitten daha az öder; üstünde daha fazla.",
+      "modeLabel": "Fiyatlandırma",
+      "modeFlat": "Sabit (ayda 19 €)",
+      "modeCommission": "Komisyon",
+      "rateLabel": "Oran (baz puan, 100 = %1)",
+      "rateHint": "örn. 150 = %1,50. Tavan {max} baz puan.",
+      "notEligibleRegistryUnavailable": "Bu müşterinin kurulumunu şu anda kontrol edemiyoruz, bu yüzden komisyon şimdilik kapalı kalıyor.",
+      "notEligibleNotPaired": "Komisyon için bu müşterinin çevrimiçi ödeme modülüne ve kendi Stripe hesabına sahip olması gerekir. İkisini de bizden isteyin, bu seçenek açılsın.",
+      "submit": "Kaydet",
+      "saving": "Kaydediliyor…",
+      "prOpened": "SofraPiwas'a gönderildi. Müşterinizin uygulamasına uygulayıp onaylayacağız — ödeme ekranlarında henüz bir şey değişmedi.",
+      "alreadySet": "Müşterinizin uygulaması zaten bu oranı kullanıyor. Gönderilecek bir şey yok."
     },
     "paymentsPending": {
       "kicker": "Kartlı ödeme",

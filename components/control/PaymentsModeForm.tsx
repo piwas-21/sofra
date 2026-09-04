@@ -2,10 +2,10 @@
 
 import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
-import {
-  updatePaymentsModeAction,
-  type PaymentsModeActionState,
-} from "@/lib/actions/provisioning-actions";
+import type {
+  PaymentsModeActionState,
+  PaymentsModeTarget,
+} from "@/lib/actions/payments-mode-change";
 import {
   DEFAULT_COMMISSION_BPS,
   MAX_COMMISSION_BPS,
@@ -19,9 +19,17 @@ import type { CommissionEligibility } from "@/lib/commission-eligibility";
 import ActionError from "./ActionError";
 
 /**
- * Set a tenant's payments mode + rate, submitting to `updatePaymentsModeAction`
- * (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2b) — which opens/updates a registry PR, it
- * does not flip anything live (see the pending note above this form).
+ * Set a tenant's payments mode + rate (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2b, S4) —
+ * which opens/updates a registry PR, it does not flip anything live (see the
+ * pending note above this form).
+ *
+ * ONE form for both surfaces. The `action` and the identifying `target` field are
+ * props rather than an import, because the owner and the partner name a tenant in
+ * two DIFFERENT ways and that difference is the security boundary: the owner posts
+ * a `tenantSlug` (they may name any tenant), a partner posts a `clientId` and the
+ * server reads the slug off the row it loaded scoped by `partnerId`. A partner
+ * form that carried a slug field would be a slug a partner can choose, so this
+ * component never invents the field name — it renders the one it is given.
  *
  * A plain `<form action={...}>`, same as every other server-action form in this
  * app: it works as an ordinary POST with no JavaScript. The mode/rate state here
@@ -35,19 +43,23 @@ import ActionError from "./ActionError";
  * disables only the COMMISSION RADIO itself, never the rate field.
  */
 export default function PaymentsModeForm({
-  tenantSlug,
+  target,
+  submitAction,
+  namespace,
   currentMode,
   currentBps,
   eligibility,
 }: Readonly<{
-  tenantSlug: string;
+  target: PaymentsModeTarget;
+  submitAction: (prev: PaymentsModeActionState, formData: FormData) => Promise<PaymentsModeActionState>;
+  namespace: string;
   currentMode: PaymentsMode;
   currentBps: number;
   eligibility: CommissionEligibility;
 }>) {
-  const t = useTranslations("control.admin.paymentsMode");
+  const t = useTranslations(namespace);
   const [state, action, pending] = useActionState<PaymentsModeActionState, FormData>(
-    updatePaymentsModeAction,
+    submitAction,
     {},
   );
   const [mode, setMode] = useState<PaymentsMode>(currentMode);
@@ -75,7 +87,7 @@ export default function PaymentsModeForm({
 
   return (
     <form action={action} className="grid gap-3 sm:max-w-md">
-      <input type="hidden" name="tenantSlug" value={tenantSlug} />
+      <input type="hidden" name={target.field} value={target.value} />
       <fieldset className="grid gap-2">
         <legend className="font-label text-sm text-muted-foreground">{t("modeLabel")}</legend>
         <label className="flex items-center gap-2 font-label text-sm">
@@ -134,19 +146,25 @@ export default function PaymentsModeForm({
         </button>
       </div>
       <ActionError code={state.error} />
-      {state.ok && state.prUrl && (
+      {/* The acknowledgement is unconditional on success; the LINK is not. The PR
+          lives in a private repo — the founder can open it, a partner cannot, and a
+          404 is worse news than no link at all — so the partner action returns no
+          `prUrl` and this renders the sentence alone. */}
+      {state.ok && !state.alreadySet && (
         <div className="grid gap-1">
           <span className="font-label text-sm text-craft-success-text dark:text-craft-success">
             {t("prOpened")}
           </span>
-          <a
-            href={state.prUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="font-label text-sm underline break-all"
-          >
-            {state.prUrl}
-          </a>
+          {state.prUrl && (
+            <a
+              href={state.prUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="font-label text-sm underline break-all"
+            >
+              {state.prUrl}
+            </a>
+          )}
         </div>
       )}
       {state.ok && state.alreadySet && (

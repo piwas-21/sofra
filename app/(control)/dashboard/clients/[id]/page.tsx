@@ -18,6 +18,7 @@ import TenantDnsPanel from "@/components/control/TenantDnsPanel";
 import { tenantDnsRecords } from "@/lib/tenant-dns-record";
 import { checkDnsRecord } from "@/lib/tenant-dns-check";
 import ClientPlanPanel from "@/components/control/ClientPlanPanel";
+import ClientPaymentsModePanel from "@/components/control/ClientPaymentsModePanel";
 import ClientChangeRequestForm from "@/components/control/ClientChangeRequestForm";
 import NoteForm from "@/components/control/NoteForm";
 
@@ -138,6 +139,14 @@ export default async function ClientDetailPage({
       {view.kind !== "none" && (
         <>
           <ClientPlanPanel locale={locale} billing={billing} />
+          {/* What Sofra charges for online payments, and the switch between the two
+              ways of charging it (S4). Posts the CLIENT id — never a tenant slug. */}
+          <ClientPaymentsModePanel
+            locale={locale}
+            clientId={client.id}
+            view={view}
+            billing={client.billing}
+          />
           <section className="hand-drawn-border bg-card p-6">
             <h2 className="font-hand text-3xl font-bold">{t("changeRequest")}</h2>
             <p className="mt-2 font-label text-muted-foreground">{t("changeRequestIntro")}</p>
