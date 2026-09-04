@@ -36,6 +36,8 @@ describe("loadTenantRegistry", () => {
         "pays",
         "rumi",
         "unpaired",
+        "zeta",
+        "zeta2",
       ]);
       const rumi = res.tenants.find((t) => t.slug === "rumi")!;
       expect(rumi.name).toBe("Rumi Restaurant");

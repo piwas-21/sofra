@@ -170,6 +170,23 @@ describe("setRegistryCommissionBps", () => {
     expect(extractBlock(yaml, "demo")).toBe(extractBlock(original, "demo"));
   });
 
+  // The demo/demo2 case above is ordering-dependent: `findBlock` uses `findIndex`,
+  // which returns the FIRST match, and `demo` precedes `demo2` in the fixture — so a
+  // header regex that lost its trailing `:` would still find the right block by luck.
+  // Mutation proved exactly that: dropping the `:` left all 14 tests green.
+  //
+  // `zeta2` is deliberately placed BEFORE `zeta`, so the same bug lands on the wrong
+  // tenant. This is the assertion that actually pins the property.
+  it("matches the exact slug even when a LONGER slug sits earlier in the file", () => {
+    const original = fixture();
+    const { yaml, changed } = setRegistryCommissionBps(original, "zeta", 150);
+
+    expect(changed).toBe(true);
+    expect(extractBlock(yaml, "zeta")).toContain("payments_commission_bps: 150");
+    // The one that would have been hit by a prefix bug must be untouched.
+    expect(extractBlock(yaml, "zeta2")).toBe(extractBlock(original, "zeta2"));
+  });
+
   it("is idempotent — applying the same value twice is a no-op the second time, byte-identical", () => {
     const first = setRegistryCommissionBps(fixture(), "pays", 175);
     expect(first.changed).toBe(true);
