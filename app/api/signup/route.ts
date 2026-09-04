@@ -252,6 +252,16 @@ export async function POST(request: Request) {
         ["Tenant languages", config.languages ?? "—"],
         ["Currency", config.currency ?? "—"],
         ["Quoted", config.quotedCents === null ? "—" : `${eur(config.quotedCents)}/mo`],
+        // Beside the quote, because the two only make sense together: under
+        // `commission` the quoted total EXCLUDES the online-payments module, so
+        // a founder reading the number alone would see a cheaper plan and no
+        // reason for it.
+        [
+          "Payments",
+          config.paymentsMode === "commission"
+            ? `commission (${config.paymentsCommissionBps ?? 0} bps)`
+            : (config.paymentsMode ?? "—"),
+        ],
       ],
     }).catch(() => undefined);
   }
