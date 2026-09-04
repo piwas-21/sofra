@@ -483,7 +483,8 @@
         "icp": "ICP",
         "billingDetails": "بيانات الفوترة",
         "domains": "النطاقات",
-        "brand": "العلامة"
+        "brand": "العلامة",
+        "cron": "المهام المجدولة"
       },
       "groups": {
         "pipeline": "المسار",
@@ -993,6 +994,24 @@
         "submit": "تمديد الفترة المجانية",
         "saving": "جارٍ الحفظ…",
         "saved": "تم الحفظ."
+      },
+      "cron": {
+        "title": "Scheduled sweeps",
+        "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",
+        "attention": "{count} of {total} sweeps have not run inside their budget.",
+        "allFresh": "All {count} sweeps have run recently.",
+        "lastRan": "Last ran {when} UTC — {ago} ago",
+        "neverRan": "No run has ever been recorded.",
+        "budget": "Considered overdue after {hours}h.",
+        "ageMinutes": "{count}m",
+        "ageHours": "{count}h",
+        "ageDays": "{count}d",
+        "footnote": "A heartbeat is written on every run, whether or not the sweep had anything to do — a sweep that runs and finds nothing must not look like one that never ran. The box also triggers these independently of GitHub Actions (deploy #165), so either path alone keeps them running.",
+        "status": {
+          "fresh": "on time",
+          "overdue": "OVERDUE",
+          "never": "never run"
+        }
       }
     },
     "errors": {
