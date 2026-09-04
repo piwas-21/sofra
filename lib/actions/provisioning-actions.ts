@@ -23,7 +23,7 @@ import {
   ProvisioningNotConfiguredError,
   ProvisioningApiError,
 } from "@/lib/provisioning";
-import { openCommissionChangePr } from "@/lib/registry-commission-pr";
+import { proposeCommissionChange, recordPaymentsModeIntent } from "./payments-mode-change";
 
 /** `error` is a message key in `control.errors` (rendered by <ActionError />);
  *  GitHub API errors pass through raw. `prUrl` on success. */
@@ -143,33 +143,11 @@ export async function updatePaymentsModeAction(
   // would record an intent we never actually proposed to anyone. This order's
   // failure mode is the recoverable one instead — an open PR the intent
   // doesn't point at yet — never the other way round.
-  let outcome;
-  try {
-    outcome = await openCommissionChangePr(tenantSlug, commissionBps);
-  } catch (e) {
-    if (e instanceof ProvisioningNotConfiguredError) return { error: "provisioningNotConfigured" };
-    if (e instanceof ProvisioningApiError) return { error: e.message };
-    console.error("updatePaymentsModeAction: openCommissionChangePr failed", e);
-    return { error: "paymentsModeChangeFailed" };
-  }
-  const prUrl = outcome.alreadySet ? null : outcome.prUrl;
+  const proposal = await proposeCommissionChange(tenantSlug, commissionBps);
+  if (!proposal.ok) return { error: proposal.error };
+  const { prUrl } = proposal;
 
-  try {
-    await db.tenantBilling.update({
-      where: { tenantSlug },
-      data: { paymentsMode: mode, paymentsCommissionBps: commissionBps },
-    });
-  } catch (e) {
-    // The PR is open (or the rate already matched) but the intent failed to
-    // save — an orphan PR, not an orphan CHARGE. Thrown, not returned: a
-    // swallowed AdminActionState error would lose the one thing a human needs
-    // to reconcile this by hand.
-    throw new Error(
-      `payments mode change for '${tenantSlug}' was proposed${
-        prUrl ? ` (${prUrl})` : " (rate already matched, no PR opened)"
-      } but recording the intent failed: ${e instanceof Error ? e.message : String(e)}`,
-    );
-  }
+  await recordPaymentsModeIntent({ tenantSlug, mode, commissionBps, prUrl });
 
   await audit(admin.id, "tenant.paymentsMode.changed", "TenantBilling", billing.id, {
     tenantSlug,
@@ -182,5 +160,6 @@ export async function updatePaymentsModeAction(
 
   revalidatePath("/admin/billing");
   revalidatePath(`/admin/billing/${billing.id}`);
-  return outcome.alreadySet ? { ok: true, alreadySet: true } : { ok: true, prUrl: outcome.prUrl };
+  // prUrl is null exactly when the registry already carried this rate, so no PR was opened.
+  return prUrl ? { ok: true, prUrl } : { ok: true, alreadySet: true };
 }

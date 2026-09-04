@@ -20,51 +20,17 @@
 // Pure: no GitHub API, no fs, no env — registryYaml in, registryYaml out.
 
 import { isCommissionBps } from "./payments-pricing";
+import {
+  UnknownRegistryTenantError,
+  InvalidCommissionBpsError,
+  MissingStripeAccountError,
+} from "./registry-commission-errors";
+
+// Re-exported so every existing importer keeps its single import site.
+export { UnknownRegistryTenantError, InvalidCommissionBpsError, MissingStripeAccountError };
 
 /** No `slug` entry exists in the registry at all. */
-export class UnknownRegistryTenantError extends Error {
-  constructor(slug: string) {
-    super(`registry has no '${slug}' entry`);
-    this.name = "UnknownRegistryTenantError";
-  }
-}
-
-/** `bps` failed `isCommissionBps` — negative, fractional, or above the ceiling. */
-export class InvalidCommissionBpsError extends Error {
-  constructor(bps: number) {
-    super(`${bps} is not a valid commission rate`);
-    this.name = "InvalidCommissionBpsError";
-  }
-}
-
-/**
- * A non-zero rate was requested for a tenant whose block has no
- * `stripe_account:` line. `provision-tenant.sh` refuses a non-zero
- * `payments_commission_bps` unless the SAME entry also carries
- * `online-payments` in `modules` AND a `stripe_account` — and refuses it
- * BEFORE the database, the compose project or the image. So writing the rate
- * here without the account would not give this tenant a restaurant without
- * commission on the next re-provision; it would give them no tenant at all.
- *
- * Unlike a brand-new entry (`splitDeferredModules` in
- * `provisioning-module-pairing.ts`), there is no "defer it to a second PR"
- * available here: this call amends a tenant that already exists, so the only
- * honest answer is to refuse outright rather than propose a change that would
- * brick the next re-provision.
- */
-export class MissingStripeAccountError extends Error {
-  constructor(slug: string) {
-    super(
-      `'${slug}' has no stripe_account: — provision-tenant.sh refuses a non-zero ` +
-        "payments_commission_bps without online-payments + stripe_account, and refuses it " +
-        "BEFORE the database, so proposing this rate would yield no tenant at all rather " +
-        "than a tenant without commission",
-    );
-    this.name = "MissingStripeAccountError";
-  }
-}
-
-const escapeForRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeForRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
 /**
  * The `[headerIdx, endIdx)` line range `slug`'s block occupies in `lines` —
@@ -75,7 +41,7 @@ const escapeForRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]
  * slug can never match a longer sibling (`demo` must not match `demo2:`).
  */
 function findBlock(lines: string[], slug: string): { headerIdx: number; endIdx: number } | null {
-  const headerRe = new RegExp(`^ {2}${escapeForRegex(slug)}:\\s*$`);
+  const headerRe = new RegExp(String.raw`^ {2}${escapeForRegex(slug)}:\s*$`);
   const headerIdx = lines.findIndex((line) => headerRe.test(line));
   if (headerIdx === -1) return null;
 
@@ -104,10 +70,51 @@ export function currentRegistryCommissionBps(registryYaml: string, slug: string)
   const block = findBlock(lines, slug);
   if (!block) return undefined;
   for (let i = block.headerIdx + 1; i < block.endIdx; i++) {
-    const match = lines[i].match(BPS_LINE);
+    const match = BPS_LINE.exec(lines[i]);
     if (match) return Number(match[2]);
   }
   return undefined;
+}
+
+/**
+ * The block already carries the key: rewrite that one line, or drop it at 0.
+ *
+ * Dropping rather than writing `: 0` is the registry's own convention — absent means
+ * zero and the schema comment says so — so the line would be noise in a file humans
+ * review. The original indentation is reused rather than assumed; nothing here should
+ * be what decides a file's formatting.
+ */
+function rewriteExisting(lines: string[], bpsIdx: number, bps: number): string[] {
+  if (bps === 0) return [...lines.slice(0, bpsIdx), ...lines.slice(bpsIdx + 1)];
+  const indent = BPS_LINE.exec(lines[bpsIdx])![1];
+  const next = [...lines];
+  next[bpsIdx] = `${indent}payments_commission_bps: ${bps}`;
+  return next;
+}
+
+/**
+ * The block has no key yet. At 0 there is nothing to write — absent already means
+ * zero — so the input comes back untouched and the caller reports `changed: false`
+ * rather than opening an empty PR.
+ *
+ * Otherwise the line goes immediately after `stripe_account:`. That anchor exists
+ * exactly when a non-zero rate is legal at all, and using it avoids having to decide
+ * where a block "ends" among trailing comments.
+ */
+function insertAfterStripeAccount(
+  lines: string[],
+  stripeIdx: number,
+  bps: number,
+  slug: string,
+): string[] {
+  if (bps === 0) return lines;
+  if (stripeIdx === -1) throw new MissingStripeAccountError(slug);
+  const indent = STRIPE_LINE.exec(lines[stripeIdx])![1];
+  return [
+    ...lines.slice(0, stripeIdx + 1),
+    `${indent}payments_commission_bps: ${bps}`,
+    ...lines.slice(stripeIdx + 1),
+  ];
 }
 
 /**
@@ -152,26 +159,10 @@ export function setRegistryCommissionBps(
     if (stripeIdx === -1 && STRIPE_LINE.test(lines[i])) stripeIdx = i;
   }
 
-  let next: string[];
-  if (bpsIdx !== -1) {
-    if (bps > 0) {
-      const indent = lines[bpsIdx].match(BPS_LINE)![1];
-      next = [...lines];
-      next[bpsIdx] = `${indent}payments_commission_bps: ${bps}`;
-    } else {
-      next = [...lines.slice(0, bpsIdx), ...lines.slice(bpsIdx + 1)];
-    }
-  } else if (bps === 0) {
-    next = lines;
-  } else {
-    if (stripeIdx === -1) throw new MissingStripeAccountError(slug);
-    const indent = lines[stripeIdx].match(STRIPE_LINE)![1];
-    next = [
-      ...lines.slice(0, stripeIdx + 1),
-      `${indent}payments_commission_bps: ${bps}`,
-      ...lines.slice(stripeIdx + 1),
-    ];
-  }
+  const next =
+    bpsIdx !== -1
+      ? rewriteExisting(lines, bpsIdx, bps)
+      : insertAfterStripeAccount(lines, stripeIdx, bps, slug);
 
   const yaml = next.join("\n");
   return { yaml, changed: yaml !== registryYaml };
