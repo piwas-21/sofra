@@ -57,6 +57,13 @@ export const MODULES: readonly CatalogModule[] = [
   { id: "reservations", priceCents: 900, surface: "/reservations + admin management" },
   { id: "loyalty", priceCents: 900, surface: "fidelity points, customer groups, discounts" },
   { id: "printing", priceCents: 900, surface: "printer-app companion + printer feed" },
+  // ADR-011 amendment (2026-09-04): a per-transaction commission mechanism now exists
+  // (Stripe `application_fee_amount` on the existing Connect direct charge) but is not
+  // priced here — it defaults to 0 bps for every tenant and is configured per tenant in
+  // the deploy registry (`payments_commission_bps`), not in this catalog. Do NOT add a
+  // commission-priced variant of this module until the ADR's refund gap is closed: Stripe
+  // does not auto-refund the application fee, and RUMI does not refund Stripe-captured
+  // payments today, so a live non-zero rate would keep the fee on every refund.
   {
     id: "online-payments",
     priceCents: 1900,
