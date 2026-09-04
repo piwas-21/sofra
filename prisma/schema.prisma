@@ -795,3 +795,40 @@ model BackupJob {
   @@index([box, status])
   @@index([tenantSlug])
 }
+
+/// Every application-fee refund the platform Connect webhook has issued
+/// (ADR-011 amendment, consequence 1 — "fee follows the refund";
+/// lib/stripe-fee-refund.ts). Stripe never auto-refunds a fee when a
+/// connected account refunds a charge; only the platform can, and this is
+/// the record that it did.
+///
+/// `connectedAccountId`/`chargeId` are NOT foreign keys — same seam as
+/// TenantBilling.tenantSlug and BackupArtifact.tenantSlug (ADR-007): the
+/// registry (which maps a tenant's `stripe_account` back to a slug) is the
+/// source of truth and this app never writes to it, so the join back to a
+/// tenant happens at READ time, not by an FK here.
+///
+/// This table also seeds ADR-011's SECOND recorded consequence — "no
+/// commission reporting surface": a future per-tenant revenue readout groups
+/// these rows by `connectedAccountId` and sums `amount` as money RETURNED,
+/// next to whatever future table records money EARNED. It does not close
+/// that gap by itself.
+model StripeFeeRefund {
+  id   String @id @default(cuid())
+  /// Stripe's own refund id (`fr_...`). @unique is the natural idempotency
+  /// anchor: a webhook redelivery recomputes zero due before ever reaching a
+  /// write, and the one race that DOES produce two callers for the same
+  /// refund (both read the fee before either write landed) shares one Stripe
+  /// idempotency key and so writes here via upsert, not insert.
+  stripeRefundId     String   @unique
+  applicationFeeId   String
+  connectedAccountId String
+  chargeId           String
+  /// Minor units, in `currency` below — the amount Sofra returned.
+  amount             Int
+  currency           String
+  createdAt          DateTime @default(now())
+
+  @@index([connectedAccountId])
+  @@index([chargeId])
+}
