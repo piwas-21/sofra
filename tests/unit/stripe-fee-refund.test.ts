@@ -58,4 +58,20 @@ describe("feeRefundAmount", () => {
       feeRefundAmount({ chargeAmount: 4000, chargeAmountRefunded: 4000, feeAmount: 60, feeAmountRefunded: 55 }),
     ).toBe(5);
   });
+
+  // The ceiling clamp is UNREACHABLE through Stripe: a charge cannot report more
+  // refunded than its own amount, so `target` can never exceed `feeAmount`. That
+  // makes it defensive code — and defensive code nothing exercises is a guard
+  // nobody can show works. Proven by mutation: deleting the `Math.min(...)` left
+  // every other case in this file green.
+  //
+  // So this feeds it the impossible input directly. Without the clamp the answer
+  // is 75, and we would ask Stripe to refund MORE than the fee it is refunding
+  // against — a request Stripe rejects, turning a silent upstream anomaly into a
+  // failing webhook that retries forever.
+  it("never asks to refund more than the fee, even if the charge reports the impossible", () => {
+    expect(
+      feeRefundAmount({ chargeAmount: 4000, chargeAmountRefunded: 5000, feeAmount: 60, feeAmountRefunded: 0 }),
+    ).toBe(60);
+  });
 });
