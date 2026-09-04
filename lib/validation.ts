@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isCommissionBps } from "./payments-pricing";
 
 /** Split a comma-separated form field into trimmed, lowercased, non-empty values.
  *  Shared so the schema validates exactly the list the action goes on to send. */
@@ -144,3 +145,27 @@ export const onboardSchema = z.object({
     .optional()
     .or(z.literal("")),
 });
+
+// Amending an EXISTING tenant's payments mode/rate (SOFRA-PAYMENTS-PRICING-MODE-PLAN
+// S2a). `commissionBps` reuses `isCommissionBps` rather than restating the 0-1000
+// ceiling a second time. The two refinements below keep the pair internally
+// consistent — `flat` carrying a rate, or `commission` carrying none, are both
+// states `effectivePaymentsMode`/the registry writer would have to guess a meaning
+// for, so they are refused here instead.
+export const paymentsModeChangeSchema = z
+  .object({
+    tenantSlug: z
+      .string()
+      .trim()
+      .regex(/^[a-z0-9][a-z0-9-]{1,30}$/, "lowercase slug, 2-31 chars"),
+    mode: z.enum(["flat", "commission"]),
+    commissionBps: z.coerce.number().refine(isCommissionBps, "invalid commission rate"),
+  })
+  .refine((v) => v.mode !== "flat" || v.commissionBps === 0, {
+    message: "flat mode carries no commission rate",
+    path: ["commissionBps"],
+  })
+  .refine((v) => v.mode !== "commission" || v.commissionBps > 0, {
+    message: "commission mode needs a rate above zero",
+    path: ["commissionBps"],
+  });

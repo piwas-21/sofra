@@ -58,6 +58,14 @@ export default defineConfig({
         // beside it, and the one place the crossover formula every switching surface
         // will quote (S2-S4) is decidable in isolation.
         "lib/payments-pricing.ts",
+        // S2a — the pure halves of the amendment mechanism. `registry-commission-edit.ts`
+        // is the dangerous one (surgical line edits to a file humans hand-annotate); its
+        // GitHub-calling sibling (`registry-commission-pr.ts`) stays out, same split as
+        // provisioning.ts/provisioning-registry.ts. `payments-mode-effective.ts` is the
+        // billing-vs-enforcement predicate, same shape and same reason as
+        // payments-pending.ts just below it.
+        "lib/registry-commission-edit.ts",
+        "lib/payments-mode-effective.ts",
         "lib/tenant-options.ts",
         "lib/signup-configuration.ts",
         "lib/checkout-window.ts",

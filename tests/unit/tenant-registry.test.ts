@@ -28,7 +28,15 @@ describe("loadTenantRegistry", () => {
     const res = await loadTenantRegistry();
     expect(res.ok).toBe(true);
     if (res.ok) {
-      expect(res.tenants.map((t) => t.slug)).toEqual(["demo", "pays", "rumi", "unpaired"]); // sorted
+      // sorted; commissioned/demo2 are S2a fixtures (registry-commission-edit.test.ts)
+      expect(res.tenants.map((t) => t.slug)).toEqual([
+        "commissioned",
+        "demo",
+        "demo2",
+        "pays",
+        "rumi",
+        "unpaired",
+      ]);
       const rumi = res.tenants.find((t) => t.slug === "rumi")!;
       expect(rumi.name).toBe("Rumi Restaurant");
       expect(rumi.languages).toHaveLength(10);

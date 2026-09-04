@@ -1046,6 +1046,9 @@
       "provisionFailed": "Impossible d’ouvrir la PR de provisionnement. Consultez les journaux.",
       "slugReserved": "Ce slug de tenant est réservé et ne peut pas être utilisé.",
       "awaitingFirstPayment": "Le plan de ce tenant n'a pas encore de premier paiement encaissé. Un tenant en libre-service n'est provisionné qu'après paiement.",
+      "billingNotFound": "Aucun plan de facturation trouvé pour ce tenant.",
+      "paymentsModeUnchanged": "Ce tenant est déjà sur ce mode et ce taux.",
+      "paymentsModeChangeFailed": "Impossible de proposer le changement de mode de paiement. Consultez les journaux.",
       "identityNotFound": "Cette identité de facturation n'existe plus.",
       "noVatNumber": "Aucun numéro de TVA à vérifier.",
       "invoice": {
