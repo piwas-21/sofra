@@ -149,6 +149,22 @@ model SignupRequest {
   /// were shown, NOT a price that binds — always re-quote at onboarding.
   quotedCents Int?
 
+  // --- Payments pricing mode choice (SOFRA-PAYMENTS-PRICING-MODE-PLAN S3) ---
+  // Mirrors TenantBilling.paymentsMode/paymentsCommissionBps — the same two
+  // columns, on the lead instead of the tenant, because the choice exists before
+  // either does. Both nullable for the same reason modules/languages/template/
+  // currency above are: a lead captured before this shipped has none, and null
+  // means "the founder still chooses".
+  /// "flat" or "commission" (lib/payments-pricing.ts PaymentsMode), or null.
+  paymentsMode String?
+  /// The rate the buyer was actually SHOWN for commission — not a number they
+  /// pick, DEFAULT_COMMISSION_BPS applied on their behalf, but recorded anyway.
+  /// DEFAULT_COMMISSION_BPS can change later, and a historical signup whose
+  /// meaning silently shifted with a future default would be a record of
+  /// nothing. 0 alongside "flat", the shown default alongside "commission",
+  /// null exactly when paymentsMode is null.
+  paymentsCommissionBps Int?
+
   // Back-reference for the O3 link. A list because Prisma requires it on the
   // non-owning side; in practice at most one plan is minted per lead.
   billing TenantBilling[]

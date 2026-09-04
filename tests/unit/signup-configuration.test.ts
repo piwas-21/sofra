@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { sanitizeSignupConfiguration } from "@/lib/signup-configuration";
+import { sanitizeSignupConfiguration, type RawSignupConfiguration } from "@/lib/signup-configuration";
 import { quoteModules } from "@/lib/module-catalog";
 import { isTemplateId, isTenantCurrency, parseCsv, TEMPLATES } from "@/lib/tenant-options";
+import { DEFAULT_COMMISSION_BPS, ONLINE_PAYMENTS_PRICE_CENTS, paymentsModeQuote } from "@/lib/payments-pricing";
 
 describe("parseCsv", () => {
   it("drops blanks and duplicates, keeps order", () => {
@@ -39,6 +40,8 @@ describe("sanitizeSignupConfiguration", () => {
       template: null,
       currency: null,
       quotedCents: null,
+      paymentsMode: null,
+      paymentsCommissionBps: null,
     });
   });
 
@@ -128,5 +131,79 @@ describe("sanitizeSignupConfiguration", () => {
     const c = sanitizeSignupConfiguration({ template: "craft" });
     expect(c.template).toBe("craft");
     expect(parseCsv(c.modules)).toEqual(["core"]);
+  });
+});
+
+// Payments pricing mode (workspace SOFRA-PAYMENTS-PRICING-MODE-PLAN, S3 — the
+// public configurator's choice between the flat online-payments price and a
+// per-transaction commission).
+describe("sanitizeSignupConfiguration — payments pricing mode", () => {
+  it("stores commission at the mode-adjusted quote when online-payments is selected", () => {
+    const modules = ["core", "online-payments"];
+    const c = sanitizeSignupConfiguration({ modules: modules.join(","), paymentsMode: "commission" });
+    expect(c.paymentsMode).toBe("commission");
+    expect(c.paymentsCommissionBps).toBe(DEFAULT_COMMISSION_BPS);
+    // The adjusted total, never the flat one: online-payments drops to €0/mo.
+    expect(c.quotedCents).toBe(quoteModules(modules).monthlyCents - ONLINE_PAYMENTS_PRICE_CENTS);
+  });
+
+  // A mode with no module is not a state anything downstream can honour.
+  it("degrades commission to flat when the selection has no online-payments", () => {
+    const c = sanitizeSignupConfiguration({ modules: "core,loyalty", paymentsMode: "commission" });
+    expect(c.paymentsMode).toBe("flat");
+    expect(c.paymentsCommissionBps).toBe(0);
+    expect(c.quotedCents).toBe(quoteModules(["core", "loyalty"]).monthlyCents);
+  });
+
+  // Rule 1 (DROP, don't reject) extends to the mode string.
+  it("degrades an unrecognised mode string to flat rather than throwing", () => {
+    const c = sanitizeSignupConfiguration({
+      modules: "core,online-payments",
+      paymentsMode: "give-it-all-away",
+    });
+    expect(c.paymentsMode).toBe("flat");
+    expect(c.paymentsCommissionBps).toBe(0);
+  });
+
+  // A stale cached bundle (or a plain-form/no-JS POST predating this field)
+  // never sends `paymentsMode` at all — the field is absent, not empty, which
+  // is a different branch from an explicit "flat".
+  it("defaults to flat when online-payments is selected but no mode was posted", () => {
+    const c = sanitizeSignupConfiguration({ modules: "core,online-payments" });
+    expect(c.paymentsMode).toBe("flat");
+    expect(c.paymentsCommissionBps).toBe(0);
+  });
+
+  it("stores 0 bps for flat mode, even with online-payments selected", () => {
+    const c = sanitizeSignupConfiguration({
+      modules: "core,online-payments",
+      paymentsMode: "flat",
+    });
+    expect(c.paymentsMode).toBe("flat");
+    expect(c.paymentsCommissionBps).toBe(0);
+    expect(c.quotedCents).toBe(quoteModules(["core", "online-payments"]).monthlyCents);
+  });
+
+  // Rule 2 (RE-QUOTE, never trust), extended: a posted quotedCents is ignored
+  // under commission exactly as it is under flat — the function recomputes
+  // through paymentsModeQuote and never reads a caller-supplied price. Cast
+  // to simulate the real caller (app/api/signup/route.ts passes the whole
+  // parsed signupSchema payload, which DOES carry a quotedCents field —
+  // RawSignupConfiguration itself has no such field precisely so nothing here
+  // could read it even if it wanted to).
+  it("ignores a posted quotedCents under commission", () => {
+    const raw = {
+      modules: "core,online-payments",
+      paymentsMode: "commission",
+      quotedCents: 1,
+    } as RawSignupConfiguration;
+    const c = sanitizeSignupConfiguration(raw);
+    const expected = paymentsModeQuote(
+      quoteModules(["core", "online-payments"]).monthlyCents,
+      "commission",
+      true,
+    );
+    expect(c.quotedCents).toBe(expected);
+    expect(c.quotedCents).not.toBe(1);
   });
 });

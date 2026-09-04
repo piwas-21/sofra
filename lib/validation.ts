@@ -68,6 +68,12 @@ export const signupSchema = z.object({
   // Coerced because it rides the form as a string. Never trusted — the route
   // re-quotes from the catalog and stores its own number.
   quotedCents: z.coerce.number().int().min(0).max(1_000_000).optional(),
+  // Payments pricing mode (SOFRA-PAYMENTS-PRICING-MODE-PLAN S3). Bounded like
+  // its neighbours above, not `z.enum(["flat","commission"])`: the *contents*
+  // are validated against `PaymentsMode` in `sanitizeSignupConfiguration`
+  // (`asPaymentsMode`), which is where an unrecognised value is DROPPED to
+  // `flat` rather than 400ing a real lead over a stale client bundle.
+  paymentsMode: z.string().trim().max(20).optional().or(z.literal("")),
 });
 
 export const clientSchema = z.object({

@@ -11,7 +11,12 @@
 //     bad value is a loud failure rather than a silent tenant misconfiguration.
 //  2. RE-QUOTE, never trust. The posted price is ignored entirely; the total is
 //     recomputed from the catalog so a crafted POST cannot make the founder read
-//     a number the lead was never actually shown.
+//     a number the lead was never actually shown. Since S3 this covers the
+//     payments pricing mode too (workspace SOFRA-PAYMENTS-PRICING-MODE-PLAN):
+//     `commission` re-prices through `paymentsModeQuote`, and — same DROP rule
+//     as rule 1 — is only honoured when the selection actually carries
+//     `online-payments`; otherwise it degrades to `flat`, same as an
+//     unrecognised mode string.
 //
 // Pure — no DB, no network — so it is unit-testable on its own.
 
@@ -24,6 +29,12 @@ import {
   TEMPLATES,
   TENANT_CURRENCIES,
 } from "./tenant-options";
+import {
+  asPaymentsMode,
+  DEFAULT_COMMISSION_BPS,
+  paymentsModeQuote,
+  type PaymentsMode,
+} from "./payments-pricing";
 
 /** Raw configurator fields as they come off the wire (all optional). */
 export type RawSignupConfiguration = {
@@ -31,6 +42,7 @@ export type RawSignupConfiguration = {
   languages?: string;
   template?: string;
   currency?: string;
+  paymentsMode?: string;
 };
 
 /** What gets written to SignupRequest — CSV in the registry grammar, or null. */
@@ -40,6 +52,8 @@ export type StoredSignupConfiguration = {
   template: string | null;
   currency: string | null;
   quotedCents: number | null;
+  paymentsMode: PaymentsMode | null;
+  paymentsCommissionBps: number | null;
 };
 
 /** Set when the lead chose nothing at all, so the founder still decides. */
@@ -49,6 +63,8 @@ const NOTHING_CHOSEN: StoredSignupConfiguration = {
   template: null,
   currency: null,
   quotedCents: null,
+  paymentsMode: null,
+  paymentsCommissionBps: null,
 };
 
 export function sanitizeSignupConfiguration(
@@ -79,6 +95,21 @@ export function sanitizeSignupConfiguration(
     ? [...withCore.filter((m) => m !== "extra-languages"), "extra-languages"]
     : withCore.filter((m) => m !== "extra-languages");
 
+  // A mode with no module is not a state anything downstream can honour — the
+  // buyer cannot be "on commission" for a module they did not buy — so it
+  // collapses to `flat` exactly like an unrecognised mode string does
+  // (`asPaymentsMode`, rule 1). Checked against the FINAL module list, not the
+  // raw one, so a `paymentsMode=commission` riding a POST that also drops
+  // `online-payments` cannot record a mode nothing enforces.
+  const hasOnlinePayments = finalModules.includes("online-payments");
+  const paymentsMode: PaymentsMode = hasOnlinePayments
+    ? asPaymentsMode(raw.paymentsMode ?? "")
+    : "flat";
+  // The rate the buyer was SHOWN, not one they typed — see the migration
+  // comment and payments-pricing.ts DEFAULT_COMMISSION_BPS for why this is
+  // recorded even though it is never a free-form input.
+  const paymentsCommissionBps = paymentsMode === "commission" ? DEFAULT_COMMISSION_BPS : 0;
+
   return {
     modules: finalModules.join(","),
     languages: withEnglish.join(","),
@@ -87,7 +118,15 @@ export function sanitizeSignupConfiguration(
     template: raw.template && isTemplateId(raw.template) ? raw.template : TEMPLATES[0].id,
     currency:
       raw.currency && isTenantCurrency(raw.currency) ? raw.currency : TENANT_CURRENCIES[0],
-    // Recomputed, never the posted value.
-    quotedCents: quoteModules(finalModules).monthlyCents,
+    // Rule 2, extended: recomputed from the catalog AND mode-adjusted, so a
+    // buyer who chose commission is recorded at the total they were actually
+    // shown — never the posted price, and never the flat total either.
+    quotedCents: paymentsModeQuote(
+      quoteModules(finalModules).monthlyCents,
+      paymentsMode,
+      hasOnlinePayments,
+    ),
+    paymentsMode,
+    paymentsCommissionBps,
   };
 }

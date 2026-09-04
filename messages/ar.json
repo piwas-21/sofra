@@ -752,6 +752,9 @@
         "chosenLanguages": "اللغات",
         "chosenCurrency": "العملة",
         "quoted": "عرض السعر",
+        "chosenPaymentsMode": "وضع الدفع",
+        "paymentsModeFlat": "سعر ثابت",
+        "paymentsModeCommission": "عمولة ({percent})",
         "openProvisioning": "فتح التجهيز ←",
         "slugVerdict": {
           "invalid": "(غير صالح)",
@@ -1479,6 +1482,15 @@
       "bundle": {
         "counter": "الكاونتر",
         "full-service": "خدمة كاملة"
+      },
+      "paymentsMode": {
+        "title": "كيف تُحاسَب على المدفوعات عبر الإنترنت",
+        "flatLabel": "رسم ثابت — {price} شهريًا",
+        "flatHint": "سعر ثابت واحد، مهما بلغت مبيعاتك عبر الإنترنت.",
+        "commissionLabel": "بلا رسوم شهرية — {percent} لكل طلب",
+        "commissionHint": "لا شيء حتى يدفع أحد الضيوف بالفعل عبر الإنترنت.",
+        "crossover": "دون نحو {amount} من المبيعات الشهرية عبر الإنترنت، يكلفك معدل {percent} أقل من الرسم الثابت؛ وفوق ذلك يصبح الرسم الثابت أوفر.",
+        "deferredNote": "يحتاج الدفع عبر الإنترنت إلى حساب Stripe خاص بك، لا يمكن لغيرك إنشاؤه — سنرسل لك الرابط بمجرد أن يصبح مطعمك مباشرًا. إلى ذلك الحين، هذا مجرد تفضيلك المسجَّل؛ يُفعَّل مباشرة بعد ذلك."
       }
     }
   },

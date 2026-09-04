@@ -752,6 +752,9 @@
         "chosenLanguages": "Talen",
         "chosenCurrency": "Valuta",
         "quoted": "Offerte",
+        "chosenPaymentsMode": "Betaalmodus",
+        "paymentsModeFlat": "Vast",
+        "paymentsModeCommission": "Commissie ({percent})",
         "openProvisioning": "Provisioning openen →",
         "slugVerdict": {
           "invalid": "(ongeldig)",
@@ -1479,6 +1482,15 @@
       "bundle": {
         "counter": "Toonbank",
         "full-service": "Volledige bediening"
+      },
+      "paymentsMode": {
+        "title": "Hoe je betaalt voor online betalen",
+        "flatLabel": "Vaste prijs — {price}/maand",
+        "flatHint": "Eén vast bedrag, ongeacht je omzet online.",
+        "commissionLabel": "Geen maandelijkse kosten — {percent} per bestelling",
+        "commissionHint": "Niets, tot een gast echt online betaalt.",
+        "crossover": "Onder ongeveer {amount} aan online omzet per maand kost {percent} minder dan de vaste prijs; daarboven is de vaste prijs voordeliger.",
+        "deferredNote": "Online betalen heeft je eigen Stripe-account nodig, die alleen jij kunt aanmaken — we sturen je de link zodra je live bent. Tot die tijd is dit alleen je voorkeur; die gaat direct daarna in."
       }
     }
   },

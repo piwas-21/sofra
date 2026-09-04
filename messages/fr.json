@@ -752,6 +752,9 @@
         "chosenLanguages": "Langues",
         "chosenCurrency": "Devise",
         "quoted": "Devis",
+        "chosenPaymentsMode": "Mode de paiement",
+        "paymentsModeFlat": "Forfait",
+        "paymentsModeCommission": "Commission ({percent})",
         "openProvisioning": "Ouvrir le provisionnement →",
         "slugVerdict": {
           "invalid": "(invalide)",
@@ -1479,6 +1482,15 @@
       "bundle": {
         "counter": "Comptoir",
         "full-service": "Service complet"
+      },
+      "paymentsMode": {
+        "title": "Comment vous payez pour le paiement en ligne",
+        "flatLabel": "Forfait fixe — {price}/mois",
+        "flatHint": "Un prix fixe, quel que soit votre chiffre d'affaires en ligne.",
+        "commissionLabel": "Aucun abonnement — {percent} par commande",
+        "commissionHint": "Rien tant qu'un client ne paie pas réellement en ligne.",
+        "crossover": "En dessous d'environ {amount} de chiffre d'affaires en ligne par mois, le taux de {percent} coûte moins cher que le forfait fixe ; au-dessus, le forfait fixe est plus avantageux.",
+        "deferredNote": "Le paiement en ligne nécessite votre propre compte Stripe, que vous seul pouvez créer — nous vous enverrons le lien dès que vous serez en ligne. D'ici là, ceci n'est qu'une préférence enregistrée ; elle s'active juste après."
       }
     }
   },
