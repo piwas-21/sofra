@@ -537,6 +537,28 @@ model TenantBilling {
   // own rows, not only from GitHub refusing a duplicate branch.
   provisioningPrUrl String?
 
+  // Payments pricing mode (SOFRA-PAYMENTS-PRICING-MODE-PLAN, S1): "flat" (the
+  // `online-payments` module's list price) or "commission" (the module is free,
+  // Sofra takes a per-transaction cut instead). This pair is the BILLING truth —
+  // it is what the Mollie subscription amount is computed from. The registry's
+  // own `payments_commission_bps` (lib/provisioning-registry.ts) is the
+  // ENFORCEMENT truth — what actually reaches the tenant's backend and Stripe.
+  // The two CAN disagree, and the window is real: this app proposes a registry
+  // PR, it never writes to a box (ADR-003/007), so a mode change is
+  // `set here -> registry PR -> merge -> re-provision`, and until the last step
+  // the tenant is billed one way while enforced the other.
+  //
+  // Both default to what every tenant alive today already is: flat-fee, zero
+  // commission. Nothing is back-filled to commission — this migration changes
+  // billing for precisely nobody until someone deliberately switches a tenant.
+  paymentsMode           String @default("flat")
+  // Basis points (100 = 1.00%), only meaningful when paymentsMode is
+  // "commission". Ceiling of 1000 (10%) enforced in lib/payments-pricing.ts
+  // (MAX_COMMISSION_BPS) — re-stated, not shared, because provision-tenant.sh
+  // and the backend each check their own copy too; see that constant's comment
+  // for why Stripe makes this a safety guard rather than a preference.
+  paymentsCommissionBps Int    @default(0)
+
   subscriptions BillingSubscription[]
   payments      BillingPayment[]
 

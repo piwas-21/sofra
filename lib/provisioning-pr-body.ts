@@ -10,7 +10,12 @@
 import { splitDeferredModules, tenantDomain, type TenantProvisionInput } from "./provisioning-registry";
 // The conditional sections live next door (LOC limit, CLAUDE.md §4). Each returns an
 // empty array when it does not apply, so this file spreads them unconditionally.
-import { baseDomainSection, deferredSection, partnerSection } from "./provisioning-pr-blocks";
+import {
+  baseDomainSection,
+  commissionSection,
+  deferredSection,
+  partnerSection,
+} from "./provisioning-pr-blocks";
 
 // Close the quote, emit an escaped apostrophe, reopen: the only way to get a
 // literal ' inside a POSIX single-quoted argument.
@@ -58,6 +63,10 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
   // Same helper the entry generator uses, so the body cannot describe a split the diff
   // does not have.
   const { granted, deferred } = splitDeferredModules(input.modules, input.stripeAccount);
+  // Same condition `buildTenantRegistryEntry` uses to decide whether a requested
+  // commission rate may be written at all — computed once here so the summary
+  // bullet and commissionSection cannot disagree about which case applies.
+  const grantsOnlinePayments = granted.includes("online-payments");
 
   // One line, naming the one field in the diff the founder may need to change. It used to
   // branch on the box and warn that a staging-box tenant rides develop; the generator no
@@ -100,6 +109,12 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
     `- **domain** \`${domain}\` · **template** \`${input.template}\` · **currency** \`${input.currency}\``,
     `- **languages** \`${input.languages.join(", ")}\` · **modules** \`${granted.join(", ")}\`${
       deferred.length ? ` · **deferred** \`${deferred.join(", ")}\` (see below)` : ""
+    }${
+      input.paymentsCommissionBps
+        ? ` · **commission** \`${input.paymentsCommissionBps} bps\`${
+            grantsOnlinePayments ? "" : " (not written — see below)"
+          }`
+        : ""
     }`,
     `- **box** \`${box}\` · status starts at \`provisioning\`${
       input.baseDomain ? ` · **base_domain** \`${input.baseDomain}\` (a partner's own zone)` : ""
@@ -122,6 +137,7 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
     tagCheck,
     `- [ ] **template** \`${input.template}\` and **currency** \`${input.currency}\` are right — the template is baked into the image at build time, so changing it later is a rebuild`,
     ...deferredSection(slug, granted, deferred),
+    ...commissionSection(slug, input.paymentsCommissionBps, grantsOnlinePayments),
     ...baseDomainSection(input.baseDomain, domain),
     // Only when a publishable partner brand reached the entry — `renderableBrand`
     // decided that, not this file.
