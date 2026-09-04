@@ -7,58 +7,18 @@
 
 import { stringify } from "yaml";
 import { tenantHostname } from "./base-domain";
-import type { ModuleId } from "./module-catalog";
+// The account-pairing rule (which fields must travel with a Stripe connected
+// account) moved to its own file when a second paired field pushed this one
+// over CLAUDE.md §4's LOC limit (SOFRA-PAYMENTS-PRICING-MODE-PLAN S1). Both are
+// used here AND re-exported, so no existing importer of `splitDeferredModules`
+// from this module had to change.
+import { grantedCommissionBps, splitDeferredModules } from "./provisioning-module-pairing";
+
+export { splitDeferredModules } from "./provisioning-module-pairing";
 
 /** The zone every tenant lived under until D1. An absent `base_domain:` means exactly
  *  this, both here and in `provision-tenant.sh`. */
 const DEFAULT_BASE_DOMAIN = "sofrapiwas.com";
-
-/**
- * Modules `provision-tenant.sh` refuses unless the SAME entry also records a
- * `stripe_account:`. That guard `exit 1`s *before* the database, the compose project
- * and the image, so proposing the module without the account does not yield a tenant
- * lacking card payment — it yields no tenant at all.
- *
- * Hence the pairing rule below: the module ships only alongside an account, never on
- * its own. Which half is missing depends on the path in, and BOTH paths reach this one
- * generator:
- *
- * - **Self-serve.** The buyer has no `acct_` and cannot be given one — only the
- *   restaurant can create it, through Stripe's hosted onboarding, which cannot be
- *   pre-filled (`oauth_not_supported` on a Standard account, SOFRA-PAYMENTS-PLAN §3).
- *   So the module is deferred to a second registry PR and the PR body says so.
- * - **Founder.** `docs/runbooks/signup-to-live-tenant.md` §2b has the founder create
- *   the account BEFORE proposing, precisely because of this guard — so they arrive
- *   holding the `acct_`, and the entry carries both halves in one shot.
- *
- * Deferring unconditionally would have been wrong for the second path: it would make
- * the founder's documented order pointless and tell them, falsely, that no account can
- * exist yet.
- */
-const ACCOUNT_PAIRED_MODULE_IDS: readonly ModuleId[] = ["online-payments"];
-
-/**
- * Split a purchased module list into what this entry may carry now and what must wait
- * for a second registry PR. Pure and shared, so the entry and the PR body describing it
- * cannot disagree about which is which.
- *
- * `stripeAccount` is the whole hinge: with one, nothing is deferred; without one, the
- * account-paired ids are held back.
- */
-export function splitDeferredModules(
-  modules: string[],
-  stripeAccount?: string,
-): { granted: string[]; deferred: string[] } {
-  // Whitespace-only is not an account: `provision-tenant.sh` tests `-z`, which a blank
-  // string passes and " " does not — so a stray space would sail past the guard here and
-  // then fail on the box, which is the one place this must never be discovered.
-  if (stripeAccount?.trim()) return { granted: modules, deferred: [] };
-  const isPaired = (id: string) => (ACCOUNT_PAIRED_MODULE_IDS as readonly string[]).includes(id);
-  return {
-    granted: modules.filter((id) => !isPaired(id)),
-    deferred: modules.filter(isPaired),
-  };
-}
 
 export interface TenantProvisionInput {
   /** Registry key + derivation seed. Must already match the slug grammar. */
@@ -84,6 +44,15 @@ export interface TenantProvisionInput {
   /** The tenant's Stripe connected account (`acct_…`), when they already have one.
    *  Absent on the self-serve path; present when the founder followed runbook §2b. */
   stripeAccount?: string;
+  /**
+   * The tenant's per-transaction commission rate, in basis points
+   * (SOFRA-PAYMENTS-PRICING-MODE-PLAN S1; range governed by `lib/payments-pricing.ts`,
+   * not re-validated here). Whether it is actually WRITTEN into the entry is decided
+   * by `grantedCommissionBps` (`./provisioning-module-pairing`) — absent or `0` is
+   * the same statement `stripeAccount` above makes: every entry emitted before this
+   * field existed, and every tenant alive today, is `flat`/0.
+   */
+  paymentsCommissionBps?: number;
   /**
    * The reseller credit this tenant's footer may carry (§11e) — and it is typed as
    * the OUTPUT of `renderableBrand`, not as a partner id or a brand row, on purpose.
@@ -135,6 +104,7 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): {
   const box = input.box ?? "staging";
   const stripeAccount = input.stripeAccount?.trim();
   const { granted, deferred } = splitDeferredModules(input.modules, stripeAccount);
+  const commissionBps = grantedCommissionBps(input.paymentsCommissionBps, granted);
   const entry = {
     [slug]: {
       name: input.name,
@@ -166,7 +136,7 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): {
       frontend_tag: `tenant-${slug}`,
       currency: input.currency,
       languages: input.languages,
-      // NOT `input.modules` — see ACCOUNT_PAIRED_MODULE_IDS.
+      // NOT `input.modules` — see splitDeferredModules (./provisioning-module-pairing).
       modules: granted,
       template: input.template,
       admin_email: input.adminEmail,
@@ -174,6 +144,9 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): {
       // it — the two are written from the same `granted`/`stripeAccount` pair so the
       // entry can never carry one half of the guard's condition.
       ...(stripeAccount ? { stripe_account: stripeAccount } : {}),
+      // Whether the rate belongs in THIS entry: grantedCommissionBps (same pairing
+      // rule as stripe_account above, applied to a second field).
+      ...(commissionBps !== undefined ? { payments_commission_bps: commissionBps } : {}),
       // Only emit city when set — the registry field is optional.
       ...(input.city ? { city: input.city } : {}),
       // The partner credit, emitted only when there is a publishable one. NOT

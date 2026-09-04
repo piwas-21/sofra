@@ -39,6 +39,10 @@ export default defineConfig({
         "lib/provision-form-input.ts",
         "lib/slug-availability.ts",
         "lib/provisioning-registry.ts",
+        // The account-pairing rule, split out of provisioning-registry.ts (S1) for the
+        // same LOC-limit reason as provisioning-pr-body.ts below — listed explicitly so
+        // splitDeferredModules's branches don't quietly drop out of the floor's scope.
+        "lib/provisioning-module-pairing.ts",
         // Split out of provisioning-registry.ts (P1) when the pair outgrew the LOC limit.
         // Listed explicitly because this include list is explicit: leaving it off would
         // have quietly moved already-covered code out of the floor's scope, which reads
@@ -49,6 +53,11 @@ export default defineConfig({
         // not get at the one reviewable moment before a tenant is stood up.
         "lib/provisioning-pr-blocks.ts",
         "lib/module-catalog.ts",
+        // S1 — the flat/commission arithmetic (quote adjustment, crossover, the
+        // MAX_COMMISSION_BPS ceiling). Pure by construction, same as module-catalog.ts
+        // beside it, and the one place the crossover formula every switching surface
+        // will quote (S2-S4) is decidable in isolation.
+        "lib/payments-pricing.ts",
         "lib/tenant-options.ts",
         "lib/signup-configuration.ts",
         "lib/checkout-window.ts",
