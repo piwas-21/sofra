@@ -1046,6 +1046,9 @@
       "provisionFailed": "Bereitstellungs-PR konnte nicht geöffnet werden. Prüfen Sie die Protokolle.",
       "slugReserved": "Dieser Tenant-Slug ist reserviert und kann nicht verwendet werden.",
       "awaitingFirstPayment": "Der Plan dieses Tenants hat noch keine abgeschlossene erste Zahlung. Ein Self-Service-Tenant wird erst nach Zahlung provisioniert.",
+      "billingNotFound": "Kein Abrechnungsplan für diesen Tenant gefunden.",
+      "paymentsModeUnchanged": "Dieser Tenant hat bereits diesen Modus und diesen Satz.",
+      "paymentsModeChangeFailed": "Die Änderung des Zahlungsmodus konnte nicht vorgeschlagen werden. Prüfen Sie die Protokolle.",
       "identityNotFound": "Diese Rechnungsidentität existiert nicht mehr.",
       "noVatNumber": "Es gibt keine USt-IdNr. zum Prüfen.",
       "invoice": {

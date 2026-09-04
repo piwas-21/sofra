@@ -1046,6 +1046,9 @@
       "provisionFailed": "Couldn’t open the provisioning PR. Check the logs.",
       "slugReserved": "That tenant slug is reserved and cannot be used.",
       "awaitingFirstPayment": "This tenant's plan has no settled first payment yet. A self-serve tenant is provisioned only after it has paid.",
+      "billingNotFound": "No billing plan found for that tenant.",
+      "paymentsModeUnchanged": "That tenant is already on this mode and rate.",
+      "paymentsModeChangeFailed": "Couldn’t propose the payments mode change. Check the logs.",
       "identityNotFound": "That billing identity no longer exists.",
       "noVatNumber": "There is no VAT number to check.",
       "invoice": {

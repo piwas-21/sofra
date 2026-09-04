@@ -1046,6 +1046,9 @@
       "provisionFailed": "Sağlama PR’si açılamadı. Günlükleri kontrol edin.",
       "slugReserved": "Bu tenant slug'ı ayrılmıştır ve kullanılamaz.",
       "awaitingFirstPayment": "Bu kiracının planında henüz tamamlanmış bir ilk ödeme yok. Self servis kiracı yalnızca ödeme sonrası kurulur.",
+      "billingNotFound": "Bu kiracı için fatura planı bulunamadı.",
+      "paymentsModeUnchanged": "Bu kiracı zaten bu modda ve bu oranda.",
+      "paymentsModeChangeFailed": "Ödeme modu değişikliği önerilemedi. Günlükleri kontrol edin.",
       "identityNotFound": "Bu fatura kimliği artık mevcut değil.",
       "noVatNumber": "Doğrulanacak KDV numarası yok.",
       "invoice": {

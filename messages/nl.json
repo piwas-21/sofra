@@ -1046,6 +1046,9 @@
       "provisionFailed": "Kon de inricht-PR niet openen. Controleer de logs.",
       "slugReserved": "Deze tenant-slug is gereserveerd en kan niet worden gebruikt.",
       "awaitingFirstPayment": "Het plan van deze tenant heeft nog geen voltooide eerste betaling. Een selfservice-tenant wordt pas na betaling geprovisioneerd.",
+      "billingNotFound": "Geen facturatieplan gevonden voor die tenant.",
+      "paymentsModeUnchanged": "Die tenant staat al op deze modus en dit tarief.",
+      "paymentsModeChangeFailed": "Kon de wijziging van de betaalmodus niet voorstellen. Controleer de logs.",
       "identityNotFound": "Deze facturatie-identiteit bestaat niet meer.",
       "noVatNumber": "Er is geen btw-nummer om te controleren.",
       "invoice": {

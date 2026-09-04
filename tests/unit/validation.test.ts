@@ -8,6 +8,7 @@ import {
   onboardSchema,
   partnerStatusSchema,
   PARTNER_STATUSES,
+  paymentsModeChangeSchema,
   splitCsvLower,
   signupSchema,
   signupStatusSchema,
@@ -361,6 +362,74 @@ describe("provisionSchema (ADR-012 tenant proposal)", () => {
     for (const name of ["Chez L'Ami", "Nova: Café — Bar", "北京饭店"]) {
       expect(provisionSchema.safeParse({ ...base, name }).success).toBe(true);
     }
+  });
+});
+
+describe("paymentsModeChangeSchema (S2a — amending an existing tenant)", () => {
+  const base = { tenantSlug: "pays" };
+
+  it("accepts flat with a 0 rate", () => {
+    const parsed = paymentsModeChangeSchema.safeParse({ ...base, mode: "flat", commissionBps: "0" });
+    expect(parsed.success).toBe(true);
+    if (parsed.success) expect(parsed.data.commissionBps).toBe(0);
+  });
+
+  it("accepts commission with a positive rate, coerced from a form string", () => {
+    const parsed = paymentsModeChangeSchema.safeParse({
+      ...base,
+      mode: "commission",
+      commissionBps: "150",
+    });
+    expect(parsed.success).toBe(true);
+    if (parsed.success) expect(parsed.data.commissionBps).toBe(150);
+  });
+
+  it("refuses flat carrying a non-zero rate — the pair would disagree about the tenant's mode", () => {
+    const result = paymentsModeChangeSchema.safeParse({
+      ...base,
+      mode: "flat",
+      commissionBps: "150",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe("flat mode carries no commission rate");
+    }
+  });
+
+  it("refuses commission carrying a 0 rate — same disagreement, the other direction", () => {
+    const result = paymentsModeChangeSchema.safeParse({
+      ...base,
+      mode: "commission",
+      commissionBps: "0",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe("commission mode needs a rate above zero");
+    }
+  });
+
+  it("rejects a rate outside isCommissionBps's range, without restating the ceiling", () => {
+    expect(
+      paymentsModeChangeSchema.safeParse({ ...base, mode: "commission", commissionBps: "1001" })
+        .success,
+    ).toBe(false);
+    expect(
+      paymentsModeChangeSchema.safeParse({ ...base, mode: "commission", commissionBps: "-1" })
+        .success,
+    ).toBe(false);
+  });
+
+  it("rejects an invalid tenant slug", () => {
+    expect(
+      paymentsModeChangeSchema.safeParse({ tenantSlug: "Not Valid", mode: "flat", commissionBps: "0" })
+        .success,
+    ).toBe(false);
+  });
+
+  it("rejects an unknown mode", () => {
+    expect(
+      paymentsModeChangeSchema.safeParse({ ...base, mode: "premium", commissionBps: "0" }).success,
+    ).toBe(false);
   });
 });
 

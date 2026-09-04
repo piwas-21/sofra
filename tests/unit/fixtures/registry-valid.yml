@@ -48,3 +48,66 @@ tenants:
     db: tenant_unpaired
     languages: [en]
     modules: [core, online-payments]
+  # S2a fixtures (SOFRA-PAYMENTS-PRICING-MODE-PLAN) — `commissioned` already carries
+  # a rate so a test can exercise REPLACE (bps > 0) and REMOVE (bps === 0) against a
+  # real existing line rather than a hand-built one. `demo2` exists ONLY to prove a
+  # slug that is a PREFIX of another (`demo`) cannot match it.
+  commissioned:
+    name: Commissioned Diner
+    status: active
+    managed: scripts
+    box: staging
+    domain: commissioned.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_commissioned
+    languages: [en]
+    modules: [core, online-payments]
+    stripe_account: acct_1CommissionedExample
+    payments_commission_bps: 200
+  demo2:
+    name: Demo Two
+    status: active
+    managed: scripts
+    box: staging
+    domain: demo2.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_demo2
+    languages: [en]
+    # HAS a stripe_account (unlike `demo`, right above it) so a prefix-matching
+    # bug — "demo" incorrectly reaching THIS block — is caught by an assertion
+    # rather than merely asserted away: if `demo`'s request ever landed here by
+    # mistake, setting it would wrongly SUCCEED instead of refusing.
+    modules: [core, online-payments]
+    stripe_account: acct_1DemoTwoExample
+  # Prefix-safety pair, deliberately ordered LONGER-FIRST — and that ordering is the
+  # whole point. `findBlock` uses `findIndex`, which returns the FIRST match, so with
+  # `demo` / `demo2` above (shorter first) a header regex that lost its trailing `:`
+  # would STILL land on the right block, by luck rather than by correctness. Proven by
+  # mutation: dropping the `:` from the header pattern left every other test in this
+  # file green.
+  #
+  # Here luck runs out. A loosened match for `zeta` hits `zeta2:` first and would edit
+  # the WRONG TENANT'S money configuration — which is the failure this whole property
+  # exists to prevent.
+  zeta2:
+    name: Zeta Two
+    status: active
+    managed: scripts
+    box: staging
+    domain: zeta2.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_zeta2
+    languages: [en]
+    modules: [core, online-payments]
+    stripe_account: acct_1Zeta2Example
+  zeta:
+    name: Zeta
+    status: active
+    managed: scripts
+    box: staging
+    domain: zeta.sofrapiwas.com
+    domain_mode: subdomain
+    db: tenant_zeta
+    languages: [en]
+    modules: [core, online-payments]
+    stripe_account: acct_1ZetaExample
