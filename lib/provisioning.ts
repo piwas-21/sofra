@@ -8,7 +8,12 @@
 
 import { buildProvisioningPrBody } from "@/lib/provisioning-pr-body";
 import { tenantPartnerBrand } from "@/lib/partner-brand-lookup";
-import { buildTenantRegistryEntry, type TenantProvisionInput } from "@/lib/provisioning-registry";
+import { mintForProposal } from "@/lib/provisioning-mint";
+import {
+  buildTenantRegistryEntry,
+  tenantDomain,
+  type TenantProvisionInput,
+} from "@/lib/provisioning-registry";
 
 // Exported so lib/registry-commission-pr.ts (the amendment counterpart to
 // openProvisioningPr below, split into its own file for CLAUDE.md §4's line
@@ -74,7 +79,7 @@ export async function gh<T>(token: string, path: string, init?: RequestInit): Pr
  */
 export async function openProvisioningPr(
   input: TenantProvisionInput,
-): Promise<{ prUrl: string; deferred: string[] }> {
+): Promise<{ prUrl: string; deferred: string[]; stripeAccount?: string; mintNote?: string }> {
   const token = process.env.PROVISION_GITHUB_TOKEN;
   if (!token) throw new ProvisioningNotConfiguredError();
 
@@ -96,11 +101,36 @@ export async function openProvisioningPr(
   // allowed to decide that a name may be published (D-B1/D-B1a).
   const partnerBrand = await tenantPartnerBrand(input.slug);
 
+  // The tenant's Stripe connected account, minted HERE and for the same reason the
+  // partner credit is resolved here rather than accepted from a caller: this is the one
+  // place that writes a registry entry, so no caller can forget it, no caller can inject
+  // one, and a third path added later inherits it (ADR-011 amendment, E3).
+  //
+  // AFTER the "slug already merged" refusal above, deliberately — minting for a slug
+  // that cannot be proposed would create a live Stripe account for nothing. And it never
+  // throws: a Stripe failure must not cost a paying customer their whole tenant, so it
+  // degrades to the pre-existing behaviour (the module is withheld by the pairing rule)
+  // and the PR body says why.
+  const mint = await mintForProposal({
+    slug: input.slug,
+    name: input.name,
+    adminEmail: input.adminEmail,
+    currency: input.currency,
+    modules: input.modules,
+    url: `https://${tenantDomain(input)}`,
+  });
+  const withAccount: TenantProvisionInput = {
+    ...input,
+    partnerBrand,
+    ...(mint.stripeAccount ? { stripeAccount: mint.stripeAccount } : {}),
+    ...(mint.note ? { stripeAccountNote: mint.note } : {}),
+  };
+
   // `deferred` is returned to the caller rather than only rendered into the PR body: a
   // deferral means a customer is being BILLED for a module their tenant will not have
   // until a second registry PR lands, and a prose section in one PR is not a record
   // anyone can query later. The callers put it in the audit trail.
-  const { entry, deferred } = buildTenantRegistryEntry({ ...input, partnerBrand });
+  const { entry, deferred } = buildTenantRegistryEntry(withAccount);
   // trimEnd() (no regex) drops any trailing whitespace/newlines, then we re-add
   // exactly two — avoids the ReDoS-prone `\n*$`, and the blank line keeps the
   // new tenant from butting against the previous one's trailing comment, which
@@ -146,11 +176,17 @@ export async function openProvisioningPr(
       title: `Provision tenant: ${input.slug}`,
       head: branch,
       base: BASE,
-      // The SAME resolved credit the entry carries: a body that describes a partner
-      // the diff does not name (or omits one it does) is worse than no body — the
-      // founder ticks the checklist against it.
-      body: buildProvisioningPrBody({ ...input, partnerBrand }),
+      // The SAME object the entry was built from — resolved credit, minted account and
+      // all. A body that describes a partner the diff does not name (or omits one it
+      // does), or that calls a module deferred when the entry carries it, is worse than
+      // no body: the founder ticks the checklist against it.
+      body: buildProvisioningPrBody(withAccount),
     }),
   });
-  return { prUrl: pr.html_url, deferred };
+  return {
+    prUrl: pr.html_url,
+    deferred,
+    ...(mint.stripeAccount ? { stripeAccount: mint.stripeAccount } : {}),
+    ...(mint.note ? { mintNote: mint.note } : {}),
+  };
 }

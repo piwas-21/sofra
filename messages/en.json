@@ -701,7 +701,7 @@
         "modules": "modules: {list}",
         "template": "template: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Buys online payments, but this entry records no stripe_account — provisioning refuses the pair and stops before the database, so re-provisioning this tenant does nothing at all. Add the account to the entry, or drop the module.",
+        "stripeAccountMissing": "Buys online payments, but this entry records no stripe_account — provisioning refuses the pair and stops before the database, so re-provisioning this tenant does nothing at all. We create that account ourselves now, so this means creating it failed: read the proposal PR for the reason, then add the account to the entry or drop the module.",
         "paymentsModeFlat": "payments: flat",
         "paymentsModeCommission": "payments: commission ({percent})",
         "paymentsModePending": "(pending — registry not yet updated)"
@@ -775,8 +775,6 @@
         "currency": "Currency (e.g. EUR)",
         "languages": "Languages",
         "modules": "Modules",
-        "stripeAccount": "Stripe account (acct_…, optional)",
-        "stripeAccountHint": "Only if they bought online-payments AND you already created their connected account (runbook §2b). Left empty, the module is held back and the PR says how to add it later — provisioning refuses the module without an account.",
         "create": "Open registry PR",
         "creating": "Opening…",
         "created": "Registry PR opened — review + merge it, then provision:",
@@ -792,7 +790,8 @@
         "baseDomainOurs": "sofrapiwas.com — ours (default)",
         "baseDomainPreview": "This tenant will answer on",
         "baseDomainDnsFirst": "A partner's own zone: the entry carries base_domain: and the A record must already resolve before you merge, or the certificate cannot be issued.",
-        "baseDomainSlugPlaceholder": "<slug>"
+        "baseDomainSlugPlaceholder": "<slug>",
+        "stripeAccountNote": "Stripe account: we create it. When this tenant buys online payments, the control plane creates their Stripe Express account before this proposal is opened, so the registry entry carries the account and the module together. Nothing to type here — and if creating it fails, the PR says why and what to do."
       },
       "fleet": {
         "title": "Printer fleet",
@@ -1028,7 +1027,7 @@
         "net": "Net",
         "fees": "{count} fees",
         "empty": "This account is being watched and has collected nothing in this period.",
-        "noAccount": "This tenant's registry entry carries no stripe_account, so there is no account to report fees for. That is the normal state until the restaurant has completed Stripe onboarding.",
+        "noAccount": "This tenant's registry entry carries no stripe_account, so there is no account to report fees for. Since we create that account ourselves, this points at an entry made before we did, or at a creation that failed — not at a restaurant that has yet to finish signing up.",
         "registryUnavailable": "The tenant registry could not be read, so this tenant's connected account is unknown right now. No figure is shown rather than a wrong one.",
         "unmatchedRefunds": "{count} refunds in this period have no recorded fee — their fees predate fee recording, so the net above is lower than the truth."
       },

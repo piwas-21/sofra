@@ -701,7 +701,7 @@
         "modules": "Module: {list}",
         "template": "Template: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Kauft Online-Zahlungen, aber dieser Eintrag enthält kein stripe_account — die Provisionierung lehnt das Paar ab und bricht vor der Datenbank ab, ein erneutes Provisionieren dieses Tenants bewirkt also gar nichts. Konto zum Eintrag hinzufügen oder das Modul entfernen.",
+        "stripeAccountMissing": "Kauft Kartenzahlungen, aber dieser Eintrag führt kein stripe_account — das Provisioning verweigert das Paar und stoppt vor der Datenbank, ein erneutes Provisionieren bewirkt also gar nichts. Dieses Konto legen jetzt wir an, das heißt: das Anlegen ist fehlgeschlagen. Den Grund nennt der Vorschlags-PR; danach das Konto eintragen oder das Modul entfernen.",
         "paymentsModeFlat": "Zahlungen: pauschal",
         "paymentsModeCommission": "Zahlungen: Provision ({percent})",
         "paymentsModePending": "(ausstehend — Registry noch nicht aktualisiert)"
@@ -775,8 +775,6 @@
         "currency": "Währung (z. B. EUR)",
         "languages": "Sprachen",
         "modules": "Module",
-        "stripeAccount": "Stripe-Konto (acct_…, optional)",
-        "stripeAccountHint": "Nur wenn online-payments gekauft wurde UND das verbundene Konto bereits angelegt ist (Runbook §2b). Leer gelassen, wird das Modul zurückgestellt und die PR erklärt, wie es später ergänzt wird — die Provisionierung lehnt das Modul ohne Konto ab.",
         "create": "Registry-PR öffnen",
         "creating": "Wird geöffnet…",
         "created": "Registry-PR geöffnet — prüfen + zusammenführen, dann bereitstellen:",
@@ -792,7 +790,8 @@
         "baseDomainOurs": "sofrapiwas.com — unsere (Standard)",
         "baseDomainPreview": "Dieser Mandant wird erreichbar sein unter",
         "baseDomainDnsFirst": "Eigene Zone des Partners: der Eintrag führt base_domain: und der A-Eintrag muss vor dem Merge bereits auflösen, sonst kann kein Zertifikat ausgestellt werden.",
-        "baseDomainSlugPlaceholder": "<slug>"
+        "baseDomainSlugPlaceholder": "<slug>",
+        "stripeAccountNote": "Stripe-Konto: wir erstellen es. Kauft dieser Betrieb Kartenzahlungen, legt die Steuerungsebene sein Stripe-Express-Konto an, bevor dieser Vorschlag geöffnet wird — der Registry-Eintrag trägt Konto und Modul gemeinsam. Hier ist nichts einzutragen — und schlägt die Erstellung fehl, nennt der PR Grund und nächsten Schritt."
       },
       "fleet": {
         "title": "Drucker-Flotte",
@@ -1028,7 +1027,7 @@
         "net": "Netto",
         "fees": "{count} Gebühren",
         "empty": "Dieses Konto wird beobachtet und hat in diesem Zeitraum nichts eingenommen.",
-        "noAccount": "Der Registry-Eintrag dieses Mandanten trägt kein stripe_account, es gibt also kein Konto, für das Gebühren gemeldet werden könnten. Das ist der normale Zustand, solange das Restaurant das Stripe-Onboarding nicht abgeschlossen hat.",
+        "noAccount": "Der Registry-Eintrag dieses Betriebs führt kein stripe_account, es gibt also kein Konto, für das Gebühren berichtet werden könnten. Da wir dieses Konto selbst anlegen, deutet das auf einen älteren Eintrag oder ein fehlgeschlagenes Anlegen hin — nicht auf ein Restaurant, das seine Anmeldung noch nicht beendet hat.",
         "registryUnavailable": "Die Mandanten-Registry konnte nicht gelesen werden, das verbundene Konto ist daher derzeit unbekannt. Es wird keine Zahl angezeigt statt einer falschen.",
         "unmatchedRefunds": "{count} Rückerstattungen in diesem Zeitraum haben keine erfasste Gebühr — ihre Gebühren liegen vor der Erfassung, das Netto oben ist also niedriger als die Wahrheit."
       },

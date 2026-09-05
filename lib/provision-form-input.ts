@@ -72,8 +72,8 @@ export function readProvisionForm(formData: FormData): ProvisionFormResult {
     city: optionalField(formData, "city"),
     // NOT optional to remember. Every field the form posts is read here, and this file
     // is the one place where "the form has it and the action does not" can be seen at a
-    // glance — which is precisely what went wrong with `stripeAccount`.
-    stripeAccount: optionalField(formData, "stripeAccount"),
+    // glance — which is precisely what went wrong with `stripeAccount`, back when that
+    // was a field at all.
     baseDomain: optionalField(formData, "baseDomain"),
   });
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "invalidInput" };
@@ -97,7 +97,10 @@ export function readProvisionForm(formData: FormData): ProvisionFormResult {
       currency: data.currency,
       languages,
       modules,
-      stripeAccount: data.stripeAccount || undefined,
+      // No `stripeAccount`: it is not a form field any more. Under the ADR-011
+      // amendment the control plane MINTS the tenant's connected account
+      // (lib/provisioning-mint.ts) and the ACTION attaches the result, so the
+      // mapping from a browser's fields cannot carry it and cannot drop it.
       // Re-normalized rather than passed through: the schema only ASKED whether the
       // value is a usable base domain, and the answer it validated is a different
       // string from the one it was handed (a pasted scheme, a trailing dot). The

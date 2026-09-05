@@ -14,7 +14,7 @@ import {
   signupStatusSchema,
   SIGNUP_STATUSES,
 } from "@/lib/validation";
-import { provisionSchema } from "@/lib/validation-provision";
+import { isStripeAccountId, provisionSchema } from "@/lib/validation-provision";
 
 describe("applySchema (partner application)", () => {
   const valid = { name: "Ada", email: "ada@example.com", message: "Hi there" };
@@ -307,13 +307,14 @@ describe("provisionSchema (ADR-012 tenant proposal)", () => {
     expect(provisionSchema.safeParse({ ...base, modules: "" }).success).toBe(false);
   });
 
-  it("accepts a Stripe account id, and treats absent/empty as 'not supplied'", () => {
-    // Optional by design: the self-serve path never has one, and the founder path only
-    // sometimes does. Empty must parse, because empty is the signal that makes the
-    // generator hold `online-payments` back rather than propose a refused entry.
-    expect(provisionSchema.safeParse({ ...base, stripeAccount: "acct_1AbCdEfGhIjKlMnO" }).success).toBe(true);
-    expect(provisionSchema.safeParse({ ...base, stripeAccount: "" }).success).toBe(true);
-    expect(provisionSchema.safeParse(base).success).toBe(true);
+  it("no longer takes a Stripe account from the form at all", () => {
+    // The provenance flip (ADR-011 amendment, E3): the control plane MINTS the account,
+    // so this stopped being an operator input. Zod strips unknown keys, so a posted
+    // `stripeAccount` cannot reach the generator even if a stale browser sends one —
+    // asserted on the PARSED OUTPUT, because `success` alone would be true either way.
+    const parsed = provisionSchema.safeParse({ ...base, stripeAccount: "acct_1AbCdEfGhIjKlMnO" });
+    expect(parsed.success).toBe(true);
+    expect(parsed.success && "stripeAccount" in parsed.data).toBe(false);
   });
 
   it("accepts a partner base domain, and treats absent/empty as 'ours' (D1/D2)", () => {
@@ -341,13 +342,18 @@ describe("provisionSchema (ADR-012 tenant proposal)", () => {
     }
   });
 
-  it("rejects a malformed Stripe account id rather than forwarding it", () => {
-    // This value reaches the tenant's Stripe env. A typo there is not a validation
-    // nicety: charges would be addressed to an account that does not exist, and the
-    // registry guard only checks that the field is NON-EMPTY, never that it is real.
-    for (const bad of ["acct", "acct_", "1AbCdEfGhIjKlMnO", "acct_short", "acct_has spaces"]) {
-      expect(provisionSchema.safeParse({ ...base, stripeAccount: bad }).success).toBe(false);
+  it("still refuses a malformed Stripe account id — now where the value comes from", () => {
+    // The grammar check outlived the form field. This value reaches the tenant's Stripe
+    // env, where a wrong string means charges addressed to an account that does not
+    // exist, and the registry guard only checks that the field is NON-EMPTY. It is now
+    // applied to what STRIPE returned (lib/provisioning-mint.ts) rather than to what a
+    // founder typed — the same assertion, one layer along.
+    for (const bad of ["acct", "acct_", "1AbCdEfGhIjKlMnO", "acct_short", "acct_has spaces", ""]) {
+      expect(isStripeAccountId(bad)).toBe(false);
     }
+    // The positive control: a rule that refused everything would pass the loop above.
+    expect(isStripeAccountId("acct_1AbCdEfGhIjKlMnO")).toBe(true);
+    expect(isStripeAccountId("acct_1UCOkhCSPiP2JWOQ")).toBe(true);
   });
 
   it("rejects a line break inside the tenant name", () => {
