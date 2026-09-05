@@ -1012,7 +1012,7 @@
         "rateLabel": "Tarief (basispunten, 100 = 1%)",
         "rateHint": "bijv. 150 = 1,50%. Maximum {max} basispunten.",
         "notEligibleRegistryUnavailable": "Het tenant-register kon niet worden gelezen, dus de commissie-geschiktheid kan nu niet worden gecontroleerd.",
-        "notEligibleNotPaired": "De registry-entry van dit tenant bevat niet zowel online-payments als een stripe_account — provisionering weigert een tarief boven nul zonder dat paar, vóór de database. Commissie blijft uit totdat beide aanwezig zijn.",
+        "notEligibleNotPaired": "De registry-regel van deze zaak bevat niet zowel online-payments als een stripe_account — provisioning weigert een tarief boven nul zonder dat paar, en wel vóór de database. Wij openen het Stripe-account nu zelf, dus als het ontbreekt kon het voorstel het niet aanmaken (de PR zegt waarom) of dateert de regel van eerder. Commissie blijft uit tot beide er zijn.",
         "submit": "Opslaan",
         "saving": "Opslaan…",
         "prOpened": "Registry-PR geopend — voeg samen en richt het tenant opnieuw in.",
@@ -1222,7 +1222,7 @@
       "rateLabel": "Tarief (basispunten, 100 = 1%)",
       "rateHint": "bijv. 150 = 1,50%. Maximum {max} basispunten.",
       "notEligibleRegistryUnavailable": "We kunnen de inrichting van deze klant nu niet controleren, dus commissie blijft voorlopig uit.",
-      "notEligibleNotPaired": "Voor commissie heeft deze klant de module online betalingen en een eigen Stripe-account nodig. Vraag ons om beide, dan gaat deze keuze open.",
+      "notEligibleNotPaired": "Commissie vereist dat deze klant de module online-payments en een Stripe-account heeft. Dat account openen wij voor hen, dus als het ontbreekt is er bij ons iets misgegaan — vraag het ons, dan gaat deze schakelaar open.",
       "submit": "Opslaan",
       "saving": "Opslaan…",
       "prOpened": "Verstuurd naar SofraPiwas. Wij passen het toe op de app van uw klant en bevestigen — bij hun kassa is nog niets veranderd.",
@@ -1230,10 +1230,10 @@
     },
     "paymentsPending": {
       "kicker": "Kaartbetalingen",
-      "title": "Uw kaartbetalingen zijn onderweg",
-      "body": "Kaartbetalingen horen bij uw pakket. We zetten ze nu voor u aan — u hoeft op dit moment niets te doen, en we laten het weten zodra ze bij uw kassa verschijnen. Tot die tijd staat uw restaurant volledig online en neemt het gewoon contant geld aan.",
-      "billingNote": "Uw pakket wordt gefactureerd vanaf de dag dat het startte. Staan de kaartbetalingen bij uw eerste factuur nog niet aan? Laat het ons weten, dan crediteren we die maand.",
-      "stripeLink": "Uw Stripe-dashboard"
+      "title": "Je kaartbetalingen zijn onderweg",
+      "body": "Kaartbetalingen horen bij je pakket. Wij openen de Stripe-rekening voor je, dus je hoeft nu niets te doen — en we laten het weten zodra de kaart bij je kassa verschijnt. Tot dan is je restaurant volledig live en neem je gewoon contant geld aan.",
+      "billingNote": "Je pakket wordt gefactureerd vanaf de dag dat het startte. Staan de kaartbetalingen bij je eerste factuur nog steeds uit, vraag het ons dan even; die maand crediteren we.",
+      "nextStep": "Als het zover is krijg je van Stripe één kort formulier: je geboortedatum, een telefoonnummer en akkoord met hun voorwaarden. Die link sturen we je zodra jij aan de beurt bent; een Stripe-link blijft maar een paar minuten geldig, dus bewaren heeft geen zin."
     },
     "invoice": {
       "title": "Factuur",

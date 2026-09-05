@@ -1012,7 +1012,7 @@
         "rateLabel": "Taux (points de base, 100 = 1 %)",
         "rateHint": "ex. 150 = 1,50 %. Plafond {max} points de base.",
         "notEligibleRegistryUnavailable": "Le registre des tenants n'a pas pu être lu, l'éligibilité à la commission ne peut donc pas être vérifiée pour l'instant.",
-        "notEligibleNotPaired": "L'entrée de registre de ce tenant ne comporte pas à la fois online-payments et un stripe_account — le provisionnement refuse un taux non nul sans ce couple, avant même la base de données. La commission reste désactivée tant que les deux ne sont pas présents.",
+        "notEligibleNotPaired": "L'entrée de ce restaurant ne porte pas à la fois online-payments et un stripe_account — le provisioning refuse un taux non nul sans cette paire, avant la base de données. C'est nous qui ouvrons désormais le compte Stripe : son absence signifie donc que la proposition n'a pas pu le créer (sa PR en donne la raison), ou que l'entrée est antérieure. La commission reste désactivée tant que les deux ne sont pas là.",
         "submit": "Enregistrer",
         "saving": "Enregistrement…",
         "prOpened": "PR de registre ouverte — fusionnez-la, puis reprovisionnez le tenant.",
@@ -1222,7 +1222,7 @@
       "rateLabel": "Taux (points de base, 100 = 1 %)",
       "rateHint": "ex. 150 = 1,50 %. Plafond {max} points de base.",
       "notEligibleRegistryUnavailable": "Nous ne pouvons pas vérifier la configuration de ce client pour l'instant : la commission reste donc désactivée.",
-      "notEligibleNotPaired": "La commission exige que ce client dispose du module de paiements en ligne et de son propre compte Stripe. Demandez-nous les deux et ce choix s'ouvrira.",
+      "notEligibleNotPaired": "La commission exige que ce client dispose du module online-payments et d'un compte Stripe. Ce compte, c'est nous qui l'ouvrons pour lui : s'il manque, c'est que quelque chose a échoué de notre côté — demandez-nous, et ce réglage s'ouvrira.",
       "submit": "Enregistrer",
       "saving": "Enregistrement…",
       "prOpened": "Envoyé à SofraPiwas. Nous l'appliquons à l'application de votre client et vous confirmons — rien n'a encore changé à son encaissement.",
@@ -1231,9 +1231,9 @@
     "paymentsPending": {
       "kicker": "Paiements par carte",
       "title": "Vos paiements par carte arrivent",
-      "body": "Votre offre inclut les paiements par carte. Nous sommes en train de les activer pour vous — vous n'avez rien à faire pour l'instant, et nous vous préviendrons dès qu'ils apparaîtront à votre caisse. D'ici là, votre restaurant est pleinement en ligne et encaisse les espèces comme d'habitude.",
-      "billingNote": "Votre offre est facturée à partir du jour où elle a démarré. Si les paiements par carte ne sont toujours pas activés à l'arrivée de votre première facture, demandez-nous et nous créditons ce mois-là.",
-      "stripeLink": "Votre tableau de bord Stripe"
+      "body": "Vous avez pris les paiements par carte avec votre formule. C'est nous qui ouvrons le compte Stripe pour vous : vous n'avez donc rien à faire pour l'instant, et nous vous prévenons dès que la carte apparaît à votre caisse. D'ici là, votre restaurant est pleinement en ligne et encaisse en espèces comme d'habitude.",
+      "billingNote": "Votre formule est facturée à partir du jour de son démarrage. Si les paiements par carte ne sont toujours pas actifs à l'arrivée de votre première facture, demandez-nous et nous créditons ce mois-là.",
+      "nextStep": "Le moment venu, Stripe vous présentera un court formulaire : votre date de naissance, un numéro de téléphone, et l'acceptation de leurs conditions. Nous vous transmettrons ce lien quand ce sera votre tour ; un lien Stripe ne reste valable que quelques minutes, il ne sert donc jamais à rien d'en garder un."
     },
     "invoice": {
       "title": "Facture",
