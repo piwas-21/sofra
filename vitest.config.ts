@@ -181,6 +181,17 @@ export default defineConfig({
         // mocking, so only the pure arithmetic half (`feeRefundAmount`) is
         // unit-tested and it is measured by the test file, not by this list.
         "lib/stripe-signature.ts",
+        // The SECOND blocker. `commission-earnings.ts` is the arithmetic between
+        // the two fee tables and the panel — pure, clock-free (the window is
+        // passed in), and the module where a clamp, a summed pair of currencies
+        // or a fail-quiet regression turns into a wrong number beside a tenant's
+        // name. `stripe-webhook-secrets.ts` is the pure half of the dual-endpoint
+        // verification. Their orchestration sibling `lib/stripe-fee-earned.ts`
+        // stays OUT for the reason `stripe-fee-refund.ts` does: it calls Stripe
+        // and writes to the DB, and its pure halves are measured by their test
+        // file rather than by this list.
+        "lib/commission-earnings.ts",
+        "lib/stripe-webhook-secrets.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

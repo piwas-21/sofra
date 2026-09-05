@@ -1019,6 +1019,19 @@
         "prOpened": "Registry-PR geopend — voeg samen en richt het tenant opnieuw in.",
         "alreadySet": "Het register bevatte dat tarief al. Geen PR nodig."
       },
+      "commissionEarnings": {
+        "title": "Verdiende commissie",
+        "intro": "Wat het gekoppelde account van deze klant daadwerkelijk aan platformkosten heeft geïnd, naast wat is teruggegeven. Stripes eigen klok en de valuta van de betaling — niet Sofra's EUR-boeken.",
+        "period": "{from} tot {to} (de vorige en de huidige kalendermaand, UTC).",
+        "earned": "Geïnd",
+        "refunded": "Teruggegeven",
+        "net": "Netto",
+        "fees": "{count} kosten",
+        "empty": "Dit account wordt gevolgd en heeft in deze periode niets geïnd.",
+        "noAccount": "De registryvermelding van deze klant bevat geen stripe_account, dus er is geen account om kosten voor te rapporteren. Dat is de normale toestand zolang het restaurant de Stripe-onboarding niet heeft afgerond.",
+        "registryUnavailable": "Het klantenregister kon niet worden gelezen, dus het gekoppelde account is nu onbekend. Er wordt geen bedrag getoond in plaats van een verkeerd bedrag.",
+        "unmatchedRefunds": "{count} terugbetalingen in deze periode hebben geen geregistreerde kosten — hun kosten dateren van vóór de registratie, dus het netto hierboven is lager dan de waarheid."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",

@@ -1019,6 +1019,19 @@
         "prOpened": "PR de registre ouverte — fusionnez-la, puis reprovisionnez le tenant.",
         "alreadySet": "Le registre contenait déjà ce taux. Aucune PR n'était nécessaire."
       },
+      "commissionEarnings": {
+        "title": "Commission perçue",
+        "intro": "Ce que le compte connecté de ce client a réellement encaissé en frais de plateforme, à côté de ce qui a été restitué. Horloge de Stripe et devise de la transaction — pas les livres en EUR de Sofra.",
+        "period": "Du {from} au {to} (le mois calendaire précédent et le mois en cours, UTC).",
+        "earned": "Perçu",
+        "refunded": "Restitué",
+        "net": "Net",
+        "fees": "{count} frais",
+        "empty": "Ce compte est surveillé et n'a rien encaissé sur cette période.",
+        "noAccount": "L'entrée de registre de ce client ne porte aucun stripe_account : il n'y a donc aucun compte pour lequel rapporter des frais. C'est l'état normal tant que le restaurant n'a pas terminé son inscription Stripe.",
+        "registryUnavailable": "Le registre des clients n'a pas pu être lu : le compte connecté de ce client est donc inconnu pour l'instant. Aucun chiffre n'est affiché plutôt qu'un chiffre faux.",
+        "unmatchedRefunds": "{count} remboursements de cette période n'ont aucun frais enregistré — leurs frais sont antérieurs à l'enregistrement, le net ci-dessus est donc inférieur à la réalité."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",

@@ -25,6 +25,10 @@ export type StripeApplicationFee = {
   amount_refunded: number;
   currency: string;
   charge: string;
+  /// Epoch SECONDS (measured against the API, not assumed). Unused by the
+  /// refund path; it is the period anchor lib/stripe-fee-earned.ts records, and
+  /// it lives on the shared type because both paths read the SAME Stripe object.
+  created: number;
 };
 
 /**
@@ -97,7 +101,12 @@ export async function refundApplicationFeeForCharge(
   // stale state, so they share one Idempotency-Key and Stripe hands both the
   // SAME refund back rather than creating two.
   const target = fee.amount_refunded + due;
-  const refund = await stripePost<{ id: string; amount: number }>(
+  // `created` is Stripe's own clock for the refund, in epoch SECONDS (measured;
+  // the API returns it on a fee_refund, it was simply never typed here). It is
+  // recorded so that "earned minus refunded over a period" periodises BOTH
+  // halves on Stripe's clock instead of comparing Stripe's timestamp against
+  // our insert time — see the 20260905000000 migration.
+  const refund = await stripePost<{ id: string; amount: number; created: number }>(
     `/v1/application_fees/${fee.id}/refunds`,
     { amount: String(due) },
     { idempotencyKey: `feerefund:${fee.id}:${target}` },
@@ -115,6 +124,7 @@ export async function refundApplicationFeeForCharge(
       chargeId,
       amount: refund.amount,
       currency: fee.currency,
+      feeRefundedAt: new Date(refund.created * 1000),
     },
     update: {},
   });

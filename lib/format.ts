@@ -5,6 +5,27 @@ export function eur(cents: number): string {
   return new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(cents / 100);
 }
 
+/**
+ * Minor units in an ARBITRARY currency — for money that is NOT Sofra's EUR books.
+ *
+ * A Stripe application fee is denominated in the CHARGE's currency (`chf` for a
+ * Swiss tenant), so rendering one with `eur()` prints "€ 0,60" for a CHF 0.60
+ * fee: a wrong symbol over a wrong number, and nothing goes red. `eur()` stays
+ * the formatter for the ledger, subscriptions and invoices.
+ *
+ * STATED LIMITATION: `/100` assumes a two-decimal currency. Every market Sofra
+ * sells to (CHF, EUR) is two-decimal; a zero-decimal one (JPY) would be wrong by
+ * 100x. That is a smaller lie than an exponent table for a currency the product
+ * cannot reach — and the reason lib/commission-earnings.ts returns minor units
+ * plus a code, so this stays a display-layer concern.
+ */
+export function money(minor: number, currency: string): string {
+  return new Intl.NumberFormat("nl-NL", {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(minor / 100);
+}
+
 export function shortDate(d: Date): string {
   return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(d);
 }
