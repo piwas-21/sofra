@@ -7,7 +7,6 @@ import { db } from "@/lib/db";
 import { eur, shortDate } from "@/lib/format";
 import { BILLING_INTERVALS } from "@/lib/billing";
 import CancelSubscriptionButton from "@/components/control/CancelSubscriptionButton";
-import CopyField from "@/components/control/CopyField";
 import BillingIdentityForm from "@/components/control/BillingIdentityForm";
 import RecheckVatButton from "@/components/control/RecheckVatButton";
 import { isInvoiceable } from "@/lib/billing-identity";
@@ -16,6 +15,11 @@ import { planDeletionVerdict, settledOrInFlight } from "@/lib/plan-deletion";
 import DeletePlanForm from "@/components/control/DeletePlanForm";
 import TrialPanel from "@/components/control/TrialPanel";
 import PlanPaymentsList from "@/components/control/PlanPaymentsList";
+import AdminPaymentsModePanel from "@/components/control/AdminPaymentsModePanel";
+import CommissionEarningsPanel from "@/components/control/CommissionEarningsPanel";
+import OpenCheckoutPanel from "@/components/control/OpenCheckoutPanel";
+import { asPaymentsMode } from "@/lib/payments-pricing";
+import { loadTenantRegistry } from "@/lib/tenant-registry";
 
 // Mollie interval string → control.admin.intervals key (display only).
 const intervalKey = (mollie: string) =>
@@ -61,9 +65,9 @@ export default async function AdminBillingDetailPage({
     hasMollieCustomer: Boolean(billing.mollieCustomerId),
   });
 
-  const openCheckout = billing.payments.find(
-    (p) => p.checkoutUrl && (p.status === "open" || p.status === "pending"),
-  );
+  // Read-only seam (ADR-007) — shows what the box actually enforces, never writes it.
+  const registry = await loadTenantRegistry();
+  const registryTenant = registry.ok ? registry.tenants.find((t) => t.slug === billing.tenantSlug) : undefined;
 
   return (
     <div className="grid gap-10">
@@ -84,17 +88,7 @@ export default async function AdminBillingDetailPage({
         </p>
       </div>
 
-      {openCheckout && (
-        <section className="hand-drawn-border bg-card p-5">
-          <h2 className="font-hand text-2xl font-bold">{t("billingDetail.checkoutTitle")}</h2>
-          <p className="mt-1 font-label text-sm text-muted-foreground">
-            {t("billingDetail.checkoutIntro")}
-          </p>
-          <div className="mt-3">
-            <CopyField value={openCheckout.checkoutUrl!} />
-          </div>
-        </section>
-      )}
+      <OpenCheckoutPanel locale={locale} payments={billing.payments} />
 
       <section className="hand-drawn-border bg-card p-5">
         <h2 className="font-hand text-2xl font-bold">{t("identity.title")}</h2>
@@ -122,6 +116,19 @@ export default async function AdminBillingDetailPage({
       {/* The free period, and the only control that changes it (T-c). Above the
           subscriptions on purpose: whether money is owed comes before what it costs. */}
       <TrialPanel locale={locale} billingId={billing.id} trialEndsAt={billing.trialEndsAt} />
+
+      <AdminPaymentsModePanel
+        locale={locale}
+        tenantSlug={billing.tenantSlug}
+        billingMode={asPaymentsMode(billing.paymentsMode)}
+        billingBps={billing.paymentsCommissionBps}
+        registryTenant={registryTenant}
+        registryReadable={registry.ok}
+      />
+
+      {/* Directly below the rate control: what the rate collected belongs beside
+          what the rate IS — that adjacency is what makes a wrong rate visible. */}
+      <CommissionEarningsPanel locale={locale} stripeAccount={registryTenant?.stripe_account} registryReadable={registry.ok} />
 
       <section>
         <h2 className="font-hand text-3xl font-bold">{t("billingDetail.subscriptions")}</h2>

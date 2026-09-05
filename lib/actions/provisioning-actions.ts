@@ -3,7 +3,12 @@
 // Admin-only: propose a NEW tenant by opening a registry PR on the deploy repo
 // (ADR-012, git-native trigger). Returns the PR URL; a founder reviews + merges,
 // the change syncs to the box, then the provision-tenant Action runs the script.
+//
+// Also holds `updatePaymentsModeAction` (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2a) —
+// the AMENDMENT counterpart to `openProvisioningPrAction` below: same registry-PR
+// mechanism, applied to a tenant that must already exist rather than a new one.
 
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/rbac";
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
@@ -11,12 +16,14 @@ import { slugProvisionVerdict } from "@/lib/provisioning-facts";
 import { readProvisionForm } from "@/lib/provision-form-input";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { checkSlug } from "@/lib/slug-availability";
+import { paymentsModeChangeSchema } from "@/lib/validation";
 import {
   openProvisioningPr,
   provisioningConfigured,
   ProvisioningNotConfiguredError,
   ProvisioningApiError,
 } from "@/lib/provisioning";
+import { applyPaymentsModeChange, type PaymentsModeActionState } from "./payments-mode-change";
 
 /** `error` is a message key in `control.errors` (rendered by <ActionError />);
  *  GitHub API errors pass through raw. `prUrl` on success. */
@@ -90,4 +97,42 @@ export async function openProvisioningPrAction(
     console.error("openProvisioningPrAction failed", e);
     return { error: "provisionFailed" };
   }
+}
+
+/**
+ * Amend an EXISTING tenant's payments mode + commission rate as the OWNER
+ * (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2a/S2b).
+ *
+ * The founder may name any tenant, so the slug is read straight from the form and
+ * `requireAdmin()` is the whole authorization story. The partner counterpart
+ * (S4, `lib/actions/partner-payments-actions.ts`) may not, and takes the slug off
+ * a row it loaded scoped by `partnerId` instead — everything AFTER that point is
+ * the shared `applyPaymentsModeChange`.
+ */
+export async function updatePaymentsModeAction(
+  _prev: PaymentsModeActionState,
+  formData: FormData,
+): Promise<PaymentsModeActionState> {
+  const admin = await requireAdmin();
+  if (!provisioningConfigured()) return { error: "provisioningNotConfigured" };
+
+  const parsed = paymentsModeChangeSchema.safeParse({
+    tenantSlug: formData.get("tenantSlug"),
+    mode: formData.get("mode"),
+    commissionBps: formData.get("commissionBps"),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "invalidInput" };
+  const { tenantSlug, mode, commissionBps } = parsed.data;
+
+  const { state, billingId } = await applyPaymentsModeChange({
+    actorId: admin.id,
+    initiator: "owner",
+    tenantSlug,
+    mode,
+    commissionBps,
+  });
+
+  revalidatePath("/admin/billing");
+  if (billingId) revalidatePath(`/admin/billing/${billingId}`);
+  return state;
 }

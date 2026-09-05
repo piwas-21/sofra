@@ -701,7 +701,10 @@
         "modules": "modules : {list}",
         "template": "modèle : {template}",
         "stripeAccount": "Stripe : {account}",
-        "stripeAccountMissing": "Achète les paiements en ligne, mais cette entrée n'indique aucun stripe_account — le provisionnement refuse ce couple et s'arrête avant la base de données : reprovisionner ce tenant ne fait donc rien du tout. Ajoutez le compte à l'entrée, ou retirez le module."
+        "stripeAccountMissing": "Achète les paiements en ligne, mais cette entrée n'indique aucun stripe_account — le provisionnement refuse ce couple et s'arrête avant la base de données : reprovisionner ce tenant ne fait donc rien du tout. Ajoutez le compte à l'entrée, ou retirez le module.",
+        "paymentsModeFlat": "paiements : forfait",
+        "paymentsModeCommission": "paiements : commission ({percent})",
+        "paymentsModePending": "(en attente — registre pas encore mis à jour)"
       },
       "onboard": {
         "title": "Intégrer un partenaire",
@@ -749,6 +752,9 @@
         "chosenLanguages": "Langues",
         "chosenCurrency": "Devise",
         "quoted": "Devis",
+        "chosenPaymentsMode": "Mode de paiement",
+        "paymentsModeFlat": "Forfait",
+        "paymentsModeCommission": "Commission ({percent})",
         "openProvisioning": "Ouvrir le provisionnement →",
         "slugVerdict": {
           "invalid": "(invalide)",
@@ -995,6 +1001,37 @@
         "saving": "Enregistrement…",
         "saved": "Enregistré."
       },
+      "paymentsMode": {
+        "title": "Mode de tarification des paiements",
+        "flatSummary": "Facturé au forfait — 19 €/mois pour les paiements en ligne.",
+        "commissionSummary": "Facturé à la commission — {percent} de chaque commande en ligne, sans frais de module mensuel.",
+        "pendingNote": "Le registre n'a pas encore intégré ce changement — une PR de registre doit être fusionnée et le tenant reprovisionné avant que cela prenne effet. Un simple redémarrage ne relit rien.",
+        "crossover": "À {percent}, la commission coûte autant que le module au forfait (19 €/mois) à environ {amount} de chiffre d'affaires en ligne mensuel. En dessous, ce tenant paie moins en commission qu'au forfait ; au-dessus, plus.",
+        "modeLabel": "Mode",
+        "modeFlat": "Forfait (19 €/mois)",
+        "modeCommission": "Commission",
+        "rateLabel": "Taux (points de base, 100 = 1 %)",
+        "rateHint": "ex. 150 = 1,50 %. Plafond {max} points de base.",
+        "notEligibleRegistryUnavailable": "Le registre des tenants n'a pas pu être lu, l'éligibilité à la commission ne peut donc pas être vérifiée pour l'instant.",
+        "notEligibleNotPaired": "L'entrée de registre de ce tenant ne comporte pas à la fois online-payments et un stripe_account — le provisionnement refuse un taux non nul sans ce couple, avant même la base de données. La commission reste désactivée tant que les deux ne sont pas présents.",
+        "submit": "Enregistrer",
+        "saving": "Enregistrement…",
+        "prOpened": "PR de registre ouverte — fusionnez-la, puis reprovisionnez le tenant.",
+        "alreadySet": "Le registre contenait déjà ce taux. Aucune PR n'était nécessaire."
+      },
+      "commissionEarnings": {
+        "title": "Commission perçue",
+        "intro": "Ce que le compte connecté de ce client a réellement encaissé en frais de plateforme, à côté de ce qui a été restitué. Horloge de Stripe et devise de la transaction — pas les livres en EUR de Sofra.",
+        "period": "Du {from} au {to} (le mois calendaire précédent et le mois en cours, UTC).",
+        "earned": "Perçu",
+        "refunded": "Restitué",
+        "net": "Net",
+        "fees": "{count} frais",
+        "empty": "Ce compte est surveillé et n'a rien encaissé sur cette période.",
+        "noAccount": "L'entrée de registre de ce client ne porte aucun stripe_account : il n'y a donc aucun compte pour lequel rapporter des frais. C'est l'état normal tant que le restaurant n'a pas terminé son inscription Stripe.",
+        "registryUnavailable": "Le registre des clients n'a pas pu être lu : le compte connecté de ce client est donc inconnu pour l'instant. Aucun chiffre n'est affiché plutôt qu'un chiffre faux.",
+        "unmatchedRefunds": "{count} remboursements de cette période n'ont aucun frais enregistré — leurs frais sont antérieurs à l'enregistrement, le net ci-dessus est donc inférieur à la réalité."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",
@@ -1017,6 +1054,7 @@
     "errors": {
       "invalidClient": "Le nom du restaurant est requis (l'e-mail doit être valide).",
       "clientNotFound": "Client introuvable.",
+      "clientNotProvisioned": "Ce client n'a pas encore sa propre application : il n'y a donc pas de tarification à modifier.",
       "statusManaged": "Le statut de ce client est désormais géré par SofraPiwas.",
       "invalidStatus": "Statut invalide.",
       "invalidNote": "La note ne peut pas être vide (2000 caractères max).",
@@ -1046,6 +1084,9 @@
       "provisionFailed": "Impossible d’ouvrir la PR de provisionnement. Consultez les journaux.",
       "slugReserved": "Ce slug de tenant est réservé et ne peut pas être utilisé.",
       "awaitingFirstPayment": "Le plan de ce tenant n'a pas encore de premier paiement encaissé. Un tenant en libre-service n'est provisionné qu'après paiement.",
+      "billingNotFound": "Aucun plan de facturation trouvé pour ce tenant.",
+      "paymentsModeUnchanged": "Ce tenant est déjà sur ce mode et ce taux.",
+      "paymentsModeChangeFailed": "Impossible de proposer le changement de mode de paiement. Consultez les journaux.",
       "identityNotFound": "Cette identité de facturation n'existe plus.",
       "noVatNumber": "Aucun numéro de TVA à vérifier.",
       "invoice": {
@@ -1169,6 +1210,24 @@
       "settingUpBody": "Votre configuration attend une dernière vérification, puis votre application est créée et démarrée. Cela prend généralement une quinzaine de minutes.",
       "almostReadyTitle": "Presque terminé",
       "almostReadyBody": "Votre application démarre. Dès qu'elle répond, cette page vous indiquera comment vous connecter."
+    },
+    "clientPaymentsMode": {
+      "title": "Tarification des paiements en ligne",
+      "flatSummary": "Forfait — 19 €/mois pour les paiements en ligne, et votre client garde chaque centime de chaque commande (hors frais Stripe).",
+      "commissionSummary": "Commission — {percent} de chaque commande en ligne, sans frais mensuels pour le module de paiements en ligne.",
+      "pendingNote": "C'est demandé, pas encore appliqué. SofraPiwas doit fusionner le changement et reprovisionner l'application de votre client avant qu'il prenne effet — d'ici là, la facturation reste l'ancienne.",
+      "crossover": "À {percent}, la commission coûte autant que le module au forfait (19 €/mois) à environ {amount} de chiffre d'affaires en ligne mensuel. En dessous, votre client paie moins en commission qu'au forfait ; au-dessus, plus.",
+      "modeLabel": "Tarification",
+      "modeFlat": "Forfait (19 €/mois)",
+      "modeCommission": "Commission",
+      "rateLabel": "Taux (points de base, 100 = 1 %)",
+      "rateHint": "ex. 150 = 1,50 %. Plafond {max} points de base.",
+      "notEligibleRegistryUnavailable": "Nous ne pouvons pas vérifier la configuration de ce client pour l'instant : la commission reste donc désactivée.",
+      "notEligibleNotPaired": "La commission exige que ce client dispose du module de paiements en ligne et de son propre compte Stripe. Demandez-nous les deux et ce choix s'ouvrira.",
+      "submit": "Enregistrer",
+      "saving": "Enregistrement…",
+      "prOpened": "Envoyé à SofraPiwas. Nous l'appliquons à l'application de votre client et vous confirmons — rien n'a encore changé à son encaissement.",
+      "alreadySet": "L'application de votre client applique déjà ce taux. Rien à envoyer."
     },
     "paymentsPending": {
       "kicker": "Paiements par carte",
@@ -1455,6 +1514,15 @@
       "bundle": {
         "counter": "Comptoir",
         "full-service": "Service complet"
+      },
+      "paymentsMode": {
+        "title": "Comment vous payez pour le paiement en ligne",
+        "flatLabel": "Forfait fixe — {price}/mois",
+        "flatHint": "Un prix fixe, quel que soit votre chiffre d'affaires en ligne.",
+        "commissionLabel": "Aucun abonnement — {percent} par commande",
+        "commissionHint": "Rien tant qu'un client ne paie pas réellement en ligne.",
+        "crossover": "En dessous d'environ {amount} de chiffre d'affaires en ligne par mois, le taux de {percent} coûte moins cher que le forfait fixe ; au-dessus, le forfait fixe est plus avantageux.",
+        "deferredNote": "Le paiement en ligne nécessite votre propre compte Stripe, que vous seul pouvez créer — nous vous enverrons le lien dès que vous serez en ligne. D'ici là, ceci n'est qu'une préférence enregistrée ; elle s'active juste après."
       }
     }
   },

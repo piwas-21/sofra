@@ -701,7 +701,10 @@
         "modules": "modüller: {list}",
         "template": "şablon: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Çevrimiçi ödeme satın alınmış ama bu kayıtta stripe_account yok — provizyon bu ikiliyi reddeder ve veritabanından önce durur, dolayısıyla bu tenant'ı yeniden provizyonlamak hiçbir şey yapmaz. Hesabı kayda ekleyin ya da modülü çıkarın."
+        "stripeAccountMissing": "Çevrimiçi ödeme satın alınmış ama bu kayıtta stripe_account yok — provizyon bu ikiliyi reddeder ve veritabanından önce durur, dolayısıyla bu tenant'ı yeniden provizyonlamak hiçbir şey yapmaz. Hesabı kayda ekleyin ya da modülü çıkarın.",
+        "paymentsModeFlat": "ödemeler: sabit ücret",
+        "paymentsModeCommission": "ödemeler: komisyon ({percent})",
+        "paymentsModePending": "(beklemede — kayıt henüz güncellenmedi)"
       },
       "onboard": {
         "title": "İş ortağı kaydı",
@@ -749,6 +752,9 @@
         "chosenLanguages": "Diller",
         "chosenCurrency": "Para birimi",
         "quoted": "Teklif",
+        "chosenPaymentsMode": "Ödeme modu",
+        "paymentsModeFlat": "Sabit ücret",
+        "paymentsModeCommission": "Komisyon ({percent})",
         "openProvisioning": "Kurulumu aç →",
         "slugVerdict": {
           "invalid": "(geçersiz)",
@@ -995,6 +1001,37 @@
         "saving": "Kaydediliyor…",
         "saved": "Kaydedildi."
       },
+      "paymentsMode": {
+        "title": "Ödeme fiyatlandırma modu",
+        "flatSummary": "Sabit ücretle faturalanır — çevrimiçi ödemeler için ayda 19 €.",
+        "commissionSummary": "Komisyonla faturalanır — her çevrimiçi siparişin {percent}'i, aylık modül ücreti yok.",
+        "pendingNote": "Kayıt dosyası bunu henüz yansıtmıyor — yürürlüğe girmeden önce bir kayıt PR'sinin birleştirilmesi ve tenant'ın yeniden sağlanması gerekir. Basit bir yeniden başlatma hiçbir şeyi yeniden okumaz.",
+        "crossover": "{percent} oranında, komisyon aylık yaklaşık {amount} çevrimiçi ciroda sabit modülle (ayda 19 €) aynı maliyeti taşır. Bunun altında bu tenant komisyonda sabitten daha az öder; üstünde daha fazla.",
+        "modeLabel": "Mod",
+        "modeFlat": "Sabit (ayda 19 €)",
+        "modeCommission": "Komisyon",
+        "rateLabel": "Oran (baz puan, 100 = %1)",
+        "rateHint": "örn. 150 = %1,50. Tavan {max} baz puan.",
+        "notEligibleRegistryUnavailable": "Tenant kaydı okunamadığı için komisyon uygunluğu şu anda kontrol edilemiyor.",
+        "notEligibleNotPaired": "Bu tenant'ın kayıt girişi hem online-payments hem de bir stripe_account içermiyor — provizyon, bu ikili olmadan sıfırın üzerindeki bir oranı veritabanından önce reddeder. Her ikisi de olmadan komisyon kapalı kalır.",
+        "submit": "Kaydet",
+        "saving": "Kaydediliyor…",
+        "prOpened": "Kayıt PR'si açıldı — birleştirin, ardından tenant'ı yeniden sağlayın.",
+        "alreadySet": "Kayıt zaten bu oranı taşıyordu. PR gerekmedi."
+      },
+      "commissionEarnings": {
+        "title": "Kazanılan komisyon",
+        "intro": "Bu kiracının bağlı hesabının platform ücreti olarak gerçekte topladığı tutar ve yanında iade edilen tutar. Stripe'ın kendi saati ve ödemenin para birimi — Sofra'nın EUR defterleri değil.",
+        "period": "{from} - {to} (önceki ve içinde bulunulan takvim ayı, UTC).",
+        "earned": "Toplanan",
+        "refunded": "İade edilen",
+        "net": "Net",
+        "fees": "{count} ücret",
+        "empty": "Bu hesap izleniyor ve bu dönemde hiçbir tutar toplamadı.",
+        "noAccount": "Bu kiracının kayıt girdisinde stripe_account yok, dolayısıyla ücret raporlanacak bir hesap da yok. Restoran Stripe kaydını tamamlayana kadar bu normal durumdur.",
+        "registryUnavailable": "Kiracı kaydı okunamadı, bu yüzden bağlı hesap şu an bilinmiyor. Yanlış bir rakam yerine hiçbir rakam gösterilmiyor.",
+        "unmatchedRefunds": "Bu dönemdeki {count} iadenin kayıtlı ücreti yok — ücretleri kayıt tutulmadan öncesine ait, bu nedenle yukarıdaki net gerçekte olduğundan düşüktür."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",
@@ -1017,6 +1054,7 @@
     "errors": {
       "invalidClient": "Restoran adı zorunludur (e-posta geçerli olmalı).",
       "clientNotFound": "Müşteri bulunamadı.",
+      "clientNotProvisioned": "Bu müşterinin henüz kendi uygulaması yok, bu yüzden değiştirilecek bir fiyatlandırma da yok.",
       "statusManaged": "Bu müşterinin durumu artık SofraPiwas tarafından yönetiliyor.",
       "invalidStatus": "Geçersiz durum.",
       "invalidNote": "Not boş olamaz (en fazla 2000 karakter).",
@@ -1046,6 +1084,9 @@
       "provisionFailed": "Sağlama PR’si açılamadı. Günlükleri kontrol edin.",
       "slugReserved": "Bu tenant slug'ı ayrılmıştır ve kullanılamaz.",
       "awaitingFirstPayment": "Bu kiracının planında henüz tamamlanmış bir ilk ödeme yok. Self servis kiracı yalnızca ödeme sonrası kurulur.",
+      "billingNotFound": "Bu kiracı için fatura planı bulunamadı.",
+      "paymentsModeUnchanged": "Bu kiracı zaten bu modda ve bu oranda.",
+      "paymentsModeChangeFailed": "Ödeme modu değişikliği önerilemedi. Günlükleri kontrol edin.",
       "identityNotFound": "Bu fatura kimliği artık mevcut değil.",
       "noVatNumber": "Doğrulanacak KDV numarası yok.",
       "invoice": {
@@ -1169,6 +1210,24 @@
       "settingUpBody": "Yapılandırmanız son bir kontrol için sırada; ardından uygulamanız oluşturulup başlatılır. Bu genellikle on beş dakika kadar sürer.",
       "almostReadyTitle": "Neredeyse hazır",
       "almostReadyBody": "Uygulamanız başlatılıyor. Yanıt verdiği anda bu sayfa nasıl giriş yapacağınızı gösterecek."
+    },
+    "clientPaymentsMode": {
+      "title": "Çevrimiçi ödeme fiyatlandırması",
+      "flatSummary": "Sabit — çevrimiçi ödemeler için ayda 19 €, ve müşteriniz her siparişin her kuruşunu alıkoyar (Stripe'ın kendi ücreti hariç).",
+      "commissionSummary": "Komisyon — her çevrimiçi siparişin {percent}'i, çevrimiçi ödeme modülü için aylık ücret yok.",
+      "pendingNote": "Bu talep edildi, henüz uygulanmadı. Yürürlüğe girmesi için SofraPiwas'ın değişikliği birleştirmesi ve müşterinizin uygulamasını yeniden sağlaması gerekir — o zamana kadar eski fiyatlandırma geçerlidir.",
+      "crossover": "{percent} oranında, komisyon aylık yaklaşık {amount} çevrimiçi ciroda sabit modülle (ayda 19 €) aynı maliyeti taşır. Bunun altında müşteriniz komisyonda sabitten daha az öder; üstünde daha fazla.",
+      "modeLabel": "Fiyatlandırma",
+      "modeFlat": "Sabit (ayda 19 €)",
+      "modeCommission": "Komisyon",
+      "rateLabel": "Oran (baz puan, 100 = %1)",
+      "rateHint": "örn. 150 = %1,50. Tavan {max} baz puan.",
+      "notEligibleRegistryUnavailable": "Bu müşterinin kurulumunu şu anda kontrol edemiyoruz, bu yüzden komisyon şimdilik kapalı kalıyor.",
+      "notEligibleNotPaired": "Komisyon için bu müşterinin çevrimiçi ödeme modülüne ve kendi Stripe hesabına sahip olması gerekir. İkisini de bizden isteyin, bu seçenek açılsın.",
+      "submit": "Kaydet",
+      "saving": "Kaydediliyor…",
+      "prOpened": "SofraPiwas'a gönderildi. Müşterinizin uygulamasına uygulayıp onaylayacağız — ödeme ekranlarında henüz bir şey değişmedi.",
+      "alreadySet": "Müşterinizin uygulaması zaten bu oranı kullanıyor. Gönderilecek bir şey yok."
     },
     "paymentsPending": {
       "kicker": "Kartlı ödeme",
@@ -1455,6 +1514,15 @@
       "bundle": {
         "counter": "Tezgah",
         "full-service": "Tam servis"
+      },
+      "paymentsMode": {
+        "title": "Online ödemeler için nasıl ücretlendirilirsiniz",
+        "flatLabel": "Sabit ücret — aylık {price}",
+        "flatHint": "Çevrimiçi cironuz ne olursa olsun tek bir sabit fiyat.",
+        "commissionLabel": "Aylık ücret yok — sipariş başına {percent}",
+        "commissionHint": "Bir misafir gerçekten online ödeme yapana kadar hiçbir ücret alınmaz.",
+        "crossover": "Aylık yaklaşık {amount} altındaki çevrimiçi ciroda {percent} oranı sabit ücretten daha ucuza gelir; bunun üzerinde sabit ücret daha avantajlıdır.",
+        "deferredNote": "Online ödemeler, yalnızca sizin oluşturabileceğiniz kendi Stripe hesabınızı gerektirir — yayına girer girmez bağlantıyı size göndereceğiz. O zamana kadar bu yalnızca tercihinizdir; hemen ardından devreye girer."
       }
     }
   },

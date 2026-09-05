@@ -28,7 +28,17 @@ describe("loadTenantRegistry", () => {
     const res = await loadTenantRegistry();
     expect(res.ok).toBe(true);
     if (res.ok) {
-      expect(res.tenants.map((t) => t.slug)).toEqual(["demo", "pays", "rumi", "unpaired"]); // sorted
+      // sorted; commissioned/demo2 are S2a fixtures (registry-commission-edit.test.ts)
+      expect(res.tenants.map((t) => t.slug)).toEqual([
+        "commissioned",
+        "demo",
+        "demo2",
+        "pays",
+        "rumi",
+        "unpaired",
+        "zeta",
+        "zeta2",
+      ]);
       const rumi = res.tenants.find((t) => t.slug === "rumi")!;
       expect(rumi.name).toBe("Rumi Restaurant");
       expect(rumi.languages).toHaveLength(10);
@@ -59,6 +69,26 @@ describe("loadTenantRegistry", () => {
       expect(res.tenants.find((t) => t.slug === "pays")!.stripe_account).toBe("acct_1PaysExample");
       // Optional — every tenant that never bought the module has none.
       expect(res.tenants.find((t) => t.slug === "rumi")!.stripe_account).toBeUndefined();
+    }
+  });
+
+  it("surfaces payments_commission_bps, which zod silently stripped before S2b", async () => {
+    // The regression this guards is invisible by inspection, same as the
+    // stripe_account case above: the key IS in registry.yml and IS read by
+    // provision-tenant.sh, and `effectivePaymentsMode` reads it as `undefined`
+    // the moment the schema line is dropped — which renders EVERY tenant on
+    // `commission` as permanently "pending", not merely one field blank.
+    process.env.TENANT_REGISTRY_PATH = fixture("registry-valid.yml");
+    const res = await loadTenantRegistry();
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.tenants.find((t) => t.slug === "commissioned")!.payments_commission_bps).toBe(
+        200,
+      );
+      // Optional — absent for every entry that never set a rate, same
+      // convention `currentRegistryCommissionBps` (registry-commission-edit.ts)
+      // and `effectivePaymentsMode` both already read `undefined` as.
+      expect(res.tenants.find((t) => t.slug === "rumi")!.payments_commission_bps).toBeUndefined();
     }
   });
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eur, humanBytes, shortDate } from "@/lib/format";
+import { eur, humanBytes, money, shortDate } from "@/lib/format";
 
 // nl-NL currency formatting uses a non-breaking space between € and the value.
 const NBSP = "\u00a0";
@@ -23,6 +23,32 @@ describe("eur (integer cents → nl-NL EUR string)", () => {
 
   it("formats negative amounts (sign after the € symbol)", () => {
     expect(eur(-500)).toBe(`€${NBSP}-5,00`);
+  });
+});
+
+describe("money (minor units in an arbitrary currency)", () => {
+  it("renders CHF as CHF and not as euros — the whole reason it exists", () => {
+    // A Stripe application fee is in the CHARGE's currency. Rendering a 60-minor
+    // CHF fee with eur() prints "€ 0,60": a wrong symbol over a wrong number,
+    // and nothing goes red. This is the discriminating assertion.
+    expect(money(60, "chf")).toBe(`CHF${NBSP}0,60`);
+    expect(money(60, "chf")).not.toBe(eur(60));
+  });
+
+  it("accepts Stripe's lower-case code", () => {
+    expect(money(4000, "chf")).toBe(money(4000, "CHF"));
+  });
+
+  it("still formats EUR, for a tenant whose charges are in euros", () => {
+    expect(money(4000, "eur")).toBe(eur(4000));
+  });
+
+  it("formats a negative net — a refund whose fee predates fee recording", () => {
+    expect(money(-30, "chf")).toBe(`CHF${NBSP}-0,30`);
+  });
+
+  it("formats zero", () => {
+    expect(money(0, "chf")).toBe(`CHF${NBSP}0,00`);
   });
 });
 

@@ -701,7 +701,10 @@
         "modules": "modules: {list}",
         "template": "sjabloon: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Koopt online betalingen, maar deze entry bevat geen stripe_account — provisionering weigert dit paar en stopt vóór de database, dus dit tenant opnieuw provisioneren doet helemaal niets. Voeg het account toe aan de entry, of haal de module eruit."
+        "stripeAccountMissing": "Koopt online betalingen, maar deze entry bevat geen stripe_account — provisionering weigert dit paar en stopt vóór de database, dus dit tenant opnieuw provisioneren doet helemaal niets. Voeg het account toe aan de entry, of haal de module eruit.",
+        "paymentsModeFlat": "betalingen: vast",
+        "paymentsModeCommission": "betalingen: commissie ({percent})",
+        "paymentsModePending": "(in behandeling — register nog niet bijgewerkt)"
       },
       "onboard": {
         "title": "Partner onboarden",
@@ -749,6 +752,9 @@
         "chosenLanguages": "Talen",
         "chosenCurrency": "Valuta",
         "quoted": "Offerte",
+        "chosenPaymentsMode": "Betaalmodus",
+        "paymentsModeFlat": "Vast",
+        "paymentsModeCommission": "Commissie ({percent})",
         "openProvisioning": "Provisioning openen →",
         "slugVerdict": {
           "invalid": "(ongeldig)",
@@ -995,6 +1001,37 @@
         "saving": "Opslaan…",
         "saved": "Opgeslagen."
       },
+      "paymentsMode": {
+        "title": "Betalingsprijsmodus",
+        "flatSummary": "Vast tarief — €19/maand voor online betalingen.",
+        "commissionSummary": "Op commissie — {percent} van elke online bestelling, geen maandelijkse modulekosten.",
+        "pendingNote": "Het register loopt hier nog niet in mee — een registry-PR moet worden samengevoegd en het tenant moet opnieuw worden ingericht voordat dit ingaat. Een gewone herstart leest niets opnieuw in.",
+        "crossover": "Bij {percent} kost commissie evenveel als de vaste module (€19/maand), bij ongeveer {amount} maandelijkse online omzet. Daaronder betaalt dit tenant minder op commissie dan op vast; daarboven meer.",
+        "modeLabel": "Modus",
+        "modeFlat": "Vast (€19/maand)",
+        "modeCommission": "Commissie",
+        "rateLabel": "Tarief (basispunten, 100 = 1%)",
+        "rateHint": "bijv. 150 = 1,50%. Maximum {max} basispunten.",
+        "notEligibleRegistryUnavailable": "Het tenant-register kon niet worden gelezen, dus de commissie-geschiktheid kan nu niet worden gecontroleerd.",
+        "notEligibleNotPaired": "De registry-entry van dit tenant bevat niet zowel online-payments als een stripe_account — provisionering weigert een tarief boven nul zonder dat paar, vóór de database. Commissie blijft uit totdat beide aanwezig zijn.",
+        "submit": "Opslaan",
+        "saving": "Opslaan…",
+        "prOpened": "Registry-PR geopend — voeg samen en richt het tenant opnieuw in.",
+        "alreadySet": "Het register bevatte dat tarief al. Geen PR nodig."
+      },
+      "commissionEarnings": {
+        "title": "Verdiende commissie",
+        "intro": "Wat het gekoppelde account van deze klant daadwerkelijk aan platformkosten heeft geïnd, naast wat is teruggegeven. Stripes eigen klok en de valuta van de betaling — niet Sofra's EUR-boeken.",
+        "period": "{from} tot {to} (de vorige en de huidige kalendermaand, UTC).",
+        "earned": "Geïnd",
+        "refunded": "Teruggegeven",
+        "net": "Netto",
+        "fees": "{count} kosten",
+        "empty": "Dit account wordt gevolgd en heeft in deze periode niets geïnd.",
+        "noAccount": "De registryvermelding van deze klant bevat geen stripe_account, dus er is geen account om kosten voor te rapporteren. Dat is de normale toestand zolang het restaurant de Stripe-onboarding niet heeft afgerond.",
+        "registryUnavailable": "Het klantenregister kon niet worden gelezen, dus het gekoppelde account is nu onbekend. Er wordt geen bedrag getoond in plaats van een verkeerd bedrag.",
+        "unmatchedRefunds": "{count} terugbetalingen in deze periode hebben geen geregistreerde kosten — hun kosten dateren van vóór de registratie, dus het netto hierboven is lager dan de waarheid."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",
@@ -1017,6 +1054,7 @@
     "errors": {
       "invalidClient": "Restaurantnaam is verplicht (e-mail moet geldig zijn).",
       "clientNotFound": "Klant niet gevonden.",
+      "clientNotProvisioned": "Deze klant heeft nog geen eigen app, dus er is geen prijsstelling om te wijzigen.",
       "statusManaged": "De status van deze klant wordt nu door SofraPiwas beheerd.",
       "invalidStatus": "Ongeldige status.",
       "invalidNote": "De notitie mag niet leeg zijn (max. 2000 tekens).",
@@ -1046,6 +1084,9 @@
       "provisionFailed": "Kon de inricht-PR niet openen. Controleer de logs.",
       "slugReserved": "Deze tenant-slug is gereserveerd en kan niet worden gebruikt.",
       "awaitingFirstPayment": "Het plan van deze tenant heeft nog geen voltooide eerste betaling. Een selfservice-tenant wordt pas na betaling geprovisioneerd.",
+      "billingNotFound": "Geen facturatieplan gevonden voor die tenant.",
+      "paymentsModeUnchanged": "Die tenant staat al op deze modus en dit tarief.",
+      "paymentsModeChangeFailed": "Kon de wijziging van de betaalmodus niet voorstellen. Controleer de logs.",
       "identityNotFound": "Deze facturatie-identiteit bestaat niet meer.",
       "noVatNumber": "Er is geen btw-nummer om te controleren.",
       "invoice": {
@@ -1169,6 +1210,24 @@
       "settingUpBody": "Je configuratie staat klaar voor een laatste controle; daarna wordt je app gebouwd en gestart. Dit duurt meestal zo'n vijftien minuten.",
       "almostReadyTitle": "Bijna klaar",
       "almostReadyBody": "Je app wordt opgestart. Zodra hij antwoordt, laat deze pagina zien hoe je inlogt."
+    },
+    "clientPaymentsMode": {
+      "title": "Prijs voor online betalingen",
+      "flatSummary": "Vast — €19/maand voor online betalingen, en uw klant houdt elke cent van elke bestelling (minus de kosten van Stripe).",
+      "commissionSummary": "Commissie — {percent} van elke online bestelling, en geen maandelijkse kosten voor de module online betalingen.",
+      "pendingNote": "Dit is aangevraagd, nog niet toegepast. SofraPiwas moet de wijziging samenvoegen en de app van uw klant opnieuw inrichten voordat die ingaat — tot dan blijft de oude facturering gelden.",
+      "crossover": "Bij {percent} kost commissie evenveel als de vaste module (€19/maand), bij ongeveer {amount} maandelijkse online omzet. Daaronder betaalt uw klant minder op commissie dan op vast; daarboven meer.",
+      "modeLabel": "Prijsvorm",
+      "modeFlat": "Vast (€19/maand)",
+      "modeCommission": "Commissie",
+      "rateLabel": "Tarief (basispunten, 100 = 1%)",
+      "rateHint": "bijv. 150 = 1,50%. Maximum {max} basispunten.",
+      "notEligibleRegistryUnavailable": "We kunnen de inrichting van deze klant nu niet controleren, dus commissie blijft voorlopig uit.",
+      "notEligibleNotPaired": "Voor commissie heeft deze klant de module online betalingen en een eigen Stripe-account nodig. Vraag ons om beide, dan gaat deze keuze open.",
+      "submit": "Opslaan",
+      "saving": "Opslaan…",
+      "prOpened": "Verstuurd naar SofraPiwas. Wij passen het toe op de app van uw klant en bevestigen — bij hun kassa is nog niets veranderd.",
+      "alreadySet": "De app van uw klant draait dat tarief al. Niets te versturen."
     },
     "paymentsPending": {
       "kicker": "Kaartbetalingen",
@@ -1455,6 +1514,15 @@
       "bundle": {
         "counter": "Toonbank",
         "full-service": "Volledige bediening"
+      },
+      "paymentsMode": {
+        "title": "Hoe je betaalt voor online betalen",
+        "flatLabel": "Vaste prijs — {price}/maand",
+        "flatHint": "Eén vast bedrag, ongeacht je omzet online.",
+        "commissionLabel": "Geen maandelijkse kosten — {percent} per bestelling",
+        "commissionHint": "Niets, tot een gast echt online betaalt.",
+        "crossover": "Onder ongeveer {amount} aan online omzet per maand kost {percent} minder dan de vaste prijs; daarboven is de vaste prijs voordeliger.",
+        "deferredNote": "Online betalen heeft je eigen Stripe-account nodig, die alleen jij kunt aanmaken — we sturen je de link zodra je live bent. Tot die tijd is dit alleen je voorkeur; die gaat direct daarna in."
       }
     }
   },

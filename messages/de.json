@@ -701,7 +701,10 @@
         "modules": "Module: {list}",
         "template": "Template: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Kauft Online-Zahlungen, aber dieser Eintrag enthält kein stripe_account — die Provisionierung lehnt das Paar ab und bricht vor der Datenbank ab, ein erneutes Provisionieren dieses Tenants bewirkt also gar nichts. Konto zum Eintrag hinzufügen oder das Modul entfernen."
+        "stripeAccountMissing": "Kauft Online-Zahlungen, aber dieser Eintrag enthält kein stripe_account — die Provisionierung lehnt das Paar ab und bricht vor der Datenbank ab, ein erneutes Provisionieren dieses Tenants bewirkt also gar nichts. Konto zum Eintrag hinzufügen oder das Modul entfernen.",
+        "paymentsModeFlat": "Zahlungen: pauschal",
+        "paymentsModeCommission": "Zahlungen: Provision ({percent})",
+        "paymentsModePending": "(ausstehend — Registry noch nicht aktualisiert)"
       },
       "onboard": {
         "title": "Partner onboarden",
@@ -749,6 +752,9 @@
         "chosenLanguages": "Sprachen",
         "chosenCurrency": "Währung",
         "quoted": "Angebot",
+        "chosenPaymentsMode": "Zahlungsmodus",
+        "paymentsModeFlat": "Pauschal",
+        "paymentsModeCommission": "Provision ({percent})",
         "openProvisioning": "Bereitstellung öffnen →",
         "slugVerdict": {
           "invalid": "(ungültig)",
@@ -995,6 +1001,37 @@
         "saving": "Wird gespeichert…",
         "saved": "Gespeichert."
       },
+      "paymentsMode": {
+        "title": "Zahlungspreismodus",
+        "flatSummary": "Pauschal abgerechnet — 19 €/Monat für Online-Zahlungen.",
+        "commissionSummary": "Nach Provision abgerechnet — {percent} von jeder Online-Bestellung, keine monatliche Modulgebühr.",
+        "pendingNote": "Die Registry hat das noch nicht nachvollzogen — ein Registry-PR muss zusammengeführt und der Tenant erneut bereitgestellt werden, bevor es wirksam wird. Ein einfacher Neustart liest nichts neu ein.",
+        "crossover": "Bei {percent} kostet die Provision genauso viel wie das pauschale Modul (19 €/Monat), bei etwa {amount} monatlichem Online-Umsatz. Darunter zahlt dieser Tenant bei Provision weniger als pauschal; darüber mehr.",
+        "modeLabel": "Modus",
+        "modeFlat": "Pauschal (19 €/Monat)",
+        "modeCommission": "Provision",
+        "rateLabel": "Satz (Basispunkte, 100 = 1 %)",
+        "rateHint": "z. B. 150 = 1,50 %. Obergrenze {max} Basispunkte.",
+        "notEligibleRegistryUnavailable": "Das Tenant-Registry konnte nicht gelesen werden, daher kann die Provisionsberechtigung gerade nicht geprüft werden.",
+        "notEligibleNotPaired": "Der Registry-Eintrag dieses Tenants enthält nicht beide, online-payments UND ein stripe_account — die Provisionierung lehnt einen Satz über null ohne dieses Paar ab, noch vor der Datenbank. Provision bleibt aus, bis beides vorhanden ist.",
+        "submit": "Speichern",
+        "saving": "Wird gespeichert…",
+        "prOpened": "Registry-PR geöffnet — zusammenführen, dann den Tenant erneut bereitstellen.",
+        "alreadySet": "Die Registry enthielt diesen Satz bereits. Kein PR war nötig."
+      },
+      "commissionEarnings": {
+        "title": "Verdiente Kommission",
+        "intro": "Was das verbundene Konto dieses Mandanten tatsächlich an Plattformgebühren eingenommen hat, neben dem, was zurückgegeben wurde. Stripes eigene Uhr und die Währung der Zahlung — nicht Sofras EUR-Bücher.",
+        "period": "{from} bis {to} (der vorherige und der laufende Kalendermonat, UTC).",
+        "earned": "Eingenommen",
+        "refunded": "Zurückgegeben",
+        "net": "Netto",
+        "fees": "{count} Gebühren",
+        "empty": "Dieses Konto wird beobachtet und hat in diesem Zeitraum nichts eingenommen.",
+        "noAccount": "Der Registry-Eintrag dieses Mandanten trägt kein stripe_account, es gibt also kein Konto, für das Gebühren gemeldet werden könnten. Das ist der normale Zustand, solange das Restaurant das Stripe-Onboarding nicht abgeschlossen hat.",
+        "registryUnavailable": "Die Mandanten-Registry konnte nicht gelesen werden, das verbundene Konto ist daher derzeit unbekannt. Es wird keine Zahl angezeigt statt einer falschen.",
+        "unmatchedRefunds": "{count} Rückerstattungen in diesem Zeitraum haben keine erfasste Gebühr — ihre Gebühren liegen vor der Erfassung, das Netto oben ist also niedriger als die Wahrheit."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",
@@ -1017,6 +1054,7 @@
     "errors": {
       "invalidClient": "Der Restaurantname ist erforderlich (die E-Mail muss gültig sein).",
       "clientNotFound": "Kunde nicht gefunden.",
+      "clientNotProvisioned": "Dieser Kunde hat noch keine eigene App, es gibt also keine Preisgestaltung zu ändern.",
       "statusManaged": "Der Status dieses Kunden wird jetzt von SofraPiwas verwaltet.",
       "invalidStatus": "Ungültiger Status.",
       "invalidNote": "Die Notiz darf nicht leer sein (max. 2000 Zeichen).",
@@ -1046,6 +1084,9 @@
       "provisionFailed": "Bereitstellungs-PR konnte nicht geöffnet werden. Prüfen Sie die Protokolle.",
       "slugReserved": "Dieser Tenant-Slug ist reserviert und kann nicht verwendet werden.",
       "awaitingFirstPayment": "Der Plan dieses Tenants hat noch keine abgeschlossene erste Zahlung. Ein Self-Service-Tenant wird erst nach Zahlung provisioniert.",
+      "billingNotFound": "Kein Abrechnungsplan für diesen Tenant gefunden.",
+      "paymentsModeUnchanged": "Dieser Tenant hat bereits diesen Modus und diesen Satz.",
+      "paymentsModeChangeFailed": "Die Änderung des Zahlungsmodus konnte nicht vorgeschlagen werden. Prüfen Sie die Protokolle.",
       "identityNotFound": "Diese Rechnungsidentität existiert nicht mehr.",
       "noVatNumber": "Es gibt keine USt-IdNr. zum Prüfen.",
       "invoice": {
@@ -1169,6 +1210,24 @@
       "settingUpBody": "Ihre Konfiguration wartet auf eine letzte Prüfung, danach wird Ihre App erstellt und gestartet. Das dauert in der Regel etwa fünfzehn Minuten.",
       "almostReadyTitle": "Fast geschafft",
       "almostReadyBody": "Ihre App wird gestartet. Sobald sie antwortet, zeigt Ihnen diese Seite, wie Sie sich anmelden."
+    },
+    "clientPaymentsMode": {
+      "title": "Preise für Online-Zahlungen",
+      "flatSummary": "Pauschal — 19 €/Monat für Online-Zahlungen, und Ihr Kunde behält jeden Cent jeder Bestellung (abzüglich Stripe-Gebühr).",
+      "commissionSummary": "Provision — {percent} jeder Online-Bestellung, und keine monatliche Gebühr für das Online-Zahlungsmodul.",
+      "pendingNote": "Das ist beantragt, noch nicht angewendet. SofraPiwas muss die Änderung zusammenführen und die App Ihres Kunden erneut bereitstellen, bevor sie wirksam wird — bis dahin bleibt die alte Abrechnung.",
+      "crossover": "Bei {percent} kostet die Provision genauso viel wie das pauschale Modul (19 €/Monat), bei etwa {amount} monatlichem Online-Umsatz. Darunter zahlt Ihr Kunde bei Provision weniger als pauschal; darüber mehr.",
+      "modeLabel": "Preismodell",
+      "modeFlat": "Pauschal (19 €/Monat)",
+      "modeCommission": "Provision",
+      "rateLabel": "Satz (Basispunkte, 100 = 1 %)",
+      "rateHint": "z. B. 150 = 1,50 %. Obergrenze {max} Basispunkte.",
+      "notEligibleRegistryUnavailable": "Wir können die Einrichtung dieses Kunden gerade nicht prüfen, deshalb bleibt die Provision vorerst aus.",
+      "notEligibleNotPaired": "Für die Provision braucht dieser Kunde das Online-Zahlungsmodul und ein eigenes Stripe-Konto. Fragen Sie uns nach beidem, dann steht diese Wahl offen.",
+      "submit": "Speichern",
+      "saving": "Wird gespeichert…",
+      "prOpened": "An SofraPiwas gesendet. Wir wenden es auf die App Ihres Kunden an und bestätigen — an der Kasse hat sich noch nichts geändert.",
+      "alreadySet": "Die App Ihres Kunden läuft bereits mit diesem Satz. Nichts zu senden."
     },
     "paymentsPending": {
       "kicker": "Kartenzahlung",
@@ -1455,6 +1514,15 @@
       "bundle": {
         "counter": "Theke",
         "full-service": "Voller Service"
+      },
+      "paymentsMode": {
+        "title": "So bezahlen Sie für Online-Zahlungen",
+        "flatLabel": "Festpreis — {price}/Monat",
+        "flatHint": "Ein fester Preis, unabhängig von Ihrem Online-Umsatz.",
+        "commissionLabel": "Keine monatliche Gebühr — {percent} pro Bestellung",
+        "commissionHint": "Nichts, bis ein Gast tatsächlich online bezahlt.",
+        "crossover": "Unter etwa {amount} Online-Umsatz im Monat kostet der Satz von {percent} weniger als der Festpreis; darüber ist der Festpreis günstiger.",
+        "deferredNote": "Online-Zahlungen benötigen Ihr eigenes Stripe-Konto, das nur Sie einrichten können — wir schicken Ihnen den Link, sobald Sie live sind. Bis dahin ist dies nur Ihre Präferenz; sie wird direkt danach aktiviert."
       }
     }
   },

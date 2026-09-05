@@ -149,6 +149,22 @@ model SignupRequest {
   /// were shown, NOT a price that binds — always re-quote at onboarding.
   quotedCents Int?
 
+  // --- Payments pricing mode choice (SOFRA-PAYMENTS-PRICING-MODE-PLAN S3) ---
+  // Mirrors TenantBilling.paymentsMode/paymentsCommissionBps — the same two
+  // columns, on the lead instead of the tenant, because the choice exists before
+  // either does. Both nullable for the same reason modules/languages/template/
+  // currency above are: a lead captured before this shipped has none, and null
+  // means "the founder still chooses".
+  /// "flat" or "commission" (lib/payments-pricing.ts PaymentsMode), or null.
+  paymentsMode String?
+  /// The rate the buyer was actually SHOWN for commission — not a number they
+  /// pick, DEFAULT_COMMISSION_BPS applied on their behalf, but recorded anyway.
+  /// DEFAULT_COMMISSION_BPS can change later, and a historical signup whose
+  /// meaning silently shifted with a future default would be a record of
+  /// nothing. 0 alongside "flat", the shown default alongside "commission",
+  /// null exactly when paymentsMode is null.
+  paymentsCommissionBps Int?
+
   // Back-reference for the O3 link. A list because Prisma requires it on the
   // non-owning side; in practice at most one plan is minted per lead.
   billing TenantBilling[]
@@ -537,6 +553,28 @@ model TenantBilling {
   // own rows, not only from GitHub refusing a duplicate branch.
   provisioningPrUrl String?
 
+  // Payments pricing mode (SOFRA-PAYMENTS-PRICING-MODE-PLAN, S1): "flat" (the
+  // `online-payments` module's list price) or "commission" (the module is free,
+  // Sofra takes a per-transaction cut instead). This pair is the BILLING truth —
+  // it is what the Mollie subscription amount is computed from. The registry's
+  // own `payments_commission_bps` (lib/provisioning-registry.ts) is the
+  // ENFORCEMENT truth — what actually reaches the tenant's backend and Stripe.
+  // The two CAN disagree, and the window is real: this app proposes a registry
+  // PR, it never writes to a box (ADR-003/007), so a mode change is
+  // `set here -> registry PR -> merge -> re-provision`, and until the last step
+  // the tenant is billed one way while enforced the other.
+  //
+  // Both default to what every tenant alive today already is: flat-fee, zero
+  // commission. Nothing is back-filled to commission — this migration changes
+  // billing for precisely nobody until someone deliberately switches a tenant.
+  paymentsMode           String @default("flat")
+  // Basis points (100 = 1.00%), only meaningful when paymentsMode is
+  // "commission". Ceiling of 1000 (10%) enforced in lib/payments-pricing.ts
+  // (MAX_COMMISSION_BPS) — re-stated, not shared, because provision-tenant.sh
+  // and the backend each check their own copy too; see that constant's comment
+  // for why Stripe makes this a safety guard rather than a preference.
+  paymentsCommissionBps Int    @default(0)
+
   subscriptions BillingSubscription[]
   payments      BillingPayment[]
 
@@ -772,4 +810,109 @@ model BackupJob {
 
   @@index([box, status])
   @@index([tenantSlug])
+}
+
+/// Every application-fee refund the platform Connect webhook has issued
+/// (ADR-011 amendment, consequence 1 — "fee follows the refund";
+/// lib/stripe-fee-refund.ts). Stripe never auto-refunds a fee when a
+/// connected account refunds a charge; only the platform can, and this is
+/// the record that it did.
+///
+/// `connectedAccountId`/`chargeId` are NOT foreign keys — same seam as
+/// TenantBilling.tenantSlug and BackupArtifact.tenantSlug (ADR-007): the
+/// registry (which maps a tenant's `stripe_account` back to a slug) is the
+/// source of truth and this app never writes to it, so the join back to a
+/// tenant happens at READ time, not by an FK here.
+///
+/// This table also seeds ADR-011's SECOND recorded consequence — "no
+/// commission reporting surface": a future per-tenant revenue readout groups
+/// these rows by `connectedAccountId` and sums `amount` as money RETURNED,
+/// next to whatever future table records money EARNED. It does not close
+/// that gap by itself.
+model StripeFeeRefund {
+  id   String @id @default(cuid())
+  /// Stripe's own refund id (`fr_...`). @unique is the natural idempotency
+  /// anchor: a webhook redelivery recomputes zero due before ever reaching a
+  /// write, and the one race that DOES produce two callers for the same
+  /// refund (both read the fee before either write landed) shares one Stripe
+  /// idempotency key and so writes here via upsert, not insert.
+  stripeRefundId     String   @unique
+  applicationFeeId   String
+  connectedAccountId String
+  chargeId           String
+  /// Minor units, in `currency` below — the amount Sofra returned.
+  amount             Int
+  currency           String
+  createdAt          DateTime @default(now())
+  /// Stripe's OWN clock for the refund (epoch seconds, converted). Nullable
+  /// because it cannot be backfilled: the rows the staging runbook created
+  /// were written before this was captured, and inventing a timestamp for them
+  /// would be worse than admitting we do not have one. Readouts periodise on
+  /// `COALESCE(feeRefundedAt, createdAt)` so that "earned minus refunded over a
+  /// period" compares two Stripe timestamps rather than one Stripe timestamp
+  /// and one of ours — the skew is only seconds (measured "< 5s" in the
+  /// runbook), but it lands on the wrong side of a month boundary eventually.
+  feeRefundedAt      DateTime?
+
+  @@index([connectedAccountId])
+  @@index([chargeId])
+}
+
+/// Application fees Sofra EARNED (workspace docs/plans/BACKLOG.md, the SECOND
+/// blocker before any tenant goes on a non-zero payment commission: "nothing
+/// reports what the commission earned"). The mirror image of StripeFeeRefund
+/// just above, which records only fees RETURNED and whose own header names
+/// this table as the missing half.
+///
+/// One row per Stripe ApplicationFee, written by the `application_fee.created`
+/// branch of app/api/webhooks/stripe/route.ts (lib/stripe-fee-earned.ts). That
+/// event is a PLATFORM event — MEASURED: it carries `account: null` — so it
+/// arrives on a SECOND, account-scoped endpoint at the same URL, not on the
+/// `connect: true` one that carries charge.refunded.
+model StripeApplicationFee {
+  id String @id @default(cuid())
+
+  /// Stripe's own fee id (`fee_...`). @unique is the idempotency anchor, the
+  /// same role StripeFeeRefund.stripeRefundId plays — but it carries MORE
+  /// weight here: the refund path is idempotent three ways over (the
+  /// arithmetic recomputes to zero, the Stripe Idempotency-Key, then this
+  /// constraint), whereas a "record what happened" write has no arithmetic to
+  /// neutralise a redelivery. Here the constraint is the ONLY thing between a
+  /// redelivery and double-counted revenue, and the write path upserts on it.
+  applicationFeeId String @unique
+
+  /// `acct_...`, read from the FEE's own `account` field (the event has none).
+  /// NOT a foreign key — same seam as StripeFeeRefund.connectedAccountId and
+  /// TenantBilling.tenantSlug (ADR-007): the registry maps `stripe_account`
+  /// back to a slug and this app never writes it, so the join to a tenant
+  /// happens at READ time. A fee for an account no registry entry names is
+  /// still recorded; lib/commission-earnings.ts reports it as unmapped.
+  connectedAccountId String
+
+  /// `ch_...` — the charge the fee was taken from, and the join key back to
+  /// StripeFeeRefund.
+  chargeId String
+
+  /// Minor units, in `currency` — what Sofra took. Immutable in Stripe: a later
+  /// refund moves `amount_refunded`, never `amount`, which is why
+  /// `amount_refunded` is deliberately NOT stored here (it would be a snapshot
+  /// that goes stale, and the refunded side has its own table).
+  amount Int
+
+  /// The CHARGE's currency (`chf` for a Swiss tenant), lower-case as Stripe
+  /// returns it — NOT Sofra's EUR books. Never render this with format.ts
+  /// `eur()`; `money()` exists for exactly this.
+  currency String
+
+  /// Stripe's `created`, converted from epoch SECONDS. THIS, not `createdAt`,
+  /// is the period anchor: a redelivery days later must not move a fee into a
+  /// later month.
+  feeCreatedAt DateTime
+
+  /// When WE recorded it — for the delivery-latency question ("did the rail
+  /// lag?"), never for periodisation.
+  createdAt DateTime @default(now())
+
+  @@index([connectedAccountId, feeCreatedAt])
+  @@index([chargeId])
 }

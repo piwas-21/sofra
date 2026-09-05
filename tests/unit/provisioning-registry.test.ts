@@ -571,3 +571,81 @@ describe("a partner credit in the generated entry (§11e, S3a)", () => {
     expect(unlinked).not.toContain("https://solutioneva.com");
   });
 });
+
+// S1 — payments_commission_bps in the generated entry (SOFRA-PAYMENTS-PRICING-MODE-PLAN).
+// Same pairing shape as the online-payments/stripe_account guard above, one field over:
+// a non-zero rate must never reach an entry whose online-payments is deferred, or
+// provision-tenant.sh refuses the whole tenant on re-provision.
+describe("a per-transaction commission rate in the generated entry (S1)", () => {
+  const base = {
+    slug: "bistro-nova",
+    name: "Bistro Nova",
+    adminEmail: "owner@nova.example",
+    template: "craft" as const,
+    currency: "EUR",
+    languages: ["en", "nl"],
+    modules: ["core", "online-payments"],
+    stripeAccount: "acct_1AbCdEfGhIjKlMnO",
+  };
+
+  it("omits the key entirely when the rate is zero or absent — no no-op line on every entry", () => {
+    const zero = asTenant(
+      buildTenantRegistryEntry({ ...base, paymentsCommissionBps: 0 }),
+      base.slug,
+    ) as Record<string, unknown>;
+    expect("payments_commission_bps" in zero).toBe(false);
+
+    const absent = asTenant(buildTenantRegistryEntry(base), base.slug) as Record<string, unknown>;
+    expect("payments_commission_bps" in absent).toBe(false);
+  });
+
+  it("emits the rate when online-payments actually survives the split into this entry", () => {
+    const t = asTenant(
+      buildTenantRegistryEntry({ ...base, paymentsCommissionBps: 150 }),
+      base.slug,
+    ) as Record<string, unknown>;
+    expect(t.payments_commission_bps).toBe(150);
+    expect(t.modules).toEqual(["core", "online-payments"]);
+    expect(t.stripe_account).toBe("acct_1AbCdEfGhIjKlMnO");
+  });
+
+  it("never emits the rate when online-payments is DEFERRED — provision-tenant.sh would refuse it", () => {
+    // No stripeAccount => splitDeferredModules holds online-payments back. Writing the
+    // rate here anyway would just move the module/account refusal onto this field
+    // instead of preventing it — the whole reason the pairing exists.
+    const built = buildTenantRegistryEntry({
+      ...base,
+      stripeAccount: undefined,
+      paymentsCommissionBps: 150,
+    });
+    const t = asTenant(built, base.slug) as Record<string, unknown>;
+    expect("payments_commission_bps" in t).toBe(false);
+    expect(built.deferred).toEqual(["online-payments"]);
+    expect(t.modules).toEqual(["core"]);
+  });
+
+  it("says nothing about commission in the PR body when no rate was requested", () => {
+    const body = buildProvisioningPrBody(base);
+    expect(body).not.toContain("commission");
+  });
+
+  it("explains the rate in the PR body when the entry carries it", () => {
+    const body = buildProvisioningPrBody({ ...base, paymentsCommissionBps: 150 });
+    expect(body).toContain("**commission** `150 bps`");
+    expect(body).toContain("Per-transaction commission: `150` bps (1.50%)");
+    expect(body).not.toContain("NOT in this entry");
+  });
+
+  it("explains the REFUSAL in the PR body when a rate was requested but the module is deferred", () => {
+    const body = buildProvisioningPrBody({
+      ...base,
+      stripeAccount: undefined,
+      paymentsCommissionBps: 150,
+    });
+    expect(body).toContain("(not written — see below)");
+    expect(body).toContain("Requested commission rate `150` bps (1.50%) is NOT in this entry");
+    expect(body).toContain("payments_commission_bps: 150");
+    // The same guard's condition, named explicitly rather than left implicit.
+    expect(body).toContain("`stripe_account`");
+  });
+});

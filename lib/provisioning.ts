@@ -10,10 +10,14 @@ import { buildProvisioningPrBody } from "@/lib/provisioning-pr-body";
 import { tenantPartnerBrand } from "@/lib/partner-brand-lookup";
 import { buildTenantRegistryEntry, type TenantProvisionInput } from "@/lib/provisioning-registry";
 
-const OWNER = "piwas-21";
-const REPO = "restaurant-app-deploy";
-const BASE = "develop"; // deploy repo default/integration branch (GitFlow)
-const REGISTRY_PATH = "tenants/registry.yml";
+// Exported so lib/registry-commission-pr.ts (the amendment counterpart to
+// openProvisioningPr below, split into its own file for CLAUDE.md §4's line
+// limit) shares this ONE GitHub client and these ONE repo constants, rather
+// than a second copy of either drifting from this one.
+export const OWNER = "piwas-21";
+export const REPO = "restaurant-app-deploy";
+export const BASE = "develop"; // deploy repo default/integration branch (GitFlow)
+export const REGISTRY_PATH = "tenants/registry.yml";
 const API = "https://api.github.com";
 
 /** Provisioning is not configured (no token) — surfaced like the Mollie banner. */
@@ -38,7 +42,7 @@ export function provisioningConfigured(): boolean {
  *  timeout, so it needs an explicit one. */
 const GH_TIMEOUT_MS = 15_000;
 
-async function gh<T>(token: string, path: string, init?: RequestInit): Promise<T> {
+export async function gh<T>(token: string, path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API}${path}`, {
     // Never serve a cached registry/ref read — a stale sha would 409 the commit.
     cache: "no-store",

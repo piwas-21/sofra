@@ -4,7 +4,10 @@ import { founderInbox, escapeHtml } from "@/lib/email";
 import { guardIntake } from "@/lib/intake";
 import { signupSchema } from "@/lib/validation";
 import { audit } from "@/lib/audit";
-import { sanitizeSignupConfiguration } from "@/lib/signup-configuration";
+import {
+  sanitizeSignupConfiguration,
+  type StoredSignupConfiguration,
+} from "@/lib/signup-configuration";
 import { eur } from "@/lib/format";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { checkSlug } from "@/lib/slug-availability";
@@ -132,6 +135,19 @@ async function mintAccount(
  * customer is still at the keyboard and one field away from succeeding, so asking
  * is better than banking a lead nobody can act on until the slug is renegotiated.
  */
+/**
+ * The founder's new-lead mail lists the quote, and under `commission` that total
+ * EXCLUDES the online-payments module — so the number alone reads as a cheaper
+ * plan with no visible reason for it. This row is what explains it, and it lives
+ * outside POST so the handler stays under its cognitive-complexity limit.
+ */
+function paymentsRow(config: StoredSignupConfiguration): string {
+  if (config.paymentsMode === "commission") {
+    return `commission (${config.paymentsCommissionBps ?? 0} bps)`;
+  }
+  return config.paymentsMode ?? "—";
+}
+
 export async function POST(request: Request) {
   const guard = await guardIntake(request, "signup");
   if ("response" in guard) return guard.response;
@@ -252,6 +268,7 @@ export async function POST(request: Request) {
         ["Tenant languages", config.languages ?? "—"],
         ["Currency", config.currency ?? "—"],
         ["Quoted", config.quotedCents === null ? "—" : `${eur(config.quotedCents)}/mo`],
+        ["Payments", paymentsRow(config)],
       ],
     }).catch(() => undefined);
   }

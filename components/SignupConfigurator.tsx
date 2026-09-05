@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { MODULES, BUNDLES, extraLanguageCount, quoteModules, type ModuleId } from "@/lib/module-catalog";
 import { TEMPLATES, TENANT_CURRENCIES, TENANT_LANGUAGES } from "@/lib/tenant-options";
 import { eur } from "@/lib/format";
+import { paymentsModeQuote, type PaymentsMode } from "@/lib/payments-pricing";
+import PaymentsModeChoice from "./PaymentsModeChoice";
 
 /**
  * Public product configurator on /signup (SOFRA-ONBOARDING-PLAN O1).
@@ -22,6 +24,7 @@ export default function SignupConfigurator() {
   const t = useTranslations("signup.configurator");
   const [modules, setModules] = useState<ModuleId[]>([]);
   const [languages, setLanguages] = useState<string[]>(["en"]);
+  const [paymentsMode, setPaymentsMode] = useState<PaymentsMode>("flat");
 
   const toggle = <T extends string>(list: T[], value: T, on: boolean): T[] =>
     on ? [...list, value] : list.filter((v) => v !== value);
@@ -33,6 +36,10 @@ export default function SignupConfigurator() {
   const quote = quoteModules(selection);
   const bundle = BUNDLES.find((b) => b.id === quote.bundle);
   const saving = quote.aLaCarteCents - quote.monthlyCents;
+  // Meaningless without the module — PaymentsModeChoice reads this to decide
+  // whether to render at all, same reading sanitizeSignupConfiguration gives it.
+  const hasOnlinePayments = modules.includes("online-payments");
+  const total = paymentsModeQuote(quote.monthlyCents, paymentsMode, hasOnlinePayments);
 
   const optionalModules = MODULES.filter(
     (m) => m.id !== "core" && m.id !== "extra-languages" && m.sellable !== false,
@@ -81,6 +88,12 @@ export default function SignupConfigurator() {
           })}
         </div>
       </fieldset>
+
+      <PaymentsModeChoice
+        hasOnlinePayments={hasOnlinePayments}
+        mode={paymentsMode}
+        onChange={setPaymentsMode}
+      />
 
       <fieldset className="hand-drawn-border bg-card p-4">
         <legend className="font-label px-1 text-sm text-muted-foreground">{t("theme")}</legend>
@@ -180,13 +193,12 @@ export default function SignupConfigurator() {
       </fieldset>
 
       {/* Carried so the founder sees what the lead was actually shown; the server
-          re-computes it from the catalog and never trusts this value. */}
-      <input type="hidden" name="quotedCents" value={quote.monthlyCents} />
+          re-computes it from the catalog AND the payments mode, and never
+          trusts this value. */}
+      <input type="hidden" name="quotedCents" value={total} />
 
       <output className="hand-drawn-border bg-card p-4 font-label">
-        <span className="font-display font-bold text-3xl text-primary">
-          {eur(quote.monthlyCents)}
-        </span>
+        <span className="font-display font-bold text-3xl text-primary">{eur(total)}</span>
         <span className="text-muted-foreground"> {t("perMonth")}</span>
         {bundle && saving > 0 && (
           <p className="text-sm text-craft-olive-text dark:text-craft-olive-dark mt-1">

@@ -39,6 +39,10 @@ export default defineConfig({
         "lib/provision-form-input.ts",
         "lib/slug-availability.ts",
         "lib/provisioning-registry.ts",
+        // The account-pairing rule, split out of provisioning-registry.ts (S1) for the
+        // same LOC-limit reason as provisioning-pr-body.ts below — listed explicitly so
+        // splitDeferredModules's branches don't quietly drop out of the floor's scope.
+        "lib/provisioning-module-pairing.ts",
         // Split out of provisioning-registry.ts (P1) when the pair outgrew the LOC limit.
         // Listed explicitly because this include list is explicit: leaving it off would
         // have quietly moved already-covered code out of the floor's scope, which reads
@@ -49,6 +53,22 @@ export default defineConfig({
         // not get at the one reviewable moment before a tenant is stood up.
         "lib/provisioning-pr-blocks.ts",
         "lib/module-catalog.ts",
+        // S1 — the flat/commission arithmetic (quote adjustment, crossover, the
+        // MAX_COMMISSION_BPS ceiling). Pure by construction, same as module-catalog.ts
+        // beside it, and the one place the crossover formula every switching surface
+        // will quote (S2-S4) is decidable in isolation.
+        "lib/payments-pricing.ts",
+        // S2a — the pure halves of the amendment mechanism. `registry-commission-edit.ts`
+        // is the dangerous one (surgical line edits to a file humans hand-annotate); its
+        // GitHub-calling sibling (`registry-commission-pr.ts`) stays out, same split as
+        // provisioning.ts/provisioning-registry.ts. `payments-mode-effective.ts` is the
+        // billing-vs-enforcement predicate, same shape and same reason as
+        // payments-pending.ts just below it.
+        "lib/registry-commission-edit.ts",
+        "lib/payments-mode-effective.ts",
+        // S2b — the admin form's own eligibility gate, same pure shape and same
+        // fail-quiet direction as `payments-mode-effective.ts` just above it.
+        "lib/commission-eligibility.ts",
         "lib/tenant-options.ts",
         "lib/signup-configuration.ts",
         "lib/checkout-window.ts",
@@ -152,6 +172,26 @@ export default defineConfig({
         // between a compromised staging box being contained and it being able to
         // erase the control plane's record of the paying tenant's backups.
         "lib/backup-agent-auth.ts",
+        // ADR-011 amendment consequence 1 — "fee follows the refund". Pure,
+        // clock-free (`nowSeconds` is always passed in, same discipline as
+        // trial.ts) verification of the `Stripe-Signature` header. Its
+        // sibling `lib/stripe-fee-refund.ts` stays OUT of scope on purpose,
+        // same split as vies.ts/vies-result.ts: the orchestration half calls
+        // Stripe over the network and writes to the DB, which §7 forbids
+        // mocking, so only the pure arithmetic half (`feeRefundAmount`) is
+        // unit-tested and it is measured by the test file, not by this list.
+        "lib/stripe-signature.ts",
+        // The SECOND blocker. `commission-earnings.ts` is the arithmetic between
+        // the two fee tables and the panel — pure, clock-free (the window is
+        // passed in), and the module where a clamp, a summed pair of currencies
+        // or a fail-quiet regression turns into a wrong number beside a tenant's
+        // name. `stripe-webhook-secrets.ts` is the pure half of the dual-endpoint
+        // verification. Their orchestration sibling `lib/stripe-fee-earned.ts`
+        // stays OUT for the reason `stripe-fee-refund.ts` does: it calls Stripe
+        // and writes to the DB, and its pure halves are measured by their test
+        // file rather than by this list.
+        "lib/commission-earnings.ts",
+        "lib/stripe-webhook-secrets.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

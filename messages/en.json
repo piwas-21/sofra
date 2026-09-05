@@ -701,7 +701,10 @@
         "modules": "modules: {list}",
         "template": "template: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Buys online payments, but this entry records no stripe_account — provisioning refuses the pair and stops before the database, so re-provisioning this tenant does nothing at all. Add the account to the entry, or drop the module."
+        "stripeAccountMissing": "Buys online payments, but this entry records no stripe_account — provisioning refuses the pair and stops before the database, so re-provisioning this tenant does nothing at all. Add the account to the entry, or drop the module.",
+        "paymentsModeFlat": "payments: flat",
+        "paymentsModeCommission": "payments: commission ({percent})",
+        "paymentsModePending": "(pending — registry not yet updated)"
       },
       "onboard": {
         "title": "Onboard a partner",
@@ -749,6 +752,9 @@
         "chosenLanguages": "Languages",
         "chosenCurrency": "Currency",
         "quoted": "Quoted",
+        "chosenPaymentsMode": "Payments mode",
+        "paymentsModeFlat": "Flat",
+        "paymentsModeCommission": "Commission ({percent})",
         "openProvisioning": "Open provisioning →",
         "slugVerdict": {
           "invalid": "(invalid)",
@@ -995,6 +1001,37 @@
         "saving": "Saving…",
         "saved": "Saved."
       },
+      "paymentsMode": {
+        "title": "Payments pricing mode",
+        "flatSummary": "Billed flat — €19/mo for online payments.",
+        "commissionSummary": "Billed by commission — {percent} of every online order, no monthly module fee.",
+        "pendingNote": "The registry has not caught up with this yet — a registry PR has to merge and the tenant has to be re-provisioned before it takes effect. A plain restart re-reads nothing.",
+        "crossover": "At {percent}, commission costs the same as the flat module (€19/mo) at about {amount} of monthly online turnover. Below that this tenant pays less on commission than on flat; above it, more.",
+        "modeLabel": "Mode",
+        "modeFlat": "Flat (€19/mo)",
+        "modeCommission": "Commission",
+        "rateLabel": "Rate (basis points, 100 = 1%)",
+        "rateHint": "e.g. 150 = 1.50%. Ceiling {max} bps.",
+        "notEligibleRegistryUnavailable": "The tenant registry could not be read, so commission eligibility cannot be checked right now.",
+        "notEligibleNotPaired": "This tenant's registry entry does not carry both online-payments and a stripe_account — provisioning refuses a non-zero rate without that pair, before the database. Commission stays off until both are there.",
+        "submit": "Save",
+        "saving": "Saving…",
+        "prOpened": "Registry PR opened — merge it, then re-provision the tenant.",
+        "alreadySet": "The registry already carried that rate. No PR was needed."
+      },
+      "commissionEarnings": {
+        "title": "Commission earned",
+        "intro": "What this tenant's connected account actually collected in application fees, next to what was returned. Stripe's own clock and the charge's currency — not Sofra's EUR books.",
+        "period": "{from} to {to} (the previous and current calendar months, UTC).",
+        "earned": "Earned",
+        "refunded": "Returned",
+        "net": "Net",
+        "fees": "{count} fees",
+        "empty": "This account is being watched and has collected nothing in this period.",
+        "noAccount": "This tenant's registry entry carries no stripe_account, so there is no account to report fees for. That is the normal state until the restaurant has completed Stripe onboarding.",
+        "registryUnavailable": "The tenant registry could not be read, so this tenant's connected account is unknown right now. No figure is shown rather than a wrong one.",
+        "unmatchedRefunds": "{count} refunds in this period have no recorded fee — their fees predate fee recording, so the net above is lower than the truth."
+      },
       "cron": {
         "title": "Scheduled sweeps",
         "intro": "When each background sweep last actually ran. GitHub refused every scheduled job on this repo for six days in August 2026 and nothing surfaced it — this page is the thing that would have.",
@@ -1017,6 +1054,7 @@
     "errors": {
       "invalidClient": "Restaurant name is required (email must be valid).",
       "clientNotFound": "Client not found.",
+      "clientNotProvisioned": "That client doesn't have its own app yet, so there is no pricing to change.",
       "statusManaged": "This client's status is managed by SofraPiwas now.",
       "invalidStatus": "Invalid status.",
       "invalidNote": "Note can't be empty (max 2000 chars).",
@@ -1046,6 +1084,9 @@
       "provisionFailed": "Couldn’t open the provisioning PR. Check the logs.",
       "slugReserved": "That tenant slug is reserved and cannot be used.",
       "awaitingFirstPayment": "This tenant's plan has no settled first payment yet. A self-serve tenant is provisioned only after it has paid.",
+      "billingNotFound": "No billing plan found for that tenant.",
+      "paymentsModeUnchanged": "That tenant is already on this mode and rate.",
+      "paymentsModeChangeFailed": "Couldn’t propose the payments mode change. Check the logs.",
       "identityNotFound": "That billing identity no longer exists.",
       "noVatNumber": "There is no VAT number to check.",
       "invoice": {
@@ -1169,6 +1210,24 @@
       "settingUpBody": "Your setup is queued for a final check, then your app is built and started. This usually takes about fifteen minutes.",
       "almostReadyTitle": "Almost there",
       "almostReadyBody": "Your app is starting up. As soon as it answers, this page will show you how to sign in."
+    },
+    "clientPaymentsMode": {
+      "title": "Online payments pricing",
+      "flatSummary": "Flat — €19/mo for online payments, and your client keeps every cent of every order (minus Stripe's own fee).",
+      "commissionSummary": "Commission — {percent} of every online order, and no monthly fee for the online-payments module.",
+      "pendingNote": "This is asked for, not applied yet. SofraPiwas has to merge the change and re-provision your client's app before it takes effect — until then they are billed and charged the old way.",
+      "crossover": "At {percent}, commission costs the same as the flat module (€19/mo) at about {amount} of monthly online turnover. Below that your client pays less on commission than on flat; above it, more.",
+      "modeLabel": "Pricing",
+      "modeFlat": "Flat (€19/mo)",
+      "modeCommission": "Commission",
+      "rateLabel": "Rate (basis points, 100 = 1%)",
+      "rateHint": "e.g. 150 = 1.50%. Ceiling {max} bps.",
+      "notEligibleRegistryUnavailable": "We can't check this client's setup right now, so commission stays off for the moment.",
+      "notEligibleNotPaired": "Commission needs this client to have the online-payments module and their own Stripe account. Ask us for both, and this switch opens up.",
+      "submit": "Save",
+      "saving": "Saving…",
+      "prOpened": "Sent to SofraPiwas. We apply it to your client's app and confirm — nothing has changed at their checkout yet.",
+      "alreadySet": "Your client's app already runs that rate. Nothing to send."
     },
     "paymentsPending": {
       "kicker": "Card payments",
@@ -1455,6 +1514,15 @@
       "bundle": {
         "counter": "Counter",
         "full-service": "Full service"
+      },
+      "paymentsMode": {
+        "title": "How you pay for online payments",
+        "flatLabel": "Flat fee — {price}/month",
+        "flatHint": "One fixed price, whatever you take online.",
+        "commissionLabel": "No monthly fee — {percent} per order",
+        "commissionHint": "Nothing until a guest actually pays online.",
+        "crossover": "Below about {amount} a month of online orders, the {percent} rate costs less than the flat fee; above that, the flat fee is cheaper.",
+        "deferredNote": "Online payments needs your own Stripe account, which only you can set up — we'll send you the link once you're live. Until then this is just your preference; it switches on right after."
       }
     }
   },

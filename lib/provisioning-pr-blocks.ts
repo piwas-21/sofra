@@ -1,6 +1,7 @@
 // The CONDITIONAL sections of an ADR-012 provisioning PR body — the parts that
 // appear only when the entry carries something the founder has to look at before
-// merging (a withheld module, a partner's own zone, a partner credit).
+// merging (a withheld module, a partner's own zone, a partner credit, a
+// per-transaction commission rate).
 //
 // Split out of lib/provisioning-pr-body.ts when the pair outgrew one file's LOC
 // limit (CLAUDE.md §4), the same split that file records having had from
@@ -56,6 +57,53 @@ export function deferredSection(
     "and restart the tenant so it picks up the Stripe env. Full recipe — account creation,",
     "the KYC sitting, TWINT, the box env — workspace `docs/runbooks/signup-to-live-tenant.md`",
     "**§2b**, which is written to be followed BEFORE this second PR.",
+  ];
+}
+
+/**
+ * The commission rate this entry carries — or, when a rate was requested but
+ * `online-payments` itself is deferred, why the entry carries NEITHER
+ * (SOFRA-PAYMENTS-PRICING-MODE-PLAN, S1).
+ *
+ * `provision-tenant.sh` refuses a non-zero `payments_commission_bps` unless the
+ * SAME entry also carries `online-payments` in `modules` AND a `stripe_account`
+ * — the identical shape as the deferred-module guard above, one field over.
+ * `buildTenantRegistryEntry` already drops the rate rather than write half of
+ * that condition; this section is the only place a founder is told a number
+ * they requested is silently missing from the diff, because nothing else in
+ * the body would say so.
+ */
+export function commissionSection(
+  slug: string,
+  paymentsCommissionBps: number | undefined,
+  grantsOnlinePayments: boolean,
+): string[] {
+  if (!paymentsCommissionBps) return [];
+  const pct = (paymentsCommissionBps / 100).toFixed(2);
+  if (grantsOnlinePayments) {
+    return [
+      "",
+      `### 💳 Per-transaction commission: \`${paymentsCommissionBps}\` bps (${pct}%)`,
+      "",
+      "This tenant is on the `commission` payments mode: `online-payments` is billed at",
+      "€0/mo and Sofra takes this rate instead, sent to Stripe as",
+      "`application_fee_amount` on each online order. Same as any other field in this",
+      "entry, it only takes effect once this PR merges and the tenant is (re-)provisioned —",
+      "until then the billing record and the registry can disagree, same as any other",
+      "registry-PR window.",
+    ];
+  }
+  return [
+    "",
+    `### ⚠️ Requested commission rate \`${paymentsCommissionBps}\` bps (${pct}%) is NOT in this entry`,
+    "",
+    "`provision-tenant.sh` refuses a non-zero `payments_commission_bps` unless the SAME",
+    "entry also carries `online-payments` in `modules` AND a `stripe_account` — the exact",
+    "pair deferred in the section above. Writing the rate here without them would only move",
+    "the same refusal onto this field, so it is held back alongside `online-payments` and",
+    `must be added in the SAME follow-up PR: add \`payments_commission_bps: ${paymentsCommissionBps}\``,
+    "next to `stripe_account` and `online-payments` in that one commit — not before, and not",
+    "in a separate PR of its own, or the guard trips on whichever field lands first.",
   ];
 }
 
