@@ -4,6 +4,18 @@
 generator client {
   provider = "prisma-client"
   output   = "../lib/generated/prisma"
+  // The module system this package actually is. package.json declares no `type`,
+  // so every .ts in this repo is CommonJS — but the generator was emitting an
+  // ESM-only client (`globalThis["__dirname"] = path.dirname(fileURLToPath(
+  // import.meta.url))` at the top of client.ts), which only a bundler can load.
+  // Next bundles, so the app never noticed; anything that does NOT bundle could
+  // not import `lib/db.ts` at all, which is why the mint chain had no way to be
+  // exercised outside a browser request (tests/e2e/connect-mint.spec.ts). Saying
+  // `cjs` makes the generated code match the package it is generated into.
+  // Nothing is committed — lib/generated/ is gitignored and rebuilt by
+  // `prisma generate` on every build, so this changes an OUTPUT FORMAT, not an
+  // artifact anyone reviews.
+  moduleFormat = "cjs"
 }
 
 datasource db {

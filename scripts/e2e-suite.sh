@@ -11,6 +11,11 @@
 # Billing (CLAUDE.md §9): this refuses to run against a `live_` key. It reads
 # MOLLIE_API_KEY_TEST from .env; without it the billing specs SKIP loudly rather
 # than pass quietly, and the rest of the suite still runs.
+#
+# Payments (same rule, sharper): the mint spec CREATES Stripe connected accounts, so
+# it runs on an `sk_test_` key only — STRIPE_API_KEY_TEST, or a STRIPE_SECRET_KEY that
+# is already a test key. Without one it SKIPS with a reason. Every account it creates
+# is deleted by the spec itself, and the deletion is asserted.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
@@ -27,12 +32,16 @@ trap cleanup EXIT
 # without touching Mollie at all (and how the skip path itself gets tested).
 # Without this, sourcing .env would silently put the key back.
 PRESET_MOLLIE="${MOLLIE_API_KEY_TEST-__unset__}"
+PRESET_STRIPE="${STRIPE_API_KEY_TEST-__unset__}"
 if [[ -f .env ]]; then
   # shellcheck disable=SC1091
   set -a && . ./.env && set +a
 fi
 if [[ "$PRESET_MOLLIE" != "__unset__" ]]; then
   MOLLIE_API_KEY_TEST="$PRESET_MOLLIE"
+fi
+if [[ "$PRESET_STRIPE" != "__unset__" ]]; then
+  STRIPE_API_KEY_TEST="$PRESET_STRIPE"
 fi
 MOLLIE_KEY="${MOLLIE_API_KEY_TEST:-}"
 if [[ -n "$MOLLIE_KEY" && "$MOLLIE_KEY" != test_* ]]; then
@@ -41,6 +50,32 @@ if [[ -n "$MOLLIE_KEY" && "$MOLLIE_KEY" != test_* ]]; then
 fi
 if [[ -z "$MOLLIE_KEY" ]]; then
   echo "note: no MOLLIE_API_KEY_TEST — the billing specs will skip" >&2
+fi
+
+# ── secrets: test Stripe key only, never the live one ───────────────────────
+# Same shape as Mollie above, and for a sharper reason: tests/e2e/connect-mint.spec.ts
+# CREATES Stripe connected accounts, which are real objects with a KYC surface. A
+# test-mode one can be deleted afterwards (the spec asserts it); a live one belongs to
+# a real business. So an explicitly-named *_TEST value that is not `sk_test_` kills the
+# run rather than being ignored — an operator who set it meant to exercise this.
+#
+# The fallback to STRIPE_SECRET_KEY is deliberate and is FILTERED, not refused: that is
+# the name a developer's .env already uses, and without the fallback the mint spec would
+# skip on every machine that has a perfectly good test key sitting right there — a gap
+# that closes itself quietly, which is the failure this spec exists to prevent. A live
+# value under that name is simply not used (the suite is not the place to fail someone's
+# whole run over a variable they did not aim at us), and the spec then skips WITH A
+# REASON.
+STRIPE_KEY="${STRIPE_API_KEY_TEST:-}"
+if [[ -n "$STRIPE_KEY" && "$STRIPE_KEY" != sk_test_* ]]; then
+  echo "refusing to run: STRIPE_API_KEY_TEST is not an sk_test_ key" >&2
+  exit 1
+fi
+if [[ -z "$STRIPE_KEY" && "${STRIPE_SECRET_KEY:-}" == sk_test_* ]]; then
+  STRIPE_KEY="$STRIPE_SECRET_KEY"
+fi
+if [[ -z "$STRIPE_KEY" ]]; then
+  echo "note: no sk_test_ Stripe key — the connect-mint spec will skip" >&2
 fi
 
 echo "→ throwaway postgres on :$DB_PORT"
@@ -121,6 +156,10 @@ export SOFRA_INVOICE_SERIES="E2E"
 # fails on this value — and that failure is the proof it passed.
 export PROVISION_GITHUB_TOKEN="ghp_e2e_placeholder_never_valid_0000000000"
 export MOLLIE_API_KEY="$MOLLIE_KEY"
+# The platform Stripe key the mint spec (and the app) read. Only ever an sk_test_
+# value by the time it gets here — see the refusal above. Empty is a valid state:
+# tests/e2e/connect-mint.spec.ts then skips with a stated reason instead of passing.
+export STRIPE_API_KEY="$STRIPE_KEY"
 # A developer's real Resend key in .env/.env.local would otherwise fire a live
 # API call per signup — sending test addresses to a third party and making the
 # run depend on their uptime. Blanking it here wins (process env beats .env
