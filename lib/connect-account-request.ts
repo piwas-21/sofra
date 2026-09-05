@@ -62,7 +62,7 @@ export const CONNECT_ONBOARDABLE_COUNTRIES: Readonly<Record<string, string>> = {
 };
 
 /** Countries in the list above whose bank accounts are NOT identified by an IBAN. */
-const NON_IBAN_COUNTRIES: readonly string[] = ["US"];
+const NON_IBAN_COUNTRIES = new Set<string>(["US"]);
 
 /** Eating places / restaurants. Every tenant of this platform is one. */
 export const RESTAURANT_MCC = "5812";
@@ -164,7 +164,7 @@ export function expressAccountForm(input: ExpressAccountInput): Record<string, s
 
   const iban = input.iban?.replace(/\s+/g, "").toUpperCase();
   if (iban) {
-    if (NON_IBAN_COUNTRIES.includes(country)) {
+    if (NON_IBAN_COUNTRIES.has(country)) {
       throw new Error(`an IBAN was supplied for ${country}, whose bank accounts Stripe identifies by routing number`);
     }
     form["external_account[object]"] = "bank_account";
