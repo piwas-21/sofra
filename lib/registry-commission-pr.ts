@@ -18,50 +18,9 @@ import {
   ProvisioningApiError,
 } from "./provisioning";
 import { currentRegistryCommissionBps, setRegistryCommissionBps } from "./registry-commission-edit";
-import { crossoverCentsPerMonth } from "./payments-pricing";
-import { MODULES } from "./module-catalog";
-
-// The same lookup `payments-pricing.ts` uses, for the identical reason: reading
-// the ONE catalog rather than a second hardcoded price that could drift from it.
-const ONLINE_PAYMENTS_PRICE_CENTS = MODULES.find((m) => m.id === "online-payments")!.priceCents;
+import { commissionChangePrBody } from "./registry-commission-pr-body";
 
 export type CommissionChangeResult = { alreadySet: true } | { alreadySet: false; prUrl: string };
-
-/**
- * The PR body: tenant, old → new rate, the crossover (so a reviewer sees the
- * commercial consequence, plan §2), and — the fact easiest to miss — that
- * merging changes ENFORCEMENT only. The billing intent already moved the
- * moment the caller wrote `TenantBilling`; this PR is what makes the box agree
- * with it, and only a re-provision (never a `restart`, which re-reads nothing)
- * makes that happen.
- */
-function commissionChangePrBody(slug: string, oldBps: number, newBps: number): string {
-  const crossover = crossoverCentsPerMonth(newBps, ONLINE_PAYMENTS_PRICE_CENTS);
-  return [
-    `Updates \`${slug}\`'s per-transaction commission rate in \`tenants/registry.yml\`, proposed by the control plane's \`/admin\` (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2a).`,
-    "",
-    `- **tenant** \`${slug}\``,
-    `- **rate** \`${oldBps}\` bps → \`${newBps}\` bps`,
-    crossover !== null
-      ? `- **crossover** ~\`${(crossover / 100).toFixed(2)}\` of monthly online turnover (this tenant's own billing currency, major units) — below that figure \`flat\` would have cost this tenant less; above it, \`commission\` does`
-      : "- **crossover** none at 0 bps — commission costs nothing no matter the turnover",
-    "",
-    "### Merging this changes ENFORCEMENT only",
-    "",
-    "This edits what is sent to Stripe as `application_fee_amount` once the tenant is",
-    "next provisioned — merging alone does **not** flip anything live, and a",
-    "`docker compose restart` re-reads nothing (the tenant's env is baked at",
-    "provisioning). The billing intent (`TenantBilling`) already reflects the new rate;",
-    "until the re-provision below runs, the tenant is billed the new rate while still",
-    "being enforced at the old one.",
-    "",
-    "```bash",
-    `gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=${slug}`,
-    "```",
-    "",
-    "Idempotent and safe to re-run.",
-  ].join("\n");
-}
 
 /**
  * Open a PR amending `slug`'s `payments_commission_bps` to `bps`. Mirrors
