@@ -319,6 +319,35 @@ describe("deferring online-payments out of the generated entry", () => {
     expect(deferred).toEqual(["online-payments"]);
   });
 
+  it("emits payments_link_url beside the account, and never without one", () => {
+    // The tenant's own onboarding page, finished here and copied verbatim by
+    // provision-tenant.sh into `Stripe:PaymentsLinkUrl`. It is PAIRED with the
+    // account for the same reason the module is: with no account there is no
+    // onboarding page to point at, and a button that 404s is worse than no button.
+    const withAccount = buildTenantRegistryEntry({
+      ...base,
+      modules: bought,
+      stripeAccount: "acct_1UCOkhCSPiP2JWOQ",
+      paymentsLinkUrl: "https://sofrapiwas.com/onboarding/payments/tok123",
+    });
+    const t = asTenant(withAccount, base.slug) as Record<string, unknown>;
+    expect(t.payments_link_url).toBe("https://sofrapiwas.com/onboarding/payments/tok123");
+    expect(t.stripe_account).toBe("acct_1UCOkhCSPiP2JWOQ");
+
+    // No account: the link is withheld even though it was supplied.
+    const orphan = buildTenantRegistryEntry({
+      ...base,
+      modules: bought,
+      paymentsLinkUrl: "https://sofrapiwas.com/onboarding/payments/tok123",
+    });
+    expect("payments_link_url" in (asTenant(orphan, base.slug) as Record<string, unknown>)).toBe(false);
+
+    // And an entry that never asked for one is byte-identical to what this
+    // generator emitted before the field existed.
+    const none = buildTenantRegistryEntry({ ...base, modules: bought });
+    expect("payments_link_url" in (asTenant(none, base.slug) as Record<string, unknown>)).toBe(false);
+  });
+
   it("changes nothing for a tenant that did not buy it", () => {
     // The strip must be surgical: a generator that quietly dropped ids would be the same
     // class of bug pointed the other way.

@@ -49,6 +49,15 @@ export interface TenantProvisionInput {
    */
   stripeAccount?: string;
   /**
+   * The tenant's own onboarding page (`https://…/onboarding/payments/<token>`),
+   * server-derived exactly like `stripeAccount` and emitted BESIDE it. It becomes
+   * the tenant's `Stripe:PaymentsLinkUrl`, i.e. the button in their own Payments
+   * tab. One opaque field: `provision-tenant.sh` copies it and never learns that
+   * part of it is a credential, and no per-environment concatenation can put a
+   * working link in front of the wrong site.
+   */
+  paymentsLinkUrl?: string;
+  /**
    * Why there is no `stripeAccount`, in founder-facing words. NOT a registry field —
    * `buildTenantRegistryEntry` ignores it entirely; it exists so the PR body can say
    * what went wrong at the one moment someone is reading the diff. Absent when an
@@ -155,6 +164,11 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): {
       // it — the two are written from the same `granted`/`stripeAccount` pair so the
       // entry can never carry one half of the guard's condition.
       ...(stripeAccount ? { stripe_account: stripeAccount } : {}),
+      // Emitted only ALONGSIDE the account, never on its own: without an account
+      // there is no onboarding page to point at, and a link to a page that 404s is
+      // worse than no button at all. Same pairing discipline as the two fields
+      // above, one field along.
+      ...(stripeAccount && input.paymentsLinkUrl ? { payments_link_url: input.paymentsLinkUrl } : {}),
       // Whether the rate belongs in THIS entry: grantedCommissionBps (same pairing
       // rule as stripe_account above, applied to a second field).
       ...(commissionBps !== undefined ? { payments_commission_bps: commissionBps } : {}),

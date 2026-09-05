@@ -123,6 +123,7 @@ export async function openProvisioningPr(
     ...input,
     partnerBrand,
     ...(mint.stripeAccount ? { stripeAccount: mint.stripeAccount } : {}),
+    ...(mint.paymentsLinkUrl ? { paymentsLinkUrl: mint.paymentsLinkUrl } : {}),
     ...(mint.note ? { stripeAccountNote: mint.note } : {}),
   };
 
