@@ -580,6 +580,18 @@ jobs:
             ""|test_*) ;;
             *) echo "MOLLIE_API_KEY_TEST is not a test_ key — refusing" >&2; exit 1 ;;
           esac
+      # Same refusal, one provider over, and the stake is higher: the mint spec
+      # CREATES Stripe connected accounts. A test-mode account is deletable and the
+      # spec deletes every one it makes; a live account is a real business's KYC
+      # record. So a non-sk_test_ value fails the job rather than reaching a runner.
+      - name: Refuse a non-test Stripe key
+        env:
+          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY_TEST }}
+        run: |
+          case "$STRIPE_API_KEY" in
+            ""|sk_test_*) ;;
+            *) echo "STRIPE_API_KEY_TEST is not an sk_test_ key — refusing" >&2; exit 1 ;;
+          esac
       - name: Run smoke
         # Billing E2E runs against the REAL Mollie API when a test_ key is
         # available. Optional on purpose: with no secret the billing spec SKIPS
@@ -591,6 +603,12 @@ jobs:
         # `pull_request_target`.
         env:
           MOLLIE_API_KEY: ${{ secrets.MOLLIE_API_KEY_TEST }}
+          # The mint E2E (tests/e2e/connect-mint.spec.ts) runs against the REAL Stripe
+          # API when an sk_test_ key is available, and deletes every account it creates
+          # — asserted, not best-effort. Optional the same way the Mollie key is: with
+          # no secret the spec SKIPS with a stated reason. Until the secret exists, the
+          # chain is proven by a local run of scripts/e2e-suite.sh and nothing more.
+          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY_TEST }}
           # Mollie validates webhook reachability at payment creation and 422s a
           # localhost URL, so real payments cannot be created from a runner without
           # this. The spec POSTs the real payment id to the local handler itself;

@@ -748,3 +748,57 @@ export async function arrangeBillingIdentityFor(
     [userId, opts.legalName, opts.tradeName ?? null, opts.addressLine1],
   );
 }
+
+
+/** One `StripeConnectAccount` row — the sibling table that holds a MINTED
+ *  connected account between the Stripe call and the registry PR (E1). */
+export type ConnectAccountRow = {
+  tenantSlug: string;
+  stripeAccountId: string;
+  idempotencyKey: string;
+  country: string;
+  onboardingToken: string | null;
+};
+
+/** Rows for one slug. Read directly rather than through
+ *  `findConnectAccountForSlug`, so the spec's oracle is not the same code path
+ *  the mint used to write it — a reader that filtered the row out would
+ *  otherwise make a missing row and a hidden row indistinguishable. */
+export async function findConnectAccounts(tenantSlug: string): Promise<ConnectAccountRow[]> {
+  return await query<ConnectAccountRow>(
+    `SELECT "tenantSlug", "stripeAccountId", "idempotencyKey", country, "onboardingToken"
+       FROM "StripeConnectAccount" WHERE "tenantSlug" = $1`,
+    [tenantSlug],
+  );
+}
+
+/** Every row this run left behind, whatever the slug — the cleanup's own
+ *  inventory. Keyed on the run's namespace (`uniq.slug` ends every slug with
+ *  RUN_ID) rather than on what a test remembered to report, because the account
+ *  that most needs deleting is the one created by a test that then failed. A
+ *  suffix match rather than `e2e-%`, so a run can never delete another run's
+ *  accounts if this is ever pointed at a database it does not own. */
+export async function findConnectAccountsForRun(runId: string): Promise<ConnectAccountRow[]> {
+  return await query<ConnectAccountRow>(
+    `SELECT "tenantSlug", "stripeAccountId", "idempotencyKey", country, "onboardingToken"
+       FROM "StripeConnectAccount" WHERE "tenantSlug" LIKE '%' || $1 ORDER BY "tenantSlug"`,
+    [runId],
+  );
+}
+
+/**
+ * Drop the row for a slug and report how many went — the CRASH, arranged.
+ *
+ * The window this simulates is the one `StripeConnectAccount` exists for: the
+ * account is live at Stripe and the process died before the row was written.
+ * Deleting the row afterwards puts the system in exactly that state, which is
+ * the only way to make the next mint go to Stripe again and prove the
+ * idempotency key (not the row) is what recovers the account.
+ */
+export async function forgetConnectAccount(tenantSlug: string): Promise<number> {
+  const rows = await query<{ tenantSlug: string }>(
+    `DELETE FROM "StripeConnectAccount" WHERE "tenantSlug" = $1 RETURNING "tenantSlug"`,
+    [tenantSlug],
+  );
+  return rows.length;
+}
