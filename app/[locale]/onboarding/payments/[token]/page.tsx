@@ -44,9 +44,9 @@ export async function generateMetadata({
  */
 export default async function OnboardingPaymentsPage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ locale: string; token: string }>;
-}) {
+}>) {
   const { locale, token } = await params;
   const t = await getTranslations({ locale, namespace: "onboardingPayments" });
 
