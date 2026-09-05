@@ -19,30 +19,34 @@ import type { ModuleId } from "./module-catalog";
  * lacking card payment — it yields no tenant at all.
  *
  * Hence the pairing rule below: the module ships only alongside an account, never on
- * its own. Which half is missing depends on the path in, and BOTH paths reach this one
- * generator:
+ * its own.
  *
- * - **Self-serve.** The buyer has no `acct_` and cannot be given one — only the
- *   restaurant can create it, through Stripe's hosted onboarding, which cannot be
- *   pre-filled (`oauth_not_supported` on a Standard account, SOFRA-PAYMENTS-PLAN §3).
- *   So the module is deferred to a second registry PR and the PR body says so.
- * - **Founder.** `docs/runbooks/signup-to-live-tenant.md` §2b has the founder create
- *   the account BEFORE proposing, precisely because of this guard — so they arrive
- *   holding the `acct_`, and the entry carries both halves in one shot.
+ * WHAT CHANGED (ADR-011 amendment — Express). This rule used to fire on nearly every
+ * self-serve entry, because of a premise stated here and in four other files: "the
+ * buyer has no `acct_` and cannot be given one — only the restaurant can create it,
+ * through Stripe's hosted onboarding, which cannot be pre-filled". MEASURED 2026-09-05:
+ * `oauth_not_supported` is the answer to an UPDATE, not to a CREATE. Prefill at create
+ * time works, so the control plane mints the account itself (lib/provisioning-mint.ts)
+ * BEFORE the proposal is composed, and both paths — self-serve and founder — now arrive
+ * holding an `acct_`.
  *
- * Deferring unconditionally would have been wrong for the second path: it would make
- * the founder's documented order pointless and tell them, falsely, that no account can
- * exist yet.
+ * So this function is no longer the normal path; it is the LAST-RESORT one, and it is
+ * kept for exactly that. `provision-tenant.sh:117` still refuses the module without an
+ * account, before the database, and that guard must stay SATISFIABLE: when a mint fails
+ * (Stripe down, a currency whose country we cannot derive, a key without
+ * `Connect -> write`), the entry must still be one a merge can stand up. Withholding the
+ * module gives the restaurant everything else and a working cash tenant; proposing the
+ * unpaired module would give them no tenant at all.
  */
-const ACCOUNT_PAIRED_MODULE_IDS: readonly ModuleId[] = ["online-payments"];
+export const ACCOUNT_PAIRED_MODULE_IDS: readonly ModuleId[] = ["online-payments"];
 
 /**
- * Split a purchased module list into what this entry may carry now and what must wait
- * for a second registry PR. Pure and shared, so the entry and the PR body describing it
- * cannot disagree about which is which.
+ * Split a purchased module list into what this entry may carry now and what must wait.
+ * Pure and shared, so the entry and the PR body describing it cannot disagree about
+ * which is which.
  *
- * `stripeAccount` is the whole hinge: with one, nothing is deferred; without one, the
- * account-paired ids are held back.
+ * `stripeAccount` is the whole hinge: with one — which is now the ordinary case, because
+ * we mint it — nothing is deferred; without one, the account-paired ids are held back.
  */
 export function splitDeferredModules(
   modules: string[],

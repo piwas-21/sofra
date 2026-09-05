@@ -73,8 +73,12 @@ describe("the P4 card's copy rule (§9 Q1)", () => {
     const card = strings(locale);
     // Guard against a vacuous pass: an empty or missing namespace would satisfy every
     // assertion below without a single string being checked.
+    // `stripeLink` was replaced by `nextStep` under the ADR-011 amendment: an
+    // Express restaurant has no full Stripe dashboard to link to, and in THIS
+    // state they have no account at all, so the old <a> pointed at a login they
+    // could not use. The sentence it carried is re-stated as prose.
     expect(Object.keys(card).sort()).toEqual(
-      ["billingNote", "body", "kicker", "stripeLink", "title"],
+      ["billingNote", "body", "kicker", "nextStep", "title"],
     );
     for (const [key, value] of Object.entries(card)) {
       expect(value.length, `${locale}.${key} is empty`).toBeGreaterThan(0);

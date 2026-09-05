@@ -103,23 +103,17 @@ export default function ProvisionForm({
         aria-label={t("provision.currency")}
         className="input-primary"
       />
-      {/* Optional, and deliberately NOT prefilled from a signup: a lead has no connected
-          account (only the restaurant can create one, via Stripe's hosted onboarding).
-          It is here for the founder path, where runbook §2b creates the account BEFORE
-          proposing — with it the entry carries `online-payments` in one shot, without it
-          the generator holds the module back rather than proposing an entry that
-          provision-tenant.sh refuses. */}
-      <label className="sm:col-span-2 grid gap-1 font-label text-sm text-muted-foreground">
-        <input
-          name="stripeAccount"
-          pattern="acct_[A-Za-z0-9]{8,32}"
-          defaultValue=""
-          placeholder={t("provision.stripeAccount")}
-          aria-label={t("provision.stripeAccount")}
-          className="input-primary"
-        />
-        <span>{t("provision.stripeAccountHint")}</span>
-      </label>
+      {/* NOT an input any more (ADR-011 amendment). The premise this field rested on —
+          "only the restaurant can create a connected account, and it cannot be
+          pre-filled" — was measured false at CREATE time, so the control plane mints the
+          account itself before this proposal is composed and the entry carries
+          `online-payments` AND `stripe_account:` in one commit. Left as a read-only
+          sentence rather than deleted: the founder is about to review a PR whose diff
+          contains an `acct_` nobody typed, and this is where they learn where it came
+          from. If the mint fails, the PR body says so and says what to do. */}
+      <p className="sm:col-span-2 font-label text-sm text-muted-foreground">
+        {t("provision.stripeAccountNote")}
+      </p>
       {/* A partner's own zone (SOFRA-PARTNER-FLEXIBILITY-PLAN D1). The default option is
           empty and emits exactly the entry this form emitted before the field existed:
           `<slug>.sofrapiwas.com`, no `base_domain:` key. Picked, the entry's domain is

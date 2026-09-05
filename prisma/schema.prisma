@@ -916,3 +916,144 @@ model StripeApplicationFee {
   @@index([connectedAccountId, feeCreatedAt])
   @@index([chargeId])
 }
+
+/// The Stripe CONNECTED ACCOUNT this platform minted for a tenant (ADR-011
+/// amendment: tenants get Express connected accounts, which the control plane
+/// creates — the founder no longer `curl`s one by hand).
+///
+/// It exists because of a gap with no other floor under it. Minting is a live,
+/// billable, externally-visible side effect; the registry PR that records
+/// `stripe_account:` is composed AFTERWARDS and merged by a human minutes or
+/// days later. A crash in between used to lose a real Stripe account with
+/// nothing anywhere naming it. This row is written IMMEDIATELY after the mint,
+/// before the PR is composed, so the account is ours again the moment it exists.
+///
+/// A dedicated model rather than a column on TenantBilling, for three reasons:
+///   1. TenantBilling exists only for a tenant with a BILLING PLAN. The founder
+///      path (/admin/provision) stands a tenant up with no TenantBilling row at
+///      all, and it mints accounts too — a column there could not hold them.
+///   2. It is the third table of a shape this app already has twice
+///      (StripeFeeRefund, StripeApplicationFee): keyed on a Stripe id, joined
+///      back to a tenant at READ time, never an FK (ADR-007).
+///   3. An account has its own lifecycle facts to record (onboarding progress,
+///      capabilities) that have nothing to do with a Mollie subscription.
+model StripeConnectAccount {
+  id String @id @default(cuid())
+
+  /// The registry slug this account was minted FOR. @unique is the durable
+  /// "one account per tenant" guard — the one that still holds after Stripe's
+  /// idempotency key has expired (see `idempotencyKey`). NOT a foreign key, same
+  /// seam as TenantBilling.tenantSlug and StripeApplicationFee.connectedAccountId
+  /// (ADR-007): the registry is the source of truth and this app never writes it.
+  tenantSlug String @unique
+
+  /// Stripe's own account id (`acct_...`). @unique for the reason
+  /// StripeApplicationFee.applicationFeeId is: it is the anchor a repeated
+  /// delivery of the same fact upserts on, so a second write about one account
+  /// can restate the row but can never split it in two.
+  stripeAccountId String @unique
+
+  /// The `Idempotency-Key` the mint was sent with (`<slug>-connect-express-v1`),
+  /// recorded rather than only derived. Two facts make it worth a column.
+  ///
+  /// MEASURED 2026-09-05, test platform acct_1TpwTNCAHTt6eZ8i: the same key with
+  /// the same body returns the SAME account (acct_1UCOkh… twice); a key differing
+  /// in one character returns a DIFFERENT one (acct_1UCOkp…, the negative
+  /// control, both since deleted); and the same key with a CHANGED body is a
+  /// hard `400 "Keys for idempotent requests can only be used with the same
+  /// parameters they were first used with"`. So the key is the mechanism, and
+  /// the prefill payload is part of it.
+  ///
+  /// Stripe expires an idempotency key after ~24h (documented, not measurable
+  /// here), which is exactly why it is not the only guard: after that window
+  /// `tenantSlug @unique` above is what stops a second account, and this column
+  /// says which convention minted the row if the key ever needs a `-v2`.
+  idempotencyKey String @unique
+
+  /// ISO-3166-1 alpha-2, as sent to Stripe. Immutable at Stripe after creation
+  /// (as is the account TYPE), which is why it is recorded rather than re-read:
+  /// it is the field a wrong tenant address would have silently baked in.
+  country String
+
+  /// The unguessable path segment of `/onboarding/payments/<token>` (E4) — 32
+  /// random bytes, base64url. The page it addresses mints a Stripe Account Link
+  /// and redirects to it, and that link is a BEARER capability: whoever opens it
+  /// can submit this restaurant's KYC and set the bank account its money is paid
+  /// into. Addressing the page by slug would therefore be an open door onto a
+  /// real restaurant's payout details.
+  ///
+  /// NULLABLE only because the column arrived after the table did; every row this
+  /// app writes has one, and a row without one is unreachable by that page rather
+  /// than reachable without a token.
+  onboardingToken String? @unique
+
+  /// When WE recorded it. Deliberately not "when Stripe created it": the two are
+  /// seconds apart and nothing here periodises on this, so a second clock would
+  /// be a field that can only ever disagree.
+  createdAt DateTime @default(now())
+}
+
+/// What Stripe last told us about a connected account (ADR-011 amendment, E5),
+/// written by the `account.updated` branch of app/api/webhooks/stripe/route.ts.
+///
+/// The third table of the shape this app already has twice (StripeFeeRefund,
+/// StripeApplicationFee): keyed on a Stripe id, joined back to a tenant at READ
+/// time, never by a foreign key (ADR-007). Separate from StripeConnectAccount —
+/// which records accounts WE minted — because an account this platform did not
+/// mint can still send this event (the hand-run `curl` in runbook §2b.1 made
+/// some), and dropping its status because we cannot name its tenant would be the
+/// same mistake StripeApplicationFee's header refuses to make about money.
+///
+/// It is a CACHE OF AN OBSERVATION, not a ledger: every row is overwritten by the
+/// next delivery. That is safe here only because the write path takes the account
+/// ID from the event and RE-READS the account from Stripe (CLAUDE.md §5.3,
+/// fetch-and-verify) — so a redelivery of a stale event writes today's truth
+/// rather than yesterday's, and no event ordering has to be reasoned about.
+///
+/// The tenant-facing read model is unchanged and stays in the backend
+/// (`StripeAccountClient`, 5-minute cache, derived from `charges_enabled` +
+/// `requirements.currently_due`). This table exists for the CONTROL plane: to
+/// drive "your card payments are live" and to answer "did onboarding finish?"
+/// without a fleet-wide loop over `GET /v1/accounts`.
+model StripeAccountStatus {
+  id String @id @default(cuid())
+
+  /// `acct_...`. @unique is the idempotency anchor, the same role
+  /// StripeApplicationFee.applicationFeeId plays — one row per account, upserted.
+  connectedAccountId String @unique
+
+  /// Can this account take a card RIGHT NOW. The single fact everything
+  /// tenant-facing is derived from.
+  chargesEnabled Boolean
+
+  /// Can Stripe pay this account's balance out. Separate from `chargesEnabled`
+  /// on purpose: they move independently, and a restaurant taking cards whose
+  /// payouts are blocked is a support call nobody would otherwise see coming.
+  payoutsEnabled Boolean
+
+  /// Has the restaurant finished Stripe's hosted form. NOT the same as
+  /// `chargesEnabled` — an account under review has submitted everything and
+  /// still cannot charge — and it is the field that decides which link
+  /// /onboarding/payments mints (lib/connect-account-links.ts).
+  detailsSubmitted Boolean
+
+  /// How many fields Stripe is still waiting for
+  /// (`requirements.currently_due.length`). The COUNT, not the list: the field
+  /// names are Stripe's vocabulary, they change, and the only question anyone
+  /// asks of them here is "is it zero yet". MEASURED on a CH Express account:
+  /// 16 bare, 13 prefilled without a business type, 6 fully prefilled.
+  requirementsDueCount Int
+
+  /// The TWINT capability's status (`active` / `inactive` / `pending`), or null
+  /// when the account does not list it at all. Recorded because it is the one
+  /// capability with a Stripe-side approval queue behind it, so "the tenant is
+  /// live but TWINT is not" is a state that exists and that nothing else reports.
+  twintCapability String?
+
+  /// When WE read this from Stripe — and this IS the right clock, unlike in the
+  /// two fee tables. Those record events that happened at a Stripe timestamp; a
+  /// status is a snapshot, so what matters is how old the snapshot is.
+  observedAt DateTime
+
+  createdAt DateTime @default(now())
+}

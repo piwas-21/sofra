@@ -33,14 +33,22 @@
 //    not handling it costs nothing today (the dispute is still visible in
 //    the connected account's own Stripe dashboard) and can be added once the
 //    behaviour is actually measured.
-//  - everything else Connect can send (account.updated, payout.*, …) is
-//    simply not this endpoint's job.
+//  - `account.updated` IS handled since the ADR-011 amendment (E5): it is how
+//    this platform learns a restaurant finished Stripe onboarding, now that the
+//    platform is the one that created the account. Its branch sits BELOW the
+//    `event.account` guard — the slot above is reserved for
+//    `application_fee.created`, which has no `event.account` at all.
+//  - everything else Connect can send (payout.*, balance.available, …) is
+//    simply not this endpoint's job yet. `payout.failed` is the next one worth
+//    having: under Express a bad IBAN becomes our support ticket rather than
+//    something the restaurant sees in a dashboard they do not have.
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { stripeConfigured, StripeError } from "@/lib/stripe";
 import { verifyingScope, webhookSecrets, type WebhookScope } from "@/lib/stripe-webhook-secrets";
 import { refundApplicationFeeForCharge } from "@/lib/stripe-fee-refund";
 import { recordApplicationFee } from "@/lib/stripe-fee-earned";
+import { recordAccountStatus } from "@/lib/stripe-account-status";
 
 /**
  * The ONE error taxonomy this endpoint has, shared by both branches rather than
@@ -142,8 +150,33 @@ export async function POST(request: Request) {
   if (!account) {
     // A platform-level event we do not act on — acknowledge and ignore rather
     // than guess at what it might mean.
+    //
+    // One exception is LOGGED rather than acted on. `account.updated` is expected
+    // to arrive on the `connect: true` endpoint naming its account, which is why
+    // its branch sits below this guard. If it ever arrives without one, that
+    // branch would never fire and the tell would be an empty table — the exact
+    // shape of silence that made `application_fee.created` invisible for a week.
+    // So say it out loud. No PII: an event id and a type.
+    if (event.type === "account.updated") {
+      console.warn("stripe webhook: account.updated with no event.account", event.id, scope);
+    }
     return NextResponse.json({ ok: true });
   }
+
+  // BELOW the account guard, deliberately, and the position is not free: the slot
+  // above it is taken by `application_fee.created`, which has NO `event.account`
+  // (measured) and would be discarded by the guard. This event is the opposite —
+  // it is ABOUT a connected account, so it names one, and reading the id from the
+  // guard rather than from the body is what keeps the two branches honest about
+  // which endpoint delivers what.
+  //
+  // It is how onboarding completion reaches us at all (E5). The alternative was a
+  // fleet-wide `GET /v1/accounts` poll, which is the rate-limit shape the
+  // backend's own account cache warns about.
+  if (event.type === "account.updated") {
+    return acknowledge("account status", scope, event.id, () => recordAccountStatus(account));
+  }
+
   if (event.type !== "charge.refunded") {
     return NextResponse.json({ ok: true });
   }

@@ -75,6 +75,19 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      // The one route whose URL *is* a credential (E4): the path segment is a
+      // 32-byte token that lets its holder open this restaurant's Stripe
+      // onboarding. The site-wide policy above sends the ORIGIN cross-origin,
+      // which is already safe — but this page redirects to Stripe and may one day
+      // render HTML with a link on it, and at that moment `strict-origin-...`
+      // would still send the full URL SAME-origin and the whole answer would hinge
+      // on nobody adding an outbound link. `no-referrer` costs nothing and does
+      // not depend on that. Last match wins in Next's header merge, so this
+      // overrides the entry above for these paths only.
+      {
+        source: "/:locale/onboarding/payments/:token",
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
+      },
     ];
   },
 };

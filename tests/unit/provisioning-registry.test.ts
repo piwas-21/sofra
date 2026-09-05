@@ -319,6 +319,35 @@ describe("deferring online-payments out of the generated entry", () => {
     expect(deferred).toEqual(["online-payments"]);
   });
 
+  it("emits payments_link_url beside the account, and never without one", () => {
+    // The tenant's own onboarding page, finished here and copied verbatim by
+    // provision-tenant.sh into `Stripe:PaymentsLinkUrl`. It is PAIRED with the
+    // account for the same reason the module is: with no account there is no
+    // onboarding page to point at, and a button that 404s is worse than no button.
+    const withAccount = buildTenantRegistryEntry({
+      ...base,
+      modules: bought,
+      stripeAccount: "acct_1UCOkhCSPiP2JWOQ",
+      paymentsLinkUrl: "https://sofrapiwas.com/onboarding/payments/tok123",
+    });
+    const t = asTenant(withAccount, base.slug) as Record<string, unknown>;
+    expect(t.payments_link_url).toBe("https://sofrapiwas.com/onboarding/payments/tok123");
+    expect(t.stripe_account).toBe("acct_1UCOkhCSPiP2JWOQ");
+
+    // No account: the link is withheld even though it was supplied.
+    const orphan = buildTenantRegistryEntry({
+      ...base,
+      modules: bought,
+      paymentsLinkUrl: "https://sofrapiwas.com/onboarding/payments/tok123",
+    });
+    expect("payments_link_url" in (asTenant(orphan, base.slug) as Record<string, unknown>)).toBe(false);
+
+    // And an entry that never asked for one is byte-identical to what this
+    // generator emitted before the field existed.
+    const none = buildTenantRegistryEntry({ ...base, modules: bought });
+    expect("payments_link_url" in (asTenant(none, base.slug) as Record<string, unknown>)).toBe(false);
+  });
+
   it("changes nothing for a tenant that did not buy it", () => {
     // The strip must be surgical: a generator that quietly dropped ids would be the same
     // class of bug pointed the other way.
@@ -338,8 +367,18 @@ describe("deferring online-payments out of the generated entry", () => {
     // Named as bought, not silently absent.
     expect(body).toContain("Bought but deliberately NOT in this entry: `online-payments`");
     expect(body).toContain("no restaurant at all");
-    // The reason the founder cannot just add it now.
-    expect(body).toContain("only the restaurant can create it");
+    // The reason there is no account. Under the ADR-011 amendment this is a FAILURE
+    // report — the control plane mints the account — so the body must carry the reason
+    // the mint gave rather than the retired premise that only the restaurant could
+    // create one.
+    expect(body).not.toContain("only the restaurant can create it");
+    const withNote = buildProvisioningPrBody({
+      ...base,
+      modules: bought,
+      stripeAccountNote: "EUR does not name one country",
+    });
+    expect(withNote).toContain("**Why there is no account:** EUR does not name one country");
+    expect(withNote).toContain("Sofra creates each tenant's Stripe **Express** account itself");
     // The follow-up, with BOTH halves — an entry adding one without the other is the
     // same landmine re-armed by hand.
     expect(body).toContain("stripe_account: acct_");

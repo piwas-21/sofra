@@ -701,7 +701,7 @@
         "modules": "modules : {list}",
         "template": "modèle : {template}",
         "stripeAccount": "Stripe : {account}",
-        "stripeAccountMissing": "Achète les paiements en ligne, mais cette entrée n'indique aucun stripe_account — le provisionnement refuse ce couple et s'arrête avant la base de données : reprovisionner ce tenant ne fait donc rien du tout. Ajoutez le compte à l'entrée, ou retirez le module.",
+        "stripeAccountMissing": "Achète les paiements par carte, mais cette entrée ne porte aucun stripe_account — le provisioning refuse la paire et s'arrête avant la base de données, donc re-provisionner ce restaurant ne fait rien du tout. C'est nous qui créons ce compte désormais : cela signifie donc que la création a échoué. Lisez la PR de proposition pour la raison, puis ajoutez le compte à l'entrée ou retirez le module.",
         "paymentsModeFlat": "paiements : forfait",
         "paymentsModeCommission": "paiements : commission ({percent})",
         "paymentsModePending": "(en attente — registre pas encore mis à jour)"
@@ -775,8 +775,6 @@
         "currency": "Devise (ex. EUR)",
         "languages": "Langues",
         "modules": "Modules",
-        "stripeAccount": "Compte Stripe (acct_…, facultatif)",
-        "stripeAccountHint": "Uniquement s’ils ont acheté online-payments ET que vous avez déjà créé leur compte connecté (runbook §2b). Laissé vide, le module est mis de côté et la PR explique comment l’ajouter ensuite — le provisionnement refuse le module sans compte.",
         "create": "Ouvrir la PR de registre",
         "creating": "Ouverture…",
         "created": "PR de registre ouverte — révisez + fusionnez, puis provisionnez :",
@@ -792,7 +790,8 @@
         "baseDomainOurs": "sofrapiwas.com — le nôtre (par défaut)",
         "baseDomainPreview": "Ce locataire répondra sur",
         "baseDomainDnsFirst": "Zone propre au partenaire : l'entrée porte base_domain: et l'enregistrement A doit déjà résoudre avant la fusion, sinon le certificat ne peut pas être émis.",
-        "baseDomainSlugPlaceholder": "<slug>"
+        "baseDomainSlugPlaceholder": "<slug>",
+        "stripeAccountNote": "Compte Stripe : nous le créons. Si ce restaurant achète les paiements par carte, la console crée son compte Stripe Express avant l'ouverture de la proposition, afin que l'entrée du registre porte le compte et le module ensemble. Rien à saisir ici — et si la création échoue, la PR explique pourquoi et quoi faire."
       },
       "fleet": {
         "title": "Parc d'imprimantes",
@@ -1013,7 +1012,7 @@
         "rateLabel": "Taux (points de base, 100 = 1 %)",
         "rateHint": "ex. 150 = 1,50 %. Plafond {max} points de base.",
         "notEligibleRegistryUnavailable": "Le registre des tenants n'a pas pu être lu, l'éligibilité à la commission ne peut donc pas être vérifiée pour l'instant.",
-        "notEligibleNotPaired": "L'entrée de registre de ce tenant ne comporte pas à la fois online-payments et un stripe_account — le provisionnement refuse un taux non nul sans ce couple, avant même la base de données. La commission reste désactivée tant que les deux ne sont pas présents.",
+        "notEligibleNotPaired": "L'entrée de ce restaurant ne porte pas à la fois online-payments et un stripe_account — le provisioning refuse un taux non nul sans cette paire, avant la base de données. C'est nous qui ouvrons désormais le compte Stripe : son absence signifie donc que la proposition n'a pas pu le créer (sa PR en donne la raison), ou que l'entrée est antérieure. La commission reste désactivée tant que les deux ne sont pas là.",
         "submit": "Enregistrer",
         "saving": "Enregistrement…",
         "prOpened": "PR de registre ouverte — fusionnez-la, puis reprovisionnez le tenant.",
@@ -1028,7 +1027,7 @@
         "net": "Net",
         "fees": "{count} frais",
         "empty": "Ce compte est surveillé et n'a rien encaissé sur cette période.",
-        "noAccount": "L'entrée de registre de ce client ne porte aucun stripe_account : il n'y a donc aucun compte pour lequel rapporter des frais. C'est l'état normal tant que le restaurant n'a pas terminé son inscription Stripe.",
+        "noAccount": "L'entrée de ce restaurant ne porte aucun stripe_account : il n'y a donc aucun compte pour lequel rapporter des commissions. Comme c'est nous qui créons ce compte, cela indique une entrée antérieure à ce changement, ou une création qui a échoué — pas un restaurant qui n'a pas encore terminé son inscription.",
         "registryUnavailable": "Le registre des clients n'a pas pu être lu : le compte connecté de ce client est donc inconnu pour l'instant. Aucun chiffre n'est affiché plutôt qu'un chiffre faux.",
         "unmatchedRefunds": "{count} remboursements de cette période n'ont aucun frais enregistré — leurs frais sont antérieurs à l'enregistrement, le net ci-dessus est donc inférieur à la réalité."
       },
@@ -1223,7 +1222,7 @@
       "rateLabel": "Taux (points de base, 100 = 1 %)",
       "rateHint": "ex. 150 = 1,50 %. Plafond {max} points de base.",
       "notEligibleRegistryUnavailable": "Nous ne pouvons pas vérifier la configuration de ce client pour l'instant : la commission reste donc désactivée.",
-      "notEligibleNotPaired": "La commission exige que ce client dispose du module de paiements en ligne et de son propre compte Stripe. Demandez-nous les deux et ce choix s'ouvrira.",
+      "notEligibleNotPaired": "La commission exige que ce client dispose du module online-payments et d'un compte Stripe. Ce compte, c'est nous qui l'ouvrons pour lui : s'il manque, c'est que quelque chose a échoué de notre côté — demandez-nous, et ce réglage s'ouvrira.",
       "submit": "Enregistrer",
       "saving": "Enregistrement…",
       "prOpened": "Envoyé à SofraPiwas. Nous l'appliquons à l'application de votre client et vous confirmons — rien n'a encore changé à son encaissement.",
@@ -1232,9 +1231,9 @@
     "paymentsPending": {
       "kicker": "Paiements par carte",
       "title": "Vos paiements par carte arrivent",
-      "body": "Votre offre inclut les paiements par carte. Nous sommes en train de les activer pour vous — vous n'avez rien à faire pour l'instant, et nous vous préviendrons dès qu'ils apparaîtront à votre caisse. D'ici là, votre restaurant est pleinement en ligne et encaisse les espèces comme d'habitude.",
-      "billingNote": "Votre offre est facturée à partir du jour où elle a démarré. Si les paiements par carte ne sont toujours pas activés à l'arrivée de votre première facture, demandez-nous et nous créditons ce mois-là.",
-      "stripeLink": "Votre tableau de bord Stripe"
+      "body": "Vous avez pris les paiements par carte avec votre formule. C'est nous qui ouvrons le compte Stripe pour vous : vous n'avez donc rien à faire pour l'instant, et nous vous prévenons dès que la carte apparaît à votre caisse. D'ici là, votre restaurant est pleinement en ligne et encaisse en espèces comme d'habitude.",
+      "billingNote": "Votre formule est facturée à partir du jour de son démarrage. Si les paiements par carte ne sont toujours pas actifs à l'arrivée de votre première facture, demandez-nous et nous créditons ce mois-là.",
+      "nextStep": "Le moment venu, Stripe vous présentera un court formulaire : votre date de naissance, un numéro de téléphone, et l'acceptation de leurs conditions. Nous vous transmettrons ce lien quand ce sera votre tour ; un lien Stripe ne reste valable que quelques minutes, il ne sert donc jamais à rien d'en garder un."
     },
     "invoice": {
       "title": "Facture",
@@ -1674,5 +1673,14 @@
       "vat": "Si votre société a un numéro de TVA intracommunautaire, ajoutez-le : nous appliquerons l'autoliquidation de la TVA au lieu de la facturer.",
       "cta": "Ajouter vos informations de facturation"
     }
+  },
+  "onboardingPayments": {
+    "meta": {
+      "title": "Configurer les paiements par carte"
+    },
+    "title": "Paiements par carte",
+    "unknownToken": "Nous ne reconnaissons pas ce lien. Chaque lien appartient à un seul restaurant : utilisez celui de votre e-mail de bienvenue, ou le bouton dans votre propre administration, sous Réglages → Paiements.",
+    "unavailable": "Nous n'avons pas pu joindre Stripe à l'instant, votre formulaire ne peut donc pas s'ouvrir. Rien n'est perdu : réessayez le même lien dans quelques minutes.",
+    "contact": "Si cela persiste, répondez à l'un de nos e-mails et nous réglerons cela avec vous."
   }
 }

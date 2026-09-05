@@ -701,7 +701,7 @@
         "modules": "modüller: {list}",
         "template": "şablon: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Çevrimiçi ödeme satın alınmış ama bu kayıtta stripe_account yok — provizyon bu ikiliyi reddeder ve veritabanından önce durur, dolayısıyla bu tenant'ı yeniden provizyonlamak hiçbir şey yapmaz. Hesabı kayda ekleyin ya da modülü çıkarın.",
+        "stripeAccountMissing": "Kartlı ödeme satın alıyor ama bu kayıtta stripe_account yok — provisioning bu çifti reddeder ve veritabanından önce durur; yani bu kiracıyı yeniden provision etmek hiçbir şey yapmaz. Bu hesabı artık biz oluşturuyoruz, dolayısıyla bu, oluşturmanın başarısız olduğu anlamına gelir: nedeni öneri PR'ında yazar, sonra hesabı kayda ekleyin ya da modülü kaldırın.",
         "paymentsModeFlat": "ödemeler: sabit ücret",
         "paymentsModeCommission": "ödemeler: komisyon ({percent})",
         "paymentsModePending": "(beklemede — kayıt henüz güncellenmedi)"
@@ -775,8 +775,6 @@
         "currency": "Para birimi (ör. EUR)",
         "languages": "Diller",
         "modules": "Modüller",
-        "stripeAccount": "Stripe hesabı (acct_…, isteğe bağlı)",
-        "stripeAccountHint": "Yalnızca online-payments satın aldılarsa VE bağlı hesaplarını zaten oluşturduysanız (runbook §2b). Boş bırakılırsa modül beklemeye alınır ve PR sonradan nasıl ekleneceğini anlatır — hesap olmadan provisioning modülü reddeder.",
         "create": "Kayıt PR’si aç",
         "creating": "Açılıyor…",
         "created": "Kayıt PR’si açıldı — inceleyip birleştirin, sonra sağlayın:",
@@ -792,7 +790,8 @@
         "baseDomainOurs": "sofrapiwas.com — bizimki (varsayılan)",
         "baseDomainPreview": "Bu kiracı şu adreste yanıt verecek:",
         "baseDomainDnsFirst": "Partnerin kendi bölgesi: girdi base_domain: taşır ve A kaydı birleştirmeden önce çözümlenmelidir; aksi hâlde sertifika verilemez.",
-        "baseDomainSlugPlaceholder": "<slug>"
+        "baseDomainSlugPlaceholder": "<slug>",
+        "stripeAccountNote": "Stripe hesabı: hesabı biz oluşturuyoruz. Bu restoran kartlı ödeme satın alırsa, kontrol düzlemi bu öneri açılmadan önce Stripe Express hesabını oluşturur; böylece registry kaydı hesabı ve modülü birlikte taşır. Buraya bir şey yazmanıza gerek yok — oluşturma başarısız olursa PR nedenini ve ne yapılacağını yazar."
       },
       "fleet": {
         "title": "Yazıcı filosu",
@@ -1013,7 +1012,7 @@
         "rateLabel": "Oran (baz puan, 100 = %1)",
         "rateHint": "örn. 150 = %1,50. Tavan {max} baz puan.",
         "notEligibleRegistryUnavailable": "Tenant kaydı okunamadığı için komisyon uygunluğu şu anda kontrol edilemiyor.",
-        "notEligibleNotPaired": "Bu tenant'ın kayıt girişi hem online-payments hem de bir stripe_account içermiyor — provizyon, bu ikili olmadan sıfırın üzerindeki bir oranı veritabanından önce reddeder. Her ikisi de olmadan komisyon kapalı kalır.",
+        "notEligibleNotPaired": "Bu kiracının registry kaydında online-payments ile stripe_account birlikte yok — provisioning bu çift olmadan sıfırdan büyük bir oranı, hem de veritabanından önce reddeder. Stripe hesabını artık biz açıyoruz; eksikse öneri onu oluşturamamıştır (nedeni PR'ında yazar) ya da kayıt daha eskidir. İkisi de gelene kadar komisyon kapalı kalır.",
         "submit": "Kaydet",
         "saving": "Kaydediliyor…",
         "prOpened": "Kayıt PR'si açıldı — birleştirin, ardından tenant'ı yeniden sağlayın.",
@@ -1028,7 +1027,7 @@
         "net": "Net",
         "fees": "{count} ücret",
         "empty": "Bu hesap izleniyor ve bu dönemde hiçbir tutar toplamadı.",
-        "noAccount": "Bu kiracının kayıt girdisinde stripe_account yok, dolayısıyla ücret raporlanacak bir hesap da yok. Restoran Stripe kaydını tamamlayana kadar bu normal durumdur.",
+        "noAccount": "Bu kiracının registry kaydında stripe_account yok, dolayısıyla ücret raporlanacak bir hesap da yok. Bu hesabı artık biz oluşturduğumuza göre bu, ya bu değişiklikten önceki bir kaydı ya da başarısız bir oluşturmayı gösterir — kaydını henüz tamamlamamış bir restoranı değil.",
         "registryUnavailable": "Kiracı kaydı okunamadı, bu yüzden bağlı hesap şu an bilinmiyor. Yanlış bir rakam yerine hiçbir rakam gösterilmiyor.",
         "unmatchedRefunds": "Bu dönemdeki {count} iadenin kayıtlı ücreti yok — ücretleri kayıt tutulmadan öncesine ait, bu nedenle yukarıdaki net gerçekte olduğundan düşüktür."
       },
@@ -1223,18 +1222,18 @@
       "rateLabel": "Oran (baz puan, 100 = %1)",
       "rateHint": "örn. 150 = %1,50. Tavan {max} baz puan.",
       "notEligibleRegistryUnavailable": "Bu müşterinin kurulumunu şu anda kontrol edemiyoruz, bu yüzden komisyon şimdilik kapalı kalıyor.",
-      "notEligibleNotPaired": "Komisyon için bu müşterinin çevrimiçi ödeme modülüne ve kendi Stripe hesabına sahip olması gerekir. İkisini de bizden isteyin, bu seçenek açılsın.",
+      "notEligibleNotPaired": "Komisyon için bu müşterinin online-payments modülü ve bir Stripe hesabı olmalı. O hesabı onlar için biz açıyoruz; eksikse bizim tarafımızda bir şey ters gitmiş demektir — bize söyleyin, bu anahtar açılsın.",
       "submit": "Kaydet",
       "saving": "Kaydediliyor…",
       "prOpened": "SofraPiwas'a gönderildi. Müşterinizin uygulamasına uygulayıp onaylayacağız — ödeme ekranlarında henüz bir şey değişmedi.",
       "alreadySet": "Müşterinizin uygulaması zaten bu oranı kullanıyor. Gönderilecek bir şey yok."
     },
     "paymentsPending": {
-      "kicker": "Kartlı ödeme",
-      "title": "Kartlı ödemeniz yolda",
-      "body": "Paketinize kartlı ödeme dahil. Sizin için açıyoruz — şu anda yapmanız gereken bir şey yok, kasanızda göründüğü anda size haber vereceğiz. O zamana kadar restoranınız tamamen yayında ve her zamanki gibi nakit alıyor.",
-      "billingNote": "Paketiniz başladığı günden itibaren faturalandırılır. İlk faturanız geldiğinde kartlı ödeme hâlâ açılmadıysa bize söyleyin, o ayı alacağınıza geçirelim.",
-      "stripeLink": "Stripe panonuz"
+      "kicker": "Kartlı ödemeler",
+      "title": "Kartlı ödemeleriniz yolda",
+      "body": "Kartlı ödemeler paketinize dahil. Stripe hesabını sizin için biz açıyoruz; yani şu anda yapmanız gereken bir şey yok ve kart kasanızda görünür görünmez size haber vereceğiz. O zamana kadar restoranınız tümüyle yayında ve her zamanki gibi nakit alıyor.",
+      "billingNote": "Paketiniz başladığı günden itibaren faturalanır. İlk faturanız geldiğinde kartlı ödemeler hâlâ açılmadıysa bize söyleyin, o ayı alacağınıza yazalım.",
+      "nextStep": "Sırası geldiğinde Stripe size kısa bir form gösterecek: doğum tarihiniz, bir telefon numarası ve koşullarını kabul etmeniz. O bağlantıyı sırası gelince biz göndeririz; Stripe bağlantısı yalnızca birkaç dakika geçerlidir, saklamanın bir anlamı yoktur."
     },
     "invoice": {
       "title": "Fatura",
@@ -1674,5 +1673,14 @@
       "vat": "Şirketinizin AB KDV numarası varsa onu da ekleyin; KDV'yi sizden tahsil etmek yerine tersine tahsilat (reverse charge) uygularız.",
       "cta": "Fatura bilgilerinizi ekleyin"
     }
+  },
+  "onboardingPayments": {
+    "meta": {
+      "title": "Kartlı ödemeleri kurun"
+    },
+    "title": "Kartlı ödemeler",
+    "unknownToken": "Bu bağlantıyı tanımıyoruz. Her bağlantı tek bir restorana aittir — lütfen hoş geldiniz e-postanızdaki bağlantıyı ya da kendi yönetim panelinizde Ayarlar → Ödemeler altındaki düğmeyi kullanın.",
+    "unavailable": "Şu anda Stripe'a ulaşamadık, bu yüzden formunuz açılamıyor. Hiçbir şey kaybolmadı — birkaç dakika sonra aynı bağlantıyı yeniden deneyin.",
+    "contact": "Sorun sürerse e-postalarımızdan herhangi birini yanıtlayın, birlikte çözelim."
   }
 }

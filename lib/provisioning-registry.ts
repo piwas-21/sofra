@@ -41,9 +41,29 @@ export interface TenantProvisionInput {
   currency: string;
   languages: string[];
   modules: string[];
-  /** The tenant's Stripe connected account (`acct_…`), when they already have one.
-   *  Absent on the self-serve path; present when the founder followed runbook §2b. */
+  /**
+   * The tenant's Stripe connected account (`acct_…`) — SERVER-DERIVED since the
+   * ADR-011 amendment: the control plane mints it (lib/provisioning-mint.ts) before
+   * this entry is composed, on BOTH paths, so it is no longer something anyone types.
+   * Absent only when the mint could not happen, which `stripeAccountNote` explains.
+   */
   stripeAccount?: string;
+  /**
+   * The tenant's own onboarding page (`https://…/onboarding/payments/<token>`),
+   * server-derived exactly like `stripeAccount` and emitted BESIDE it. It becomes
+   * the tenant's `Stripe:PaymentsLinkUrl`, i.e. the button in their own Payments
+   * tab. One opaque field: `provision-tenant.sh` copies it and never learns that
+   * part of it is a credential, and no per-environment concatenation can put a
+   * working link in front of the wrong site.
+   */
+  paymentsLinkUrl?: string;
+  /**
+   * Why there is no `stripeAccount`, in founder-facing words. NOT a registry field —
+   * `buildTenantRegistryEntry` ignores it entirely; it exists so the PR body can say
+   * what went wrong at the one moment someone is reading the diff. Absent when an
+   * account was minted, and when none was needed.
+   */
+  stripeAccountNote?: string;
   /**
    * The tenant's per-transaction commission rate, in basis points
    * (SOFRA-PAYMENTS-PRICING-MODE-PLAN S1; range governed by `lib/payments-pricing.ts`,
@@ -144,6 +164,11 @@ export function buildTenantRegistryEntry(input: TenantProvisionInput): {
       // it — the two are written from the same `granted`/`stripeAccount` pair so the
       // entry can never carry one half of the guard's condition.
       ...(stripeAccount ? { stripe_account: stripeAccount } : {}),
+      // Emitted only ALONGSIDE the account, never on its own: without an account
+      // there is no onboarding page to point at, and a link to a page that 404s is
+      // worse than no button at all. Same pairing discipline as the two fields
+      // above, one field along.
+      ...(stripeAccount && input.paymentsLinkUrl ? { payments_link_url: input.paymentsLinkUrl } : {}),
       // Whether the rate belongs in THIS entry: grantedCommissionBps (same pairing
       // rule as stripe_account above, applied to a second field).
       ...(commissionBps !== undefined ? { payments_commission_bps: commissionBps } : {}),
