@@ -2,30 +2,23 @@
 //
 // When a SELF-SERVE tenant's first payment settles, propose its registry entry without
 // waiting for the founder to open /admin/provision. The founder still reviews and merges
-// — that is the human checkpoint, and under the merge chain it is the merge that stands
-// the tenant up — so this automates the typing, not the judgement.
+// — the human checkpoint, and under the merge chain the merge is what stands the tenant
+// up — so this automates the typing, not the judgement.
 //
 // The decision lives in lib/auto-provision-policy.ts (pure, unit-tested). This file only
-// gathers facts, performs the single side effect the policy authorises, and translates
+// gathers facts, performs the side effects the policy authorises, and translates
 // GitHub's refusals. Two rules it must keep:
-//
 //  1. **It never throws.** Its caller is the Mollie webhook, where an exception means a
-//     non-2xx, which means Mollie redelivers, which means a paid customer's activation
-//     retries for up to ~26h because a GitHub call failed. Every failure becomes a
-//     returned outcome.
+//     non-2xx — a paid customer's activation retried for ~26h. Failures become outcomes.
 //  2. **The gate is still the authority.** `slugProvisionVerdict` runs here even though
-//     the only caller reaches this from the `first`+`paid` branch. A second path that
-//     decides for itself when money counts is how the two drift apart (trap 7).
+//     the only caller reaches this from `first`+`paid`: a second path deciding for
+//     itself when money counts is how the two drift apart (trap 7).
 
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
 import { slugProvisionVerdict } from "@/lib/provisioning-facts";
 import { toProvisionPrefill } from "@/lib/provision-prefill";
-import {
-  classifyProvisioningRefusal,
-  decideAutoPropose,
-  type AutoProposeOutcome,
-} from "@/lib/auto-provision-policy";
+import { classifyProvisioningRefusal, decideAutoPropose, type AutoProposeOutcome } from "@/lib/auto-provision-policy";
 import { reportFailedProposal } from "@/lib/billing-notify";
 import {
   openProvisioningPr,
@@ -34,11 +27,7 @@ import {
   ProvisioningNotConfiguredError,
 } from "@/lib/provisioning";
 
-export {
-  AUTO_PROPOSE_NOTES,
-  type AutoProposeOutcome,
-  type AutoProposeSkip,
-} from "@/lib/auto-provision-policy";
+export { AUTO_PROPOSE_NOTES, type AutoProposeOutcome, type AutoProposeSkip } from "@/lib/auto-provision-policy";
 
 /**
  * Try to open the registry PR for this billing row. Safe to call repeatedly — that is the
@@ -47,7 +36,8 @@ export {
  * Idempotency is `provisioningPrUrl` on our own row, read by the policy and written here.
  * GitHub refusing a duplicate `provision/<slug>` branch is the backstop, not the
  * mechanism: two concurrent deliveries can both read null, and the loser is recognised
- * rather than reported as a failure.
+ * rather than reported as a failure. (The MINT has its own, separate idempotency — a
+ * slug-derived Stripe key plus a unique row; see lib/connect-account-store.ts.)
  */
 export async function autoProposeProvisioning(billingId: string): Promise<AutoProposeOutcome> {
   try {
@@ -55,14 +45,12 @@ export async function autoProposeProvisioning(billingId: string): Promise<AutoPr
       where: { id: billingId },
       include: { signupRequest: true },
     });
-    // Only reachable if the row vanished between recordPayment's read and this one.
-    // A `skipped` here would email the founder "this plan was created by hand", which
-    // would be a confident falsehood about a plan that no longer exists.
+    // Only reachable if the row vanished between recordPayment's read and this one. A
+    // `skipped` here would email the founder a confident falsehood about a dead plan.
     if (!billing) return { kind: "failed", detail: `billing row ${billingId} disappeared mid-delivery` };
 
     // Re-validates every stored answer and DROPS whatever the catalog no longer
-    // recognises, so a months-old lead cannot carry a retired module id into a registry
-    // entry that `provision-tenant.sh` would then reject at the box, far from its source.
+    // recognises, so a months-old lead cannot carry a retired module id to the box.
     const lead = billing.signupRequest ? toProvisionPrefill(billing.signupRequest) : null;
 
     const plan = decideAutoPropose({
@@ -85,7 +73,7 @@ export async function autoProposeProvisioning(billingId: string): Promise<AutoPr
       });
     }
 
-    const { prUrl, deferred } = await openProvisioningPr({
+    const { prUrl, deferred, mintNote } = await openProvisioningPr({
       slug: billing.tenantSlug,
       name: lead.name,
       adminEmail: lead.adminEmail,
@@ -93,8 +81,9 @@ export async function autoProposeProvisioning(billingId: string): Promise<AutoPr
       currency: lead.currency,
       languages: lead.languages,
       modules: lead.modules,
-      // No `stripeAccount`: a self-serve buyer has none and cannot be given one, so a
-      // bought `online-payments` is always deferred on this path. See the generator.
+      // Still no `stripeAccount` here, for the OPPOSITE reason to before: it is minted
+      // inside `openProvisioningPr` (ADR-011 amendment, E3) — the single place that
+      // writes an entry — so neither caller can forget it or invent one.
       city: lead.city || undefined,
     });
     await db.tenantBilling.update({
@@ -105,6 +94,9 @@ export async function autoProposeProvisioning(billingId: string): Promise<AutoPr
       kind: "opened",
       prUrl,
       ...(deferred.length ? { deferred } : {}),
+      // Only when the mint failed — "we could not create this paying customer's Stripe
+      // account" must be answerable from our own rows, not only from a PR body.
+      ...(mintNote ? { mintNote } : {}),
     });
   } catch (e) {
     return finish(slugFor(billingId), await translate(billingId, e));
@@ -127,11 +119,11 @@ async function slugFor(billingId: string): Promise<string> {
 /**
  * Turn a thrown error into an outcome. The subtle case is `proposalOpen`: the branch
  * exists, which is *usually* a concurrent delivery whose winner has by now recorded the
- * PR URL — but `openProvisioningPr` creates the branch before it commits and opens the
- * PR, so an attempt that died in between leaves an orphan branch and no PR. Reporting
- * that as a benign duplicate is a permanent wedge: every retry would say "already
- * exists, nothing to do" while a paid customer has no tenant. So re-read the row, and
- * only call it a duplicate if a URL was actually recorded.
+ * PR URL — but `openProvisioningPr` creates the branch before it opens the PR, so an
+ * attempt that died in between leaves an orphan branch and no PR. Reporting that as a
+ * benign duplicate is a permanent wedge: every retry would say "already exists, nothing
+ * to do" while a paid customer has no tenant. So re-read the row, and only call it a
+ * duplicate if a URL was actually recorded.
  */
 async function translate(billingId: string, e: unknown): Promise<AutoProposeOutcome> {
   if (e instanceof ProvisioningNotConfiguredError) {
@@ -172,8 +164,8 @@ async function translate(billingId: string, e: unknown): Promise<AutoProposeOutc
  *
  * Both halves exist because the payment email is NOT a reliable carrier for this: it is
  * sent after `activatePendingSubscriptions`, which deliberately throws to force a webhook
- * 503 during the mandate race. A token that expired silently plus a mandate that lags
- * would otherwise be reported nowhere at all — the exact trap the policy makes loud.
+ * 503 during the mandate race. A silently expired token plus a lagging mandate would
+ * otherwise be reported nowhere at all — the exact trap the policy makes loud.
  */
 async function finish(
   slugOrPromise: string | Promise<string>,
@@ -188,6 +180,7 @@ async function finish(
     await audit(null, `tenant.provision.auto.${outcome.kind}`, "Tenant", slug, {
       ...("prUrl" in outcome ? { prUrl: outcome.prUrl } : {}),
       ...("deferred" in outcome && outcome.deferred?.length ? { deferred: outcome.deferred } : {}),
+      ...("mintNote" in outcome && outcome.mintNote ? { mintNote: outcome.mintNote } : {}),
       ...("reason" in outcome ? { reason: outcome.reason } : {}),
       ...("detail" in outcome ? { detail: outcome.detail } : {}),
     });

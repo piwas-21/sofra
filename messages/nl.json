@@ -701,7 +701,7 @@
         "modules": "modules: {list}",
         "template": "sjabloon: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Koopt online betalingen, maar deze entry bevat geen stripe_account — provisionering weigert dit paar en stopt vóór de database, dus dit tenant opnieuw provisioneren doet helemaal niets. Voeg het account toe aan de entry, of haal de module eruit.",
+        "stripeAccountMissing": "Koopt kaartbetalingen, maar deze regel bevat geen stripe_account — provisioning weigert het paar en stopt vóór de database, dus opnieuw provisioneren doet helemaal niets. Wij maken dat account nu zelf aan, dus dit betekent dat het aanmaken is mislukt: lees de voorstel-PR voor de reden en voeg dan het account toe of haal de module weg.",
         "paymentsModeFlat": "betalingen: vast",
         "paymentsModeCommission": "betalingen: commissie ({percent})",
         "paymentsModePending": "(in behandeling — register nog niet bijgewerkt)"
@@ -775,8 +775,6 @@
         "currency": "Valuta (bijv. EUR)",
         "languages": "Talen",
         "modules": "Modules",
-        "stripeAccount": "Stripe-account (acct_…, optioneel)",
-        "stripeAccountHint": "Alleen als ze online-payments hebben gekocht ÉN je hun gekoppelde account al hebt aangemaakt (runbook §2b). Leeg gelaten wordt de module achtergehouden en legt de PR uit hoe je die later toevoegt — provisioning weigert de module zonder account.",
         "create": "Registry-PR openen",
         "creating": "Bezig met openen…",
         "created": "Registry-PR geopend — beoordeel + voeg samen, richt dan in:",
@@ -792,7 +790,8 @@
         "baseDomainOurs": "sofrapiwas.com — het onze (standaard)",
         "baseDomainPreview": "Deze tenant komt te staan op",
         "baseDomainDnsFirst": "Eigen zone van de partner: de entry krijgt base_domain: en het A-record moet al resolven vóór de merge, anders kan het certificaat niet worden uitgegeven.",
-        "baseDomainSlugPlaceholder": "<slug>"
+        "baseDomainSlugPlaceholder": "<slug>",
+        "stripeAccountNote": "Stripe-account: wij maken hem aan. Koopt deze zaak kaartbetalingen, dan maakt het control plane hun Stripe Express-account aan vóórdat dit voorstel wordt geopend, zodat de registry-regel het account en de module samen draagt. Hier hoef je niets te typen — en mislukt het aanmaken, dan zegt de PR waarom en wat te doen."
       },
       "fleet": {
         "title": "Printervloot",
@@ -1028,7 +1027,7 @@
         "net": "Netto",
         "fees": "{count} kosten",
         "empty": "Dit account wordt gevolgd en heeft in deze periode niets geïnd.",
-        "noAccount": "De registryvermelding van deze klant bevat geen stripe_account, dus er is geen account om kosten voor te rapporteren. Dat is de normale toestand zolang het restaurant de Stripe-onboarding niet heeft afgerond.",
+        "noAccount": "De registry-regel van deze zaak bevat geen stripe_account, dus er is geen account om kosten voor te rapporteren. Omdat wij dat account zelf aanmaken, wijst dit op een regel van vóór die verandering of op een mislukte aanmaak — niet op een restaurant dat zijn aanmelding nog moet afronden.",
         "registryUnavailable": "Het klantenregister kon niet worden gelezen, dus het gekoppelde account is nu onbekend. Er wordt geen bedrag getoond in plaats van een verkeerd bedrag.",
         "unmatchedRefunds": "{count} terugbetalingen in deze periode hebben geen geregistreerde kosten — hun kosten dateren van vóór de registratie, dus het netto hierboven is lager dan de waarheid."
       },

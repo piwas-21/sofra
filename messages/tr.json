@@ -701,7 +701,7 @@
         "modules": "modüller: {list}",
         "template": "şablon: {template}",
         "stripeAccount": "Stripe: {account}",
-        "stripeAccountMissing": "Çevrimiçi ödeme satın alınmış ama bu kayıtta stripe_account yok — provizyon bu ikiliyi reddeder ve veritabanından önce durur, dolayısıyla bu tenant'ı yeniden provizyonlamak hiçbir şey yapmaz. Hesabı kayda ekleyin ya da modülü çıkarın.",
+        "stripeAccountMissing": "Kartlı ödeme satın alıyor ama bu kayıtta stripe_account yok — provisioning bu çifti reddeder ve veritabanından önce durur; yani bu kiracıyı yeniden provision etmek hiçbir şey yapmaz. Bu hesabı artık biz oluşturuyoruz, dolayısıyla bu, oluşturmanın başarısız olduğu anlamına gelir: nedeni öneri PR'ında yazar, sonra hesabı kayda ekleyin ya da modülü kaldırın.",
         "paymentsModeFlat": "ödemeler: sabit ücret",
         "paymentsModeCommission": "ödemeler: komisyon ({percent})",
         "paymentsModePending": "(beklemede — kayıt henüz güncellenmedi)"
@@ -775,8 +775,6 @@
         "currency": "Para birimi (ör. EUR)",
         "languages": "Diller",
         "modules": "Modüller",
-        "stripeAccount": "Stripe hesabı (acct_…, isteğe bağlı)",
-        "stripeAccountHint": "Yalnızca online-payments satın aldılarsa VE bağlı hesaplarını zaten oluşturduysanız (runbook §2b). Boş bırakılırsa modül beklemeye alınır ve PR sonradan nasıl ekleneceğini anlatır — hesap olmadan provisioning modülü reddeder.",
         "create": "Kayıt PR’si aç",
         "creating": "Açılıyor…",
         "created": "Kayıt PR’si açıldı — inceleyip birleştirin, sonra sağlayın:",
@@ -792,7 +790,8 @@
         "baseDomainOurs": "sofrapiwas.com — bizimki (varsayılan)",
         "baseDomainPreview": "Bu kiracı şu adreste yanıt verecek:",
         "baseDomainDnsFirst": "Partnerin kendi bölgesi: girdi base_domain: taşır ve A kaydı birleştirmeden önce çözümlenmelidir; aksi hâlde sertifika verilemez.",
-        "baseDomainSlugPlaceholder": "<slug>"
+        "baseDomainSlugPlaceholder": "<slug>",
+        "stripeAccountNote": "Stripe hesabı: hesabı biz oluşturuyoruz. Bu restoran kartlı ödeme satın alırsa, kontrol düzlemi bu öneri açılmadan önce Stripe Express hesabını oluşturur; böylece registry kaydı hesabı ve modülü birlikte taşır. Buraya bir şey yazmanıza gerek yok — oluşturma başarısız olursa PR nedenini ve ne yapılacağını yazar."
       },
       "fleet": {
         "title": "Yazıcı filosu",
@@ -1028,7 +1027,7 @@
         "net": "Net",
         "fees": "{count} ücret",
         "empty": "Bu hesap izleniyor ve bu dönemde hiçbir tutar toplamadı.",
-        "noAccount": "Bu kiracının kayıt girdisinde stripe_account yok, dolayısıyla ücret raporlanacak bir hesap da yok. Restoran Stripe kaydını tamamlayana kadar bu normal durumdur.",
+        "noAccount": "Bu kiracının registry kaydında stripe_account yok, dolayısıyla ücret raporlanacak bir hesap da yok. Bu hesabı artık biz oluşturduğumuza göre bu, ya bu değişiklikten önceki bir kaydı ya da başarısız bir oluşturmayı gösterir — kaydını henüz tamamlamamış bir restoranı değil.",
         "registryUnavailable": "Kiracı kaydı okunamadı, bu yüzden bağlı hesap şu an bilinmiyor. Yanlış bir rakam yerine hiçbir rakam gösterilmiyor.",
         "unmatchedRefunds": "Bu dönemdeki {count} iadenin kayıtlı ücreti yok — ücretleri kayıt tutulmadan öncesine ait, bu nedenle yukarıdaki net gerçekte olduğundan düşüktür."
       },

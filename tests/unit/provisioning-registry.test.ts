@@ -338,8 +338,18 @@ describe("deferring online-payments out of the generated entry", () => {
     // Named as bought, not silently absent.
     expect(body).toContain("Bought but deliberately NOT in this entry: `online-payments`");
     expect(body).toContain("no restaurant at all");
-    // The reason the founder cannot just add it now.
-    expect(body).toContain("only the restaurant can create it");
+    // The reason there is no account. Under the ADR-011 amendment this is a FAILURE
+    // report — the control plane mints the account — so the body must carry the reason
+    // the mint gave rather than the retired premise that only the restaurant could
+    // create one.
+    expect(body).not.toContain("only the restaurant can create it");
+    const withNote = buildProvisioningPrBody({
+      ...base,
+      modules: bought,
+      stripeAccountNote: "EUR does not name one country",
+    });
+    expect(withNote).toContain("**Why there is no account:** EUR does not name one country");
+    expect(withNote).toContain("Sofra creates each tenant's Stripe **Express** account itself");
     // The follow-up, with BOTH halves — an entry adding one without the other is the
     // same landmine re-armed by hand.
     expect(body).toContain("stripe_account: acct_");

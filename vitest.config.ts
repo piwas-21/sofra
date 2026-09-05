@@ -207,6 +207,11 @@ export default defineConfig({
         // `lib/stripe-connect-accounts.ts` stays OUT, the same split as
         // vies/vies-result and stripe-fee-refund's.
         "lib/connect-account-request.ts",
+        // E3 — which country a tenant's account is created in. Pure, and in scope
+        // because its whole job is a REFUSAL: Stripe fixes an account's country at
+        // creation and refuses it on update, so a wrong derivation is a live account
+        // in the wrong country for a real restaurant.
+        "lib/connect-account-country.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

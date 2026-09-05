@@ -147,7 +147,7 @@ export function buildProvisioningPrBody(input: TenantProvisionInput): string {
       : `- [ ] **modules** \`${granted.join(", ")}\` match what they actually paid for — they are enforced at runtime now, so a missing id is a feature they bought and will not get`,
     tagCheck,
     `- [ ] **template** \`${input.template}\` and **currency** \`${input.currency}\` are right — the template is baked into the image at build time, so changing it later is a rebuild`,
-    ...deferredSection(slug, granted, deferred),
+    ...deferredSection(slug, granted, deferred, input.stripeAccountNote),
     ...commissionSection(slug, input.paymentsCommissionBps, grantsOnlinePayments),
     ...baseDomainSection(input.baseDomain, domain),
     // Only when a publishable partner brand reached the entry — `renderableBrand`

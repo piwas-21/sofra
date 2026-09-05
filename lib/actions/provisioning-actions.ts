@@ -76,7 +76,7 @@ export async function openProvisioningPrAction(
   }
 
   try {
-    const { prUrl, deferred } = await openProvisioningPr(input);
+    const { prUrl, deferred, stripeAccount, mintNote } = await openProvisioningPr(input);
     // Record it on the billing row when there is one. The auto path reads this as its
     // idempotency marker, so a founder proposing by hand must populate it too — otherwise
     // a later payment webhook sees no record, tries again, and has to infer the truth from
@@ -89,6 +89,12 @@ export async function openProvisioningPrAction(
     await audit(admin.id, "tenant.provision.proposed", "Tenant", input.slug, {
       prUrl,
       ...(deferred.length ? { deferred } : {}),
+      // The `acct_` the control plane minted for this proposal, or why it did not
+      // (ADR-011 amendment, E3). An `acct_` is an identifier and not a secret — the
+      // fleet list already renders one — and this is the only durable record of a LIVE
+      // Stripe account created on the founder's behalf while they filled in a form.
+      ...(stripeAccount ? { stripeAccount } : {}),
+      ...(mintNote ? { mintNote } : {}),
     });
     return { ok: true, prUrl };
   } catch (e) {

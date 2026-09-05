@@ -49,22 +49,40 @@ const entryFrom = (fields: Record<string, string | string[]>) => {
   return { tenant, deferred: built.deferred, input: read.input };
 };
 
-describe("a Stripe account typed on the form reaches the registry entry", () => {
-  it("round-trips the acct_ AND grants the module it is paired with", () => {
-    const { tenant, deferred } = entryFrom({
+describe("the Stripe account is SERVER-DERIVED, and the form cannot supply one", () => {
+  // The provenance flip (ADR-011 amendment, E3). The account is minted by
+  // `openProvisioningPr` and attached to the input it builds the entry from; the
+  // browser has no say. The original regression this file was written for — a posted
+  // field silently never read — is therefore now the REQUIRED behaviour for this one
+  // field, and it is asserted as such rather than deleted.
+  it("ignores a posted acct_ instead of forwarding it to the entry", () => {
+    const { tenant, deferred, input } = entryFrom({
       ...base,
       modules: ["core", "online-payments"],
       stripeAccount: "acct_1AbCdEfGhIjKlMnO",
     });
-    // The regression: this was `undefined` all the way down.
-    expect(tenant.stripe_account).toBe("acct_1AbCdEfGhIjKlMnO");
-    // …and the consequence that made it invisible-but-expensive: the module the founder
-    // had already earned the right to ship was held back for a second registry PR.
-    expect(deferred).toEqual([]);
-    expect(tenant.modules).toEqual(["core", "online-payments"]);
+    expect(input.stripeAccount).toBeUndefined();
+    expect("stripe_account" in tenant).toBe(false);
+    // And the pairing rule still holds the module back rather than emitting an entry
+    // `provision-tenant.sh` would refuse before the database.
+    expect(deferred).toEqual(["online-payments"]);
   });
 
-  it("still defers when the founder genuinely has no account — the other half of the pair", () => {
+  it("carries BOTH halves in one entry once the mint has attached an account", () => {
+    // What the action actually does: map the form, then hand the builder the input plus
+    // the minted id. This is the shape that makes `provision-tenant.sh:117` never fire.
+    const read = readProvisionForm(form({ ...base, modules: ["core", "online-payments"] }));
+    if (!read.ok) throw new Error(read.error);
+    const built = buildTenantRegistryEntry({ ...read.input, stripeAccount: "acct_1UCOkhCSPiP2JWOQ" });
+    const tenant = (
+      parse(`version: 1\ntenants:\n${built.entry}`) as { tenants: Record<string, Record<string, unknown>> }
+    ).tenants[read.input.slug];
+    expect(tenant.stripe_account).toBe("acct_1UCOkhCSPiP2JWOQ");
+    expect(tenant.modules).toEqual(["core", "online-payments"]);
+    expect(built.deferred).toEqual([]);
+  });
+
+  it("still defers when no account could be minted — the last-resort path", () => {
     const { tenant, deferred } = entryFrom({ ...base, modules: ["core", "online-payments"] });
     expect(deferred).toEqual(["online-payments"]);
     expect(tenant.modules).toEqual(["core"]);
@@ -110,12 +128,11 @@ describe("readProvisionForm — the rest of the mapping", () => {
     // and `z.string().optional()` accepts `undefined`, not `null` — so without the
     // coercion in `optionalField` adding `baseDomain` would have made every such POST
     // fail the WHOLE form with "Invalid input", naming nothing.
-    const fd = form(base); // no city, no stripeAccount, no baseDomain
+    const fd = form(base); // no city, no baseDomain
     const read = readProvisionForm(fd);
     expect(read.ok).toBe(true);
     if (read.ok) {
       expect(read.input.baseDomain).toBeUndefined();
-      expect(read.input.stripeAccount).toBeUndefined();
       expect(read.input.city).toBeUndefined();
     }
   });
@@ -148,7 +165,7 @@ describe("readProvisionForm — the rest of the mapping", () => {
     // Vacuity guard: an empty (or shape-less) key list would make the loop below pass by
     // iterating nothing, which is the same false green this test exists to end.
     expect(keys.length).toBeGreaterThan(5);
-    expect(keys).toContain("stripeAccount");
+    expect(keys).toContain("baseDomain");
     for (const key of keys) {
       expect(seen, `provisionSchema validates "${key}" but the form is never asked for it`).toContain(
         key,

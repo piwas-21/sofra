@@ -20,12 +20,19 @@ import { COMMISSION_FLOOR_CENTS } from "./payments-pricing";
  * Named, not silent. The entry omits a module they PAID for, so the body has to say
  * so where the founder is already reading — otherwise the checklist quietly
  * contradicts the receipt, and the gap is discovered by a customer asking why card
- * payment does not work. Empty for every tenant that bought nothing deferred.
+ * payment does not work.
+ *
+ * WHAT THIS SECTION NOW MEANS (ADR-011 amendment). It used to be the ordinary
+ * self-serve outcome, on the premise that only the restaurant could create a Stripe
+ * account. The control plane MINTS the account now, so reaching this section means the
+ * mint did not happen — and `note` says why. The instruction is therefore no longer
+ * "wait for the restaurant"; it is "fix the reason, or supply an account yourself".
  */
 export function deferredSection(
   slug: string,
   granted: string[],
   deferred: string[],
+  note?: string,
 ): string[] {
   if (!deferred.length) return [];
   return [
@@ -38,15 +45,21 @@ export function deferredSection(
     "the database, the compose project or the image — so proposing both here would not give",
     "them a restaurant lacking card payment, it would give them **no restaurant at all**.",
     "",
-    "No account was supplied with this proposal. If you are the founder and you already",
-    "hold their `acct_` — runbook §2b has you create it *before* proposing, exactly so",
-    "this does not happen — the fix is one shot, not two: add both fields in **Files",
-    "changed** before merging and delete this section's premise. Otherwise the account",
-    "genuinely cannot exist yet, because only the restaurant can create it, through",
-    "Stripe's hosted onboarding, which cannot be pre-filled. In that case provision them",
-    "now on everything else, then, once they have finished Stripe and you have their id, open a",
-    "**second** registry PR that adds BOTH halves together — one without the other trips",
-    "the same guard. Only these two fields change; the rest of the entry stays as merged:",
+    // The reason, when the mint reported one. Without it this section would say only
+    // that something is missing, which is the state this whole slice was written to end.
+    ...(note
+      ? [
+          `**Why there is no account:** ${note}.`,
+          "",
+          "Sofra creates each tenant's Stripe **Express** account itself, before opening this",
+          "PR, so this is a failure rather than the normal course of things.",
+          "",
+        ]
+      : []),
+    "**Two ways forward, and the first is usually right.** Fix the cause above and re-propose,",
+    "so the entry carries both halves in one commit as it is meant to. Or, if you already hold",
+    "an `acct_` for them, add both fields in **Files changed** before merging — one shot, not",
+    "two. Only these two lines change; the rest of the entry stays as merged:",
     "",
     "```yaml",
     `  ${slug}:`,
@@ -54,10 +67,12 @@ export function deferredSection(
     `    modules: [${[...granted, ...deferred].join(", ")}]`,
     "```",
     "",
-    `…then re-run provisioning (\`gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=${slug}\`)`,
-    "and restart the tenant so it picks up the Stripe env. Full recipe — account creation,",
-    "the KYC sitting, TWINT, the box env — workspace `docs/runbooks/signup-to-live-tenant.md`",
-    "**§2b**, which is written to be followed BEFORE this second PR.",
+    "Failing both, provision them now on everything else — they trade on cash from day one —",
+    "then add both fields together in a follow-up registry PR and re-run provisioning",
+    `(\`gh workflow run provision-tenant.yml --repo piwas-21/restaurant-app-deploy -f slug=${slug}\`),`,
+    "and restart the tenant so it picks up the Stripe env. Background — what the account is,",
+    "what the restaurant still has to finish, TWINT, the box env — workspace",
+    "`docs/runbooks/signup-to-live-tenant.md` **§2b**.",
   ];
 }
 

@@ -49,18 +49,6 @@ export const provisionSchema = z.object({
       message: `unknown module — allowed: ${MODULE_IDS.join(", ")}`,
     }),
   city: z.string().trim().max(200).optional().or(z.literal("")),
-  // The tenant's Stripe connected account, when the founder already has it (runbook
-  // §2b creates it BEFORE proposing, precisely because provision-tenant.sh refuses the
-  // module without it). Optional: left empty, the generator defers `online-payments` to
-  // a second registry PR rather than emitting an entry that would be refused.
-  // Grammar-pinned rather than free text — this value reaches the tenant's Stripe env,
-  // where a typo means charges addressed to an account that does not exist.
-  stripeAccount: z
-    .string()
-    .trim()
-    .regex(/^acct_[A-Za-z0-9]{8,32}$/, "Stripe account id, e.g. acct_1AbCdEfGhIjKlMnO")
-    .optional()
-    .or(z.literal("")),
   // A PARTNER'S own zone, when the tenant should live under it rather than ours
   // (SOFRA-PARTNER-FLEXIBILITY-PLAN D1). Left empty, the generator emits exactly what
   // it emitted before this field existed — that is the whole contract, and every
@@ -81,3 +69,25 @@ export const provisionSchema = z.object({
     .optional()
     .or(z.literal("")),
 });
+
+/**
+ * Does this string have the grammar of a Stripe connected-account id?
+ *
+ * It used to be a FIELD on the schema above, because the founder typed the value
+ * by hand (runbook §2b had them create the account with `curl` first). Under the
+ * ADR-011 amendment the control plane MINTS the account, so `stripeAccount` is
+ * server-derived and no longer an operator input — the field is gone from the
+ * form, from `readProvisionForm` and from this schema.
+ *
+ * The check itself stays, moved to where the value now comes from
+ * (`lib/provisioning-mint.ts`, applied to what Stripe returned). The reason it
+ * existed has not changed: this value reaches the tenant's Stripe env, where a
+ * wrong string means charges addressed to an account that does not exist. What
+ * changed is only who could get it wrong — and an assertion that has never fired
+ * is exactly the kind worth keeping when the thing it guards is money.
+ */
+const STRIPE_ACCOUNT_ID = /^acct_[A-Za-z0-9]{8,32}$/;
+
+export function isStripeAccountId(value: string): boolean {
+  return STRIPE_ACCOUNT_ID.test(value);
+}
