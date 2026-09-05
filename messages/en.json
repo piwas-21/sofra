@@ -1012,7 +1012,7 @@
         "rateLabel": "Rate (basis points, 100 = 1%)",
         "rateHint": "e.g. 150 = 1.50%. Ceiling {max} bps.",
         "notEligibleRegistryUnavailable": "The tenant registry could not be read, so commission eligibility cannot be checked right now.",
-        "notEligibleNotPaired": "This tenant's registry entry does not carry both online-payments and a stripe_account — provisioning refuses a non-zero rate without that pair, before the database. Commission stays off until both are there.",
+        "notEligibleNotPaired": "This tenant's registry entry does not carry both online-payments and a stripe_account — provisioning refuses a non-zero rate without that pair, before the database. We open the Stripe account ourselves now, so a missing one means the proposal could not create it (its PR says why) or the entry predates that. Commission stays off until both are there.",
         "submit": "Save",
         "saving": "Saving…",
         "prOpened": "Registry PR opened — merge it, then re-provision the tenant.",
@@ -1222,7 +1222,7 @@
       "rateLabel": "Rate (basis points, 100 = 1%)",
       "rateHint": "e.g. 150 = 1.50%. Ceiling {max} bps.",
       "notEligibleRegistryUnavailable": "We can't check this client's setup right now, so commission stays off for the moment.",
-      "notEligibleNotPaired": "Commission needs this client to have the online-payments module and their own Stripe account. Ask us for both, and this switch opens up.",
+      "notEligibleNotPaired": "Commission needs this client's tenant to have the online-payments module and a Stripe account. We open that account for them, so if it is missing something went wrong on our side — ask us, and this switch opens up.",
       "submit": "Save",
       "saving": "Saving…",
       "prOpened": "Sent to SofraPiwas. We apply it to your client's app and confirm — nothing has changed at their checkout yet.",
@@ -1231,9 +1231,9 @@
     "paymentsPending": {
       "kicker": "Card payments",
       "title": "Card payments are on their way",
-      "body": "You bought card payments with your plan. We're switching them on for you — there's nothing for you to do right now, and we'll tell you the moment they appear at your checkout. Until then your restaurant is fully live and taking cash as usual.",
+      "body": "You bought card payments with your plan. We open the Stripe account for you, so there is nothing for you to do right now — and we will tell you the moment cards appear at your checkout. Until then your restaurant is fully live and taking cash as usual.",
       "billingNote": "Your plan is billed from the day it started. If card payments still aren't switched on when your first invoice arrives, just ask us and we'll credit that month.",
-      "stripeLink": "Your Stripe dashboard"
+      "nextStep": "When it is ready you will get one short form from Stripe — your date of birth, a phone number, and agreeing to their terms. We will send you that link when it is your turn; a Stripe link only stays alive for a few minutes, so it is never worth keeping one."
     },
     "invoice": {
       "title": "Invoice",

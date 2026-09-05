@@ -55,8 +55,13 @@ test.describe("the buyer is told about the module they cannot see yet", () => {
     const card = page.getByText(/card payments are on their way/i);
     await expect(card).toBeVisible();
 
-    // The link the slice specifies — one, outbound, to Stripe's own dashboard.
-    await expect(page.locator('a[href="https://dashboard.stripe.com"]')).toBeVisible();
+    // NO outbound Stripe link, and that is the ADR-011 amendment rather than an
+    // omission: under Express a restaurant has no full Stripe dashboard to log
+    // into, and in THIS state the account does not exist at all, so the old
+    // `https://dashboard.stripe.com` <a> pointed at a login they could not use.
+    // What replaced it is prose saying what the short form will ask for.
+    await expect(page.locator('a[href="https://dashboard.stripe.com"]')).toHaveCount(0);
+    await expect(page.getByText(/short form/i)).toBeVisible();
 
     // Q3's answer (option B), the same policy the public FAQ states: billed from
     // activation, credited on request. It must be ON this card, not only in the FAQ —

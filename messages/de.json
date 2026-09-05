@@ -1012,7 +1012,7 @@
         "rateLabel": "Satz (Basispunkte, 100 = 1 %)",
         "rateHint": "z. B. 150 = 1,50 %. Obergrenze {max} Basispunkte.",
         "notEligibleRegistryUnavailable": "Das Tenant-Registry konnte nicht gelesen werden, daher kann die Provisionsberechtigung gerade nicht geprüft werden.",
-        "notEligibleNotPaired": "Der Registry-Eintrag dieses Tenants enthält nicht beide, online-payments UND ein stripe_account — die Provisionierung lehnt einen Satz über null ohne dieses Paar ab, noch vor der Datenbank. Provision bleibt aus, bis beides vorhanden ist.",
+        "notEligibleNotPaired": "Der Registry-Eintrag dieses Betriebs führt nicht beides — online-payments und ein stripe_account. Das Provisioning verweigert einen Satz über null ohne dieses Paar, und zwar vor der Datenbank. Das Stripe-Konto eröffnen inzwischen wir, ein fehlendes heißt also: der Vorschlag konnte es nicht anlegen (sein PR nennt den Grund) oder der Eintrag ist älter. Die Provision bleibt aus, bis beides da ist.",
         "submit": "Speichern",
         "saving": "Wird gespeichert…",
         "prOpened": "Registry-PR geöffnet — zusammenführen, dann den Tenant erneut bereitstellen.",
@@ -1222,18 +1222,18 @@
       "rateLabel": "Satz (Basispunkte, 100 = 1 %)",
       "rateHint": "z. B. 150 = 1,50 %. Obergrenze {max} Basispunkte.",
       "notEligibleRegistryUnavailable": "Wir können die Einrichtung dieses Kunden gerade nicht prüfen, deshalb bleibt die Provision vorerst aus.",
-      "notEligibleNotPaired": "Für die Provision braucht dieser Kunde das Online-Zahlungsmodul und ein eigenes Stripe-Konto. Fragen Sie uns nach beidem, dann steht diese Wahl offen.",
+      "notEligibleNotPaired": "Für die Provision braucht dieser Kunde das Modul online-payments und ein Stripe-Konto. Dieses Konto eröffnen wir für ihn — fehlt es, ist bei uns etwas schiefgegangen. Sagen Sie uns Bescheid, dann lässt sich dieser Schalter umlegen.",
       "submit": "Speichern",
       "saving": "Wird gespeichert…",
       "prOpened": "An SofraPiwas gesendet. Wir wenden es auf die App Ihres Kunden an und bestätigen — an der Kasse hat sich noch nichts geändert.",
       "alreadySet": "Die App Ihres Kunden läuft bereits mit diesem Satz. Nichts zu senden."
     },
     "paymentsPending": {
-      "kicker": "Kartenzahlung",
-      "title": "Ihre Kartenzahlung ist unterwegs",
-      "body": "Kartenzahlung gehört zu Ihrem Paket. Wir schalten sie gerade für Sie frei — Sie müssen im Moment nichts tun, und wir sagen Ihnen Bescheid, sobald sie an Ihrer Kasse auftaucht. Bis dahin ist Ihr Restaurant vollständig online und nimmt wie gewohnt Bargeld an.",
-      "billingNote": "Ihr Paket wird ab dem Starttag abgerechnet. Ist die Kartenzahlung bei Ihrer ersten Rechnung noch nicht freigeschaltet, sagen Sie uns Bescheid — wir schreiben Ihnen diesen Monat gut.",
-      "stripeLink": "Ihr Stripe-Dashboard"
+      "kicker": "Kartenzahlungen",
+      "title": "Ihre Kartenzahlungen sind unterwegs",
+      "body": "Kartenzahlungen gehören zu Ihrem Tarif. Das Stripe-Konto eröffnen wir für Sie — Sie müssen also gerade nichts tun, und wir sagen Ihnen Bescheid, sobald die Karte an Ihrer Kasse erscheint. Bis dahin ist Ihr Restaurant vollständig live und nimmt wie gewohnt Bargeld an.",
+      "billingNote": "Ihr Tarif wird ab dem Starttag berechnet. Sind die Kartenzahlungen bei Ihrer ersten Rechnung immer noch nicht aktiv, sagen Sie uns Bescheid — wir schreiben Ihnen diesen Monat gut.",
+      "nextStep": "Wenn es so weit ist, zeigt Ihnen Stripe ein kurzes Formular: Geburtsdatum, eine Telefonnummer und die Zustimmung zu deren Bedingungen. Den Link dazu schicken wir Ihnen, wenn Sie an der Reihe sind; ein Stripe-Link gilt nur wenige Minuten, aufheben lohnt sich also nie."
     },
     "invoice": {
       "title": "Rechnung",
