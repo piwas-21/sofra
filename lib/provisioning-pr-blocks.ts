@@ -12,6 +12,7 @@
 // Pure: no GitHub API, no secrets, no env.
 
 import type { TenantProvisionInput } from "./provisioning-registry";
+import { COMMISSION_FLOOR_CENTS } from "./payments-pricing";
 
 /**
  * Bought but deliberately NOT in this entry.
@@ -86,9 +87,10 @@ export function commissionSection(
       `### 💳 Per-transaction commission: \`${paymentsCommissionBps}\` bps (${pct}%)`,
       "",
       "This tenant is on the `commission` payments mode: `online-payments` is billed at",
-      "the reduced €9/mo floor (not €0 — see `COMMISSION_FLOOR_CENTS`) and Sofra takes",
-      "this rate on top, sent to Stripe as",
-      "`application_fee_amount` on each online order. Same as any other field in this",
+      // Read from the constant rather than typed as prose — a body that hardcoded
+      // the floor would keep quoting the old number after it moved.
+      `the reduced €${(COMMISSION_FLOOR_CENTS / 100).toFixed(2)}/mo floor (NOT €0) and Sofra takes this rate on top,`,
+      "sent to Stripe as `application_fee_amount` on each online order. Same as any other field in this",
       "entry, it only takes effect once this PR merges and the tenant is (re-)provisioned —",
       "until then the billing record and the registry can disagree, same as any other",
       "registry-PR window.",

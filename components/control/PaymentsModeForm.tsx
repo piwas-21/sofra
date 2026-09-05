@@ -103,7 +103,7 @@ export default function PaymentsModeForm({
             checked={mode === "flat"}
             onChange={() => handleModeChange("flat")}
           />
-          {t("modeFlat")}
+          {t("modeFlat", { price: eur(ONLINE_PAYMENTS_PRICE_CENTS) })}
         </label>
         <label className="flex items-center gap-2 font-label text-sm">
           <input
@@ -146,7 +146,7 @@ export default function PaymentsModeForm({
             percent: formatCommissionPercent(bps),
             amount: eur(preview),
             floor: eur(COMMISSION_FLOOR_CENTS),
-            full: eur(ONLINE_PAYMENTS_PRICE_CENTS),
+            price: eur(ONLINE_PAYMENTS_PRICE_CENTS),
             saving: eur(COMMISSION_MODE_SAVING_CENTS),
           })}
         </p>

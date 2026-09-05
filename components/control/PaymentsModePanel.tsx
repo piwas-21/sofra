@@ -86,7 +86,7 @@ export default async function PaymentsModePanel({
               percent: formatCommissionPercent(effectiveBps),
               floor: eur(COMMISSION_FLOOR_CENTS),
             })
-          : t("flatSummary")}
+          : t("flatSummary", { price: eur(ONLINE_PAYMENTS_PRICE_CENTS) })}
       </p>
       {effective.pending && (
         // <output>, not <p role="status">: it carries the same implicit ARIA role
@@ -106,7 +106,7 @@ export default async function PaymentsModePanel({
             percent: formatCommissionPercent(effectiveBps),
             amount: eur(crossover),
             floor: eur(COMMISSION_FLOOR_CENTS),
-            full: eur(ONLINE_PAYMENTS_PRICE_CENTS),
+            price: eur(ONLINE_PAYMENTS_PRICE_CENTS),
             saving: eur(COMMISSION_MODE_SAVING_CENTS),
           })}
         </p>

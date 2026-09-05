@@ -18,7 +18,18 @@ import {
   ProvisioningApiError,
 } from "./provisioning";
 import { currentRegistryCommissionBps, setRegistryCommissionBps } from "./registry-commission-edit";
-import { crossoverCentsPerMonth } from "./payments-pricing";
+import {
+  COMMISSION_FLOOR_CENTS,
+  COMMISSION_MODE_SAVING_CENTS,
+  ONLINE_PAYMENTS_PRICE_CENTS,
+  crossoverCentsPerMonth,
+} from "./payments-pricing";
+
+// Integer cents as a plain major-units string for a MARKDOWN body — not
+// `format.ts`'s `eur()`, whose nl-NL output ("€ 9,00") carries a currency symbol
+// this text supplies itself and a figure the surrounding sentence explicitly
+// says is in the TENANT's currency, not Sofra's EUR.
+const majorUnits = (cents: number): string => (cents / 100).toFixed(2);
 
 export type CommissionChangeResult = { alreadySet: true } | { alreadySet: false; prUrl: string };
 
@@ -32,16 +43,23 @@ export type CommissionChangeResult = { alreadySet: true } | { alreadySet: false;
  */
 function commissionChangePrBody(slug: string, oldBps: number, newBps: number): string {
   // No second argument: the crossover is driven by what `commission` SAVES on
-  // the module (€19 - €9), not by its full list price — see
-  // COMMISSION_MODE_SAVING_CENTS, which this deliberately defaults to.
+  // the module, not by its full list price — see COMMISSION_MODE_SAVING_CENTS,
+  // which this deliberately defaults to.
   const crossover = crossoverCentsPerMonth(newBps);
+  // Read from the constants, never typed as prose: this file deleted its own
+  // duplicated catalog lookup for exactly this reason, and a PR body that
+  // hardcodes "€9" is the same drift one layer further out — it would keep
+  // saying it after the floor moved, while every UI surface had already changed.
+  const floor = majorUnits(COMMISSION_FLOOR_CENTS);
+  const full = majorUnits(ONLINE_PAYMENTS_PRICE_CENTS);
+  const saving = majorUnits(COMMISSION_MODE_SAVING_CENTS);
   return [
     `Updates \`${slug}\`'s per-transaction commission rate in \`tenants/registry.yml\`, proposed by the control plane's \`/admin\` (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2a).`,
     "",
     `- **tenant** \`${slug}\``,
     `- **rate** \`${oldBps}\` bps → \`${newBps}\` bps`,
     crossover !== null
-      ? `- **crossover** ~\`${(crossover / 100).toFixed(2)}\` of monthly online turnover (this tenant's own billing currency, major units) — below that figure \`flat\` would have cost this tenant less; above it, \`commission\` does. Computed from the €10 the module drops by under \`commission\` (€19 → the €9 floor), not from the full €19`
+      ? `- **crossover** ~\`${majorUnits(crossover)}\` of monthly online turnover (this tenant's own billing currency, major units) — below that figure \`commission\` costs this tenant LESS than \`flat\`; above it, more. Computed from the €${saving} the module drops by under \`commission\` (€${full} → the €${floor} floor), not from the full €${full}`
       : "- **crossover** none at 0 bps — commission costs nothing no matter the turnover",
     "",
     "### Merging this changes ENFORCEMENT only",

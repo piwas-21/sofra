@@ -137,9 +137,10 @@ async function mintAccount(
  */
 /**
  * The founder's new-lead mail lists the quote, and under `commission` that total
- * EXCLUDES the online-payments module — so the number alone reads as a cheaper
- * plan with no visible reason for it. This row is what explains it, and it lives
- * outside POST so the handler stays under its cognitive-complexity limit.
+ * prices the online-payments module at its reduced €9 floor rather than at the
+ * full list price — so the number alone reads as a cheaper plan with no visible
+ * reason for it. This row is what explains it, and it lives outside POST so the
+ * handler stays under its cognitive-complexity limit.
  */
 function paymentsRow(config: StoredSignupConfiguration): string {
   if (config.paymentsMode === "commission") {
