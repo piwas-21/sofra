@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chooseConnectLink, onboardingLinkForm } from "@/lib/connect-account-links";
+import { chooseConnectLink, onboardingLinkForm, paymentsPageUrl } from "@/lib/connect-account-links";
 import { newOnboardingToken } from "@/lib/connect-account-store";
 import { resolvePaymentsLink } from "@/lib/onboarding-payments";
 
@@ -79,5 +79,36 @@ describe("resolvePaymentsLink", () => {
     await expect(resolvePaymentsLink("", "https://sofrapiwas.com/en/onboarding/payments/")).resolves.toEqual({
       kind: "unknownToken",
     });
+  });
+});
+
+describe("paymentsPageUrl — what goes into the registry entry", () => {
+  it("is the page's own URL with NO locale prefix", () => {
+    // `middleware.ts` redirects an unprefixed path to the visitor's language, so
+    // one stored URL serves a Swiss restaurant whose staff read French and whose
+    // owner reads German. Baking `/en/` in would choose for them, permanently, in
+    // a value that is copied into a box `.env`.
+    expect(paymentsPageUrl("https://sofrapiwas.com", "tok123")).toBe(
+      "https://sofrapiwas.com/onboarding/payments/tok123",
+    );
+    expect(paymentsPageUrl("https://sofrapiwas.com", "tok123")).not.toContain("/en/");
+  });
+
+  it("survives a base URL with a trailing slash", () => {
+    // `NEXTAUTH_URL` is hand-written in a box `.env`; a trailing slash there would
+    // otherwise produce `//onboarding/...`, which is a different path and a 404 on
+    // the day somebody is trying to get paid.
+    expect(paymentsPageUrl("https://staging.sofrapiwas.com/", "tok")).toBe(
+      "https://staging.sofrapiwas.com/onboarding/payments/tok",
+    );
+    expect(paymentsPageUrl("https://staging.sofrapiwas.com///", "tok")).toBe(
+      "https://staging.sofrapiwas.com/onboarding/payments/tok",
+    );
+  });
+
+  it("keeps the environment it was given", () => {
+    // The reason the URL is finished HERE and not on the box: a per-environment
+    // concatenation eventually points a working link at the wrong site.
+    expect(paymentsPageUrl("https://staging.sofrapiwas.com", "t")).toContain("staging.");
   });
 });

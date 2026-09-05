@@ -27,6 +27,8 @@
 //     payments is a real object with a real compliance obligation attached.
 
 import { createExpressAccount } from "@/lib/stripe-connect-accounts";
+import { paymentsPageUrl } from "@/lib/connect-account-links";
+import { siteUrl } from "@/lib/email";
 import { connectCountryForCurrency } from "@/lib/connect-account-country";
 import { isStripeAccountId } from "@/lib/validation-provision";
 import { stripeConfigured } from "@/lib/stripe";
@@ -45,6 +47,16 @@ export type MintForProposalInput = {
 export type MintForProposalResult = {
   /** The minted (or already-recorded) `acct_…`, when there is one. */
   stripeAccount?: string;
+  /**
+   * The tenant's own `/onboarding/payments/<token>` URL, finished and absolute —
+   * never a raw token. It travels into the registry entry as `payments_link_url:`
+   * and from there into the tenant's `Stripe:PaymentsLinkUrl`, so the deploy repo
+   * copies one opaque field and never learns that a token is a token. It also
+   * cannot get the origin subtly wrong per environment, which is the failure a
+   * box-side concatenation would eventually produce: a link that works and points
+   * at the wrong site.
+   */
+  paymentsLinkUrl?: string;
   /**
    * Why there is none — founder-facing, and written into the PR body. Absent when
    * nothing was attempted (the tenant did not buy the module) or when it worked.
@@ -84,7 +96,13 @@ export async function mintForProposal(input: MintForProposalInput): Promise<Mint
     if (!isStripeAccountId(minted.stripeAccountId)) {
       return { note: `Stripe returned an account id in an unexpected shape and it was not recorded in the entry` };
     }
-    return { stripeAccount: minted.stripeAccountId };
+    return {
+      stripeAccount: minted.stripeAccountId,
+      // `siteUrl()` — the ONE base every link we send already goes through
+      // (runtime NEXTAUTH_URL first), so staging can never mint a link that
+      // points at production.
+      paymentsLinkUrl: paymentsPageUrl(siteUrl(), minted.onboardingToken),
+    };
   } catch (e) {
     // No PII: a slug and Stripe's own message (CLAUDE.md §5.8).
     console.error("mintForProposal failed", input.slug, e);

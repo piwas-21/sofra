@@ -62,3 +62,22 @@ export function onboardingLinkForm(accountId: string, pageUrl: string): Record<s
     return_url: pageUrl,
   };
 }
+
+/**
+ * The tenant's own onboarding page — the URL that goes into the registry entry
+ * (`payments_link_url:`) and from there into the tenant's `Stripe:PaymentsLinkUrl`
+ * setting, which is what the restaurant's Payments tab links to.
+ *
+ * NO LOCALE PREFIX, deliberately. `middleware.ts` redirects an unprefixed path to
+ * the visitor's own language, so one stored URL serves a Swiss restaurant whose
+ * staff read French and whose owner reads German. Baking `/en/` in would pick for
+ * them, permanently, in a value that is copied into a box `.env`.
+ *
+ * The BASE is passed in rather than read here so this stays pure and so the
+ * caller uses the one seam every link we send already goes through
+ * (`siteUrl()` — runtime `NEXTAUTH_URL` first, so staging cannot mint links that
+ * point at production).
+ */
+export function paymentsPageUrl(baseUrl: string, token: string): string {
+  return `${baseUrl.replace(/\/+$/, "")}/onboarding/payments/${token}`;
+}

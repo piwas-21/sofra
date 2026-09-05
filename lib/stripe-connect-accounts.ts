@@ -44,6 +44,12 @@ export type MintedConnectAccount = {
   /** `acct_...` */
   stripeAccountId: string;
   /**
+   * The unguessable segment of this tenant's `/onboarding/payments/<token>` page
+   * (E4). Returned so the caller can put the finished URL in the registry entry
+   * — the box never sees the token as a token, only a URL it copies.
+   */
+  onboardingToken: string;
+  /**
    * True when the account already existed for this slug and no Stripe call was
    * made. Reported rather than hidden because the caller's audit line should say
    * which of the two happened — "minted" and "already had one" are different
@@ -57,9 +63,16 @@ export async function createExpressAccount(input: ExpressAccountInput): Promise<
   const form = expressAccountForm(input);
 
   const existing = await findConnectAccountForSlug(input.slug);
-  if (existing) return { stripeAccountId: existing.stripeAccountId, reused: true };
+  if (existing) {
+    return {
+      stripeAccountId: existing.stripeAccountId,
+      onboardingToken: existing.onboardingToken,
+      reused: true,
+    };
+  }
 
   const account = await stripePost<StripeAccountCreated>("/v1/accounts", form, { idempotencyKey });
+  const onboardingToken = newOnboardingToken();
 
   // Not in a transaction with the call above, because there is no such thing: the
   // account exists at Stripe the moment it returns. What makes the gap survivable
@@ -72,10 +85,10 @@ export async function createExpressAccount(input: ExpressAccountInput): Promise<
     country: form.country,
     // Minted here, with the account, and never re-issued: it is how the restaurant
     // reaches its own onboarding page for as long as that page exists.
-    onboardingToken: newOnboardingToken(),
+    onboardingToken,
   });
 
-  return { stripeAccountId: account.id, reused: false };
+  return { stripeAccountId: account.id, onboardingToken, reused: false };
 }
 
 /** Stripe's `AccountLink` / `LoginLink` — both are `{ url }` and nothing else is read. */
