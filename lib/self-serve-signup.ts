@@ -7,45 +7,42 @@
 //
 //   1. is the wished subdomain actually usable? It stops being a wish the moment
 //      it becomes `TenantBilling.tenantSlug` — the unique billing anchor.
-//   2. what does the plan cost? Re-quoted from the catalog, never read back from
-//      the stored `quotedCents`.
+//   2. what does the plan cost? Re-quoted from the catalog AND from the payments
+//      mode, never read back from the stored `quotedCents`.
 //
 // Three outcomes, because "no" has two very different meanings:
 //
 //   • account  — mint it.
 //   • refuse   — the customer can fix this themselves, at the keyboard, by
 //                changing one field. Nothing is written; they resubmit.
-//   • leadOnly — the customer CANNOT fix this (the email already has an account;
-//                they configured nothing to price; the registry is unreadable).
-//                The lead is still captured and the founder takes it from there —
-//                exactly today's behaviour, which is why this is a degradation
-//                and not a rejection.
+//   • leadOnly — the customer CANNOT fix this (the email already has an account; they
+//                configured nothing to price; the registry is unreadable). The lead is
+//                still captured and the founder takes it — a degradation, not a refusal.
 //
 // Two residuals, both accepted on cost alone:
-//
 //  1. `account: true` vs `account: false` is a weak oracle for "does this email
 //     already have an account". Weak because each probe costs a distinct unused
 //     slug, leaves a lead row the founder reads, and is capped at 5 per 15 min per
-//     IP by `guardIntake`. (This used to be justified by the alternative being a
-//     worse lie — telling a real customer "check your email" when none was sent.
-//     That lie is gone since G5, so the trade-off now rests on the cost above and
-//     nothing else.)
+//     IP by `guardIntake`. (It used to be justified by the alternative being a worse
+//     lie — "check your email" when none was sent. That lie is gone since G5, so the
+//     trade-off now rests on the cost above and nothing else.)
 //  2. `emailed: false` (G5) tells an unauthenticated caller that the welcome mail
 //     did not go out. `sendEmail` collapses every Resend non-2xx into `{sent:false}`,
-//     and that set includes PER-RECIPIENT rejections — a suppressed address after a
-//     hard bounce, or the 403 a sandbox sender returns for everyone but the account
-//     owner. So a probe can learn something about an address at a third party that
-//     it could not otherwise. Same cost cap as (1), and the alternative — hiding a
-//     failed send from the one person it strands — is the gap this closed. If
-//     `sendEmail` ever returns a reason, echo only the non-recipient-specific ones.
+//     including PER-RECIPIENT rejections — a suppressed address after a hard bounce,
+//     or the 403 a sandbox sender returns for everyone but the account owner — so a
+//     probe can learn something about an address at a third party. Same cost cap as
+//     (1), and the alternative (hiding a failed send from the one person it strands)
+//     is the gap this closed. If `sendEmail` ever returns a reason, echo only the
+//     non-recipient-specific ones.
 //
 // That split is the honest reading of the plan's drop-don't-reject rule
-// (lib/signup-configuration.ts): never lose a lead over something the customer
-// has no way to resolve, but do ask them to change a subdomain that is taken.
+// (lib/signup-configuration.ts): never lose a lead over something the customer has
+// no way to resolve, but do ask them to change a subdomain that is taken.
 //
 // Pure — no DB, no network, no env — so every branch is unit-testable.
 
 import { isModuleId, quoteModules, type ModuleId } from "./module-catalog";
+import { paymentsModeQuote } from "./payments-pricing";
 import { parseCsv } from "./tenant-options";
 import type { SlugStatus } from "./slug-availability";
 import type { StoredSignupConfiguration } from "./signup-configuration";
@@ -111,11 +108,16 @@ export type SelfServeInput = {
  * never leave a freshly minted user or a half-built plan behind.
  *
  * The price is recomputed here from the module list rather than read out of
- * `config.quotedCents`. Those two are equal by construction today — the sanitizer
- * writes the quote it computed — but reading the stored number would make a
- * column the customer's POST can influence the input to a charge. Re-quoting
- * makes the catalog the only thing that can set a price, which is the invariant
- * worth protecting even when the shortcut would currently agree.
+ * `config.quotedCents`, because reading the stored number would make a column the
+ * customer's POST can influence the input to a charge. Re-quoting makes the
+ * catalog the only thing that can set a price.
+ *
+ * But a re-quote has to reproduce the WHOLE quote, and until 2026-09-05 this one
+ * skipped the payments mode: a buyer who chose `commission` was SHOWN the
+ * mode-adjusted total and BILLED the un-adjusted one. The doc here even claimed the
+ * two were "equal by construction" — they were equal only for `flat`. Both sides go
+ * through {@link paymentsModeQuote} now, and the test asserts the two PATHS agree
+ * rather than a number: two independent computations of one price IS the defect.
  */
 export function decideSelfServe(input: SelfServeInput): SelfServeOutcome {
   // 0. No slug at all is NOT a refusal. The field was optional before O2 and the
@@ -174,17 +176,24 @@ export function decideSelfServe(input: SelfServeInput): SelfServeOutcome {
     };
   }
 
-  // 4. A plan needs something to price. The live form always posts `core` (a
-  //    hidden input), so this is the plain-form / stale-bundle case that the
-  //    sanitizer reports as NOTHING_CHOSEN. Inventing "core only" here would put
-  //    words in the customer's mouth AND charge them for the guess.
+  // 4. A plan needs something to price. The live form always posts `core` (a hidden
+  //    input), so this is the plain-form / stale-bundle case the sanitizer reports as
+  //    NOTHING_CHOSEN. Inventing "core only" would put words in the customer's mouth
+  //    AND charge them for the guess.
   const modules = parseCsv(input.config.modules).filter(isModuleId);
   if (modules.length === 0) return { kind: "leadOnly", reason: "nothingConfigured" };
 
   return {
     kind: "account",
     slug: input.slug,
-    amountCents: quoteModules(modules).monthlyCents,
+    // Mode-adjusted, exactly as the sanitizer adjusts the number the buyer was SHOWN.
+    // `paymentsMode` is null only when nothing was chosen, which `nothingConfigured`
+    // above already returned on; `flat` is the reading every pre-configurator lead has.
+    amountCents: paymentsModeQuote(
+      quoteModules(modules).monthlyCents,
+      input.config.paymentsMode ?? "flat",
+      modules.includes("online-payments"),
+    ),
     modules,
   };
 }
