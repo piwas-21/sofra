@@ -198,6 +198,15 @@ export default defineConfig({
         // file rather than by this list.
         "lib/commission-earnings.ts",
         "lib/stripe-webhook-secrets.ts",
+        // ADR-011 amendment E2 — what we send Stripe to MINT a connected account.
+        // Pure by construction (no clock, no env, no network), and in scope because
+        // every branch in it is a field that cannot be corrected afterwards: the
+        // capability list fails QUIETLY when short, and `business_type`,
+        // `individual[...]`, `external_account[...]` and `email` are all refused on
+        // update with 403 oauth_not_supported. Its Stripe-calling sibling
+        // `lib/stripe-connect-accounts.ts` stays OUT, the same split as
+        // vies/vies-result and stripe-fee-refund's.
+        "lib/connect-account-request.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial
