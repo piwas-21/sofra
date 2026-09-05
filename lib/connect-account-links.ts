@@ -79,5 +79,11 @@ export function onboardingLinkForm(accountId: string, pageUrl: string): Record<s
  * point at production).
  */
 export function paymentsPageUrl(baseUrl: string, token: string): string {
-  return `${baseUrl.replace(/\/+$/, "")}/onboarding/payments/${token}`;
+  // Built with the URL constructor rather than by trimming a trailing slash off
+  // the base: `NEXTAUTH_URL` is hand-written in a box `.env`, and the obvious
+  // `replace(/\/+$/, "")` is the ReDoS shape Sonar rejects (S5852) — the same
+  // reason lib/provisioning.ts uses `trimEnd()` instead of `\n*$`. This also
+  // normalises the join, so `https://host/` and `https://host` cannot produce two
+  // different links.
+  return new URL(`/onboarding/payments/${token}`, baseUrl).toString();
 }
