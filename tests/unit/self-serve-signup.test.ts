@@ -130,3 +130,66 @@ describe("decideSelfServe — fallbacks the customer cannot fix", () => {
     });
   });
 });
+
+// THE INVARIANT, not the value. Two code paths compute one price: the sanitizer
+// writes `quotedCents` (what the buyer is SHOWN and what the founder's queue
+// prints) and `decideSelfServe` computes `amountCents` (what the plan is BILLED —
+// the Mollie subscription amount and the figure in the welcome email). They are
+// meant to be the same number, and until 2026-09-05 they silently were not: the
+// billing side re-quoted the modules and forgot the payments mode, so a buyer who
+// chose `commission` was quoted EUR 10 less than they would be charged (EUR 19 less
+// before the commission floor landed).
+//
+// Asserting the two AGREE is what pins that shut. A value assertion would pass just
+// as happily with the two paths drifting apart again the next time either side
+// learns a new adjustment — which is exactly how this defect arrived.
+describe("the quoted price and the billed price cannot disagree", () => {
+  const shownAndBilled = (raw: Parameters<typeof sanitizeSignupConfiguration>[0]) => {
+    const config = sanitizeSignupConfiguration(raw);
+    const out = decideSelfServe(base({ config }));
+    if (out.kind !== "account") throw new Error(`expected an account, got ${out.kind}`);
+    return { shown: config.quotedCents, billed: out.amountCents, config };
+  };
+
+  it.each([
+    ["commission, with the module", { modules: "core,online-payments", paymentsMode: "commission" }],
+    ["flat, with the module", { modules: "core,online-payments", paymentsMode: "flat" }],
+    ["commission, no module (degrades to flat)", { modules: "core,loyalty", paymentsMode: "commission" }],
+    ["no mode posted at all", { modules: "core,online-payments" }],
+    // A bundle, because the mode adjustment is applied on top of bundle pricing and
+    // the two paths must agree there too — not only on a plain sum of list prices.
+    [
+      "commission on top of a bundle",
+      { modules: "core,kitchen-board,cashier,printing,online-payments", paymentsMode: "commission" },
+    ],
+  ])("agrees for %s", (_case, raw) => {
+    const { shown, billed } = shownAndBilled(raw);
+    expect(billed).toBe(shown);
+  });
+
+  // The case the defect was actually about, stated once as an absolute so a future
+  // reader can see the real numbers rather than only the equality: core EUR 19 +
+  // online-payments EUR 19 = EUR 38, less the EUR 10 the commission floor takes off.
+  it("bills a commission buyer the EUR 28 they were shown, not the EUR 38 flat total", () => {
+    const { shown, billed } = shownAndBilled({
+      modules: "core,online-payments",
+      paymentsMode: "commission",
+    });
+    expect(shown).toBe(2800);
+    expect(billed).toBe(2800);
+    expect(billed).not.toBe(quoteModules(["core", "online-payments"]).monthlyCents);
+  });
+
+  // The control: the pair above proves nothing unless the two modes actually differ.
+  // If commission and flat ever quoted the same total, every assertion here would
+  // pass while measuring nothing.
+  it("the two modes really do cost different amounts, or the tests above are vacuous", () => {
+    const commission = shownAndBilled({
+      modules: "core,online-payments",
+      paymentsMode: "commission",
+    });
+    const flat = shownAndBilled({ modules: "core,online-payments", paymentsMode: "flat" });
+    expect(commission.billed).not.toBe(flat.billed);
+    expect(flat.billed - commission.billed).toBe(1000);
+  });
+});
