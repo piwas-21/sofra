@@ -195,7 +195,7 @@ describe("every production caller of crossoverCentsPerMonth", () => {
   // configurator, the admin/partner panel, its form's live preview, and the
   // registry PR body.
   it("finds all four call sites — an empty scan would pass vacuously", () => {
-    expect(calls.length).toBe(4);
+    expect(calls).toHaveLength(4);
   });
 
   it("passes the rate only, so none of them can name the wrong basis", () => {
