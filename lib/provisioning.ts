@@ -8,7 +8,7 @@
 
 import { buildProvisioningPrBody } from "@/lib/provisioning-pr-body";
 import { tenantPartnerBrand } from "@/lib/partner-brand-lookup";
-import { mintForProposal } from "@/lib/provisioning-mint";
+import { applyMintToProvisionInput, mintForProposal } from "@/lib/provisioning-mint";
 import {
   buildTenantRegistryEntry,
   tenantDomain,
@@ -119,13 +119,14 @@ export async function openProvisioningPr(
     modules: input.modules,
     url: `https://${tenantDomain(input)}`,
   });
-  const withAccount: TenantProvisionInput = {
-    ...input,
-    partnerBrand,
-    ...(mint.stripeAccount ? { stripeAccount: mint.stripeAccount } : {}),
-    ...(mint.paymentsLinkUrl ? { paymentsLinkUrl: mint.paymentsLinkUrl } : {}),
-    ...(mint.note ? { stripeAccountNote: mint.note } : {}),
-  };
+  // The fold is `applyMintToProvisionInput` (lib/provisioning-mint.ts) rather than an
+  // inline spread, so the mapping from the mint's three outputs to the three fields is
+  // unit-testable — this function needs a GitHub token to reach, so nothing inline here
+  // can be covered.
+  const withAccount: TenantProvisionInput = applyMintToProvisionInput(
+    { ...input, partnerBrand },
+    mint,
+  );
 
   // `deferred` is returned to the caller rather than only rendered into the PR body: a
   // deferral means a customer is being BILLED for a module their tenant will not have

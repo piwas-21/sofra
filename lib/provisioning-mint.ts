@@ -110,3 +110,39 @@ export async function mintForProposal(input: MintForProposalInput): Promise<Mint
     return { note: `creating the Stripe connected account failed — ${detail}` };
   }
 }
+
+/**
+ * Fold a mint result into the provision input the registry entry and the PR body are
+ * both built from.
+ *
+ * EXTRACTED so it can be tested. It used to be an inline spread inside
+ * `openProvisioningPr`, which is unreachable without a `PROVISION_GITHUB_TOKEN` — so the
+ * one place that decides WHICH of the mint's three outputs lands in WHICH field had no
+ * test, while everything on either side of it (mintForProposal, buildTenantRegistryEntry)
+ * was covered. A swap here is silent and expensive: `stripe_account:` receiving a URL is a
+ * registry entry that provisions a tenant pointed at an account that does not exist.
+ *
+ * The conditional spreads are deliberate and not cosmetic. `buildTenantRegistryEntry`
+ * distinguishes an ABSENT key from one present-and-undefined, so `{ stripeAccount:
+ * undefined }` is not the same input as `{}` — the first can emit an empty
+ * `stripe_account:` line into the registry, which `provision-tenant.sh` would then read
+ * as a configured-but-blank account.
+ */
+export function applyMintToProvisionInput<T extends object>(
+  base: T,
+  mint: MintForProposalResult,
+): T & Partial<Pick<MintFields, "stripeAccount" | "paymentsLinkUrl" | "stripeAccountNote">> {
+  return {
+    ...base,
+    ...(mint.stripeAccount ? { stripeAccount: mint.stripeAccount } : {}),
+    ...(mint.paymentsLinkUrl ? { paymentsLinkUrl: mint.paymentsLinkUrl } : {}),
+    ...(mint.note ? { stripeAccountNote: mint.note } : {}),
+  };
+}
+
+/** The three fields a mint can contribute, named once. */
+type MintFields = {
+  stripeAccount: string;
+  paymentsLinkUrl: string;
+  stripeAccountNote: string;
+};
