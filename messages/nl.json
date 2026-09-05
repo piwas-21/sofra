@@ -1673,5 +1673,14 @@
       "vat": "Heeft uw bedrijf een EU-btw-nummer? Vul dat er ook bij in, dan verleggen we de btw in plaats van die in rekening te brengen.",
       "cta": "Vul uw factuurgegevens in"
     }
+  },
+  "onboardingPayments": {
+    "meta": {
+      "title": "Kaartbetalingen instellen"
+    },
+    "title": "Kaartbetalingen",
+    "unknownToken": "Deze link kennen we niet. Elke link hoort bij één restaurant — gebruik de link uit je welkomstmail, of de knop in je eigen beheer onder Instellingen → Betalingen.",
+    "unavailable": "We konden Stripe zojuist niet bereiken, dus je formulier kan niet openen. Er gaat niets verloren — probeer dezelfde link over een paar minuten opnieuw.",
+    "contact": "Blijft het gebeuren, beantwoord dan een van onze e-mails; dan lossen we het samen op."
   }
 }

@@ -1673,5 +1673,14 @@
       "vat": "Wenn Ihr Unternehmen eine EU-USt-IdNr. hat, tragen Sie sie ebenfalls ein — dann wenden wir das Reverse-Charge-Verfahren an, statt Ihnen die Umsatzsteuer zu berechnen.",
       "cta": "Rechnungsdaten hinzufügen"
     }
+  },
+  "onboardingPayments": {
+    "meta": {
+      "title": "Kartenzahlungen einrichten"
+    },
+    "title": "Kartenzahlungen",
+    "unknownToken": "Diesen Link kennen wir nicht. Jeder Link gehört zu genau einem Restaurant — bitte nehmen Sie den aus Ihrer Willkommens-E-Mail oder die Schaltfläche in Ihrer eigenen Verwaltung unter Einstellungen → Zahlungen.",
+    "unavailable": "Wir konnten Stripe gerade nicht erreichen, deshalb lässt sich Ihr Formular nicht öffnen. Es geht nichts verloren — versuchen Sie denselben Link in ein paar Minuten erneut.",
+    "contact": "Wenn es weiter auftritt, antworten Sie einfach auf eine unserer E-Mails, und wir klären es gemeinsam."
   }
 }

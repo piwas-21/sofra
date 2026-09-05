@@ -1673,5 +1673,14 @@
       "vat": "Şirketinizin AB KDV numarası varsa onu da ekleyin; KDV'yi sizden tahsil etmek yerine tersine tahsilat (reverse charge) uygularız.",
       "cta": "Fatura bilgilerinizi ekleyin"
     }
+  },
+  "onboardingPayments": {
+    "meta": {
+      "title": "Kartlı ödemeleri kurun"
+    },
+    "title": "Kartlı ödemeler",
+    "unknownToken": "Bu bağlantıyı tanımıyoruz. Her bağlantı tek bir restorana aittir — lütfen hoş geldiniz e-postanızdaki bağlantıyı ya da kendi yönetim panelinizde Ayarlar → Ödemeler altındaki düğmeyi kullanın.",
+    "unavailable": "Şu anda Stripe'a ulaşamadık, bu yüzden formunuz açılamıyor. Hiçbir şey kaybolmadı — birkaç dakika sonra aynı bağlantıyı yeniden deneyin.",
+    "contact": "Sorun sürerse e-postalarımızdan herhangi birini yanıtlayın, birlikte çözelim."
   }
 }
