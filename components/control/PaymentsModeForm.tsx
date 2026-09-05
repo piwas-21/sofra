@@ -7,6 +7,8 @@ import type {
   PaymentsModeTarget,
 } from "@/lib/actions/payments-mode-change";
 import {
+  COMMISSION_FLOOR_CENTS,
+  COMMISSION_MODE_SAVING_CENTS,
   DEFAULT_COMMISSION_BPS,
   MAX_COMMISSION_BPS,
   ONLINE_PAYMENTS_PRICE_CENTS,
@@ -83,7 +85,10 @@ export default function PaymentsModeForm({
     else if (bps === 0) setBps(DEFAULT_COMMISSION_BPS);
   };
 
-  const preview = mode === "commission" ? crossoverCentsPerMonth(bps, ONLINE_PAYMENTS_PRICE_CENTS) : null;
+  // No price argument — the live preview is the break-even against what
+  // `commission` SAVES on the module (€19 - €9), which is the function's own
+  // default. Passing the full list price here would overstate it by 1.9x.
+  const preview = mode === "commission" ? crossoverCentsPerMonth(bps) : null;
 
   return (
     <form action={action} className="grid gap-3 sm:max-w-md">
@@ -109,7 +114,7 @@ export default function PaymentsModeForm({
             disabled={commissionDisabled}
             onChange={() => handleModeChange("commission")}
           />
-          {t("modeCommission")}
+          {t("modeCommission", { floor: eur(COMMISSION_FLOOR_CENTS) })}
         </label>
         {!eligibility.eligible && (
           <p className="font-label text-sm text-craft-warning-text dark:text-craft-warning">
@@ -137,7 +142,13 @@ export default function PaymentsModeForm({
       </label>
       {preview !== null && (
         <p className="font-label text-sm text-muted-foreground">
-          {t("crossover", { percent: formatCommissionPercent(bps), amount: eur(preview) })}
+          {t("crossover", {
+            percent: formatCommissionPercent(bps),
+            amount: eur(preview),
+            floor: eur(COMMISSION_FLOOR_CENTS),
+            full: eur(ONLINE_PAYMENTS_PRICE_CENTS),
+            saving: eur(COMMISSION_MODE_SAVING_CENTS),
+          })}
         </p>
       )}
       <div className="flex items-center gap-3">

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  COMMISSION_FLOOR_CENTS,
+  COMMISSION_MODE_SAVING_CENTS,
   DEFAULT_COMMISSION_BPS,
   MAX_COMMISSION_BPS,
   asPaymentsMode,
@@ -45,17 +47,39 @@ describe("isCommissionBps", () => {
   });
 });
 
+// The reduced FLOOR the owner decided on 2026-09-05 (workspace BACKLOG): under
+// `commission` the module is €9/mo, not €0. Pinned as literals here on purpose —
+// re-deriving them from the same constants the code uses would make this suite
+// agree with any floor at all, including the €0 it replaced.
+describe("the commission floor", () => {
+  it("prices the online-payments module at €9/mo under commission, not €0", () => {
+    expect(COMMISSION_FLOOR_CENTS).toBe(900);
+  });
+
+  it("saves a tenant exactly €10/mo — the €19 list price less the €9 floor", () => {
+    expect(COMMISSION_MODE_SAVING_CENTS).toBe(1000);
+    expect(COMMISSION_MODE_SAVING_CENTS).toBe(ONLINE_PAYMENTS_PRICE_CENTS - COMMISSION_FLOOR_CENTS);
+    // The floor is a REDUCTION, never a zeroing: the saving must not be the
+    // whole list price, which is exactly what it was before the floor existed.
+    expect(COMMISSION_MODE_SAVING_CENTS).not.toBe(ONLINE_PAYMENTS_PRICE_CENTS);
+  });
+});
+
 describe("paymentsModeQuote", () => {
   it("leaves a flat-mode quote unchanged, module present or not", () => {
     expect(paymentsModeQuote(4500, "flat", true)).toBe(4500);
     expect(paymentsModeQuote(4500, "flat", false)).toBe(4500);
   });
 
-  it("zeroes the online-payments line under commission mode", () => {
+  it("reduces the online-payments line to the €9 floor under commission — it does not remove it", () => {
     const withModule = 1900 + ONLINE_PAYMENTS_PRICE_CENTS;
     expect(paymentsModeQuote(withModule, "commission", true)).toBe(
-      withModule - ONLINE_PAYMENTS_PRICE_CENTS,
+      withModule - ONLINE_PAYMENTS_PRICE_CENTS + COMMISSION_FLOOR_CENTS,
     );
+    // Stated as an absolute figure too, so a mistake in BOTH the code and the
+    // arithmetic above cannot cancel out: core €19 + online-payments €19 = €38,
+    // and commission takes €10 off it, not €19.
+    expect(paymentsModeQuote(3800, "commission", true)).toBe(2800);
   });
 
   it("leaves a tenant without the module unaffected by commission mode — nothing to subtract", () => {
@@ -67,14 +91,31 @@ describe("paymentsModeQuote", () => {
 
 describe("crossoverCentsPerMonth", () => {
   it("returns null at 0 bps — commission is free forever, not merely a high crossover", () => {
+    expect(crossoverCentsPerMonth(0)).toBeNull();
     expect(crossoverCentsPerMonth(0, 1900)).toBeNull();
   });
 
-  // Hand-derived: turnover * (bps/10000) = flatCents => turnover = flatCents*10000/bps.
-  // At the shipped default (150 bps) against the online-payments list price (1900
-  // cents/€19), that is 1900*10000/150 = 126666.67, rounded to the nearest cent —
-  // which is the plan's own "roughly CHF 1,270/mo" sentence (SOFRA-PAYMENTS-PRICING-MODE-PLAN §1).
-  it("computes the plan's own worked example: 150 bps against the €19 module", () => {
+  // THE number every switching surface prints, and the one the floor moved.
+  // Hand-derived: turnover * (bps/10000) = savingCents => turnover =
+  // savingCents*10000/bps. At the shipped default (150 bps) against the €10 the
+  // module actually drops by (€19 -> the €9 floor), that is 1000*10000/150 =
+  // 66666.67, rounded to the nearest cent: about €667/mo of online turnover.
+  it("computes the shipped figure: 150 bps against the €10 the floor leaves to earn back", () => {
+    expect(crossoverCentsPerMonth(DEFAULT_COMMISSION_BPS)).toBe(66667);
+  });
+
+  // The regression this whole slice exists to prevent. Against the FULL €19 list
+  // price the same rate reads €1,267 — a confident wrong number, 1.9x too high,
+  // on the page where a restaurant commits money. The default argument is what
+  // makes the wrong basis unreachable from a UI caller, so it is asserted
+  // rather than assumed.
+  it("defaults to the SAVING, never the full list price — €667, not €1,267", () => {
+    expect(crossoverCentsPerMonth(DEFAULT_COMMISSION_BPS)).toBe(
+      crossoverCentsPerMonth(DEFAULT_COMMISSION_BPS, COMMISSION_MODE_SAVING_CENTS),
+    );
+    expect(crossoverCentsPerMonth(DEFAULT_COMMISSION_BPS)).not.toBe(
+      crossoverCentsPerMonth(DEFAULT_COMMISSION_BPS, ONLINE_PAYMENTS_PRICE_CENTS),
+    );
     expect(crossoverCentsPerMonth(DEFAULT_COMMISSION_BPS, ONLINE_PAYMENTS_PRICE_CENTS)).toBe(126667);
   });
 

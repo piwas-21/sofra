@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 import { sanitizeSignupConfiguration, type RawSignupConfiguration } from "@/lib/signup-configuration";
 import { quoteModules } from "@/lib/module-catalog";
 import { isTemplateId, isTenantCurrency, parseCsv, TEMPLATES } from "@/lib/tenant-options";
-import { DEFAULT_COMMISSION_BPS, ONLINE_PAYMENTS_PRICE_CENTS, paymentsModeQuote } from "@/lib/payments-pricing";
+import {
+  COMMISSION_MODE_SAVING_CENTS,
+  DEFAULT_COMMISSION_BPS,
+  paymentsModeQuote,
+} from "@/lib/payments-pricing";
 
 describe("parseCsv", () => {
   it("drops blanks and duplicates, keeps order", () => {
@@ -143,8 +147,11 @@ describe("sanitizeSignupConfiguration — payments pricing mode", () => {
     const c = sanitizeSignupConfiguration({ modules: modules.join(","), paymentsMode: "commission" });
     expect(c.paymentsMode).toBe("commission");
     expect(c.paymentsCommissionBps).toBe(DEFAULT_COMMISSION_BPS);
-    // The adjusted total, never the flat one: online-payments drops to €0/mo.
-    expect(c.quotedCents).toBe(quoteModules(modules).monthlyCents - ONLINE_PAYMENTS_PRICE_CENTS);
+    // The adjusted total, never the flat one: online-payments drops to its €9
+    // floor, so the lead is quoted €10 less than flat — not €19 less.
+    expect(c.quotedCents).toBe(quoteModules(modules).monthlyCents - COMMISSION_MODE_SAVING_CENTS);
+    // core €19 + online-payments €19 = €38, less the €10 the floor leaves.
+    expect(c.quotedCents).toBe(2800);
   });
 
   // A mode with no module is not a state anything downstream can honour.

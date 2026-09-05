@@ -19,11 +19,6 @@ import {
 } from "./provisioning";
 import { currentRegistryCommissionBps, setRegistryCommissionBps } from "./registry-commission-edit";
 import { crossoverCentsPerMonth } from "./payments-pricing";
-import { MODULES } from "./module-catalog";
-
-// The same lookup `payments-pricing.ts` uses, for the identical reason: reading
-// the ONE catalog rather than a second hardcoded price that could drift from it.
-const ONLINE_PAYMENTS_PRICE_CENTS = MODULES.find((m) => m.id === "online-payments")!.priceCents;
 
 export type CommissionChangeResult = { alreadySet: true } | { alreadySet: false; prUrl: string };
 
@@ -36,14 +31,17 @@ export type CommissionChangeResult = { alreadySet: true } | { alreadySet: false;
  * makes that happen.
  */
 function commissionChangePrBody(slug: string, oldBps: number, newBps: number): string {
-  const crossover = crossoverCentsPerMonth(newBps, ONLINE_PAYMENTS_PRICE_CENTS);
+  // No second argument: the crossover is driven by what `commission` SAVES on
+  // the module (€19 - €9), not by its full list price — see
+  // COMMISSION_MODE_SAVING_CENTS, which this deliberately defaults to.
+  const crossover = crossoverCentsPerMonth(newBps);
   return [
     `Updates \`${slug}\`'s per-transaction commission rate in \`tenants/registry.yml\`, proposed by the control plane's \`/admin\` (SOFRA-PAYMENTS-PRICING-MODE-PLAN S2a).`,
     "",
     `- **tenant** \`${slug}\``,
     `- **rate** \`${oldBps}\` bps → \`${newBps}\` bps`,
     crossover !== null
-      ? `- **crossover** ~\`${(crossover / 100).toFixed(2)}\` of monthly online turnover (this tenant's own billing currency, major units) — below that figure \`flat\` would have cost this tenant less; above it, \`commission\` does`
+      ? `- **crossover** ~\`${(crossover / 100).toFixed(2)}\` of monthly online turnover (this tenant's own billing currency, major units) — below that figure \`flat\` would have cost this tenant less; above it, \`commission\` does. Computed from the €10 the module drops by under \`commission\` (€19 → the €9 floor), not from the full €19`
       : "- **crossover** none at 0 bps — commission costs nothing no matter the turnover",
     "",
     "### Merging this changes ENFORCEMENT only",
