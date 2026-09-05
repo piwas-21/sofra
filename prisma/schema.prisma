@@ -992,3 +992,68 @@ model StripeConnectAccount {
   /// be a field that can only ever disagree.
   createdAt DateTime @default(now())
 }
+
+/// What Stripe last told us about a connected account (ADR-011 amendment, E5),
+/// written by the `account.updated` branch of app/api/webhooks/stripe/route.ts.
+///
+/// The third table of the shape this app already has twice (StripeFeeRefund,
+/// StripeApplicationFee): keyed on a Stripe id, joined back to a tenant at READ
+/// time, never by a foreign key (ADR-007). Separate from StripeConnectAccount —
+/// which records accounts WE minted — because an account this platform did not
+/// mint can still send this event (the hand-run `curl` in runbook §2b.1 made
+/// some), and dropping its status because we cannot name its tenant would be the
+/// same mistake StripeApplicationFee's header refuses to make about money.
+///
+/// It is a CACHE OF AN OBSERVATION, not a ledger: every row is overwritten by the
+/// next delivery. That is safe here only because the write path takes the account
+/// ID from the event and RE-READS the account from Stripe (CLAUDE.md §5.3,
+/// fetch-and-verify) — so a redelivery of a stale event writes today's truth
+/// rather than yesterday's, and no event ordering has to be reasoned about.
+///
+/// The tenant-facing read model is unchanged and stays in the backend
+/// (`StripeAccountClient`, 5-minute cache, derived from `charges_enabled` +
+/// `requirements.currently_due`). This table exists for the CONTROL plane: to
+/// drive "your card payments are live" and to answer "did onboarding finish?"
+/// without a fleet-wide loop over `GET /v1/accounts`.
+model StripeAccountStatus {
+  id String @id @default(cuid())
+
+  /// `acct_...`. @unique is the idempotency anchor, the same role
+  /// StripeApplicationFee.applicationFeeId plays — one row per account, upserted.
+  connectedAccountId String @unique
+
+  /// Can this account take a card RIGHT NOW. The single fact everything
+  /// tenant-facing is derived from.
+  chargesEnabled Boolean
+
+  /// Can Stripe pay this account's balance out. Separate from `chargesEnabled`
+  /// on purpose: they move independently, and a restaurant taking cards whose
+  /// payouts are blocked is a support call nobody would otherwise see coming.
+  payoutsEnabled Boolean
+
+  /// Has the restaurant finished Stripe's hosted form. NOT the same as
+  /// `chargesEnabled` — an account under review has submitted everything and
+  /// still cannot charge — and it is the field that decides which link
+  /// /onboarding/payments mints (lib/connect-account-links.ts).
+  detailsSubmitted Boolean
+
+  /// How many fields Stripe is still waiting for
+  /// (`requirements.currently_due.length`). The COUNT, not the list: the field
+  /// names are Stripe's vocabulary, they change, and the only question anyone
+  /// asks of them here is "is it zero yet". MEASURED on a CH Express account:
+  /// 16 bare, 13 prefilled without a business type, 6 fully prefilled.
+  requirementsDueCount Int
+
+  /// The TWINT capability's status (`active` / `inactive` / `pending`), or null
+  /// when the account does not list it at all. Recorded because it is the one
+  /// capability with a Stripe-side approval queue behind it, so "the tenant is
+  /// live but TWINT is not" is a state that exists and that nothing else reports.
+  twintCapability String?
+
+  /// When WE read this from Stripe — and this IS the right clock, unlike in the
+  /// two fee tables. Those record events that happened at a Stripe timestamp; a
+  /// status is a snapshot, so what matters is how old the snapshot is.
+  observedAt DateTime
+
+  createdAt DateTime @default(now())
+}
