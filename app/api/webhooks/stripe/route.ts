@@ -38,9 +38,39 @@
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { stripeConfigured, StripeError } from "@/lib/stripe";
-import { verifyingScope, webhookSecrets } from "@/lib/stripe-webhook-secrets";
+import { verifyingScope, webhookSecrets, type WebhookScope } from "@/lib/stripe-webhook-secrets";
 import { refundApplicationFeeForCharge } from "@/lib/stripe-fee-refund";
 import { recordApplicationFee } from "@/lib/stripe-fee-earned";
+
+/**
+ * The ONE error taxonomy this endpoint has, shared by both branches rather than
+ * mirrored in each: a 404 from Stripe is ACKNOWLEDGED (a forged or unknown id,
+ * or a database restored across environments — there is nothing to do and a
+ * retry would not help), and anything else is treated as transient and answered
+ * 5xx so Stripe retries later. Swallowing that second case is silently lost
+ * revenue on the earned side and a fee never returned on the refunded one.
+ *
+ * Shared so the two can never drift apart, and so this file keeps ONE
+ * vocabulary for "what happened" — `what` and `scope` are what make a log line
+ * name the branch and the endpoint that produced it.
+ */
+async function acknowledge(
+  what: string,
+  scope: WebhookScope,
+  eventId: string,
+  run: () => Promise<unknown>,
+): Promise<NextResponse> {
+  try {
+    await run();
+  } catch (e) {
+    if (e instanceof StripeError && e.status === 404) {
+      return NextResponse.json({ ok: true });
+    }
+    console.error(`stripe webhook: ${what} failed`, scope, eventId, e);
+    return NextResponse.json({ error: "processing failed" }, { status: 500 });
+  }
+  return NextResponse.json({ ok: true });
+}
 
 type StripeEvent = {
   id: string;
@@ -103,38 +133,22 @@ export async function POST(request: Request) {
   // connected account is read from the FEE object instead, which is also what
   // makes this branch independent of which endpoint delivered the event.
   if (event.type === "application_fee.created") {
-    try {
-      await recordApplicationFee(event.data.object.id);
-    } catch (e) {
-      if (e instanceof StripeError && e.status === 404) {
-        return NextResponse.json({ ok: true });
-      }
-      console.error("stripe webhook: fee record failed", scope, event.id, e);
-      return NextResponse.json({ error: "processing failed" }, { status: 500 });
-    }
-    return NextResponse.json({ ok: true });
+    return acknowledge("fee record", scope, event.id, () =>
+      recordApplicationFee(event.data.object.id),
+    );
   }
 
-  if (!event.account) {
-    // A platform-level event, not a connected-account one — acknowledge and
-    // ignore rather than guess at what it might mean.
+  const account = event.account;
+  if (!account) {
+    // A platform-level event we do not act on — acknowledge and ignore rather
+    // than guess at what it might mean.
     return NextResponse.json({ ok: true });
   }
   if (event.type !== "charge.refunded") {
     return NextResponse.json({ ok: true });
   }
 
-  try {
-    await refundApplicationFeeForCharge(event.account, event.data.object.id);
-  } catch (e) {
-    if (e instanceof StripeError && e.status === 404) {
-      // Forged/unknown id, or a database restored across environments —
-      // nothing to do.
-      return NextResponse.json({ ok: true });
-    }
-    // Transient failure (Stripe/API/DB down): 5xx so Stripe retries later.
-    console.error("stripe webhook: fee refund failed", scope, event.id, e);
-    return NextResponse.json({ error: "processing failed" }, { status: 500 });
-  }
-  return NextResponse.json({ ok: true });
+  return acknowledge("fee refund", scope, event.id, () =>
+    refundApplicationFeeForCharge(account, event.data.object.id),
+  );
 }
