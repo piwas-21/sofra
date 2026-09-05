@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { eur } from "@/lib/format";
 import {
+  COMMISSION_FLOOR_CENTS,
+  COMMISSION_MODE_SAVING_CENTS,
   ONLINE_PAYMENTS_PRICE_CENTS,
   crossoverCentsPerMonth,
   formatCommissionPercent,
@@ -69,7 +71,10 @@ export default async function PaymentsModePanel({
   // `effectivePaymentsMode` itself falls back to the intent when the registry
   // cannot be read at all, so this can never disagree with `effective.mode`.
   const effectiveBps = registryReadable ? (registryTenant?.payments_commission_bps ?? 0) : billingBps;
-  const crossover = crossoverCentsPerMonth(effectiveBps, ONLINE_PAYMENTS_PRICE_CENTS);
+  // No price argument: the break-even is driven by what `commission` SAVES on
+  // the module (€19 - €9 = €10), never by its full list price — the default
+  // (COMMISSION_MODE_SAVING_CENTS) is the only basis that is ever correct here.
+  const crossover = crossoverCentsPerMonth(effectiveBps);
   const eligibility = commissionEligibility({ registryReadable, tenant: registryTenant });
 
   return (
@@ -77,8 +82,11 @@ export default async function PaymentsModePanel({
       <h2 className="font-hand text-2xl font-bold">{t("title")}</h2>
       <p className="mt-1 font-label text-sm text-muted-foreground">
         {effective.mode === "commission"
-          ? t("commissionSummary", { percent: formatCommissionPercent(effectiveBps) })
-          : t("flatSummary")}
+          ? t("commissionSummary", {
+              percent: formatCommissionPercent(effectiveBps),
+              floor: eur(COMMISSION_FLOOR_CENTS),
+            })
+          : t("flatSummary", { price: eur(ONLINE_PAYMENTS_PRICE_CENTS) })}
       </p>
       {effective.pending && (
         // <output>, not <p role="status">: it carries the same implicit ARIA role
@@ -94,7 +102,13 @@ export default async function PaymentsModePanel({
           high" and must never be printed as one. */}
       {crossover !== null && (
         <p className="mt-2 font-label text-sm text-muted-foreground">
-          {t("crossover", { percent: formatCommissionPercent(effectiveBps), amount: eur(crossover) })}
+          {t("crossover", {
+            percent: formatCommissionPercent(effectiveBps),
+            amount: eur(crossover),
+            floor: eur(COMMISSION_FLOOR_CENTS),
+            price: eur(ONLINE_PAYMENTS_PRICE_CENTS),
+            saving: eur(COMMISSION_MODE_SAVING_CENTS),
+          })}
         </p>
       )}
       <div className="mt-4">

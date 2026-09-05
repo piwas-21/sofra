@@ -13,7 +13,8 @@
 //     recomputed from the catalog so a crafted POST cannot make the founder read
 //     a number the lead was never actually shown. Since S3 this covers the
 //     payments pricing mode too (workspace SOFRA-PAYMENTS-PRICING-MODE-PLAN):
-//     `commission` re-prices through `paymentsModeQuote`, and — same DROP rule
+//     `commission` re-prices through `paymentsModeQuote` (the module drops to its
+//     €9 floor, it is not removed), and — same DROP rule
 //     as rule 1 — is only honoured when the selection actually carries
 //     `online-payments`; otherwise it degrades to `flat`, same as an
 //     unrecognised mode string.

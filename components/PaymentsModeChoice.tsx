@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import {
+  COMMISSION_FLOOR_CENTS,
   DEFAULT_COMMISSION_BPS,
   ONLINE_PAYMENTS_PRICE_CENTS,
   crossoverCentsPerMonth,
@@ -11,9 +12,8 @@ import {
 import { eur } from "@/lib/format";
 
 /**
- * How to be charged for `online-payments`, offered on /signup
- * (SOFRA-PAYMENTS-PRICING-MODE-PLAN S3) — a flat monthly fee, or €0/mo plus a
- * per-transaction rate.
+ * How to be charged for `online-payments`, offered on /signup — the full flat
+ * monthly fee, or a REDUCED €9/mo floor plus a per-transaction rate.
  *
  * Extracted out of `SignupConfigurator`, which sits at the CLAUDE.md §4
  * component limit and cannot grow — the same split `PaymentsModePanel` /
@@ -59,8 +59,14 @@ export default function PaymentsModeChoice({
   // high" by returning null. DEFAULT_COMMISSION_BPS is never 0, so this is
   // reached in practice, but the guard stays the same shape as every other
   // caller of this function.
-  const crossover = crossoverCentsPerMonth(DEFAULT_COMMISSION_BPS, ONLINE_PAYMENTS_PRICE_CENTS);
+  // No price argument: the break-even is against what commission SAVES on the
+  // module (€19 - €9 = €10), which is the function's own default — the full list
+  // price would promise a buyer they are cheaper up to 1.9x more turnover than
+  // they actually are, on the page where they choose.
+  const crossover = crossoverCentsPerMonth(DEFAULT_COMMISSION_BPS);
   const percent = formatCommissionPercent(DEFAULT_COMMISSION_BPS);
+  const floor = eur(COMMISSION_FLOOR_CENTS);
+  const flatPrice = eur(ONLINE_PAYMENTS_PRICE_CENTS);
 
   return (
     <fieldset className="hand-drawn-border bg-card p-4">
@@ -84,7 +90,7 @@ export default function PaymentsModeChoice({
           />
           <span>
             <label htmlFor="paymentsMode-flat" className="font-bold">
-              {t("flatLabel", { price: eur(ONLINE_PAYMENTS_PRICE_CENTS) })}
+              {t("flatLabel", { price: flatPrice })}
             </label>
             <br />
             <span id="paymentsMode-flat-hint" className="text-muted-foreground">
@@ -105,7 +111,7 @@ export default function PaymentsModeChoice({
           />
           <span>
             <label htmlFor="paymentsMode-commission" className="font-bold">
-              {t("commissionLabel", { percent })}
+              {t("commissionLabel", { percent, floor })}
             </label>
             <br />
             <span id="paymentsMode-commission-hint" className="text-muted-foreground">
@@ -116,7 +122,7 @@ export default function PaymentsModeChoice({
       </div>
       {crossover !== null && (
         <p className="font-label text-xs text-muted-foreground mt-2">
-          {t("crossover", { percent, amount: eur(crossover) })}
+          {t("crossover", { percent, amount: eur(crossover), floor, price: flatPrice })}
         </p>
       )}
       <p className="font-label text-xs text-muted-foreground mt-2">{t("deferredNote")}</p>

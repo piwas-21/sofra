@@ -65,6 +65,12 @@ export default defineConfig({
         // billing-vs-enforcement predicate, same shape and same reason as
         // payments-pending.ts just below it.
         "lib/registry-commission-edit.ts",
+        // The PR body that amendment opens with, split out of its GitHub-calling
+        // sibling on 2026-09-05 so the sentence a founder reads before merging a
+        // live rate is decidable by a test rather than by re-reading it. Listed
+        // explicitly for the same reason every entry above is: an omission reads
+        // as a passing gate rather than as lost coverage.
+        "lib/registry-commission-pr-body.ts",
         "lib/payments-mode-effective.ts",
         // S2b — the admin form's own eligibility gate, same pure shape and same
         // fail-quiet direction as `payments-mode-effective.ts` just above it.
