@@ -10,6 +10,8 @@ import {
   isCommissionBps,
   paymentsModeQuote,
 } from "@/lib/payments-pricing";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { MODULES } from "@/lib/module-catalog";
 
 // The online-payments list price this whole file measures against — read out of
@@ -158,5 +160,46 @@ describe("asPaymentsMode", () => {
     expect(asPaymentsMode("")).toBe("flat");
     expect(asPaymentsMode("COMMISSION")).toBe("flat");
     expect(asPaymentsMode("garbage")).toBe("flat");
+  });
+});
+
+// A source-level guard, not an arithmetic one — and the only thing that can see
+// the mistake this slice exists to prevent. `crossoverCentsPerMonth` defaults to
+// COMMISSION_MODE_SAVING_CENTS precisely so no UI caller has to name a basis;
+// passing ONLINE_PAYMENTS_PRICE_CENTS instead still type-checks, still renders,
+// and prints €1,267 where €667 is true. There is no unit-testable value to
+// assert on a rendered sentence here (this suite is scoped to pure modules), so
+// the invariant is enforced where it lives: in the call sites.
+describe("every production caller of crossoverCentsPerMonth", () => {
+  const CALL = /crossoverCentsPerMonth\(([^)]*)\)/g;
+  const roots = ["app", "components", "lib"];
+
+  const sources = (dir: string): string[] =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+      const full = join(dir, e.name);
+      if (e.isDirectory()) return e.name === "generated" ? [] : sources(full);
+      return /\.tsx?$/.test(e.name) ? [full] : [];
+    });
+
+  const calls = roots
+    .flatMap(sources)
+    // Its own declaration is the one legitimate two-parameter site.
+    .filter((file) => file !== join("lib", "payments-pricing.ts"))
+    .flatMap((file) =>
+      [...readFileSync(file, "utf8").matchAll(CALL)].map((m) => ({ file, args: m[1].trim() })),
+    );
+
+  // POSITIVE CONTROL. An empty match list would make every assertion below pass
+  // while proving nothing — and it is the likely outcome of a rename, a moved
+  // directory, or a call split across lines. The four are: the signup
+  // configurator, the admin/partner panel, its form's live preview, and the
+  // registry PR body.
+  it("finds all four call sites — an empty scan would pass vacuously", () => {
+    expect(calls.length).toBe(4);
+  });
+
+  it("passes the rate only, so none of them can name the wrong basis", () => {
+    const withABasis = calls.filter((c) => c.args.includes(","));
+    expect(withABasis.map((c) => `${c.file}: ${c.args}`)).toEqual([]);
   });
 });
