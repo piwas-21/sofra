@@ -24,6 +24,8 @@
 // decisions that are easy to get wrong — what the key is, and what the write is
 // keyed on — are then decidable by a unit test with no DB and no network.
 
+import { randomBytes } from "node:crypto";
+
 import { db } from "@/lib/db";
 
 /**
@@ -63,12 +65,33 @@ export function connectExpressIdempotencyKey(slug: string): string {
   return `${slug}-${CONNECT_KEY_SUFFIX}`;
 }
 
+/**
+ * The unguessable half of `/onboarding/payments/<token>` (E4).
+ *
+ * That page mints a Stripe Account Link and redirects to it, and an Account Link
+ * is a BEARER capability: whoever opens it can submit this restaurant's KYC and
+ * set the bank account its money is paid into. So the page cannot be addressed by
+ * slug — `?slug=rumi` would be an open door onto a real restaurant's payout
+ * details. 32 random bytes from `node:crypto`, base64url so it survives a URL and
+ * an email client, and never derived from anything about the tenant.
+ *
+ * It is long-lived on purpose, unlike the 300-second link it produces: it travels
+ * in the tenant's own env (`Stripe__PaymentsLinkUrl`) and in a welcome mail, both
+ * of which outlive five minutes. Its blast radius is one restaurant's onboarding,
+ * and it sits beside a box `.env` that already holds the platform Stripe key —
+ * strictly less powerful than what is next to it.
+ */
+export function newOnboardingToken(): string {
+  return randomBytes(32).toString("base64url");
+}
+
 /** One row of `StripeConnectAccount`, exactly as the database takes it. */
 export type ConnectAccountRow = {
   tenantSlug: string;
   stripeAccountId: string;
   idempotencyKey: string;
   country: string;
+  onboardingToken: string;
 };
 
 /**
@@ -106,10 +129,37 @@ export function connectAccountUpsert(row: ConnectAccountRow): ConnectAccountUpse
 export async function findConnectAccountForSlug(slug: string): Promise<ConnectAccountRow | null> {
   const row = await db.stripeConnectAccount.findUnique({
     where: { tenantSlug: slug },
-    select: { tenantSlug: true, stripeAccountId: true, idempotencyKey: true, country: true },
+    select: SELECT,
   });
-  return row;
+  return row?.onboardingToken ? { ...row, onboardingToken: row.onboardingToken } : null;
 }
+
+/**
+ * The account a `/onboarding/payments/<token>` request is about, or null.
+ *
+ * Null covers both "no such token" and "a row minted before tokens existed", and
+ * the caller must answer both with the SAME 404: a page that distinguished them
+ * would confirm to a stranger that a given token is nearly right.
+ */
+export async function findConnectAccountByToken(token: string): Promise<ConnectAccountRow | null> {
+  // A blank token would otherwise match a NULL-free `findUnique` on nothing —
+  // cheap to refuse, and the one input an empty URL segment produces.
+  if (!token) return null;
+  const row = await db.stripeConnectAccount.findUnique({
+    where: { onboardingToken: token },
+    select: SELECT,
+  });
+  return row?.onboardingToken ? { ...row, onboardingToken: row.onboardingToken } : null;
+}
+
+/** The columns every read here returns — one list, so two readers cannot drift. */
+const SELECT = {
+  tenantSlug: true,
+  stripeAccountId: true,
+  idempotencyKey: true,
+  country: true,
+  onboardingToken: true,
+} as const;
 
 /**
  * Record a minted account. Called immediately after `POST /v1/accounts` returns

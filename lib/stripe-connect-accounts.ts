@@ -30,10 +30,12 @@
 import {
   connectExpressIdempotencyKey,
   findConnectAccountForSlug,
+  newOnboardingToken,
   recordConnectAccount,
 } from "@/lib/connect-account-store";
 import { expressAccountForm, type ExpressAccountInput } from "@/lib/connect-account-request";
-import { stripePost } from "@/lib/stripe";
+import { onboardingLinkForm, type ConnectAccountState } from "@/lib/connect-account-links";
+import { stripeGet, stripePost } from "@/lib/stripe";
 
 /** The slice of Stripe's Account object this module reads. */
 type StripeAccountCreated = { id: string };
@@ -68,7 +70,36 @@ export async function createExpressAccount(input: ExpressAccountInput): Promise<
     stripeAccountId: account.id,
     idempotencyKey,
     country: form.country,
+    // Minted here, with the account, and never re-issued: it is how the restaurant
+    // reaches its own onboarding page for as long as that page exists.
+    onboardingToken: newOnboardingToken(),
   });
 
   return { stripeAccountId: account.id, reused: false };
+}
+
+/** Stripe's `AccountLink` / `LoginLink` — both are `{ url }` and nothing else is read. */
+type StripeLink = { url: string };
+
+/**
+ * A FRESH onboarding link. Never cached, never stored, never emailed: it lives
+ * 300 seconds (measured), so any copy of it is a dead link by the time a person
+ * reads it. That is why the restaurant is given a page of OURS instead.
+ */
+export function createOnboardingLink(accountId: string, pageUrl: string): Promise<StripeLink> {
+  return stripePost<StripeLink>("/v1/account_links", onboardingLinkForm(accountId, pageUrl));
+}
+
+/**
+ * The Express dashboard login link, for an account that has finished onboarding.
+ * Refused (400) before that, which is why `chooseConnectLink` decides first.
+ */
+export function createLoginLink(accountId: string): Promise<StripeLink> {
+  return stripePost<StripeLink>(`/v1/accounts/${accountId}/login_links`, {});
+}
+
+/** Read an account's onboarding state. The 5-minute-cached tenant-side reader in
+ *  the backend is unchanged; this is the control plane's own, per request. */
+export function readConnectAccount(accountId: string): Promise<ConnectAccountState> {
+  return stripeGet<ConnectAccountState>(`/v1/accounts/${accountId}`);
 }

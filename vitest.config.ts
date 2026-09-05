@@ -212,6 +212,11 @@ export default defineConfig({
         // creation and refuses it on update, so a wrong derivation is a live account
         // in the wrong country for a real restaurant.
         "lib/connect-account-country.ts",
+        // E4 — which of Stripe's two links a restaurant should be sent to, and what to
+        // ask for. Pure, and in scope because sending the wrong one is a 400 in the
+        // restaurant's face at the moment they are trying to get paid: a login link
+        // before onboarding is refused, and `account_update` does not exist on Express.
+        "lib/connect-account-links.ts",
       ],
       reporter: ["text-summary", "text"],
       // Floors sit a few points under the current 100/95/100/100 so a trivial

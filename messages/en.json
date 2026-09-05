@@ -1673,5 +1673,14 @@
       "vat": "If your company has an EU VAT number, add it too and we will reverse-charge the VAT instead of charging it.",
       "cta": "Add your billing details"
     }
+  },
+  "onboardingPayments": {
+    "meta": {
+      "title": "Set up card payments"
+    },
+    "title": "Card payments",
+    "unknownToken": "This link is not one we recognise. Links are personal to one restaurant, so please use the one in your welcome email or the button in your own admin under Settings → Payments.",
+    "unavailable": "We could not reach Stripe just now, so we cannot open your form. Nothing is lost — please try the same link again in a few minutes.",
+    "contact": "If it keeps happening, reply to any of our emails and we will sort it out with you."
   }
 }

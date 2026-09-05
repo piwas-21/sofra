@@ -1673,5 +1673,14 @@
       "vat": "Si votre société a un numéro de TVA intracommunautaire, ajoutez-le : nous appliquerons l'autoliquidation de la TVA au lieu de la facturer.",
       "cta": "Ajouter vos informations de facturation"
     }
+  },
+  "onboardingPayments": {
+    "meta": {
+      "title": "Configurer les paiements par carte"
+    },
+    "title": "Paiements par carte",
+    "unknownToken": "Nous ne reconnaissons pas ce lien. Chaque lien appartient à un seul restaurant : utilisez celui de votre e-mail de bienvenue, ou le bouton dans votre propre administration, sous Réglages → Paiements.",
+    "unavailable": "Nous n'avons pas pu joindre Stripe à l'instant, votre formulaire ne peut donc pas s'ouvrir. Rien n'est perdu : réessayez le même lien dans quelques minutes.",
+    "contact": "Si cela persiste, répondez à l'un de nos e-mails et nous réglerons cela avec vous."
   }
 }

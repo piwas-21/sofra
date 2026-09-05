@@ -52,6 +52,13 @@ describe("connectAccountUpsert — the anchor", () => {
     stripeAccountId: "acct_1UCOkhCSPiP2JWOQ",
     idempotencyKey: "rumi-connect-express-v1",
     country: "CH",
+    // Deliberately low-entropy and self-describing. A realistic 43-character
+    // base64url token here is indistinguishable from a real credential to
+    // gitleaks, which failed this PR's first run on exactly that (generic-api-key)
+    // — and a scanner that cries wolf on fixtures is one people learn to skip.
+    // The REAL shape is asserted in connect-account-links.test.ts, on a token
+    // `newOnboardingToken()` actually produced.
+    onboardingToken: "not-a-secret-fixture-token",
     ...over,
   });
 

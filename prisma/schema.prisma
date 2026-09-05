@@ -975,6 +975,18 @@ model StripeConnectAccount {
   /// it is the field a wrong tenant address would have silently baked in.
   country String
 
+  /// The unguessable path segment of `/onboarding/payments/<token>` (E4) — 32
+  /// random bytes, base64url. The page it addresses mints a Stripe Account Link
+  /// and redirects to it, and that link is a BEARER capability: whoever opens it
+  /// can submit this restaurant's KYC and set the bank account its money is paid
+  /// into. Addressing the page by slug would therefore be an open door onto a
+  /// real restaurant's payout details.
+  ///
+  /// NULLABLE only because the column arrived after the table did; every row this
+  /// app writes has one, and a row without one is unreachable by that page rather
+  /// than reachable without a token.
+  onboardingToken String? @unique
+
   /// When WE recorded it. Deliberately not "when Stripe created it": the two are
   /// seconds apart and nothing here periodises on this, so a second clock would
   /// be a field that can only ever disagree.
