@@ -916,3 +916,67 @@ model StripeApplicationFee {
   @@index([connectedAccountId, feeCreatedAt])
   @@index([chargeId])
 }
+
+/// The Stripe CONNECTED ACCOUNT this platform minted for a tenant (ADR-011
+/// amendment: tenants get Express connected accounts, which the control plane
+/// creates — the founder no longer `curl`s one by hand).
+///
+/// It exists because of a gap with no other floor under it. Minting is a live,
+/// billable, externally-visible side effect; the registry PR that records
+/// `stripe_account:` is composed AFTERWARDS and merged by a human minutes or
+/// days later. A crash in between used to lose a real Stripe account with
+/// nothing anywhere naming it. This row is written IMMEDIATELY after the mint,
+/// before the PR is composed, so the account is ours again the moment it exists.
+///
+/// A dedicated model rather than a column on TenantBilling, for three reasons:
+///   1. TenantBilling exists only for a tenant with a BILLING PLAN. The founder
+///      path (/admin/provision) stands a tenant up with no TenantBilling row at
+///      all, and it mints accounts too — a column there could not hold them.
+///   2. It is the third table of a shape this app already has twice
+///      (StripeFeeRefund, StripeApplicationFee): keyed on a Stripe id, joined
+///      back to a tenant at READ time, never an FK (ADR-007).
+///   3. An account has its own lifecycle facts to record (onboarding progress,
+///      capabilities) that have nothing to do with a Mollie subscription.
+model StripeConnectAccount {
+  id String @id @default(cuid())
+
+  /// The registry slug this account was minted FOR. @unique is the durable
+  /// "one account per tenant" guard — the one that still holds after Stripe's
+  /// idempotency key has expired (see `idempotencyKey`). NOT a foreign key, same
+  /// seam as TenantBilling.tenantSlug and StripeApplicationFee.connectedAccountId
+  /// (ADR-007): the registry is the source of truth and this app never writes it.
+  tenantSlug String @unique
+
+  /// Stripe's own account id (`acct_...`). @unique for the reason
+  /// StripeApplicationFee.applicationFeeId is: it is the anchor a repeated
+  /// delivery of the same fact upserts on, so a second write about one account
+  /// can restate the row but can never split it in two.
+  stripeAccountId String @unique
+
+  /// The `Idempotency-Key` the mint was sent with (`<slug>-connect-express-v1`),
+  /// recorded rather than only derived. Two facts make it worth a column.
+  ///
+  /// MEASURED 2026-09-05, test platform acct_1TpwTNCAHTt6eZ8i: the same key with
+  /// the same body returns the SAME account (acct_1UCOkh… twice); a key differing
+  /// in one character returns a DIFFERENT one (acct_1UCOkp…, the negative
+  /// control, both since deleted); and the same key with a CHANGED body is a
+  /// hard `400 "Keys for idempotent requests can only be used with the same
+  /// parameters they were first used with"`. So the key is the mechanism, and
+  /// the prefill payload is part of it.
+  ///
+  /// Stripe expires an idempotency key after ~24h (documented, not measurable
+  /// here), which is exactly why it is not the only guard: after that window
+  /// `tenantSlug @unique` above is what stops a second account, and this column
+  /// says which convention minted the row if the key ever needs a `-v2`.
+  idempotencyKey String @unique
+
+  /// ISO-3166-1 alpha-2, as sent to Stripe. Immutable at Stripe after creation
+  /// (as is the account TYPE), which is why it is recorded rather than re-read:
+  /// it is the field a wrong tenant address would have silently baked in.
+  country String
+
+  /// When WE recorded it. Deliberately not "when Stripe created it": the two are
+  /// seconds apart and nothing here periodises on this, so a second clock would
+  /// be a field that can only ever disagree.
+  createdAt DateTime @default(now())
+}
