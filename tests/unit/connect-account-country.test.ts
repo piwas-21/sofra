@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { connectCountryForCurrency } from "@/lib/connect-account-country";
+import { RESOLVABLE_CURRENCIES, connectCountryForCurrency } from "@/lib/connect-account-country";
 import { CONNECT_ONBOARDABLE_COUNTRIES } from "@/lib/connect-account-request";
 
 // The country an Express account is created in is FIXED FOREVER at creation — Stripe
@@ -42,10 +42,27 @@ describe("connectCountryForCurrency", () => {
     // The link between the two modules: a derived country that `expressAccountForm`
     // would refuse would be a mint that fails at the boundary for a reason nobody can
     // read. Checked over every currency this module knows, not over a sample.
-    for (const currency of ["CHF", "GBP", "USD", "AED"]) {
+    // Iterated from the MODULE's own map, not a list copied into this file. A hand-copied
+    // list is a third place to forget: add a currency to `UNAMBIGUOUS` whose country the
+    // request boundary refuses, and with a literal array here the suite stays green while
+    // the mint has become unreachable for that currency — the module silently withheld and
+    // a note in a PR body nobody reads twice. Same defect shape as #225 (a quote and a
+    // charge computed independently) and #224 (a crossover sentence written twice): assert
+    // that the two sides AGREE, never that one of them equals a remembered value.
+    for (const currency of RESOLVABLE_CURRENCIES) {
       const v = connectCountryForCurrency(currency);
-      expect(v.ok).toBe(true);
-      expect(v.ok && Object.keys(CONNECT_ONBOARDABLE_COUNTRIES)).toContain(v.ok ? v.country : "");
+      expect(v.ok, `${currency} should resolve to a country`).toBe(true);
+      expect(
+        Object.keys(CONNECT_ONBOARDABLE_COUNTRIES),
+        `${currency} resolves to ${v.ok ? v.country : "?"}, which the request boundary would refuse`,
+      ).toContain(v.ok ? v.country : "");
     }
+  });
+
+  it("has something to check — the agreement loop is not vacuously green", () => {
+    // A positive control on the loop above. If `RESOLVABLE_CURRENCIES` were ever emptied,
+    // every assertion in it would be skipped and the suite would still pass. This is the
+    // assertion that dies then, and it is why an empty result here cannot read as success.
+    expect(RESOLVABLE_CURRENCIES.length).toBeGreaterThan(0);
   });
 });
