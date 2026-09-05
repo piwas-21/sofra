@@ -35,6 +35,16 @@ const UNAMBIGUOUS: Readonly<Record<string, string>> = {
   AED: "AE",
 };
 
+/**
+ * Every currency this module can resolve, derived from the map itself rather than
+ * written out again. It exists so the agreement check in the tests iterates what the
+ * module ACTUALLY knows: a hand-copied list is a third place to forget, and the
+ * failure it hides is silent — a currency added here whose country the request
+ * boundary refuses makes the mint unreachable and withholds the module, with no test
+ * red and no crash.
+ */
+export const RESOLVABLE_CURRENCIES: readonly string[] = Object.keys(UNAMBIGUOUS);
+
 export type ConnectCountryVerdict =
   | { ok: true; country: string }
   | { ok: false; reason: string };
