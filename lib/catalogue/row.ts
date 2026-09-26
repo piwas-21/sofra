@@ -59,7 +59,8 @@ export function toSummary(row: PublishedRevisionRow, locale?: string): TemplateS
     sourceLocale: row.source_locale,
     displayLocale,
     usedSourceFallback: Boolean(locale && locale !== row.source_locale && !translation),
-    reviewedTranslationLocales: [row.source_locale, ...Object.keys(row.translations)].sort(),
+    reviewedTranslationLocales: [row.source_locale, ...Object.keys(row.translations)]
+      .sort((left, right) => left.localeCompare(right)),
     dependencyCount: row.dependencies.length,
     compatibleTenantContractVersions: row.compatible_tenant_contract_versions,
   };

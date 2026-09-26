@@ -47,7 +47,7 @@ export async function GET(
       [templateId, revision],
     );
     const row = result.rows[0];
-    if (!row || row.quality_status !== "reviewed") {
+    if (row?.quality_status !== "reviewed") {
       return NextResponse.json(
         { error: "not_found" },
         { status: 404, headers: { "Cache-Control": "no-store" } },

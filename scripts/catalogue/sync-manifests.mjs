@@ -16,44 +16,11 @@ export async function syncManifest(db, manifest) {
     await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", [manifest.templateId]);
 
     if (manifest.publicationStatus === "withdrawn") {
-      const found = await client.query(
-        "SELECT content_hash, type::text AS type FROM catalogue.revision WHERE template_id = $1 AND revision = $2",
-        [manifest.templateId, manifest.revision],
-      );
-      const existing = found.rows[0];
-      if (!existing || existing.content_hash.trim() !== contentHash(manifest) || existing.type !== manifest.type) {
-        throw new Error("withdrawal must reference the exact stored immutable revision");
-      }
-      await appendEvent(client, manifest.templateId, manifest.revision, "WITHDRAWN", manifest.withdrawScope);
-      await client.query("COMMIT");
-      return "withdrawal recorded";
+      return await recordWithdrawal(client, manifest);
     }
 
     if (manifest.publicationStatus === "unpublished") {
-      const found = await client.query(
-        [
-          "SELECT content_hash, type::text AS type FROM catalogue.revision",
-          "WHERE template_id = $1 AND revision = $2",
-        ].join(" "),
-        [manifest.templateId, manifest.revision],
-      );
-      const existing = found.rows[0];
-      if (!existing) {
-        await client.query("COMMIT");
-        return "source-only draft; not stored in the catalogue database";
-      }
-      if (existing.content_hash.trim() !== contentHash(manifest) || existing.type !== manifest.type) {
-        throw new Error("an existing immutable revision has different content; increment the revision number");
-      }
-      const publicRevision = await client.query(
-        "SELECT 1 FROM catalogue.public_revision WHERE template_id = $1 AND revision = $2",
-        [manifest.templateId, manifest.revision],
-      );
-      if (publicRevision.rowCount) {
-        throw new Error("a published revision cannot be marked unpublished; record an explicit withdrawal");
-      }
-      await client.query("COMMIT");
-      return "unchanged unpublished immutable revision";
+      return await keepUnpublishedRevision(client, manifest);
     }
 
     await client.query(
@@ -135,6 +102,47 @@ export async function syncManifest(db, manifest) {
   } finally {
     client.release();
   }
+}
+
+async function recordWithdrawal(client, manifest) {
+  const found = await client.query(
+    "SELECT content_hash, type::text AS type FROM catalogue.revision WHERE template_id = $1 AND revision = $2",
+    [manifest.templateId, manifest.revision],
+  );
+  const existing = found.rows[0];
+  if (!existing || existing.content_hash.trim() !== contentHash(manifest) || existing.type !== manifest.type) {
+    throw new Error("withdrawal must reference the exact stored immutable revision");
+  }
+  await appendEvent(client, manifest.templateId, manifest.revision, "WITHDRAWN", manifest.withdrawScope);
+  await client.query("COMMIT");
+  return "withdrawal recorded";
+}
+
+async function keepUnpublishedRevision(client, manifest) {
+  const found = await client.query(
+    [
+      "SELECT content_hash, type::text AS type FROM catalogue.revision",
+      "WHERE template_id = $1 AND revision = $2",
+    ].join(" "),
+    [manifest.templateId, manifest.revision],
+  );
+  const existing = found.rows[0];
+  if (!existing) {
+    await client.query("COMMIT");
+    return "source-only draft; not stored in the catalogue database";
+  }
+  if (existing.content_hash.trim() !== contentHash(manifest) || existing.type !== manifest.type) {
+    throw new Error("an existing immutable revision has different content; increment the revision number");
+  }
+  const publicRevision = await client.query(
+    "SELECT 1 FROM catalogue.public_revision WHERE template_id = $1 AND revision = $2",
+    [manifest.templateId, manifest.revision],
+  );
+  if (publicRevision.rowCount) {
+    throw new Error("a published revision cannot be marked unpublished; record an explicit withdrawal");
+  }
+  await client.query("COMMIT");
+  return "unchanged unpublished immutable revision";
 }
 
 async function main() {
@@ -227,7 +235,11 @@ function canonicalJson(value) {
   if (Array.isArray(value)) return "[" + value.map(canonicalJson).join(",") + "]";
   if (value && typeof value === "object") {
     const entries = Object.entries(value)
-      .sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0)
+      .sort(([left], [right]) => {
+        if (left < right) return -1;
+        if (left > right) return 1;
+        return 0;
+      })
       .map(([key, child]) => JSON.stringify(key) + ":" + canonicalJson(child));
     return "{" + entries.join(",") + "}";
   }

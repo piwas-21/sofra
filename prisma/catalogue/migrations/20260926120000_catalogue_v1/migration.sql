@@ -12,6 +12,15 @@ CREATE TYPE catalogue.template_type AS ENUM (
 CREATE TYPE catalogue.quality_status AS ENUM ('draft', 'reviewed');
 CREATE TYPE catalogue.revision_event_type AS ENUM ('PUBLISHED', 'WITHDRAWN');
 
+CREATE FUNCTION catalogue.is_json_object(document jsonb)
+RETURNS boolean
+LANGUAGE sql
+IMMUTABLE
+STRICT
+AS $$
+  SELECT jsonb_typeof(document) = 'object';
+$$;
+
 CREATE TABLE catalogue.template (
   template_id text PRIMARY KEY
     CHECK (template_id ~ '^[a-z0-9]+(-[a-z0-9]+)*$'),
@@ -29,14 +38,14 @@ CREATE TABLE catalogue.revision (
   cuisines text[] NOT NULL DEFAULT '{}',
   source_locale text NOT NULL,
   translations jsonb NOT NULL DEFAULT '{}'::jsonb
-    CHECK (jsonb_typeof(translations) = 'object'),
+    CHECK (catalogue.is_json_object(translations)),
   locale_fallbacks text[] NOT NULL DEFAULT '{}',
   dependencies jsonb NOT NULL DEFAULT '[]'::jsonb
     CHECK (jsonb_typeof(dependencies) = 'array'),
-  provenance jsonb NOT NULL CHECK (jsonb_typeof(provenance) = 'object'),
+  provenance jsonb NOT NULL CHECK (catalogue.is_json_object(provenance)),
   quality_status catalogue.quality_status NOT NULL,
   compatible_tenant_contract_versions integer[] NOT NULL DEFAULT '{}',
-  payload jsonb NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
+  payload jsonb NOT NULL CHECK (catalogue.is_json_object(payload)),
   search_text text NOT NULL,
   content_hash char(64) NOT NULL CHECK (content_hash ~ '^[a-f0-9]{64}$'),
   created_at timestamptz NOT NULL DEFAULT now(),

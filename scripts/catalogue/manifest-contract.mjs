@@ -127,7 +127,14 @@ export function manifestReferences(manifest) {
     for (const child of Object.values(value)) visit(child);
   };
   visit(manifest.payload);
-  return [...new Set(references)].sort();
+  return [...new Set(references)].sort(compareVersionReferences);
+}
+
+export function compareVersionReferences(left, right) {
+  const [leftTemplateId, leftRevision] = left.split("@");
+  const [rightTemplateId, rightRevision] = right.split("@");
+  return leftTemplateId.localeCompare(rightTemplateId)
+    || Number(leftRevision) - Number(rightRevision);
 }
 
 export function publicationBlockers(manifest) {

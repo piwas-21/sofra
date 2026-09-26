@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   findUnsafeContent,
+  compareVersionReferences,
   manifestReferences,
   parseManifest,
   publicationBlockers,
@@ -40,96 +41,125 @@ export async function loadCatalogueManifests() {
 }
 
 export function validateCatalogue(manifests, errors = []) {
-  const byVersion = new Map();
   const allErrors = [...errors];
+  const byVersion = buildVersionMap(manifests, allErrors);
   for (const entry of manifests) {
-    const { file, manifest } = entry;
-    const versionKey = manifest.templateId + "@" + manifest.revision;
-    if (byVersion.has(versionKey)) allErrors.push(file + ": duplicate revision " + versionKey);
-    byVersion.set(versionKey, entry);
-    if (new Set(manifest.cuisines).size !== manifest.cuisines.length) {
-      allErrors.push(file + ": duplicate cuisine tags");
-    }
-    if (new Set(manifest.localeFallbacks).size !== manifest.localeFallbacks.length) {
-      allErrors.push(file + ": duplicate locale fallback");
-    }
-    if (manifest.localeFallbacks.includes(manifest.sourceLocale)) {
-      allErrors.push(file + ": source locale cannot be listed as a fallback");
-    }
-    const translated = Object.keys(manifest.translations);
-    if (translated.some((item) => item === manifest.sourceLocale)) {
-      allErrors.push(file + ": source locale belongs in the canonical name, not translations");
-    }
-    for (const error of findUnsafeContent(manifest)) allErrors.push(file + ": " + error);
-    for (const error of validateCardinality(manifest)) allErrors.push(file + ": " + error);
-    const declared = manifest.dependencies
-      .map((item) => item.templateId + "@" + item.revision)
-      .sort();
-    const referenced = manifestReferences(manifest);
-    const expectedRoles = expectedDependencyRoles(manifest);
-    if (new Set(declared).size !== declared.length) allErrors.push(file + ": duplicate dependency reference");
-    if (JSON.stringify(declared) !== JSON.stringify(referenced)) {
-      allErrors.push(file + ": dependencies do not exactly match payload references");
-    }
-    for (const dependency of manifest.dependencies) {
-      const key = dependency.templateId + "@" + dependency.revision;
-      const expectedRole = expectedRoles.get(key);
-      if (expectedRole === "duplicate") {
-        allErrors.push(file + ": one template revision is referenced in multiple payload roles");
-      } else if (expectedRole !== dependency.role) {
-        allErrors.push(file + ": dependency role does not match its payload reference for " + key);
-      }
-      if (dependency.templateId === manifest.templateId && dependency.revision === manifest.revision) {
-        allErrors.push(file + ": template cannot depend on itself");
-      }
-    }
-    if (manifest.type === "cuisine-pack") {
-      for (const category of manifest.payload.categories) {
-        const dependency = manifest.dependencies.find((item) =>
-          item.templateId === category.templateId && item.revision === category.revision);
-        if (dependency?.sortOrder !== category.sortOrder) {
-          allErrors.push(file + ": category dependency sort order differs from pack payload");
-        }
-      }
-      for (const offer of manifest.payload.offers) {
-        const dependency = manifest.dependencies.find((item) =>
-          item.templateId === offer.templateId && item.revision === offer.revision);
-        if (dependency?.sortOrder !== offer.sortOrder
-          || dependency?.includedByDefault !== offer.includedByDefault) {
-          allErrors.push(file + ": offer dependency defaults differ from pack payload");
-        }
-      }
-    }
-    if (manifest.publicationStatus === "published" && publicationBlockers(manifest).blockers.length) {
-      allErrors.push(file + ": published revision is blocked: " + publicationBlockers(manifest).blockers.join("; "));
-    }
-    if (manifest.qualityStatus === "reviewed" && publicationBlockers(manifest).blockers.length) {
-      allErrors.push(file + ": reviewed status is blocked: " + publicationBlockers(manifest).blockers.join("; "));
-    }
-    if (manifest.publicationStatus === "withdrawn" && !manifest.withdrawScope) {
-      allErrors.push(file + ": withdrawn revision must declare its withdrawal scope");
-    }
+    validateManifestContent(entry, allErrors);
+    validateManifestDependencies(entry, allErrors);
+    validateCuisinePackOrder(entry, allErrors);
+    validatePublicationState(entry, allErrors);
   }
 
+  validateDependencyTargets(manifests, byVersion, allErrors);
+  allErrors.push(...cycleErrors(manifests));
+  return allErrors;
+}
+
+function buildVersionMap(manifests, errors) {
+  const byVersion = new Map();
+  for (const entry of manifests) {
+    const versionKey = entry.manifest.templateId + "@" + entry.manifest.revision;
+    if (byVersion.has(versionKey)) errors.push(entry.file + ": duplicate revision " + versionKey);
+    byVersion.set(versionKey, entry);
+  }
+  return byVersion;
+}
+
+function validateManifestContent(entry, errors) {
+  const { file, manifest } = entry;
+  if (new Set(manifest.cuisines).size !== manifest.cuisines.length) {
+    errors.push(file + ": duplicate cuisine tags");
+  }
+  if (new Set(manifest.localeFallbacks).size !== manifest.localeFallbacks.length) {
+    errors.push(file + ": duplicate locale fallback");
+  }
+  if (manifest.localeFallbacks.includes(manifest.sourceLocale)) {
+    errors.push(file + ": source locale cannot be listed as a fallback");
+  }
+  if (Object.keys(manifest.translations).includes(manifest.sourceLocale)) {
+    errors.push(file + ": source locale belongs in the canonical name, not translations");
+  }
+  for (const error of findUnsafeContent(manifest)) errors.push(file + ": " + error);
+  for (const error of validateCardinality(manifest)) errors.push(file + ": " + error);
+}
+
+function validateManifestDependencies(entry, errors) {
+  const { file, manifest } = entry;
+  const declared = manifest.dependencies
+    .map((item) => item.templateId + "@" + item.revision)
+    .sort(compareVersionReferences);
+  const referenced = manifestReferences(manifest);
+  const expectedRoles = expectedDependencyRoles(manifest);
+  if (new Set(declared).size !== declared.length) errors.push(file + ": duplicate dependency reference");
+  if (JSON.stringify(declared) !== JSON.stringify(referenced)) {
+    errors.push(file + ": dependencies do not exactly match payload references");
+  }
+  for (const dependency of manifest.dependencies) {
+    const key = dependency.templateId + "@" + dependency.revision;
+    const expectedRole = expectedRoles.get(key);
+    if (expectedRole === "duplicate") {
+      errors.push(file + ": one template revision is referenced in multiple payload roles");
+    } else if (expectedRole !== dependency.role) {
+      errors.push(file + ": dependency role does not match its payload reference for " + key);
+    }
+    if (dependency.templateId === manifest.templateId && dependency.revision === manifest.revision) {
+      errors.push(file + ": template cannot depend on itself");
+    }
+  }
+}
+
+function validateCuisinePackOrder(entry, errors) {
+  const { file, manifest } = entry;
+  if (manifest.type !== "cuisine-pack") return;
+  for (const category of manifest.payload.categories) {
+    const dependency = manifest.dependencies.find((item) =>
+      item.templateId === category.templateId && item.revision === category.revision);
+    if (dependency?.sortOrder !== category.sortOrder) {
+      errors.push(file + ": category dependency sort order differs from pack payload");
+    }
+  }
+  for (const offer of manifest.payload.offers) {
+    const dependency = manifest.dependencies.find((item) =>
+      item.templateId === offer.templateId && item.revision === offer.revision);
+    if (dependency?.sortOrder !== offer.sortOrder
+      || dependency?.includedByDefault !== offer.includedByDefault) {
+      errors.push(file + ": offer dependency defaults differ from pack payload");
+    }
+  }
+}
+
+function validatePublicationState(entry, errors) {
+  const { file, manifest } = entry;
+  const blockers = publicationBlockers(manifest).blockers;
+  if (manifest.publicationStatus === "published" && blockers.length) {
+    errors.push(file + ": published revision is blocked: " + blockers.join("; "));
+  }
+  if (manifest.qualityStatus === "reviewed" && blockers.length) {
+    errors.push(file + ": reviewed status is blocked: " + blockers.join("; "));
+  }
+  if (manifest.publicationStatus === "withdrawn" && !manifest.withdrawScope) {
+    errors.push(file + ": withdrawn revision must declare its withdrawal scope");
+  }
+}
+
+function validateDependencyTargets(manifests, byVersion, errors) {
   for (const entry of manifests) {
     for (const dependency of entry.manifest.dependencies) {
       const target = byVersion.get(dependency.templateId + "@" + dependency.revision);
       if (!target) {
-        allErrors.push(entry.file + ": missing dependency " + dependency.templateId + "@" + dependency.revision);
+        errors.push(entry.file + ": missing dependency " + dependency.templateId + "@" + dependency.revision);
       } else if (!roleMatchesType(dependency.role, target.manifest.type)) {
-        allErrors.push(
+        errors.push(
           entry.file + ": dependency role " + dependency.role + " does not match "
           + target.manifest.type + " template " + dependency.templateId + "@" + dependency.revision,
         );
       }
       if (target && entry.manifest.publicationStatus === "published"
         && target.manifest.publicationStatus !== "published") {
-        allErrors.push(entry.file + ": published revision depends on an unpublished or withdrawn revision");
+        errors.push(entry.file + ": published revision depends on an unpublished or withdrawn revision");
       }
     }
   }
-  allErrors.push(...cycleErrors(manifests));
-  return allErrors;
 }
 
 function roleMatchesType(role, type) {

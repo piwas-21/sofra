@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  manifestReferences,
   findUnsafeContent,
   publicationBlockers,
 } from "../../scripts/catalogue/manifest-contract.mjs";
@@ -15,6 +16,14 @@ import {
 import { catalogueRateLimitConfig } from "@/lib/catalogue/config";
 
 describe("central catalogue publication contract", () => {
+  it("orders dependency pins by template and numeric revision", () => {
+    expect(manifestReferences({ payload: [
+      { templateId: "item", revision: 10 },
+      { templateId: "category", revision: 1 },
+      { templateId: "item", revision: 2 },
+    ] })).toEqual(["category@1", "item@2", "item@10"]);
+  });
+
   it("keeps the starter set unpublished pending operator, editorial, and locale review", async () => {
     const loaded = await loadCatalogueManifests();
     expect(loaded.manifests).toHaveLength(6);
