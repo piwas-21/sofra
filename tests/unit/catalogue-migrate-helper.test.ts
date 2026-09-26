@@ -19,7 +19,7 @@ describe("catalogue migration helper", () => {
         encoding: "utf8",
         env: {
           ...process.env,
-          CATALOGUE_DATABASE_URL: "postgresql://owner:fixture@localhost/sofra_catalogue",
+          CATALOGUE_DATABASE_URL: "postgresql://owner@localhost/sofra_catalogue",
           MIGRATE_ARGS_FILE: argsPath,
           PATH: path,
         },
