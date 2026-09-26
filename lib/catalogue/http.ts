@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { catalogueRateLimitConfig } from "@/lib/catalogue/config";
+import { catalogueRateLimitConfig, type CatalogueRateLimitConfig } from "@/lib/catalogue/config";
 
-export function catalogueRequestIsLimited(request: Request): boolean {
-  const config = catalogueRateLimitConfig();
-  return !rateLimit(
+export function catalogueRequestLimitResponse(
+  request: Request,
+  environment: Record<string, string | undefined> = process.env,
+): NextResponse | null {
+  let config: CatalogueRateLimitConfig;
+  try {
+    config = catalogueRateLimitConfig(environment);
+  } catch {
+    console.error("[catalogue-read] rate-limit configuration is invalid");
+    return unavailableResponse();
+  }
+
+  return rateLimit(
     "catalogue-read:" + clientIp(request),
     config.maxRequests,
     config.windowMs,
-  );
+  ) ? null : rateLimitedResponse();
 }
 
 export function rateLimitedResponse(): NextResponse {

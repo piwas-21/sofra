@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   manifestReferences,
   findUnsafeContent,
@@ -14,6 +14,7 @@ import {
   parseCatalogueFilters,
 } from "@/lib/catalogue/query";
 import { catalogueRateLimitConfig } from "@/lib/catalogue/config";
+import { catalogueRequestLimitResponse } from "@/lib/catalogue/http";
 
 describe("central catalogue publication contract", () => {
   it("orders dependency pins by template and numeric revision", () => {
@@ -103,20 +104,43 @@ describe("published catalogue pagination", () => {
 });
 
 describe("catalogue rate-limit configuration", () => {
-  it("uses safe defaults and accepts positive integer environment overrides", () => {
-    expect(catalogueRateLimitConfig({})).toEqual({ maxRequests: 300, windowMs: 900_000 });
+  it("requires positive integer environment values", () => {
+    expect(() => catalogueRateLimitConfig({}))
+      .toThrow("CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS must be configured as a positive safe integer.");
+    expect(() => catalogueRateLimitConfig({ CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS: "80" }))
+      .toThrow("CATALOGUE_READ_RATE_LIMIT_WINDOW_MS must be configured as a positive safe integer.");
     expect(catalogueRateLimitConfig({
       CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS: "80",
       CATALOGUE_READ_RATE_LIMIT_WINDOW_MS: "60000",
     })).toEqual({ maxRequests: 80, windowMs: 60_000 });
   });
 
+  it("returns a generic unavailable response when rate-limit configuration is missing", () => {
+    const errorLog = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    try {
+      const response = catalogueRequestLimitResponse(
+        new Request("https://sofrapiwas.com/api/v1/catalogue/templates"),
+        {},
+      );
+      expect(response?.status).toBe(503);
+      expect(errorLog).toHaveBeenCalledTimes(1);
+    } finally {
+      errorLog.mockRestore();
+    }
+  });
+
   it("rejects invalid environment values instead of silently weakening the limit", () => {
     expect(() => catalogueRateLimitConfig({ CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS: "0" }))
-      .toThrow("CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS must be a positive safe integer.");
-    expect(() => catalogueRateLimitConfig({ CATALOGUE_READ_RATE_LIMIT_WINDOW_MS: "15m" }))
-      .toThrow("CATALOGUE_READ_RATE_LIMIT_WINDOW_MS must be a positive safe integer.");
-    expect(() => catalogueRateLimitConfig({ CATALOGUE_READ_RATE_LIMIT_WINDOW_MS: "9007199254740992" }))
-      .toThrow("CATALOGUE_READ_RATE_LIMIT_WINDOW_MS must be a positive safe integer.");
+      .toThrow("CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS must be configured as a positive safe integer.");
+    expect(() => catalogueRateLimitConfig({
+      CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS: "80",
+      CATALOGUE_READ_RATE_LIMIT_WINDOW_MS: "15m",
+    }))
+      .toThrow("CATALOGUE_READ_RATE_LIMIT_WINDOW_MS must be configured as a positive safe integer.");
+    expect(() => catalogueRateLimitConfig({
+      CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS: "80",
+      CATALOGUE_READ_RATE_LIMIT_WINDOW_MS: "9007199254740992",
+    }))
+      .toThrow("CATALOGUE_READ_RATE_LIMIT_WINDOW_MS must be configured as a positive safe integer.");
   });
 });

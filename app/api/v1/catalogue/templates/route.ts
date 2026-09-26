@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import { cataloguePool } from "@/lib/catalogue/db";
 import {
   badQueryResponse,
-  catalogueRequestIsLimited,
+  catalogueRequestLimitResponse,
   logCatalogueReadFailure,
-  rateLimitedResponse,
   unavailableResponse,
 } from "@/lib/catalogue/http";
 import { queryPublishedPage } from "@/lib/catalogue/list-query";
@@ -24,7 +23,8 @@ export const runtime = "nodejs";
  * does not accept tenant-scoped queries or write data.
  */
 export async function GET(request: Request) {
-  if (catalogueRequestIsLimited(request)) return rateLimitedResponse();
+  const limitResponse = catalogueRequestLimitResponse(request);
+  if (limitResponse) return limitResponse;
 
   const url = new URL(request.url);
   const parsed = parseCatalogueFilters(url.searchParams);

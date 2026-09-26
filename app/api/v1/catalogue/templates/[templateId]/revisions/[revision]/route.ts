@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { cataloguePool } from "@/lib/catalogue/db";
 import {
-  catalogueRequestIsLimited,
+  catalogueRequestLimitResponse,
   logCatalogueReadFailure,
-  rateLimitedResponse,
   revisionSelect,
   unavailableResponse,
 } from "@/lib/catalogue/http";
@@ -22,7 +21,8 @@ export async function GET(
   request: Request,
   context: { params: Promise<{ templateId: string; revision: string }> },
 ) {
-  if (catalogueRequestIsLimited(request)) return rateLimitedResponse();
+  const limitResponse = catalogueRequestLimitResponse(request);
+  if (limitResponse) return limitResponse;
   const { templateId, revision: revisionText } = await context.params;
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(templateId) || !/^[1-9]\d*$/.test(revisionText)) {
     return NextResponse.json(
