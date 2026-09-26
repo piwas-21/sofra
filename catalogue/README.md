@@ -25,6 +25,10 @@ event in one transaction. Later content changes require a new revision; hiding a
 published revision requires an explicit withdrawal manifest. The runtime reader
 role can see only reviewed revisions with a publication event.
 
+The catalogue migration is also an explicit one-off; the migrate image's default
+command remains for the control-plane database. Run
+`sh scripts/catalogue/migrate-deploy.sh` with the owner `CATALOGUE_DATABASE_URL`.
+
 The database regression requires an already migrated disposable PostgreSQL
 database named `sofra_catalogue_test` on localhost. Set
 `CATALOGUE_TEST_DATABASE_URL` to its owner connection, then run
