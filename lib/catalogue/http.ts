@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { catalogueRateLimitConfig } from "@/lib/catalogue/config";
 
 export function catalogueRequestIsLimited(request: Request): boolean {
-  return !rateLimit("catalogue-read:" + clientIp(request), 300, 15 * 60 * 1000);
+  const config = catalogueRateLimitConfig();
+  return !rateLimit(
+    "catalogue-read:" + clientIp(request),
+    config.maxRequests,
+    config.windowMs,
+  );
 }
 
 export function rateLimitedResponse(): NextResponse {

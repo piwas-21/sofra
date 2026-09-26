@@ -13,6 +13,11 @@ import { toRevision } from "@/lib/catalogue/row";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+/**
+ * Public by design: this returns one immutable, reviewed revision from the global
+ * curated catalogue. The reader-only database role exposes only published views;
+ * the endpoint contains no tenant data and performs no writes.
+ */
 export async function GET(
   request: Request,
   context: { params: Promise<{ templateId: string; revision: string }> },

@@ -18,6 +18,11 @@ import { toSummary } from "@/lib/catalogue/row";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+/**
+ * Public by design: this lists global, reviewed catalogue suggestions, not tenant
+ * records. The reader-only database role exposes only published views, and this route
+ * does not accept tenant-scoped queries or write data.
+ */
 export async function GET(request: Request) {
   if (catalogueRequestIsLimited(request)) return rateLimitedResponse();
 

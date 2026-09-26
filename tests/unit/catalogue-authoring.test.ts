@@ -12,6 +12,7 @@ import {
   encodeCatalogueCursor,
   parseCatalogueFilters,
 } from "@/lib/catalogue/query";
+import { catalogueRateLimitConfig } from "@/lib/catalogue/config";
 
 describe("central catalogue publication contract", () => {
   it("keeps the starter set unpublished pending operator, editorial, and locale review", async () => {
@@ -89,5 +90,24 @@ describe("published catalogue pagination", () => {
     if (!parsed.success) return;
     expect(decodeCatalogueCursor("not-json", parsed.filters)).toEqual({ valid: false });
     expect(decodeCatalogueCursor("x".repeat(513), parsed.filters)).toEqual({ valid: false });
+  });
+});
+
+describe("catalogue rate-limit configuration", () => {
+  it("uses safe defaults and accepts positive integer environment overrides", () => {
+    expect(catalogueRateLimitConfig({})).toEqual({ maxRequests: 300, windowMs: 900_000 });
+    expect(catalogueRateLimitConfig({
+      CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS: "80",
+      CATALOGUE_READ_RATE_LIMIT_WINDOW_MS: "60000",
+    })).toEqual({ maxRequests: 80, windowMs: 60_000 });
+  });
+
+  it("rejects invalid environment values instead of silently weakening the limit", () => {
+    expect(() => catalogueRateLimitConfig({ CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS: "0" }))
+      .toThrow("CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS must be a positive safe integer.");
+    expect(() => catalogueRateLimitConfig({ CATALOGUE_READ_RATE_LIMIT_WINDOW_MS: "15m" }))
+      .toThrow("CATALOGUE_READ_RATE_LIMIT_WINDOW_MS must be a positive safe integer.");
+    expect(() => catalogueRateLimitConfig({ CATALOGUE_READ_RATE_LIMIT_WINDOW_MS: "9007199254740992" }))
+      .toThrow("CATALOGUE_READ_RATE_LIMIT_WINDOW_MS must be a positive safe integer.");
   });
 });
