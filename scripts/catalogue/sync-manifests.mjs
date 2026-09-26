@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import pg from "pg";
 import {
   loadCatalogueManifests,
@@ -7,40 +9,7 @@ import {
 import { publicationBlockers } from "./manifest-contract.mjs";
 
 const { Pool } = pg;
-const connectionString = process.env.CATALOGUE_DATABASE_URL?.trim();
-if (!connectionString) {
-  console.error("CATALOGUE_DATABASE_URL must point to the catalogue migration owner connection.");
-  process.exit(2);
-}
-
-const loaded = await loadCatalogueManifests();
-const errors = validateCatalogue(loaded.manifests, loaded.errors);
-if (errors.length) {
-  for (const error of errors) console.error("ERROR: " + error);
-  process.exit(1);
-}
-
-const pool = new Pool({
-  connectionString,
-  max: 1,
-  connectionTimeoutMillis: 5_000,
-  application_name: "sofra-catalogue-manifest-sync",
-});
-
-try {
-  for (const { manifest } of dependencyOrder(loaded.manifests)) {
-    const result = await syncManifest(pool, manifest);
-    console.log(manifest.templateId + "@" + manifest.revision + ": " + result);
-  }
-  console.log("Catalogue manifest sync complete. No existing revision was updated or deleted.");
-} catch (error) {
-  console.error("Catalogue manifest sync failed: " + safeErrorName(error));
-  process.exitCode = 1;
-} finally {
-  await pool.end();
-}
-
-async function syncManifest(db, manifest) {
+export async function syncManifest(db, manifest) {
   const client = await db.connect();
   try {
     await client.query("BEGIN");
@@ -58,6 +27,33 @@ async function syncManifest(db, manifest) {
       await appendEvent(client, manifest.templateId, manifest.revision, "WITHDRAWN", manifest.withdrawScope);
       await client.query("COMMIT");
       return "withdrawal recorded";
+    }
+
+    if (manifest.publicationStatus === "unpublished") {
+      const found = await client.query(
+        [
+          "SELECT content_hash, type::text AS type FROM catalogue.revision",
+          "WHERE template_id = $1 AND revision = $2",
+        ].join(" "),
+        [manifest.templateId, manifest.revision],
+      );
+      const existing = found.rows[0];
+      if (!existing) {
+        await client.query("COMMIT");
+        return "source-only draft; not stored in the catalogue database";
+      }
+      if (existing.content_hash.trim() !== contentHash(manifest) || existing.type !== manifest.type) {
+        throw new Error("an existing immutable revision has different content; increment the revision number");
+      }
+      const publicRevision = await client.query(
+        "SELECT 1 FROM catalogue.public_revision WHERE template_id = $1 AND revision = $2",
+        [manifest.templateId, manifest.revision],
+      );
+      if (publicRevision.rowCount) {
+        throw new Error("a published revision cannot be marked unpublished; record an explicit withdrawal");
+      }
+      await client.query("COMMIT");
+      return "unchanged unpublished immutable revision";
     }
 
     await client.query(
@@ -116,34 +112,64 @@ async function syncManifest(db, manifest) {
       throw new Error("an existing immutable revision has different content; increment the revision number");
     }
 
-    let status = "stored as unpublished draft";
-    if (manifest.publicationStatus === "published") {
-      const blockers = publicationBlockers(manifest).blockers;
-      if (manifest.qualityStatus !== "reviewed" || blockers.length) {
-        throw new Error("publication is blocked: " + blockers.join("; "));
-      }
-      for (const dependency of manifest.dependencies) {
-        const visible = await client.query(
-          "SELECT 1 FROM catalogue.public_revision WHERE template_id = $1 AND revision = $2",
-          [dependency.templateId, dependency.revision],
-        );
-        if (visible.rowCount !== 1) {
-          throw new Error("publication dependency is not currently published: "
-            + dependency.templateId + "@" + dependency.revision);
-        }
-      }
-      await appendEvent(client, manifest.templateId, manifest.revision, "PUBLISHED");
-      status = "published";
-    } else if (manifest.publicationStatus === "withdrawn") {
-      throw new Error("unreachable withdrawal state");
+    const blockers = publicationBlockers(manifest).blockers;
+    if (manifest.qualityStatus !== "reviewed" || blockers.length) {
+      throw new Error("publication is blocked: " + blockers.join("; "));
     }
+    for (const dependency of manifest.dependencies) {
+      const visible = await client.query(
+        "SELECT 1 FROM catalogue.public_revision WHERE template_id = $1 AND revision = $2",
+        [dependency.templateId, dependency.revision],
+      );
+      if (visible.rowCount !== 1) {
+        throw new Error("publication dependency is not currently published: "
+          + dependency.templateId + "@" + dependency.revision);
+      }
+    }
+    await appendEvent(client, manifest.templateId, manifest.revision, "PUBLISHED");
     await client.query("COMMIT");
-    return status;
+    return "published";
   } catch (error) {
     await client.query("ROLLBACK");
     throw error;
   } finally {
     client.release();
+  }
+}
+
+async function main() {
+  const connectionString = process.env.CATALOGUE_DATABASE_URL?.trim();
+  if (!connectionString) {
+    console.error("CATALOGUE_DATABASE_URL must point to the catalogue migration owner connection.");
+    process.exitCode = 2;
+    return;
+  }
+
+  const loaded = await loadCatalogueManifests();
+  const errors = validateCatalogue(loaded.manifests, loaded.errors);
+  if (errors.length) {
+    for (const error of errors) console.error("ERROR: " + error);
+    process.exitCode = 1;
+    return;
+  }
+
+  const pool = new Pool({
+    connectionString,
+    max: 1,
+    connectionTimeoutMillis: 5_000,
+    application_name: "sofra-catalogue-manifest-sync",
+  });
+  try {
+    for (const { manifest } of dependencyOrder(loaded.manifests)) {
+      const result = await syncManifest(pool, manifest);
+      console.log(manifest.templateId + "@" + manifest.revision + ": " + result);
+    }
+    console.log("Catalogue sync complete. Drafts stay in source; published revisions and events are append-only.");
+  } catch (error) {
+    console.error("Catalogue manifest sync failed: " + safeErrorName(error));
+    process.exitCode = 1;
+  } finally {
+    await pool.end();
   }
 }
 
@@ -215,3 +241,7 @@ function safeErrorName(error) {
   const name = error instanceof Error ? error.name : "UnknownError";
   return code ? name + " (database code " + code + ")" : name;
 }
+
+const isMainModule = process.argv[1]
+  && pathToFileURL(resolve(process.argv[1])).href === import.meta.url;
+if (isMainModule) await main();
