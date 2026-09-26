@@ -115,4 +115,21 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
     );
     expect(eventCount.rows[0]?.count).toBe(1);
   });
+
+  it("requires revisions for publications while allowing withdrawal tombstones", async () => {
+    const templateId = "constraint-" + randomUUID().replaceAll("-", "");
+    await pool.query(
+      "INSERT INTO catalogue.template (template_id, type) VALUES ($1, 'category')",
+      [templateId],
+    );
+
+    await expect(pool.query(
+      "INSERT INTO catalogue.revision_event (template_id, revision, event_type) VALUES ($1, NULL, 'PUBLISHED')",
+      [templateId],
+    )).rejects.toThrow();
+    await expect(pool.query(
+      "INSERT INTO catalogue.revision_event (template_id, revision, event_type) VALUES ($1, NULL, 'WITHDRAWN')",
+      [templateId],
+    )).resolves.toMatchObject({ rowCount: 1 });
+  });
 });

@@ -61,7 +61,7 @@ CREATE TABLE catalogue.revision_event (
   created_at timestamptz NOT NULL DEFAULT now(),
   FOREIGN KEY (template_id, revision)
     REFERENCES catalogue.revision(template_id, revision),
-  CHECK (event_type = 'WITHDRAWN' OR revision IS NOT NULL)
+  CHECK (event_type <> 'PUBLISHED' OR revision IS NOT NULL)
 );
 
 CREATE INDEX catalogue_revision_type_idx ON catalogue.revision(type, template_id);

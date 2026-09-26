@@ -42,7 +42,7 @@
     "@types/node": "^26.1.1",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9.39.4",
     "eslint-config-next": "^15.5.20",
     "postcss": "^8.5.23",
@@ -50,7 +50,7 @@
     "sharp": "^0.35.4",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "deepmerge-ts": "^8.0.1",
