@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "templateId": "tr-starter-pack",
+  "revision": 1,
+  "type": "cuisine-pack",
+  "cuisines": ["turkish"],
+  "sourceLocale": "tr",
+  "name": "Türkçe başlangıç taslağı",
+  "description": "İşletme tarafından gözden geçirilmesi gereken genel taslak katalog.",
+  "translations": {},
+  "localeFallbacks": [],
+  "dependencies": [
+    { "templateId": "tr-main-category", "revision": 1, "role": "category", "sortOrder": 1 },
+    { "templateId": "tr-drinks-category", "revision": 1, "role": "category", "sortOrder": 2 },
+    { "templateId": "tr-kofte-item", "revision": 1, "role": "offer", "sortOrder": 1, "includedByDefault": true },
+    { "templateId": "tr-lahmacun-item", "revision": 1, "role": "offer", "sortOrder": 2, "includedByDefault": true },
+    { "templateId": "tr-ayran-item", "revision": 1, "role": "offer", "sortOrder": 3, "includedByDefault": true }
+  ],
+  "provenance": {
+    "contentOrigin": "sofra-original",
+    "sourceDescription": "Generic Sofra-authored Turkish draft labels; no tenant source.",
+    "license": "Sofra-proprietary-draft",
+    "mediaAssets": []
+  },
+  "qualityStatus": "draft",
+  "publicationStatus": "unpublished",
+  "compatibleTenantContractVersions": [1],
+  "operatorReview": { "status": "pending", "evidenceRef": null },
+  "payload": {
+    "categories": [
+      { "templateId": "tr-main-category", "revision": 1, "sortOrder": 1 },
+      { "templateId": "tr-drinks-category", "revision": 1, "sortOrder": 2 }
+    ],
+    "offers": [
+      { "templateId": "tr-kofte-item", "revision": 1, "sortOrder": 1, "includedByDefault": true },
+      { "templateId": "tr-lahmacun-item", "revision": 1, "sortOrder": 2, "includedByDefault": true },
+      { "templateId": "tr-ayran-item", "revision": 1, "sortOrder": 3, "includedByDefault": true }
+    ],
+    "requiredLocalReviewFields": ["price", "ingredients", "allergens", "availability", "channels", "kitchen-routing"]
+  }
+}

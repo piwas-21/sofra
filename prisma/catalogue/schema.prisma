@@ -1,0 +1,77 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../../lib/generated/catalogue"
+  moduleFormat    = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["catalogue"]
+}
+
+enum TemplateType {
+  INGREDIENT   @map("ingredient")
+  OPTION_SET   @map("option-set")
+  ITEM         @map("item")
+  BUNDLE       @map("bundle")
+  CATEGORY     @map("category")
+  CUISINE_PACK @map("cuisine-pack")
+
+  @@schema("catalogue")
+}
+
+enum QualityStatus {
+  DRAFT    @map("draft")
+  REVIEWED @map("reviewed")
+
+  @@schema("catalogue")
+}
+
+model CatalogueTemplate {
+  templateId String       @id @map("template_id")
+  type       TemplateType
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  revisions  CatalogueRevision[]
+
+  @@map("template")
+  @@schema("catalogue")
+}
+
+model CatalogueRevision {
+  templateId                       String        @map("template_id")
+  revision                         Int
+  schemaVersion                    Int           @map("schema_version")
+  type                             TemplateType
+  name                             String
+  description                      String?
+  cuisines                         String[]
+  sourceLocale                     String        @map("source_locale")
+  translations                     Json
+  localeFallbacks                  String[]      @map("locale_fallbacks")
+  dependencies                     Json
+  provenance                       Json
+  qualityStatus                    QualityStatus @map("quality_status")
+  compatibleTenantContractVersions Int[]         @map("compatible_tenant_contract_versions")
+  payload                          Json
+  searchText                       String        @map("search_text")
+  contentHash                      String        @map("content_hash")
+  createdAt                        DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  template                         CatalogueTemplate @relation(fields: [templateId], references: [templateId])
+
+  @@id([templateId, revision])
+  @@index([type])
+  @@map("revision")
+  @@schema("catalogue")
+}
+
+model PublicationEvent {
+  eventId   BigInt   @id @default(autoincrement()) @map("event_id")
+  templateId String @map("template_id")
+  revision  Int?
+  eventType String   @map("event_type")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([templateId, revision, eventId])
+  @@map("revision_event")
+  @@schema("catalogue")
+}

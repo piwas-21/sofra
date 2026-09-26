@@ -40,9 +40,11 @@ FROM node:22-alpine AS migrate
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
-COPY package.json prisma.config.ts ./
+COPY package.json prisma.config.ts prisma.catalogue.config.ts ./
 COPY prisma ./prisma
+COPY catalogue ./catalogue
 COPY scripts/seed-admin.mjs ./scripts/seed-admin.mjs
+COPY scripts/catalogue ./scripts/catalogue
 USER node
 CMD ["node", "node_modules/prisma/build/index.js", "migrate", "deploy"]
 
