@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cataloguePool } from "@/lib/catalogue/db";
+import { CATALOGUE_REVISION_MAX, CATALOGUE_TEMPLATE_ID_MAX_LENGTH } from "@/lib/catalogue/query";
 import {
   badQueryResponse,
   catalogueRequestLimitResponse,
@@ -27,7 +28,8 @@ export async function GET(
   if (limitResponse) return limitResponse;
 
   const { templateId } = await context.params;
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(templateId) || templateId.length > 120) {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(templateId)
+    || templateId.length > CATALOGUE_TEMPLATE_ID_MAX_LENGTH) {
     return NextResponse.json(
       { error: "not_found" },
       { status: 404, headers: { "Cache-Control": "no-store" } },
@@ -41,7 +43,7 @@ export async function GET(
   if (revisionText !== null && !/^[1-9]\d*$/.test(revisionText)) return badQueryResponse();
   const adoptedRevision = revisionText !== null ? Number(revisionText) : null;
   if (adoptedRevision !== null
-    && (!Number.isSafeInteger(adoptedRevision) || adoptedRevision > 2_147_483_647)) {
+    && (!Number.isSafeInteger(adoptedRevision) || adoptedRevision > CATALOGUE_REVISION_MAX)) {
     return badQueryResponse();
   }
 
