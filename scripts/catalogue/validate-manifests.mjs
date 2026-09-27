@@ -154,6 +154,12 @@ function validateDependencyTargets(manifests, byVersion, errors) {
           + target.manifest.type + " template " + dependency.templateId + "@" + dependency.revision,
         );
       }
+      if (target && entry.manifest.type === "bundle"
+        && entry.manifest.payload.standaloneOffer?.templateId === dependency.templateId
+        && entry.manifest.payload.standaloneOffer?.revision === dependency.revision
+        && target.manifest.type !== "item") {
+        errors.push(entry.file + ": standaloneOffer must reference an item template");
+      }
       if (target && entry.manifest.publicationStatus === "published"
         && target.manifest.publicationStatus !== "published") {
         errors.push(entry.file + ": published revision depends on an unpublished or withdrawn revision");
