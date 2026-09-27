@@ -30,7 +30,7 @@ describe("catalogue current batch request", () => {
   });
 
   it("rejects an oversized streaming body before parsing JSON", async () => {
-    const request = new Request("https://example.invalid", {
+    const request = new Request(import.meta.url, {
       method: "POST",
       body: " ".repeat(CURRENT_BATCH_BODY_MAX_BYTES + 1),
     });
