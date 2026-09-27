@@ -31,6 +31,13 @@ endpoint returns `{templateId, revision, contentHash, withdrawn,
 adoptedRevisionWithdrawn}`; pass `?adoptedRevision=N` to check the status of a
 tenant's pinned revision. A known but wholly withdrawn template returns 200 with
 `revision` and `contentHash` null, while a never-published template returns 404.
+For revision review across a tenant import session,
+`POST /api/v1/catalogue/templates/current-batch` accepts up to 128 distinct
+`{templateId, adoptedRevision}` pairs in a 64 KiB request. It returns each
+template's `available`, `withdrawn`, or `notFound` status, the full current
+reviewed revision only when available, and the pinned revision's withdrawal
+status. The route reads published views in one query and returns 503 if that
+read fails; callers must not interpret 503 as a clean or current template.
 Reader access is limited to status views of revisions published at least once;
 draft content and raw publication events are not exposed.
 
