@@ -12,6 +12,10 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    env: {
+      // The helper test stubs `node` and only checks that the owner setting is nonempty.
+      CATALOGUE_MIGRATION_TEST_DATABASE_URL: "test-owner-config-stub",
+    },
     include: ["tests/unit/**/*.test.ts"],
     // Coverage floor (DEV-PHASES-PLAN W2, D9). Scoped to the pure, fully
     // unit-coverable lib/ modules only — modules with network/DB branches
