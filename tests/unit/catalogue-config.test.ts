@@ -16,6 +16,13 @@ describe("catalogue database pool configuration", () => {
     });
   });
 
+  it("reports invalid pool settings as type errors", () => {
+    expect(() => cataloguePoolConfig({
+      ...validPoolEnvironment,
+      CATALOGUE_POOL_MAX: "invalid",
+    })).toThrow(TypeError);
+  });
+
   it.each(Object.keys(validPoolEnvironment))("requires %s", (key) => {
     const environment = { ...validPoolEnvironment };
     delete environment[key as keyof typeof environment];

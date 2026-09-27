@@ -20,16 +20,16 @@ function positiveInteger(
   rawValue: string | undefined,
 ): number {
   if (rawValue === undefined || rawValue.trim() === "") {
-    throw new Error(`${name} must be configured as a positive safe integer.`);
+    throw new TypeError(`${name} must be configured as a positive safe integer.`);
   }
   const normalized = rawValue.trim();
   if (!/^[1-9]\d*$/.test(normalized)) {
-    throw new Error(`${name} must be configured as a positive safe integer.`);
+    throw new TypeError(`${name} must be configured as a positive safe integer.`);
   }
 
   const value = Number(normalized);
   if (!Number.isSafeInteger(value)) {
-    throw new Error(`${name} must be configured as a positive safe integer.`);
+    throw new TypeError(`${name} must be configured as a positive safe integer.`);
   }
   return value;
 }
@@ -42,7 +42,7 @@ function boundedInteger(
 ): number {
   const value = positiveInteger(name, rawValue);
   if (value < minimum || value > maximum) {
-    throw new Error(`${name} must be between ${minimum} and ${maximum}.`);
+    throw new TypeError(`${name} must be between ${minimum} and ${maximum}.`);
   }
   return value;
 }

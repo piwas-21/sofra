@@ -12,6 +12,17 @@ CREATE TYPE catalogue.template_type AS ENUM (
 CREATE TYPE catalogue.quality_status AS ENUM ('draft', 'reviewed');
 CREATE TYPE catalogue.revision_event_type AS ENUM ('PUBLISHED', 'WITHDRAWN');
 
+-- Keep publication checks in one place so the enum label is not duplicated.
+CREATE FUNCTION catalogue.is_published_event(event_type catalogue.revision_event_type)
+RETURNS boolean
+LANGUAGE sql
+IMMUTABLE
+STRICT
+PARALLEL SAFE
+AS $$
+  SELECT event_type = 'PUBLISHED';
+$$;
+
 CREATE FUNCTION catalogue.is_json_object(document jsonb)
 RETURNS boolean
 LANGUAGE sql
@@ -61,7 +72,7 @@ CREATE TABLE catalogue.revision_event (
   created_at timestamptz NOT NULL DEFAULT now(),
   FOREIGN KEY (template_id, revision)
     REFERENCES catalogue.revision(template_id, revision),
-  CHECK (event_type <> 'PUBLISHED' OR revision IS NOT NULL)
+  CHECK (NOT catalogue.is_published_event(event_type) OR revision IS NOT NULL)
 );
 
 CREATE INDEX catalogue_revision_type_idx ON catalogue.revision(type, template_id);
@@ -111,7 +122,7 @@ JOIN latest_revision_event AS event
  AND event.revision = revision.revision
 LEFT JOIN latest_global_withdrawal AS withdrawn
   ON withdrawn.template_id = revision.template_id
-WHERE event.event_type = 'PUBLISHED'
+WHERE catalogue.is_published_event(event.event_type)
   AND revision.quality_status = 'reviewed'
   AND event.event_id > COALESCE(withdrawn.event_id, 0);
 
@@ -134,6 +145,10 @@ BEGIN
   EXECUTE format('GRANT USAGE ON SCHEMA catalogue TO %I', reader_role);
   EXECUTE format(
     'GRANT SELECT ON catalogue.public_revision, catalogue.public_current TO %I',
+    reader_role
+  );
+  EXECUTE format(
+    'GRANT EXECUTE ON FUNCTION catalogue.is_published_event(catalogue.revision_event_type) TO %I',
     reader_role
   );
 END;
