@@ -3,6 +3,8 @@ import { z } from "zod";
 import { CATALOGUE_TEMPLATE_TYPES } from "@/lib/catalogue/types";
 
 export const CATALOGUE_LOCALES = ["en", "fr", "de", "nl", "tr", "ar", "es", "it", "ru", "zh"] as const;
+export const CATALOGUE_TEMPLATE_ID_MAX_LENGTH = 120;
+export const CATALOGUE_REVISION_MAX = 2_147_483_647;
 const filtersSchema = z.object({
   type: z.enum(CATALOGUE_TEMPLATE_TYPES).optional(),
   cuisine: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(48).optional(),
@@ -48,7 +50,7 @@ export function encodeCatalogueCursor(templateId: string, filters: CatalogueFilt
 }
 
 const cursorSchema = z.object({
-  templateId: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120),
+  templateId: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(CATALOGUE_TEMPLATE_ID_MAX_LENGTH),
   filterHash: z.string().length(16),
 });
 
