@@ -25,6 +25,15 @@ event in one transaction. Later content changes require a new revision; hiding a
 published revision requires an explicit withdrawal manifest. The runtime reader
 role can see only reviewed revisions with a publication event.
 
+The public read API exposes paginated published summaries, exact published
+revisions, and `GET /api/v1/catalogue/templates/{templateId}/current`. The current
+endpoint returns `{templateId, revision, contentHash, withdrawn,
+adoptedRevisionWithdrawn}`; pass `?adoptedRevision=N` to check the status of a
+tenant's pinned revision. A known but wholly withdrawn template returns 200 with
+`revision` and `contentHash` null, while a never-published template returns 404.
+Reader access is limited to status views of revisions published at least once;
+draft content and raw publication events are not exposed.
+
 The catalogue migration is also an explicit one-off; the migrate image's default
 command remains for the control-plane database. Run
 `sh scripts/catalogue/migrate-deploy.sh` with the owner `CATALOGUE_DATABASE_URL`.
@@ -33,7 +42,8 @@ The database regression requires an already migrated disposable PostgreSQL
 database named `sofra_catalogue_test` on localhost. Set
 `CATALOGUE_TEST_DATABASE_URL` to its owner connection, then run
 `npm run test:catalogue:db`. It verifies draft-to-published flow, event
-idempotency, and the database immutability trigger. The test refuses non-local
+idempotency, withdrawal status, reader permissions, and the database
+immutability trigger. The test refuses non-local
 hosts and other database names.
 
 Do not copy tenant menus, product names, descriptions, images, prices, or
