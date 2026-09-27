@@ -36,13 +36,19 @@ RUN npm run build
 #   migrate: docker run --rm --network <net> -e DATABASE_URL=… <img>
 #   seed:    docker run --rm --network <net> -e DATABASE_URL=… -e ADMIN_EMAIL=… \
 #              -e ADMIN_NAME=… -e ADMIN_PASSWORD=… <img> node scripts/seed-admin.mjs
+#   catalogue migrate: docker run --rm --network <net> -e CATALOGUE_DATABASE_URL=… \
+#              <img> sh scripts/catalogue/migrate-deploy.sh
+# The default CMD above remains for the control-plane database. The separate catalogue
+# database is migrated explicitly through the helper and its dedicated Prisma config.
 FROM node:22-alpine AS migrate
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
-COPY package.json prisma.config.ts ./
+COPY package.json prisma.config.ts prisma.catalogue.config.ts ./
 COPY prisma ./prisma
+COPY catalogue ./catalogue
 COPY scripts/seed-admin.mjs ./scripts/seed-admin.mjs
+COPY scripts/catalogue ./scripts/catalogue
 USER node
 CMD ["node", "node_modules/prisma/build/index.js", "migrate", "deploy"]
 
