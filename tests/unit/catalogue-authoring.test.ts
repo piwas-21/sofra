@@ -120,6 +120,52 @@ describe("central catalogue publication contract", () => {
     ingredientSet.payload.min = 0;
     expect(validateCardinality(ingredientSet)).toEqual([]);
   });
+
+  it("holds unsupported offer families and rejects a bundle as a standalone offer", async () => {
+    const loaded = await loadCatalogueManifests();
+    const item = loaded.manifests.find(({ manifest }) => manifest?.type === "item")?.manifest;
+    if (!item) throw new Error("starter pack has no item template");
+    const section = {
+      sectionKey: "core",
+      name: "Choose one",
+      sortOrder: 0,
+      min: 1,
+      max: 1,
+      options: [{ templateId: item.templateId, revision: item.revision, sortOrder: 0 }],
+    };
+    const sourceBundle = {
+      ...item,
+      templateId: "source-bundle",
+      type: "bundle" as const,
+      dependencies: [{ templateId: item.templateId, revision: item.revision, role: "bundle-option" as const }],
+      payload: { sections: [section], requiredLocalReviewFields: [] },
+    };
+    const importingBundle = {
+      ...sourceBundle,
+      templateId: "importing-bundle",
+      dependencies: [
+        ...sourceBundle.dependencies,
+        { templateId: sourceBundle.templateId, revision: sourceBundle.revision, role: "offer" as const },
+      ],
+      payload: {
+        ...sourceBundle.payload,
+        standaloneOffer: { templateId: sourceBundle.templateId, revision: sourceBundle.revision },
+      },
+    };
+    const errors = validateCatalogue([
+      { file: "source-bundle.json", manifest: sourceBundle },
+      { file: "importing-bundle.json", manifest: importingBundle },
+      { file: "item.json", manifest: item },
+    ]);
+    expect(errors).toContain("importing-bundle.json: standaloneOffer must reference an item template");
+    expect(publicationBlockers({
+      ...importingBundle,
+      payload: {
+        ...importingBundle.payload,
+        offerFamily: { templateId: sourceBundle.templateId, revision: sourceBundle.revision },
+      },
+    }).blockers).toContain("offer-family template import contract is not defined");
+  });
 });
 
 describe("published catalogue pagination", () => {
