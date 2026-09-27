@@ -140,9 +140,6 @@ describe("published catalogue SQL", () => {
 });
 
 describe("catalogue rate-limit configuration", () => {
-  const testBaseUrl = process.env.CATALOGUE_TEST_BASE_URL;
-  if (!testBaseUrl) throw new Error("CATALOGUE_TEST_BASE_URL must be set in the Vitest environment.");
-
   it("requires positive integer environment values", () => {
     expect(() => catalogueRateLimitConfig({}))
       .toThrow("CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS must be configured as a positive safe integer.");
@@ -158,7 +155,7 @@ describe("catalogue rate-limit configuration", () => {
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => undefined);
     try {
       const response = catalogueRequestLimitResponse(
-        new Request(new URL("/api/v1/catalogue/templates", testBaseUrl)),
+        { headers: new Headers() },
         {},
       );
       expect(response?.status).toBe(503);

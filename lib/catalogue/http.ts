@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { clientIpFromXff, rateLimit } from "@/lib/rate-limit";
 import { catalogueRateLimitConfig, type CatalogueRateLimitConfig } from "@/lib/catalogue/config";
 
 export function catalogueRequestLimitResponse(
-  request: Request,
+  request: Pick<Request, "headers">,
   environment: Record<string, string | undefined> = process.env,
 ): NextResponse | null {
   let config: CatalogueRateLimitConfig;
@@ -15,7 +15,7 @@ export function catalogueRequestLimitResponse(
   }
 
   return rateLimit(
-    "catalogue-read:" + clientIp(request),
+    "catalogue-read:" + clientIpFromXff(request.headers.get("x-forwarded-for")),
     config.maxRequests,
     config.windowMs,
   ) ? null : rateLimitedResponse();
