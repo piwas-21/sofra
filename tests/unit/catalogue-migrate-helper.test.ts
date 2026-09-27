@@ -5,14 +5,15 @@ import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const helperPath = resolve(process.cwd(), "scripts/catalogue/migrate-deploy.sh");
-const testDatabaseUrl = process.env.CATALOGUE_MIGRATION_TEST_DATABASE_URL;
+const testOwnerConnectionSentinel = process.env.CATALOGUE_MIGRATION_TEST_DATABASE_URL;
 
-if (!testDatabaseUrl) {
-  throw new Error("CATALOGUE_MIGRATION_TEST_DATABASE_URL must be set in the Vitest environment.");
+if (!testOwnerConnectionSentinel) {
+  throw new Error("Vitest must provide the migration-helper owner setting sentinel.");
 }
 
 describe("catalogue migration helper", () => {
-  it("requires the owner URL and invokes Prisma with the catalogue config", () => {
+  it("requires a nonempty owner setting and invokes Prisma with the catalogue config", () => {
+    expect(testOwnerConnectionSentinel).toBe("test-owner-config-stub");
     const directory = mkdtempSync(join(tmpdir(), "catalogue-migrate-helper-"));
     try {
       const nodeShim = join(directory, "node");
@@ -24,7 +25,7 @@ describe("catalogue migration helper", () => {
         encoding: "utf8",
         env: {
           ...process.env,
-          CATALOGUE_DATABASE_URL: testDatabaseUrl,
+          CATALOGUE_DATABASE_URL: testOwnerConnectionSentinel,
           MIGRATE_ARGS_FILE: argsPath,
           PATH: path,
         },
