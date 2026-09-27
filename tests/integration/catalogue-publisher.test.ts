@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { queryPublishedPage } from "../../lib/catalogue/list-query";
+import { queryCurrentBatch } from "../../lib/catalogue/current-batch";
 import { syncManifest } from "../../scripts/catalogue/sync-manifests.mjs";
 import {
   catalogueLocales,
@@ -94,6 +95,9 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
       [templateId],
     );
     expect(draftStatus.rows).toHaveLength(0);
+    expect(await queryCurrentBatch(pool, [{ templateId, adoptedRevision: 1 }])).toMatchObject([
+      { templateId, status: "notFound", revision: null },
+    ]);
 
     const translations = Object.fromEntries(
       catalogueLocales
@@ -132,6 +136,16 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
     const secondReviewed = { ...reviewed, templateId: secondTemplateId };
     expect(validateCatalogue([{ file: "publisher-test-second.json", manifest: secondReviewed }])).toEqual([]);
     await expect(syncManifest(pool, secondReviewed)).resolves.toBe("published");
+    const beforeWithdrawal = await queryCurrentBatch(pool, [
+      { templateId, adoptedRevision: 1 },
+      { templateId: secondTemplateId, adoptedRevision: 1 },
+    ]);
+    expect(beforeWithdrawal.map((item) => item.status)).toEqual(["available", "available"]);
+    expect(beforeWithdrawal[0]?.revision).toMatchObject({
+      templateId,
+      revision: 1,
+      qualityStatus: "reviewed",
+    });
 
     const filters = {
       type: "category" as const,
@@ -177,6 +191,16 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
       [secondTemplateId],
     );
     expect(stillPublished.rows).toEqual([{ withdrawn: false }]);
+    const afterWithdrawal = await queryCurrentBatch(pool, [
+      { templateId, adoptedRevision: 1 },
+      { templateId: secondTemplateId, adoptedRevision: 1 },
+      { templateId: "never-published-batch", adoptedRevision: 1 },
+    ]);
+    expect(afterWithdrawal).toMatchObject([
+      { templateId, status: "withdrawn", revision: null, adoptedRevisionWithdrawn: true },
+      { templateId: secondTemplateId, status: "available", adoptedRevisionWithdrawn: false },
+      { templateId: "never-published-batch", status: "notFound", revision: null },
+    ]);
   });
 
   it("requires revisions for publications while allowing withdrawal tombstones", async () => {
