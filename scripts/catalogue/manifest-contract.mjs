@@ -159,6 +159,9 @@ export function publicationBlockers(manifest) {
     blockers.push("external content attribution is missing");
   }
   if (missingLocales.length) blockers.push("locale coverage is missing: " + missingLocales.join(", "));
+  if (manifest.type === "bundle" && manifest.payload.offerFamily) {
+    blockers.push("offer-family template import contract is not defined");
+  }
   return { blockers, missingLocales, coveredLocaleCount: covered.size };
 }
 
