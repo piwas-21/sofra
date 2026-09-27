@@ -24,6 +24,9 @@ const optionReference = reference.extend({
 const bundleSection = z.object({
   sectionKey: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(48),
   name: z.string().min(1).max(120),
+  translations: z.partialRecord(locale, z.object({
+    name: z.string().trim().min(1).max(120),
+  }).strict()).optional(),
   sortOrder: z.number().int().nonnegative(),
   min: z.number().int().nonnegative(),
   max: z.number().int().positive(),
@@ -196,6 +199,10 @@ export function validateCardinality(manifest) {
   };
   if (manifest.type === "option-set") {
     checkOptions(manifest.templateId, manifest.payload.min, manifest.payload.max, manifest.payload.options);
+    if (manifest.payload.kind === "ingredient" &&
+      (manifest.payload.min !== 0 || manifest.payload.max !== manifest.payload.options.length)) {
+      errors.push(manifest.templateId + " ingredient exclusions must remain optional and unrestricted");
+    }
   }
   if (manifest.type === "bundle") {
     manifest.payload.sections.forEach((section) =>

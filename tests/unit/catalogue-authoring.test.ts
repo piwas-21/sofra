@@ -3,6 +3,8 @@ import {
   manifestReferences,
   findUnsafeContent,
   publicationBlockers,
+  parseManifest,
+  validateCardinality,
 } from "../../scripts/catalogue/manifest-contract.mjs";
 import {
   loadCatalogueManifests,
@@ -78,6 +80,45 @@ describe("central catalogue publication contract", () => {
     expect(validateCatalogue([{ ...pack, manifest: missingRef }])).toEqual(
       expect.arrayContaining([expect.stringContaining("missing dependency unknown-offer@1")]),
     );
+  });
+
+  it("accepts reviewed bundle-section translations and rejects impossible ingredient exclusions", async () => {
+    const loaded = await loadCatalogueManifests();
+    const item = loaded.manifests.find(({ manifest }) => manifest?.type === "item")?.manifest;
+    if (!item) throw new Error("starter pack has no item template");
+    const bundle = {
+      ...item,
+      type: "bundle",
+      payload: {
+        sections: [{
+          sectionKey: "meat",
+          name: "Choose meat",
+          translations: { tr: { name: "Et seçin" }, fr: { name: "Choisissez une viande" } },
+          sortOrder: 0,
+          min: 1,
+          max: 1,
+          options: [{ templateId: "tr-kofte-item", revision: 1, sortOrder: 0 }],
+        }],
+        requiredLocalReviewFields: [],
+      },
+    };
+    expect(parseManifest(bundle).success).toBe(true);
+
+    const ingredientSet = {
+      ...item,
+      type: "option-set",
+      payload: {
+        kind: "ingredient",
+        min: 1,
+        max: 1,
+        options: [{ templateId: "tr-kofte-item", revision: 1, sortOrder: 0 }],
+      },
+    };
+    expect(validateCardinality(ingredientSet)).toContain(
+      `${item.templateId} ingredient exclusions must remain optional and unrestricted`,
+    );
+    ingredientSet.payload.min = 0;
+    expect(validateCardinality(ingredientSet)).toEqual([]);
   });
 });
 
