@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { queryPublishedPage } from "../../lib/catalogue/list-query";
 import { syncManifest } from "../../scripts/catalogue/sync-manifests.mjs";
 import {
   catalogueLocales,
@@ -108,6 +109,26 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
       [templateId],
     )).rejects.toThrow("catalogue content is immutable");
     await expect(syncManifest(pool, reviewed)).resolves.toBe("published");
+
+    const secondTemplateId = templateId + "-second";
+    const secondReviewed = { ...reviewed, templateId: secondTemplateId };
+    expect(validateCatalogue([{ file: "publisher-test-second.json", manifest: secondReviewed }])).toEqual([]);
+    await expect(syncManifest(pool, secondReviewed)).resolves.toBe("published");
+
+    const filters = {
+      type: "category" as const,
+      cuisine: "test",
+      q: "Reviewed test category",
+      locale: "fr" as const,
+      limit: 1,
+    };
+    const firstPage = await queryPublishedPage(pool, filters);
+    expect(firstPage.map((row) => row.template_id)).toEqual([templateId, secondTemplateId]);
+    const nextPage = await queryPublishedPage(pool, filters, firstPage[0]?.template_id);
+    expect(nextPage.map((row) => row.template_id)).toEqual([secondTemplateId]);
+
+    const unmatchedCuisine = await queryPublishedPage(pool, { ...filters, cuisine: "not-test" });
+    expect(unmatchedCuisine).toEqual([]);
 
     const eventCount = await pool.query(
       "SELECT count(*)::integer AS count FROM catalogue.revision_event WHERE template_id = $1",

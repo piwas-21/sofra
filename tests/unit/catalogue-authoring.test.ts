@@ -15,6 +15,9 @@ import {
 } from "@/lib/catalogue/query";
 import { catalogueRateLimitConfig } from "@/lib/catalogue/config";
 import { catalogueRequestLimitResponse } from "@/lib/catalogue/http";
+import { queryPublishedPage } from "@/lib/catalogue/list-query";
+import type { CatalogueFilters } from "@/lib/catalogue/query";
+import type { Pool } from "pg";
 
 describe("central catalogue publication contract", () => {
   it("orders dependency pins by template and numeric revision", () => {
@@ -103,8 +106,42 @@ describe("published catalogue pagination", () => {
   });
 });
 
+describe("published catalogue SQL", () => {
+  it("binds filters and an after-template cursor in stable parameter order", async () => {
+    const query = vi.fn().mockResolvedValue({ rows: [] });
+    const pool = { query } as unknown as Pool;
+    const filters: CatalogueFilters = {
+      type: "item",
+      cuisine: "turkish",
+      q: "kofte",
+      locale: "tr",
+      limit: 12,
+    };
+
+    await queryPublishedPage(pool, filters, "tr-kofte-item");
+
+    expect(query).toHaveBeenCalledWith(
+      "SELECT template_id, revision, schema_version, type::text, name, description, cuisines, source_locale, translations, locale_fallbacks, dependencies, provenance, quality_status::text, compatible_tenant_contract_versions, payload, content_hash FROM catalogue.public_current WHERE type = $1::catalogue.template_type AND cuisines @> ARRAY[$2]::text[] AND to_tsvector('simple', search_text) @@ websearch_to_tsquery('simple', $3) AND (source_locale = $4 OR $4 = ANY(locale_fallbacks) OR translations ? $4) AND template_id > $5 ORDER BY template_id ASC LIMIT $6",
+      ["item", "turkish", "kofte", "tr", "tr-kofte-item", 13],
+    );
+  });
+
+  it("omits the WHERE clause when the first page has no filters or cursor", async () => {
+    const query = vi.fn().mockResolvedValue({ rows: [] });
+    const pool = { query } as unknown as Pool;
+
+    await queryPublishedPage(pool, { limit: 24 });
+
+    const [statement, values] = query.mock.calls[0] as [string, number[]];
+    expect(statement).not.toContain(" WHERE ");
+    expect(statement).toContain("ORDER BY template_id ASC LIMIT $1");
+    expect(values).toEqual([25]);
+  });
+});
+
 describe("catalogue rate-limit configuration", () => {
-  const testBaseUrl = process.env.CATALOGUE_TEST_BASE_URL ?? "http://example.test";
+  const testBaseUrl = process.env.CATALOGUE_TEST_BASE_URL;
+  if (!testBaseUrl) throw new Error("CATALOGUE_TEST_BASE_URL must be set in the Vitest environment.");
 
   it("requires positive integer environment values", () => {
     expect(() => catalogueRateLimitConfig({}))

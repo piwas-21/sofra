@@ -12,6 +12,10 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    env: {
+      CATALOGUE_TEST_BASE_URL: "http://localhost",
+      CATALOGUE_MIGRATION_TEST_DATABASE_URL: "postgresql://owner@localhost/sofra_catalogue",
+    },
     include: ["tests/unit/**/*.test.ts"],
     // Coverage floor (DEV-PHASES-PLAN W2, D9). Scoped to the pure, fully
     // unit-coverable lib/ modules only — modules with network/DB branches

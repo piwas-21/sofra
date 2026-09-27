@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { cataloguePoolConfig, type CataloguePoolConfig } from "@/lib/catalogue/config";
 
 const globalForCataloguePool = globalThis as typeof globalThis & {
   cataloguePool?: Pool;
@@ -9,11 +10,16 @@ export function cataloguePool(): Pool | null {
   if (!connectionString) return null;
 
   if (!globalForCataloguePool.cataloguePool) {
+    let poolConfig: CataloguePoolConfig;
+    try {
+      poolConfig = cataloguePoolConfig();
+    } catch {
+      console.error("[catalogue-read] database pool configuration is invalid");
+      return null;
+    }
     const pool = new Pool({
       connectionString,
-      max: 5,
-      connectionTimeoutMillis: 2_000,
-      idleTimeoutMillis: 30_000,
+      ...poolConfig,
       application_name: "sofra-catalogue-read",
     });
     pool.on("error", (error) => {

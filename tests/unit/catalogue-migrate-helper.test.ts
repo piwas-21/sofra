@@ -5,6 +5,11 @@ import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const helperPath = resolve(process.cwd(), "scripts/catalogue/migrate-deploy.sh");
+const testDatabaseUrl = process.env.CATALOGUE_MIGRATION_TEST_DATABASE_URL;
+
+if (!testDatabaseUrl) {
+  throw new Error("CATALOGUE_MIGRATION_TEST_DATABASE_URL must be set in the Vitest environment.");
+}
 
 describe("catalogue migration helper", () => {
   it("requires the owner URL and invokes Prisma with the catalogue config", () => {
@@ -19,7 +24,7 @@ describe("catalogue migration helper", () => {
         encoding: "utf8",
         env: {
           ...process.env,
-          CATALOGUE_DATABASE_URL: "postgresql://owner@localhost/sofra_catalogue",
+          CATALOGUE_DATABASE_URL: testDatabaseUrl,
           MIGRATE_ARGS_FILE: argsPath,
           PATH: path,
         },
