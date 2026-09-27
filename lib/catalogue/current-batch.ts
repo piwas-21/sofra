@@ -99,7 +99,7 @@ export async function queryCurrentBatch(
       };
     }
     const published = row.published_revision;
-    if (!published || published.quality_status !== "reviewed" ||
+    if (published?.quality_status !== "reviewed" ||
       published.revision !== row.current_revision ||
       published.content_hash !== row.current_content_hash?.trim()) {
       throw new Error("Catalogue batch current revision is inconsistent");
