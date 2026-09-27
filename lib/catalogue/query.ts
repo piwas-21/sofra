@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { CATALOGUE_TEMPLATE_TYPES } from "@/lib/catalogue/types";
+import { CATALOGUE_TEMPLATE_TYPES } from "./types";
 
 export const CATALOGUE_LOCALES = ["en", "fr", "de", "nl", "tr", "ar", "es", "it", "ru", "zh"] as const;
 export const CATALOGUE_TEMPLATE_ID_MAX_LENGTH = 120;
