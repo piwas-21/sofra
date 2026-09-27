@@ -33,6 +33,19 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
     if (!schema.rows[0]?.ready) {
       throw new Error("run the catalogue migration against sofra_catalogue_test before this regression.");
     }
+    const access = await pool.query(
+      [
+        "SELECT",
+        "has_table_privilege('sofra_catalogue_reader', 'catalogue.public_current_status', 'SELECT') AS current_status,",
+        "has_table_privilege('sofra_catalogue_reader', 'catalogue.public_revision_status', 'SELECT') AS revision_status,",
+        "has_table_privilege('sofra_catalogue_reader', 'catalogue.revision_event', 'SELECT') AS raw_events",
+      ].join(" "),
+    );
+    expect(access.rows[0]).toEqual({
+      current_status: true,
+      revision_status: true,
+      raw_events: false,
+    });
   });
 
   afterAll(async () => {
@@ -76,6 +89,11 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
       [templateId],
     );
     expect(beforeReview.rows[0]?.count).toBe(0);
+    const draftStatus = await pool.query(
+      "SELECT 1 FROM catalogue.public_current_status WHERE template_id = $1",
+      [templateId],
+    );
+    expect(draftStatus.rows).toHaveLength(0);
 
     const translations = Object.fromEntries(
       catalogueLocales
@@ -135,6 +153,30 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
       [templateId],
     );
     expect(eventCount.rows[0]?.count).toBe(1);
+
+    await pool.query(
+      "INSERT INTO catalogue.revision_event (template_id, revision, event_type) VALUES ($1, 1, 'WITHDRAWN')",
+      [templateId],
+    );
+    const withdrawnRevision = await pool.query(
+      "SELECT revision, withdrawn FROM catalogue.public_revision_status WHERE template_id = $1",
+      [templateId],
+    );
+    expect(withdrawnRevision.rows).toEqual([{ revision: 1, withdrawn: true }]);
+    const withdrawnTemplate = await pool.query(
+      "SELECT revision, content_hash, withdrawn FROM catalogue.public_current_status WHERE template_id = $1",
+      [templateId],
+    );
+    expect(withdrawnTemplate.rows).toMatchObject([{
+      revision: null,
+      content_hash: null,
+      withdrawn: true,
+    }]);
+    const stillPublished = await pool.query(
+      "SELECT withdrawn FROM catalogue.public_current_status WHERE template_id = $1",
+      [secondTemplateId],
+    );
+    expect(stillPublished.rows).toEqual([{ withdrawn: false }]);
   });
 
   it("requires revisions for publications while allowing withdrawal tombstones", async () => {
@@ -152,5 +194,10 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
       "INSERT INTO catalogue.revision_event (template_id, revision, event_type) VALUES ($1, NULL, 'WITHDRAWN')",
       [templateId],
     )).resolves.toMatchObject({ rowCount: 1 });
+    const unpublishedStatus = await pool.query(
+      "SELECT 1 FROM catalogue.public_current_status WHERE template_id = $1",
+      [templateId],
+    );
+    expect(unpublishedStatus.rows).toHaveLength(0);
   });
 });
