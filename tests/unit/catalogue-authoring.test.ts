@@ -104,6 +104,8 @@ describe("published catalogue pagination", () => {
 });
 
 describe("catalogue rate-limit configuration", () => {
+  const testBaseUrl = process.env.CATALOGUE_TEST_BASE_URL ?? "http://example.test";
+
   it("requires positive integer environment values", () => {
     expect(() => catalogueRateLimitConfig({}))
       .toThrow("CATALOGUE_READ_RATE_LIMIT_MAX_REQUESTS must be configured as a positive safe integer.");
@@ -119,7 +121,7 @@ describe("catalogue rate-limit configuration", () => {
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => undefined);
     try {
       const response = catalogueRequestLimitResponse(
-        new Request("https://sofrapiwas.com/api/v1/catalogue/templates"),
+        new Request(new URL("/api/v1/catalogue/templates", testBaseUrl)),
         {},
       );
       expect(response?.status).toBe(503);

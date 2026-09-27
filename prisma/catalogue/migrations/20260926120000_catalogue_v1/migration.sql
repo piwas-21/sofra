@@ -120,5 +120,21 @@ SELECT DISTINCT ON (template_id) *
 FROM catalogue.public_revision
 ORDER BY template_id, revision DESC;
 
-GRANT USAGE ON SCHEMA catalogue TO sofra_catalogue_reader;
-GRANT SELECT ON catalogue.public_revision, catalogue.public_current TO sofra_catalogue_reader;
+DO $$
+DECLARE
+  reader_role CONSTANT text := 'sofra_catalogue_reader';
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_roles
+    WHERE rolname = reader_role AND rolcanlogin
+  ) THEN
+    RAISE EXCEPTION 'catalogue migration requires existing login role %; create it before migration', reader_role;
+  END IF;
+
+  EXECUTE format('GRANT USAGE ON SCHEMA catalogue TO %I', reader_role);
+  EXECUTE format(
+    'GRANT SELECT ON catalogue.public_revision, catalogue.public_current TO %I',
+    reader_role
+  );
+END;
+$$;
