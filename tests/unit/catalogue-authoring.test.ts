@@ -217,9 +217,31 @@ describe("published catalogue SQL", () => {
     await queryPublishedPage(pool, filters, "tr-kofte-item");
 
     expect(query).toHaveBeenCalledWith(
-      "SELECT template_id, revision, schema_version, type::text, name, description, cuisines, source_locale, translations, locale_fallbacks, dependencies, provenance, quality_status::text, compatible_tenant_contract_versions, payload, content_hash FROM catalogue.public_current WHERE type = $1::catalogue.template_type AND cuisines @> ARRAY[$2]::text[] AND to_tsvector('simple', search_text) @@ websearch_to_tsquery('simple', $3) AND (source_locale = $4 OR $4 = ANY(locale_fallbacks) OR translations ? $4) AND template_id > $5 ORDER BY template_id ASC LIMIT $6",
-      ["item", "turkish", "kofte", "tr", "tr-kofte-item", 13],
+      "SELECT template_id, revision, schema_version, type::text, name, description, cuisines, source_locale, translations, locale_fallbacks, dependencies, provenance, quality_status::text, compatible_tenant_contract_versions, payload, content_hash FROM catalogue.public_current WHERE type = $1::catalogue.template_type AND cuisines @> ARRAY[$2]::text[] AND to_tsvector('simple', search_text) @@ to_tsquery('simple', $3) AND (source_locale = $4 OR $4 = ANY(locale_fallbacks) OR translations ? $4) AND template_id > $5 ORDER BY template_id ASC LIMIT $6",
+      ["item", "turkish", "kofte:*", "tr", "tr-kofte-item", 13],
     );
+  });
+
+  it("turns each typed word into a bound prefix without admitting query operators", async () => {
+    const query = vi.fn().mockResolvedValue({ rows: [] });
+    const pool = { query } as unknown as Pool;
+
+    await queryPublishedPage(pool, { q: "ay kö!", limit: 6 });
+
+    const [statement, values] = query.mock.calls[0] as [string, Array<string | number>];
+    expect(statement).toContain("@@ to_tsquery('simple', $1)");
+    expect(values).toEqual(["ay:* & kö:*", 7]);
+  });
+
+  it("does not turn a punctuation-only search into an unfiltered catalogue list", async () => {
+    const query = vi.fn().mockResolvedValue({ rows: [] });
+    const pool = { query } as unknown as Pool;
+
+    await queryPublishedPage(pool, { q: "!!!", limit: 6 });
+
+    const [statement, values] = query.mock.calls[0] as [string, number[]];
+    expect(statement).toContain("WHERE FALSE");
+    expect(values).toEqual([7]);
   });
 
   it("omits the WHERE clause when the first page has no filters or cursor", async () => {
