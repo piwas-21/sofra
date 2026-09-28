@@ -5,9 +5,46 @@
   "type": "cuisine-pack",
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
-  "name": "Türkçe başlangıç taslağı",
+  "name": "Türk mutfağı için başlangıç kataloğu taslağı",
   "description": "İşletme tarafından gözden geçirilmesi gereken genel taslak katalog.",
-  "translations": {},
+  "translations": {
+    "en": {
+      "name": "Turkish cuisine starter catalogue draft",
+      "description": "A generic draft catalogue that the business needs to review."
+    },
+    "fr": {
+      "name": "Brouillon de catalogue de démarrage pour la cuisine turque",
+      "description": "Un catalogue générique à l’état de brouillon, à faire vérifier par l’établissement."
+    },
+    "de": {
+      "name": "Entwurf eines Startkatalogs für die türkische Küche",
+      "description": "Ein allgemeiner Katalogentwurf, der vom Betrieb geprüft werden muss."
+    },
+    "nl": {
+      "name": "Concept voor een startcatalogus voor de Turkse keuken",
+      "description": "Een algemene conceptcatalogus die door het bedrijf moet worden beoordeeld."
+    },
+    "ar": {
+      "name": "مسودة كتالوج تمهيدي للمطبخ التركي",
+      "description": "مسودة كتالوج عامة تحتاج إلى مراجعة من قِبل المنشأة."
+    },
+    "es": {
+      "name": "Borrador de catálogo inicial de la cocina turca",
+      "description": "Un borrador de catálogo genérico que el establecimiento debe revisar."
+    },
+    "it": {
+      "name": "Bozza di catalogo iniziale per la cucina turca",
+      "description": "Una bozza di catalogo generica che l’attività deve esaminare."
+    },
+    "ru": {
+      "name": "Черновой стартовый каталог турецкой кухни",
+      "description": "Общий черновой каталог, который требует проверки со стороны заведения."
+    },
+    "zh": {
+      "name": "土耳其菜系入门目录草稿",
+      "description": "一份需要由经营者审核的通用目录草稿。"
+    }
+  },
   "localeFallbacks": [],
   "dependencies": [
     { "templateId": "tr-main-category", "revision": 1, "role": "category", "sortOrder": 1 },
