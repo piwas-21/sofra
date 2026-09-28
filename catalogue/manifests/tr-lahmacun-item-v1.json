@@ -6,7 +6,17 @@
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
   "name": "Lahmacun",
-  "translations": {},
+  "translations": {
+    "en": { "name": "Lahmacun" },
+    "fr": { "name": "Lahmacun" },
+    "de": { "name": "Lahmacun" },
+    "nl": { "name": "Lahmacun" },
+    "ar": { "name": "لاهماجون" },
+    "es": { "name": "Lahmacun" },
+    "it": { "name": "Lahmacun" },
+    "ru": { "name": "Лахмаджун" },
+    "zh": { "name": "Lahmacun" }
+  },
   "localeFallbacks": [],
   "dependencies": [
     { "templateId": "tr-main-category", "revision": 1, "role": "category" }

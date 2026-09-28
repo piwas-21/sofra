@@ -6,7 +6,17 @@
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
   "name": "Ayran",
-  "translations": {},
+  "translations": {
+    "en": { "name": "Ayran" },
+    "fr": { "name": "Ayran" },
+    "de": { "name": "Ayran" },
+    "nl": { "name": "Ayran" },
+    "ar": { "name": "عيران" },
+    "es": { "name": "Ayran" },
+    "it": { "name": "Ayran" },
+    "ru": { "name": "Айран" },
+    "zh": { "name": "Ayran" }
+  },
   "localeFallbacks": [],
   "dependencies": [
     { "templateId": "tr-drinks-category", "revision": 1, "role": "category" }

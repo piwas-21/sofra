@@ -6,7 +6,17 @@
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
   "name": "Ana Yemekler",
-  "translations": {},
+  "translations": {
+    "en": { "name": "Main Courses" },
+    "fr": { "name": "Plats principaux" },
+    "de": { "name": "Hauptgerichte" },
+    "nl": { "name": "Hoofdgerechten" },
+    "ar": { "name": "الأطباق الرئيسية" },
+    "es": { "name": "Platos principales" },
+    "it": { "name": "Piatti principali" },
+    "ru": { "name": "Основные блюда" },
+    "zh": { "name": "主菜" }
+  },
   "localeFallbacks": [],
   "dependencies": [],
   "provenance": {

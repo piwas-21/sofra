@@ -6,7 +6,17 @@
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
   "name": "Köfte",
-  "translations": {},
+  "translations": {
+    "en": { "name": "Köfte" },
+    "fr": { "name": "Köfte" },
+    "de": { "name": "Köfte" },
+    "nl": { "name": "Köfte" },
+    "ar": { "name": "كفتة" },
+    "es": { "name": "Köfte" },
+    "it": { "name": "Köfte" },
+    "ru": { "name": "Кёфте" },
+    "zh": { "name": "Köfte" }
+  },
   "localeFallbacks": [],
   "dependencies": [
     { "templateId": "tr-main-category", "revision": 1, "role": "category" }

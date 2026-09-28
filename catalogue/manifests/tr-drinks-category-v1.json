@@ -6,7 +6,17 @@
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
   "name": "İçecekler",
-  "translations": {},
+  "translations": {
+    "en": { "name": "Drinks" },
+    "fr": { "name": "Boissons" },
+    "de": { "name": "Getränke" },
+    "nl": { "name": "Dranken" },
+    "ar": { "name": "المشروبات" },
+    "es": { "name": "Bebidas" },
+    "it": { "name": "Bevande" },
+    "ru": { "name": "Напитки" },
+    "zh": { "name": "饮品" }
+  },
   "localeFallbacks": [],
   "dependencies": [],
   "provenance": {
