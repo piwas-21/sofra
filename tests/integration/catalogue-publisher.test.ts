@@ -156,6 +156,8 @@ catalogueDbDescribe("catalogue publish workflow (disposable PostgreSQL)", () => 
     };
     const firstPage = await queryPublishedPage(pool, filters);
     expect(firstPage.map((row) => row.template_id)).toEqual([templateId, secondTemplateId]);
+    const prefixMatches = await queryPublishedPage(pool, { ...filters, q: "rev te" });
+    expect(prefixMatches.map((row) => row.template_id)).toEqual([templateId, secondTemplateId]);
     const nextPage = await queryPublishedPage(pool, filters, firstPage[0]?.template_id);
     expect(nextPage.map((row) => row.template_id)).toEqual([secondTemplateId]);
 

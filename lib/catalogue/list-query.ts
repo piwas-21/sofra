@@ -17,8 +17,14 @@ export async function queryPublishedPage(
   if (filters.type) where.push("type = " + bind(filters.type) + "::catalogue.template_type");
   if (filters.cuisine) where.push("cuisines @> ARRAY[" + bind(filters.cuisine) + "]::text[]");
   if (filters.q) {
-    const query = bind(filters.q);
-    where.push("to_tsvector('simple', search_text) @@ websearch_to_tsquery('simple', " + query + ")");
+    // websearch_to_tsquery matches complete lexemes, so typing "ay" cannot find "Ayran".
+    // Build prefix terms from letters and numbers only; keep the resulting tsquery bound.
+    const terms = filters.q.match(/[\p{L}\p{N}]+/gu) ?? [];
+    if (terms.length === 0) where.push("FALSE");
+    else {
+      const query = bind(terms.map((term) => `${term}:*`).join(" & "));
+      where.push("to_tsvector('simple', search_text) @@ to_tsquery('simple', " + query + ")");
+    }
   }
   if (filters.locale) {
     const locale = bind(filters.locale);
