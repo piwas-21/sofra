@@ -5,44 +5,44 @@
   "type": "cuisine-pack",
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
-  "name": "Türk mutfağı için başlangıç kataloğu taslağı",
-  "description": "İşletme tarafından gözden geçirilmesi gereken genel taslak katalog.",
+  "name": "Türk mutfağı menüsü için başlangıç şablonu",
+  "description": "İşletmenize göre gözden geçirip uyarlayabileceğiniz örnek kategori ve ürün adları.",
   "translations": {
     "en": {
-      "name": "Turkish cuisine starter catalogue draft",
-      "description": "A generic draft catalogue that the business needs to review."
+      "name": "Turkish cuisine menu starter template",
+      "description": "Example category and item names to review and adapt for your restaurant."
     },
     "fr": {
-      "name": "Brouillon de catalogue de démarrage pour la cuisine turque",
-      "description": "Un catalogue générique à l’état de brouillon, à faire vérifier par l’établissement."
+      "name": "Modèle de carte pour la cuisine turque",
+      "description": "Exemples de noms de catégories, de plats et de boissons à vérifier et à adapter à votre établissement."
     },
     "de": {
-      "name": "Entwurf eines Startkatalogs für die türkische Küche",
-      "description": "Ein allgemeiner Katalogentwurf, der vom Betrieb geprüft werden muss."
+      "name": "Speisekartenvorlage für die türkische Küche",
+      "description": "Beispielnamen für Kategorien sowie Speisen und Getränke, die Sie prüfen und an Ihren Betrieb anpassen können."
     },
     "nl": {
-      "name": "Concept voor een startcatalogus voor de Turkse keuken",
-      "description": "Een algemene conceptcatalogus die door het bedrijf moet worden beoordeeld."
+      "name": "Startsjabloon voor een Turkse menukaart",
+      "description": "Voorbeeldnamen voor categorieën en menu-items die u kunt controleren en aan uw zaak kunt aanpassen."
     },
     "ar": {
-      "name": "مسودة كتالوج تمهيدي للمطبخ التركي",
-      "description": "مسودة كتالوج عامة تحتاج إلى مراجعة من قِبل المنشأة."
+      "name": "قالب تمهيدي لقائمة طعام تركية",
+      "description": "أمثلة لأسماء فئات وأصناف القائمة لمراجعتها وتكييفها مع احتياجات مطعمك."
     },
     "es": {
-      "name": "Borrador de catálogo inicial de la cocina turca",
-      "description": "Un borrador de catálogo genérico que el establecimiento debe revisar."
+      "name": "Plantilla inicial para un menú de cocina turca",
+      "description": "Nombres de ejemplo para categorías, platos y bebidas que puedes revisar y adaptar a tu restaurante."
     },
     "it": {
-      "name": "Bozza di catalogo iniziale per la cucina turca",
-      "description": "Una bozza di catalogo generica che l’attività deve esaminare."
+      "name": "Modello iniziale per un menù di cucina turca",
+      "description": "Esempi di nomi per categorie, piatti e bevande da verificare e adattare al tuo ristorante."
     },
     "ru": {
-      "name": "Черновой стартовый каталог турецкой кухни",
-      "description": "Общий черновой каталог, который требует проверки со стороны заведения."
+      "name": "Стартовый шаблон меню турецкой кухни",
+      "description": "Примеры названий категорий и позиций меню для проверки и адаптации под ваше заведение."
     },
     "zh": {
-      "name": "土耳其菜系入门目录草稿",
-      "description": "一份需要由经营者审核的通用目录草稿。"
+      "name": "土耳其菜系菜单入门模板",
+      "description": "分类、菜品和饮品名称示例，供您审核并按餐厅需求调整。"
     }
   },
   "localeFallbacks": [],
