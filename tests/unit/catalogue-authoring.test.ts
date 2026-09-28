@@ -30,15 +30,20 @@ describe("central catalogue publication contract", () => {
     ] })).toEqual(["category@1", "item@2", "item@10"]);
   });
 
-  it("keeps the starter set unpublished pending operator, editorial, and locale review", async () => {
+  it("ships six reviewed starter revisions with complete publication evidence", async () => {
     const loaded = await loadCatalogueManifests();
     expect(loaded.manifests).toHaveLength(6);
     expect(validateCatalogue(loaded.manifests, loaded.errors)).toEqual([]);
     for (const entry of loaded.manifests) {
       const manifest = entry.manifest;
       if (!manifest) throw new Error("manifest parser returned an empty entry");
-      expect(manifest.publicationStatus).toBe("unpublished");
-      expect(publicationBlockers(manifest).blockers).toContain("restaurant operator review is missing");
+      expect(manifest.publicationStatus).toBe("published");
+      expect(manifest.qualityStatus).toBe("reviewed");
+      expect(manifest.operatorReview).toEqual({
+        status: "approved",
+        evidenceRef: "catalogue/reviews/tr-starter-v1-2026-09-28.md",
+      });
+      expect(publicationBlockers(manifest).blockers).toEqual([]);
     }
   });
 
@@ -49,8 +54,12 @@ describe("central catalogue publication contract", () => {
     const candidate = {
       ...entry.manifest,
       publicationStatus: "published" as const,
+      qualityStatus: "draft" as const,
+      operatorReview: { status: "pending" as const, evidenceRef: null },
     };
-    expect(validateCatalogue([{ ...entry, manifest: candidate }])).toEqual(
+    const withUnreviewedRevision = loaded.manifests.map((item) =>
+      item === entry ? { ...entry, manifest: candidate } : item);
+    expect(validateCatalogue(withUnreviewedRevision)).toEqual(
       expect.arrayContaining([expect.stringContaining("published revision is blocked")]),
     );
   });
