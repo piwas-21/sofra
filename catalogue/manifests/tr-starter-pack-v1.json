@@ -55,14 +55,14 @@
   ],
   "provenance": {
     "contentOrigin": "sofra-original",
-    "sourceDescription": "Generic Sofra-authored Turkish draft labels; no tenant source.",
-    "license": "Sofra-proprietary-draft",
+    "sourceDescription": "Generic Sofra-authored Turkish labels; no tenant source.",
+    "license": "Sofra-proprietary",
     "mediaAssets": []
   },
-  "qualityStatus": "draft",
-  "publicationStatus": "unpublished",
+  "qualityStatus": "reviewed",
+  "publicationStatus": "published",
   "compatibleTenantContractVersions": [1],
-  "operatorReview": { "status": "pending", "evidenceRef": null },
+  "operatorReview": { "status": "approved", "evidenceRef": "catalogue/reviews/tr-starter-v1-2026-09-28.md" },
   "payload": {
     "categories": [
       { "templateId": "tr-main-category", "revision": 1, "sortOrder": 1 },

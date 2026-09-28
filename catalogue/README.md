@@ -4,8 +4,9 @@ This directory contains Sofra-owned catalogue manifests. Keep every revision
 append-only: a changed revision gets a new revision number, and an existing
 revision must never be edited after it is published.
 
-The initial Turkish starter pack is generic Sofra-authored draft copy. It was
-not reviewed by a restaurant operator and contains no recipe, ingredient,
+The initial Turkish starter pack is generic Sofra-authored copy, approved for
+publication by a restaurant operator in
+`reviews/tr-starter-v1-2026-09-28.md`. It contains no recipe, ingredient,
 allergen, nutrition, dietary, portion, price, or operational claims. Imported
 entries remain suggestions; each tenant confirms local facts and operating
 choices before creating operational records.
