@@ -6,21 +6,31 @@
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
   "name": "Lahmacun",
-  "translations": {},
+  "translations": {
+    "en": { "name": "Lahmacun" },
+    "fr": { "name": "Lahmacun" },
+    "de": { "name": "Lahmacun" },
+    "nl": { "name": "Lahmacun" },
+    "ar": { "name": "لاهماجون" },
+    "es": { "name": "Lahmacun" },
+    "it": { "name": "Lahmacun" },
+    "ru": { "name": "Лахмаджун" },
+    "zh": { "name": "Lahmacun" }
+  },
   "localeFallbacks": [],
   "dependencies": [
     { "templateId": "tr-main-category", "revision": 1, "role": "category" }
   ],
   "provenance": {
     "contentOrigin": "sofra-original",
-    "sourceDescription": "Generic Sofra-authored Turkish draft label; no tenant source.",
-    "license": "Sofra-proprietary-draft",
+    "sourceDescription": "Generic Sofra-authored Turkish label; no tenant source.",
+    "license": "Sofra-proprietary",
     "mediaAssets": []
   },
-  "qualityStatus": "draft",
-  "publicationStatus": "unpublished",
+  "qualityStatus": "reviewed",
+  "publicationStatus": "published",
   "compatibleTenantContractVersions": [1],
-  "operatorReview": { "status": "pending", "evidenceRef": null },
+  "operatorReview": { "status": "approved", "evidenceRef": "catalogue/reviews/tr-starter-v1-2026-09-28.md" },
   "payload": {
     "category": { "templateId": "tr-main-category", "revision": 1 },
     "suggestedIngredients": [],

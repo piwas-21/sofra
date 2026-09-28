@@ -6,18 +6,28 @@
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
   "name": "Ana Yemekler",
-  "translations": {},
+  "translations": {
+    "en": { "name": "Main Courses" },
+    "fr": { "name": "Plats principaux" },
+    "de": { "name": "Hauptgerichte" },
+    "nl": { "name": "Hoofdgerechten" },
+    "ar": { "name": "الأطباق الرئيسية" },
+    "es": { "name": "Platos principales" },
+    "it": { "name": "Piatti principali" },
+    "ru": { "name": "Основные блюда" },
+    "zh": { "name": "主菜" }
+  },
   "localeFallbacks": [],
   "dependencies": [],
   "provenance": {
     "contentOrigin": "sofra-original",
-    "sourceDescription": "Generic Sofra-authored Turkish draft label; no tenant source.",
-    "license": "Sofra-proprietary-draft",
+    "sourceDescription": "Generic Sofra-authored Turkish label; no tenant source.",
+    "license": "Sofra-proprietary",
     "mediaAssets": []
   },
-  "qualityStatus": "draft",
-  "publicationStatus": "unpublished",
+  "qualityStatus": "reviewed",
+  "publicationStatus": "published",
   "compatibleTenantContractVersions": [1],
-  "operatorReview": { "status": "pending", "evidenceRef": null },
+  "operatorReview": { "status": "approved", "evidenceRef": "catalogue/reviews/tr-starter-v1-2026-09-28.md" },
   "payload": { "sortOrder": 1 }
 }

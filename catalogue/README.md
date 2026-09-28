@@ -4,8 +4,9 @@ This directory contains Sofra-owned catalogue manifests. Keep every revision
 append-only: a changed revision gets a new revision number, and an existing
 revision must never be edited after it is published.
 
-The initial Turkish starter pack is generic Sofra-authored draft copy. It was
-not reviewed by a restaurant operator and contains no recipe, ingredient,
+The initial Turkish starter pack is generic Sofra-authored copy, approved for
+publication by a restaurant operator in
+`reviews/tr-starter-v1-2026-09-28.md`. It contains no recipe, ingredient,
 allergen, nutrition, dietary, portion, price, or operational claims. Imported
 entries remain suggestions; each tenant confirms local facts and operating
 choices before creating operational records.
@@ -31,6 +32,13 @@ endpoint returns `{templateId, revision, contentHash, withdrawn,
 adoptedRevisionWithdrawn}`; pass `?adoptedRevision=N` to check the status of a
 tenant's pinned revision. A known but wholly withdrawn template returns 200 with
 `revision` and `contentHash` null, while a never-published template returns 404.
+For revision review across a tenant import session,
+`POST /api/v1/catalogue/templates/current-batch` accepts up to 128 distinct
+`{templateId, adoptedRevision}` pairs in a 64 KiB request. It returns each
+template's `available`, `withdrawn`, or `notFound` status, the full current
+reviewed revision only when available, and the pinned revision's withdrawal
+status. The route reads published views in one query and returns 503 if that
+read fails; callers must not interpret 503 as a clean or current template.
 Reader access is limited to status views of revisions published at least once;
 draft content and raw publication events are not exposed.
 

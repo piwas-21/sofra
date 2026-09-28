@@ -5,9 +5,46 @@
   "type": "cuisine-pack",
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
-  "name": "Türkçe başlangıç taslağı",
-  "description": "İşletme tarafından gözden geçirilmesi gereken genel taslak katalog.",
-  "translations": {},
+  "name": "Türk mutfağı menüsü için başlangıç şablonu",
+  "description": "İşletmenize göre gözden geçirip uyarlayabileceğiniz örnek kategori ve ürün adları.",
+  "translations": {
+    "en": {
+      "name": "Turkish cuisine menu starter template",
+      "description": "Example category and item names to review and adapt for your restaurant."
+    },
+    "fr": {
+      "name": "Modèle de carte pour la cuisine turque",
+      "description": "Exemples de noms de catégories, de plats et de boissons à vérifier et à adapter à votre établissement."
+    },
+    "de": {
+      "name": "Speisekartenvorlage für die türkische Küche",
+      "description": "Beispielnamen für Kategorien sowie Speisen und Getränke, die Sie prüfen und an Ihren Betrieb anpassen können."
+    },
+    "nl": {
+      "name": "Startsjabloon voor een Turkse menukaart",
+      "description": "Voorbeeldnamen voor categorieën en menu-items die u kunt controleren en aan uw zaak kunt aanpassen."
+    },
+    "ar": {
+      "name": "قالب تمهيدي لقائمة طعام تركية",
+      "description": "أمثلة لأسماء فئات وأصناف القائمة لمراجعتها وتكييفها مع احتياجات مطعمك."
+    },
+    "es": {
+      "name": "Plantilla inicial para un menú de cocina turca",
+      "description": "Nombres de ejemplo para categorías, platos y bebidas que puedes revisar y adaptar a tu restaurante."
+    },
+    "it": {
+      "name": "Modello iniziale per un menù di cucina turca",
+      "description": "Esempi di nomi per categorie, piatti e bevande da verificare e adattare al tuo ristorante."
+    },
+    "ru": {
+      "name": "Стартовый шаблон меню турецкой кухни",
+      "description": "Примеры названий категорий и позиций меню для проверки и адаптации под ваше заведение."
+    },
+    "zh": {
+      "name": "土耳其菜系菜单入门模板",
+      "description": "分类、菜品和饮品名称示例，供您审核并按餐厅需求调整。"
+    }
+  },
   "localeFallbacks": [],
   "dependencies": [
     { "templateId": "tr-main-category", "revision": 1, "role": "category", "sortOrder": 1 },
@@ -18,14 +55,14 @@
   ],
   "provenance": {
     "contentOrigin": "sofra-original",
-    "sourceDescription": "Generic Sofra-authored Turkish draft labels; no tenant source.",
-    "license": "Sofra-proprietary-draft",
+    "sourceDescription": "Generic Sofra-authored Turkish labels; no tenant source.",
+    "license": "Sofra-proprietary",
     "mediaAssets": []
   },
-  "qualityStatus": "draft",
-  "publicationStatus": "unpublished",
+  "qualityStatus": "reviewed",
+  "publicationStatus": "published",
   "compatibleTenantContractVersions": [1],
-  "operatorReview": { "status": "pending", "evidenceRef": null },
+  "operatorReview": { "status": "approved", "evidenceRef": "catalogue/reviews/tr-starter-v1-2026-09-28.md" },
   "payload": {
     "categories": [
       { "templateId": "tr-main-category", "revision": 1, "sortOrder": 1 },

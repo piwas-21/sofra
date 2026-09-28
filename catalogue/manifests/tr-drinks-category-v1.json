@@ -6,18 +6,28 @@
   "cuisines": ["turkish"],
   "sourceLocale": "tr",
   "name": "İçecekler",
-  "translations": {},
+  "translations": {
+    "en": { "name": "Drinks" },
+    "fr": { "name": "Boissons" },
+    "de": { "name": "Getränke" },
+    "nl": { "name": "Dranken" },
+    "ar": { "name": "المشروبات" },
+    "es": { "name": "Bebidas" },
+    "it": { "name": "Bevande" },
+    "ru": { "name": "Напитки" },
+    "zh": { "name": "饮品" }
+  },
   "localeFallbacks": [],
   "dependencies": [],
   "provenance": {
     "contentOrigin": "sofra-original",
-    "sourceDescription": "Generic Sofra-authored Turkish draft label; no tenant source.",
-    "license": "Sofra-proprietary-draft",
+    "sourceDescription": "Generic Sofra-authored Turkish label; no tenant source.",
+    "license": "Sofra-proprietary",
     "mediaAssets": []
   },
-  "qualityStatus": "draft",
-  "publicationStatus": "unpublished",
+  "qualityStatus": "reviewed",
+  "publicationStatus": "published",
   "compatibleTenantContractVersions": [1],
-  "operatorReview": { "status": "pending", "evidenceRef": null },
+  "operatorReview": { "status": "approved", "evidenceRef": "catalogue/reviews/tr-starter-v1-2026-09-28.md" },
   "payload": { "sortOrder": 2 }
 }
