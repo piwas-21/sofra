@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "SofraPiwas — Sıcacık restoran yazılımı",
-    "description": "QR menüler, canlı siparişler, rezervasyon ve sadakat puanları — mutfağa saygılı tek platform, gerçek bir restoranda her serviste sınandı. SofraPiwas, misafirler için kurulan sofradır."
+    "description": "SofraPiwas, QR menüleri, online sipariş, rezervasyon, sadakat ve personel iş akışlarını bir araya getiriyor. Modüller, ödeme yöntemleri, dil kapsamı ve donanım her restoran kurulumu için onaylanır."
   },
   "header": {
     "features": "Mutfakta ne var",
@@ -21,20 +21,20 @@
     "note": "SofraPiwas, misafirler için kurulan masadır. Bütün felsefemiz bu.",
     "ctaPrimary": "Hemen başlayın",
     "ctaSecondary": "Mutfakta ne var, bak",
-    "proof": "Cenevre'deki RUMI Restaurant'ın tüm servisi SofraPiwas ile dönüyor — siparişler, mutfak, rezervasyonlar ve yazıcılar, canlı."
+    "proof": "RUMI, SofraPiwas'ın Cenevre referans restoranıdır — mevcut genel menüsünü ve masa rezervasyon sayfalarını keşfedin."
   },
   "features": {
     "label": "Mutfakta ne var",
     "title": "Her şey tek sofrada",
-    "subtitle": "Altı kap, dolgu malzemesi yok. Her biri bu sayfaya gelmeden önce gerçek bir restoranda pişti.",
+    "subtitle": "Restoranınıza uygun misafir ve personel iş akışlarını seçin. İsteğe bağlı modüller, dil kapsamı ve donanım her kurulum için onaylanır.",
     "items": {
       "qr": {
         "title": "QR menü & sipariş",
         "text": "Misafirler masadan okutup menüye bakar, sipariş verir — fotoğraflar, alerjenler ve özelleştirmelerle. Uygulama indirmek yok."
       },
       "live": {
-        "title": "Canlı sipariş panoları",
-        "text": "Mutfak, kasa ve garsonların her birinin kendi canlı ekranı var. Siparişler verildiği saniye düşer."
+        "title": "Personel sipariş ekranları",
+        "text": "Restoranınıza uygun mutfak, kasa ve servis ekranlarını seçin. Kurulum sırasında hangi personel iş akışlarının etkinleştirileceğini doğrularız."
       },
       "reservations": {
         "title": "Rezervasyonlar",
@@ -42,15 +42,15 @@
       },
       "loyalty": {
         "title": "Sadakat puanları",
-        "text": "Müdavimleri geri getiren puanlar; müşteri gruplarına göre indirim kuralları sizin elinizde."
+        "text": "Konuklar sadakat puanları kazanabilir; indirim kuralları müşteri grubuna göre yapılandırılabilir."
       },
       "printing": {
-        "title": "Mutfak fişleri, kâğıtta",
-        "text": "Yardımcı uygulama termal yazıcılarınızı sürer — siparişler mutfağa kâğıt üstünde, tam istediğiniz yere düşer."
+        "title": "Termal yazıcı entegrasyonu",
+        "text": "Windows ve Android yardımcı uygulaması, ağ ESC/POS yazıcılarını destekler. Basılı bilete güvenmeden önce restoranınızın yazıcı uyumluluğunu ve kurulumunu doğrulayın."
       },
       "languages": {
-        "title": "10 dil hazır",
-        "text": "Menünüz misafirlerinizin dilini konuşur — Fransızcadan Hollandacaya, Arapçaya kadar."
+        "title": "10 misafir arayüzü dili",
+        "text": "Konuk arayüzü on dil seçeneği sunar. Menü öğesi metni, söz konusu menü için mevcut olan çevirilerde görünür; bu nedenle, her dili yayınlamadan önce kataloğunuzun kapsamını kontrol edin."
       }
     }
   },
@@ -64,22 +64,22 @@
       },
       "two": {
         "title": "Sofranızı kuralım",
-        "text": "Menünüzü, QR kodlarınızı, yazıcılarınızı ve personel ekranlarınızı hazırlayıp anahtarı size teslim ediyoruz."
+        "text": "Menünüzü, QR bağlantılarınızı ve etkin personel iş akışlarınızı sizinle birlikte yapılandırıyoruz. Yazıcı donanımı ve ödeme yöntemleri, restoran kurulumunuz için onaylanır ve test edilir."
       },
       "three": {
         "title": "Siz servis yapın",
-        "text": "Siparişler akar, fişler basılır, müdavimler puan toplar. Biz perde arkasında tabakları döndürürüz."
+        "text": "Restoranınız için kararlaştırılan misafir akışlarını başlatırsınız. Menünüz, personel iş akışlarınız ve donanım kurulumunuz geliştikçe iletişim halinde kalıyoruz."
       }
     }
   },
   "showcase": {
     "label": "Tadı damağında",
     "title": "Canlı deneyin",
-    "subtitle": "SofraPiwas bir sunum demosu değil — ilk günden beri gerçek bir restoranı her serviste çalıştırıyor.",
-    "cardStamp": "Canlı yayında",
+    "subtitle": "SofraPiwas, Cenevre restoranı referansı etrafında geliştirildi. Konuklara yönelik akışı görmek için RUMI'in canlı menüsüne ve rezervasyon sayfasına göz atın.",
+    "cardStamp": "Canlı konuk sayfaları",
     "cardTitle": "RUMI Restaurant — Cenevre",
-    "cardBody": "Her masada QR menü, mutfak ve kasa ekranlarına akan siparişler, rezervasyonlar, sadakat puanları ve termal fişler — hepsi SofraPiwas üzerinde.",
-    "cardHint": "Menüyü bir misafir gibi açıp gezin — alacağınız ürün tam olarak bu.",
+    "cardBody": "RUMI'in genel menüsü ve masa rezervasyon sayfaları SofraPiwas'da çalışır. Konuk arayüzü on dil seçeneği sunarken, canlı menünün çevrilmiş içeriği kısmidir.",
+    "cardHint": "Menüyü açın ve misafir olarak göz atın; canlı yemekleri, fiyatları ve sipariş akışını görün.",
     "visit": "rumirestaurant.ch'yi ziyaret edin",
     "ctaTitle": "Aynısını kendi mekânınızda ister misiniz?",
     "ctaBody": "Restoran, kafe ya da paket servis — mekânınızı anlatın, bir gün içinde dönüş yapalım.",
@@ -90,18 +90,19 @@
   "pricing": {
     "label": "Menü",
     "title": "Günün menüsü",
-    "subtitle": "Erken erişim — kara tahta kadar sade.",
+    "subtitle": "Hesap istemeden önce restoranınızın aylık EUR liste fiyatını görün.",
     "founding": {
-      "name": "Kurucu restoranlar",
-      "price": "ikramımız",
-      "detail": "Erken erişim boyunca ücretsiz. Birebir kurulum, kuruculara direkt hat ve sıradaki tarifte söz hakkı."
+      "name": "Planınızı oluşturun",
+      "price": "aylık €19'dan başlayan",
+      "detail": "İhtiyacınız olan modülleri, misafir dillerini, görünümü ve para birimini seçin. Plan oluşturucu, geçerli KDV hariç aylık EUR liste fiyatını gösterir."
     },
     "regular": {
-      "name": "Normal menü",
-      "price": "çok yakında",
-      "detail": "Erken erişim bitince adil bir aylık fiyat. Kurucu restoranların indirimi ömür boyu sürer."
+      "name": "Hesap isteyin",
+      "price": "Kart gerekmez",
+      "detail": "Ödeme kartı girmeden hesap isteyebilirsiniz. Aboneliğiniz yalnızca kontrol panelinizden başlattığınızda başlar."
     },
-    "note": "Kart gerekmez. Bağlayıcılık yok. Verileriniz sizindir."
+    "note": "Kaydolmak için kart gerekmez. Verileriniz size aittir.",
+    "cta": "Fiyatımı görün"
   },
   "partner": {
     "label": "Partnerler",
@@ -208,9 +209,12 @@
       "partner": "Partnerler",
       "faq": "SSS",
       "caseStudy": "Vaka çalışması",
-      "compare": "SofraPiwas vs GloriaFood",
+      "compare": "SofraPiwas ve GloriaFood karşılaştırması",
       "changelog": "Neler yeni",
-      "legal": "Hukuki"
+      "legal": "Hukuki",
+      "alternatives": "İsviçre’deki alternatifler",
+      "qrMenuSwitzerland": "QR menü rehberi: İsviçre",
+      "qrMenuGeneva": "QR menü rehberi: Cenevre"
     },
     "copyright": "© {year} SofraPiwas. Tüm hakları saklıdır."
   },
@@ -221,27 +225,27 @@
     "items": {
       "what": {
         "q": "SofraPiwas nedir?",
-        "a": "SofraPiwas bir restoran yönetim platformudur: QR menü ve online sipariş, mutfak-kasa-garson için canlı sipariş panoları, rezervasyon, sadakat puanları ve termal yazıcı fişleri — hepsi tek yerde. Cenevre'deki RUMI Restaurant'ın tüm servisini yürüten sistemden doğdu."
+        "a": "SofraPiwas, QR menüleri, çevrimiçi sipariş, rezervasyonlar, sadakat ve personel siparişi iş akışları için bir restoran platformudur. Yardımcı bir uygulama, uyumlu ağ ESC/POS yazıcılarına bağlanabilir. Modüller ve donanım her restoranın kurulumuna bağlıdır. Cenevre'deki RUMI referans restoranımızdır."
       },
       "pricing": {
         "q": "SofraPiwas ne kadar?",
-        "a": "Erken erişim boyunca kurucu restoranlar hiçbir şey ödemez — kurulum ve destek ikramımızdır; normal fiyatlar geldiğinde kurucuların indirimi ömür boyu sürer. Planlar sade olacak: sabit aylık fiyat, isteğe bağlı ek modüller."
+        "a": "Aylık EUR fiyatını ve geçerli olabilecek KDV hariç tutarı görmek için plan oluşturucuda modüllerinizi, misafir dillerini, görünümü ve para birimini seçin. Hesap istemek için kart gerekmez. Aboneliğiniz yalnızca kontrol panelinizden başlattığınızda başlar."
       },
       "payments": {
         "q": "Misafirlerim online ödeme yapabilir mi — TWINT dahil?",
-        "a": "Evet — Online ödeme modülüyle misafirleriniz kartla, ayrıca İsviçre'de TWINT ve Hollanda'da iDEAL gibi yerel yöntemlerle ödeyebilir. Para doğrudan kendi Stripe hesabınıza geçer, biz komisyon almayız. İlk ödemeden önce Stripe'ın tek seferlik doğrulamasını tamamlarsınız. Modül, etkinleştirdiğiniz günden itibaren faturalandırılır; ilk fatura geldiğinde hesabınız hâlâ doğrulanıyorsa bize söyleyin, o ayı iade edelim. Kasada tahsil etmeye de devam edebilirsiniz."
+        "a": "Çevrim içi ödemeler isteğe bağlı bir modüldür. Plan oluşturucuda aylık sabit €19 ya da aylık €9 + her çevrim içi siparişin %1,5'i seçenekleri sunulur. KDV uygulanabilir. Desteklenen ödeme yöntemleri ve etkinleştirme, pazarınıza ve Stripe kurulumunuza bağlıdır; belirli bir yönteme güvenmeden önce kullanılabilirliği bize sorun. TWINT'in şu anda kullanılabilir olduğu doğrulanmadı; buna güvenmeden önce bize sorun."
       },
       "languages": {
-        "q": "Menü hangi dilleri destekliyor?",
-        "a": "Kutudan on dil — Türkçe, İngilizce, Fransızca, Almanca, Hollandaca, İtalyanca, İspanyolca, Arapça, Rusça ve Çince. Misafirleriniz aynı menüden kendi dillerinde sipariş verir."
+        "q": "SofraPiwas konuk arayüzü hangi dilleri destekliyor?",
+        "a": "Konuk arayüzü on dil seçeneği sunar: İngilizce, Fransızca, Almanca, Felemenkçe, İtalyanca, İspanyolca, Türkçe, Arapça, Rusça ve Çince. Menü içeriği yalnızca bir restoranın o dil sürümünü yayınladığı durumlarda çevrilir; bu nedenle, bir dili etkinleştirmeden önce katalog kapsamını kontrol edin."
       },
       "printing": {
-        "q": "Mutfak yazıcımla çalışır mı?",
-        "a": "Evet. Yardımcı uygulama (Windows ve Android) ağ üzerinden ESC/POS termal yazıcıları sürer; siparişler mutfakta tam istediğiniz yerde basılır — ekstra donanım aboneliği yok."
+        "q": "SofraPiwas mutfak yazıcıma bağlanabilir mi?",
+        "a": "Tamamlayıcı uygulama, Windows ve Android'de ağ ESC/POS yazıcılarını destekler. Basılı mutfak biletlerine güvenmeden önce, katılım sırasında yazıcınızın modelini, ağını ve fiziksel kurulumunu doğrulayın."
       },
       "who": {
         "q": "SofraPiwas'nın arkasında kim var, gerçekten kullanılıyor mu?",
-        "a": "SofraPiwas, Hollanda merkezli küçük bir ekip tarafından geliştiriliyor ve Cenevre'deki RUMI Restaurant'ın (rumirestaurant.ch) tüm canlı servisini yürütüyor — siparişler, mutfak panosu, rezervasyonlar ve yazıcılar Haziran 2026'dan beri orada üretimde. Yeni restoranları birebir ağırlıyoruz."
+        "a": "SofraPiwas, Hollanda merkezli küçük bir ekip tarafından inşa edildi. RUMI Cenevre referans restoranımızdır; halka açık menüsü ve masa rezervasyon sayfaları SofraPiwas'da yayınlanıyor. Her restoran kurulumunda personelin iş akışları, yazıcı donanımı ve menü çeviri kapsamı kontrol edilmelidir. Yeni restoranlara bizzat katılıyoruz."
       },
       "domain": {
         "q": "Kendi alan adımı kullanabilir miyim?",
@@ -252,11 +256,11 @@
   "caseStudy": {
     "meta": {
       "title": "Vaka çalışması: RUMI Restaurant, Cenevre — SofraPiwas üzerinde",
-      "description": "Cenevre'deki RUMI Restaurant çevrim içi siparişlerini, masa rezervasyonlarını ve mutfak fişi yazdırmayı SofraPiwas üzerinde yürütüyor — on misafir dilinde, AB altyapısında, Haziran 2026'dan beri canlı."
+      "description": "RUMI, SofraPiwas'ın Cenevre referans restoranıdır. Herkese açık menüsü ve masa rezervasyon sayfaları yayında; SofraPiwas konuk arayüzü on dil seçeneği sunarken, çevrilen menü içeriği farklılık gösterir. Haziran 2026'dan beri AB'de barındırılıyor."
     },
     "label": "Vaka çalışması",
     "title": "RUMI Restaurant, Cenevre",
-    "subtitle": "SofraPiwas'nın ilk restoranı — ve her özelliğin yayına çıkmadan önce piştiği salon.",
+    "subtitle": "SofraPiwas'ın Cenevre'deki ilk referans restoranı. RUMI'in canlı menüsünü ve masa rezervasyon sayfalarını keşfedin.",
     "facts": {
       "location": {
         "label": "Konum",
@@ -266,7 +270,7 @@
         "label": "Şu tarihten beri canlı"
       },
       "languages": {
-        "label": "Misafir dilleri",
+        "label": "Konuk arayüzü dil seçenekleri",
         "value": "10"
       },
       "hosting": {
@@ -275,34 +279,22 @@
       }
     },
     "runs": {
-      "title": "RUMI, SofraPiwas'ta neleri çalıştırıyor",
-      "intro": "Ne pilot ne de kısmi kullanım — restoranın günlük servisi platform üzerinde dönüyor:",
+      "title": "RUMI'de konuklara yönelik akışlar canlı",
+      "intro": "RUMI'in herkese açık menüsü ve masa rezervasyon sayfaları SofraPiwas'da yayında. Bu vaka, konuklara yönelik akışları açıklamaktadır; personel araçları ve fiziksel donanım ayrı ayrı yapılandırılır ve doğrulanır.",
       "items": {
         "ordering": {
-          "title": "QR menü & çevrim içi sipariş",
-          "text": "Misafirler masada okutuyor ya da internetten sipariş veriyor — fotoğraflar, alerjenler, özelleştirmeler."
-        },
-        "boards": {
-          "title": "Canlı sipariş panoları",
-          "text": "Mutfak, kasa ve garsonlar siparişleri kendi canlı ekranlarından izliyor."
+          "title": "Canlı menü ve çevrimiçi sipariş",
+          "text": "Misafirler RUMI'in mevcut menüsüne göz atabilir, ürün detaylarını ve CHF fiyatlarını görebilir, yemekleri sepete ekleyebilir ve çevrimiçi sipariş verebilir."
         },
         "reservations": {
           "title": "Masa rezervasyonları",
-          "text": "Masa planı ve çalışma saatleriyle çevrim içi rezervasyon; ekip tek dokunuşla onaylıyor."
-        },
-        "loyalty": {
-          "title": "Sadakat puanları",
-          "text": "Sadakat puanları ve gruplara göre indirim kuralları müdavimleri geri getiriyor."
-        },
-        "printing": {
-          "title": "Mutfak fişi yazdırma",
-          "text": "Siparişler ağa bağlı termal yazıcılardan çıkıyor — tam da gereken istasyonlarda."
+          "text": "Konuklar RUMI'in genel sayfası aracılığıyla masaları, parti büyüklüğünü, tarih ve saati seçebilir ve rezervasyon yapabilirler."
         }
       }
     },
     "languagesSection": {
-      "title": "Bir sofrada on dil",
-      "body": "Cenevre uluslararası bir şehir ve RUMI'nin menüsü buna hazır: misafirler İngilizce, Fransızca, Almanca, Hollandaca, İtalyanca, İspanyolca, Türkçe, Arapça, Rusça veya Çince menüye bakıp sipariş veriyor — aynı menü, aynı mutfak."
+      "title": "On arayüz dili; menü kapsamı değişiklik gösterir",
+      "body": "SofraPiwas İngilizce, Fransızca, Almanca, Felemenkçe, İtalyanca, İspanyolca, Türkçe, Arapça, Rusça ve Çince dillerinde konuk arayüzü seçenekleri sunmaktadır. RUMI'in şu anda yayınlanan menüsünün yalnızca bir kısmı çevrilmiştir; on dillik eksiksiz bir katalog değildir. Restoranlar, yayınlamadan önce her dildeki ürün adlarını, açıklamalarını ve seçeneklerini kontrol etmelidir."
     },
     "infra": {
       "title": "Arkasındaki altyapı",
@@ -319,15 +311,15 @@
   },
   "compare": {
     "meta": {
-      "title": "SofraPiwas vs GloriaFood (2026): dürüst bir karşılaştırma",
-      "description": "GloriaFood, ücretli ek modülleri olan ücretsiz bir çevrim içi sipariş sistemi; SofraPiwas ise Hollanda çıkışlı, tam hizmet bir restoran platformu. Adil, tarihli ve kaynaklı bir karşılaştırma."
+      "title": "SofraPiwas ve GloriaFood (2026): fiyatlar, özellikler ve geçiş",
+      "description": "SofraPiwas ve GloriaFood'un özelliklerini, fiyatlarını ve destek tarihlerini karşılaştırın. GloriaFood hizmetin 30 Nisan 2027'de sona ereceğini duyurdu; kaynaklar 30 Eylül 2026'da kontrol edildi."
     },
     "label": "Yan yana",
-    "title": "SofraPiwas vs GloriaFood",
+    "title": "SofraPiwas ve GloriaFood karşılaştırması",
     "subtitle": "Bir restoranı internete taşımanın iki dürüst yolu — kaynaklarla ve tarihiyle, adilce karşılaştırıldı.",
     "updated": "Son kontrol: {date}",
-    "intro1": "GloriaFood — Oracle bünyesinde — en bilinen çevrim içi sipariş sistemlerinden biri: ürünün çekirdeği ücretsiz, büyüdükçe ücretli modüller ekleniyor. SofraPiwas ise daha genç, tam hizmet bir platform: Hollanda'da geliştirildi, Cenevre'de her gün serviste sınanıyor — sipariş, rezervasyon, sadakat ve mutfak yazdırma tek sistemde, sizin için birebir kuruluyor.",
-    "intro2": "İkisi de dürüst seçenekler. Hangisinin uyduğu, ne kadarını kendiniz yapmak istediğinize bağlı — aşağıdaki tablo yalnızca GloriaFood'un kendi sayfalarında doğruladığımız bilgilere dayanıyor.",
+    "intro1": "GloriaFood, hizmetinin 30 Nisan 2027’de sona ereceğini ve mevcut müşterilere desteğin bu tarihe kadar süreceğini açıkladı. Oracle doğrudan bir alternatif sunmadığını belirtiyor ve müşterileri FoodAmigos’a yönlendiriyor. GloriaFood kullanıyorsanız canlı bağlantıları değiştirmeden önce seçenekleri kendi menünüz, hizmet akışınız, ödemeleriniz, verileriniz ve personel ihtiyaçlarınızla karşılaştırın.",
+    "intro2": "Doğru seçenek, kurulumunuza ve hizmete ne kadar süre ihtiyaç duyduğunuza bağlıdır. GloriaFood bir bitiş tarihi duyurdu; kullanıyorsanız karşılaştırmanıza bir geçiş planı da ekleyin.",
     "table": {
       "caption": "SofraPiwas ve GloriaFood, özellik özellik",
       "feature": "Bir bakışta",
@@ -336,8 +328,8 @@
       "rows": {
         "pricing": {
           "label": "Fiyat modeli",
-          "sofra": "Erken erişim: kurucu restoranlara ikramımız; normal fiyatlar geldiğinde ömür boyu indirim. Sonrası: isteğe bağlı modüllerle basit, sabit aylık fiyat.",
-          "gf": "Ücretsiz çekirdek: aylık ücret yok, sipariş başına komisyon yok. Ücretli modüller: çevrim içi ödeme 29 ABD$/ay, gelişmiş promosyon 19 ABD$/ay, kasa (POS) şube başına 49 ABD$/ay (iki yıl taahhüt)."
+          "sofra": "Core aylık €19'dan başlar. Aylık EUR fiyatını ve geçerli KDV hariç tutarı görmek için plan oluşturucuda modülleri, misafir dillerini, görünümü ve para birimini seçin. Hesap istemek için kart gerekmez; abonelik, kontrol panelinizden başlattığınızda faturalandırılır.",
+          "gf": "Şu anda listelenen fiyat: aylık ücret veya sipariş başına komisyon olmayan ücretsiz temel hizmet; ücretli modüller çevrim içi ödeme (aylık US$29), gelişmiş promosyonlar (aylık US$19) ve POS (konum başına aylık US$49, iki yıllık taahhüt). GloriaFood hizmetin 30 Nisan 2027'de sona ereceğini duyurdu."
         },
         "ordering": {
           "label": "QR & çevrim içi sipariş",
@@ -356,13 +348,13 @@
         },
         "printing": {
           "label": "Mutfak yazdırma",
-          "sofra": "Yardımcı uygulama (Windows ve Android) ağa bağlı ESC/POS termal yazıcıları sürer — istasyon başına fiş, ek abonelik yok.",
+          "sofra": "Windows ve Android yardımcı uygulaması, ağ ESC/POS yazıcılarını destekler. Basılı bilete güvenmeden önce restoranınızın yazıcı uyumluluğunu ve kurulumunu doğrulayın.",
           "gf": "Ücretsiz sipariş alma uygulamaları (Android ve iOS) termal yazıcıya bağlanır ve kabul edilen siparişleri otomatik yazdırır."
         },
         "languages": {
           "label": "Diller",
-          "sofra": "Misafirler aynı menüde 10 dilde gezinir ve sipariş verir.",
-          "gf": "Ürün arayüzü, topluluklarının çevirdiği on iki kadar dilde — ayrıntılar çeviri sayfalarında."
+          "sofra": "Konuk arayüzü on dil seçeneği sunar. Menü öğesi metni, söz konusu menü için mevcut olan çevirilerde görünür; her dili yayınlamadan önce kataloğunuzun kapsamını kontrol edin.",
+          "gf": "GloriaFood, sisteminin yaygın dillerde sunulduğunu ve topluluk katkılarıyla yenilerinin eklendiğini belirtiyor. Kaynak sayfası kesin bir sayı vermiyor."
         },
         "hosting": {
           "label": "Barındırma & alan adları",
@@ -371,61 +363,74 @@
         },
         "setup": {
           "label": "Kurulum & destek",
-          "sofra": "Birebir kurulum — menünüzü, QR kodlarınızı, yazıcılarınızı ve ekip ekranlarınızı sizinle birlikte kurar, bir mesaj uzağınızda kalırız.",
+          "sofra": "Kişisel kurulum desteği: menünüzü, QR bağlantılarınızı ve kararlaştırılan ekip ekranlarını sizinle birlikte yapılandırırız. Basılı biletlere güvenmeden önce yazıcı uyumluluğunu ve kurulumu doğrularız.",
           "gf": "Kendin kur — sistemi yönetim panelleri ve dokümantasyonla kendiniz kurarsınız."
         },
         "payments": {
           "label": "Çevrim içi ödeme",
-          "sofra": "Ayda 19 € ek modül — kart ve TWINT, iDEAL gibi yerel yöntemler, doğrudan kendi Stripe hesabınıza. Komisyon yok.",
+          "sofra": "İsteğe bağlı modül: aylık sabit €19 ya da aylık €9 + her çevrim içi siparişin %1,5'i. KDV uygulanabilir. Yöntemlerin kullanılabilirliği ve etkinleştirme, pazarınıza ve Stripe kurulumunuza bağlıdır; kurulumda doğrulayın.",
           "gf": "Ücretli modül olarak mevcut — çevrim içi/kartla ödeme 29 ABD$/ay."
         }
       }
     },
-    "disclaimer": "Yukarıdaki GloriaFood bilgileri Temmuz 2026'da herkese açık sayfalarından doğrulandı ve değişebilir — güncel durum için her zaman fiyat sayfalarına bakın. GloriaFood bir Oracle ürünüdür; tüm ad ve markalar sahiplerine aittir. Belirtilen fiyatlar onların fiyatlarıdır; ABD doları cinsinden ve vergiler hariçtir.",
+    "disclaimer": "GloriaFood özellikleri ve fiyatları 30 Eylül 2026'da herkese açık sayfalarından kontrol edildi ve değişebilir. Resmî duyuru hizmetin 30 Nisan 2027'de sona ereceğini ve mevcut müşterilere bu tarihe kadar destek verileceğini belirtiyor. GloriaFood fiyatları ABD doları cinsinden ve vergiler hariçtir. GloriaFood bir Oracle ürünüdür; adlar ve markalar sahiplerine aittir.",
     "qa": {
       "free": {
         "q": "GloriaFood gerçekten ücretsiz mi?",
-        "a": "Çekirdeği evet. Fiyat sayfalarına göre temel sipariş sisteminde sipariş başına komisyon ve aylık ücret yok; çevrim içi ödeme (29 ABD$/ay), gelişmiş promosyon (19 ABD$/ay), kasa (şube başına 49 ABD$/ay, iki yıl taahhüt), satışa dönük web sitesi ve markanıza özel uygulamalar ücretli ekstralar. Birçok küçük restoran için ücretsiz plan gerçekten yeterli."
+        "a": "GloriaFood fiyat sayfasında temel sipariş hizmeti için şu anda aylık ücret ve sipariş başına komisyon olmadığı belirtiliyor. Çevrim içi ödeme (aylık US$29), gelişmiş promosyon (aylık US$19) ve POS (konum başına aylık US$49, iki yıllık taahhüt) ücretli seçeneklerdir. GloriaFood, hizmetin 30 Nisan 2027'de sona ereceğini ve mevcut müşterilere o tarihe kadar destek verileceğini açıkladı. Ücretsiz planı uzun vadeli çözüm saymak yerine geçiş planı yapın."
       },
       "cost": {
         "q": "SofraPiwas ne kadar?",
-        "a": "Erken erişim boyunca kurucu restoranlar hiçbir şey ödemiyor — kurulum ve destek ikramımız; normal fiyatlar geldiğinde ömür boyu indirimleri baki. Normal planlar, isteğe bağlı modüllerle basit ve sabit bir aylık fiyat olacak."
+        "a": "Core aylık €19'dan başlar. Geçerli KDV hariç aylık EUR tutarını görmek için plan oluşturucuda modüllerinizi, misafir dillerini, görünümü ve para birimini seçin. Hesap istemek için kart gerekmez; abonelik yalnızca kontrol panelinizden başlattığınızda başlar."
       },
       "pick": {
         "q": "Hangisini seçmeliyim?",
-        "a": "Asıl istediğiniz, hâlihazırdaki sitenize bugün ücretsiz bir sipariş bileşeni eklemekse ve kurulumu kendiniz yapmaktan çekinmiyorsanız, GloriaFood sağlam ve kendini kanıtlamış bir seçim. Sipariş, rezervasyon, sadakat ve mutfak yazdırmayı tek sistemde — sizinle birlikte kurulmuş, misafirlerinizin dillerinde, AB altyapısında — istiyorsanız, SofraPiwas tam da bunun için var."
+        "a": "GloriaFood'u zaten kullanıyorsanız ve belgelenen özellikleri duyurulan destek dönemi boyunca ihtiyaçlarınızı karşılıyorsa, 30 Nisan 2027'den önce geçişi planlarken kullanmaya devam edebilirsiniz. Sipariş, rezervasyon, sadakat ve mutfak yazdırmayı kişisel kurulum desteğiyle tek sistemde istiyorsanız SofraPiwas planını ve kurulumunu gereksinimlerinizle karşılaştırın."
       }
     },
     "fitGf": {
-      "title": "GloriaFood ne zaman iyi bir seçim",
+      "title": "GloriaFood destek süresi boyunca ne zaman uygun olabilir?",
       "items": {
-        "widget": "Mevcut sitenize bugün ücretsiz bir sipariş bileşeni istiyorsunuz.",
+        "widget": "GloriaFood'u zaten kullanıyorsunuz ve ücretsiz sipariş araçları duyurulan destek dönemi boyunca ihtiyacınızı karşılıyor.",
         "self": "Sistemi kendiniz kurup kendiniz işletmek size uyuyor.",
-        "freeTier": "Ücretsiz plan ihtiyacınızı zaten karşılıyor — fazlasını ödemeye gerek yok."
+        "freeTier": "GloriaFood'un duyurduğu 30 Nisan 2027 bitiş tarihinden önce bir geçiş planınız var."
       }
     },
     "fitSofra": {
       "title": "SofraPiwas ne zaman daha iyi oturur",
       "items": {
-        "one": "Sipariş, rezervasyon, sadakat ve mutfak yazdırmayı ayrı modüller değil, tek sistem olarak istiyorsunuz.",
-        "languages": "Misafirleriniz birden çok dil konuşuyor — SofraPiwas aynı menüde on dil servis ediyor.",
+        "one": "Sipariş, rezervasyon, sadakat ve personel iş akışlarının restoranınıza göre yapılandırılmasını; yazıcı uyumluluğunun kurulumunuz için doğrulanmasını istiyorsunuz.",
+        "languages": "Birçok dilde misafir arayüzü seçenekleri istiyorsunuz ve yayınladığınız sürümler için çevrilmiş menü içeriğini koruyabilirsiniz.",
         "hands": "Her şeyi tek başına yapmaktansa, sofrayı sizinle birlikte kuran — ve bir mesaj uzağınızda kalan — birini tercih ediyorsunuz.",
         "domain": "Restoranınızı kendi alan adında, kendi para biriminizde, AB'de barındırılmış istiyorsunuz."
       }
     },
     "sources": {
       "title": "Kaynaklar",
-      "note": "Bu sayfadaki her GloriaFood bilgisi {date} tarihinde herkese açık sayfalarından doğrulandı:",
+      "note": "Bu sayfadaki GloriaFood bilgileri {date} tarihinde herkese açık sayfalarından doğrulandı:",
       "items": {
         "pricing": "GloriaFood fiyat sayfası",
         "app": "GloriaFood sipariş alma uygulaması",
-        "translation": "GloriaFood arayüz dilleri"
+        "translation": "GloriaFood sistem dilleri bilgisi",
+        "service": "GloriaFood'un resmî hizmet duyurusu"
       }
     },
     "ctaTitle": "Farkı tadın",
     "ctaBody": "Karşılaştırmanın en hızlı yolu, SofraPiwas'yı gerçek bir restoranda çalışırken görmek — ya da kendi masalarınızda.",
     "ctaButton": "Hemen başlayın",
-    "ctaCase": "RUMI vaka çalışmasını okuyun"
+    "ctaCase": "RUMI vaka çalışmasını okuyun",
+    "service": {
+      "title": "GloriaFood hizmet duyurusu",
+      "body": "GloriaFood hizmetinin 30 Nisan 2027'de sona ereceğini ve mevcut müşterilere bu tarihe kadar destek vereceğini söylüyor. Oracle doğrudan bir alternatif sunmadığını belirtiyor ve FoodAmigos'a yönlendiriyor.",
+      "link": "GloriaFood'un resmî hizmet duyurusunu okuyun.",
+      "transitionTitle": "Restoranınız GloriaFood kullanıyorsa bu tarihten önce geçişi planlayın:",
+      "steps": {
+        "confirm": "Bitiş tarihini, destek koşullarını ve veri dışa aktarma seçeneklerini GloriaFood ile doğrulayın.",
+        "inventory": "Tüm müşteri temas noktalarını ve bağlantıları listeleyin: web sitesi aracı, QR kodları, sosyal bağlantılar, rezervasyonlar, teslimat ayarları, ödemeler ve yazıcılar.",
+        "export": "Menü, seçenek, fotoğraf, alerjen ve operasyon verilerinin dışa aktarımını isteyin; nelerin, hangi biçimde sağlandığını ve ne kadar süre tutulduğunu doğrulayın.",
+        "pilot": "Yeni çözümü ekibinizle deneyin. Canlı bağlantıları değiştirmeden önce masada, gel-al veya teslimatta siparişleri, bildirimleri, ödemeleri, raporları ve yazdırmayı test edin."
+      }
+    }
   },
   "changelog": {
     "meta": {
@@ -438,7 +443,7 @@
     "entries": {
       "currency": {
         "title": "Para biriminiz, uçtan uca",
-        "body": "SofraPiwas'taki her restoran artık kendi para birimiyle çalışıyor — menü, siparişler, fişler ve makbuzlar aynı dili konuşuyor. Ayrıca restorana özel görünümlerin temelini attık: klasik ve zanaatkâr olmak üzere iki şablon yolda."
+        "body": "SofraPiwas'taki her restoran artık menü, sipariş, fiş ve makbuzlarda yapılandırılmış para birimini kullanıyor."
       },
       "hardening": {
         "title": "Güvenlik ve güvenilirlik haftası",
@@ -455,6 +460,10 @@
       "launch": {
         "title": "SofraPiwas kapılarını açıyor",
         "body": "sofrapiwas.com yayında — partner programı da öyle: ajanslar ve bağımsız çalışanlar başvuruyor, tek tek onaylanıyor ve her restoranı ilk telefondan canlı servise kadar takip ediyor; komisyonlar şeffaf biçimde izleniyor."
+      },
+      "configurator": {
+        "title": "Kaydolmadan önce planınızı oluşturun",
+        "body": "29 Temmuz'da kayıt sayfasında herkese açık plan oluşturucuyu kullanıma sunduk. Restoranlar modülleri, misafir dillerini, Classic veya Craft görünümünü ve para birimini seçip hesap istemeden önce katalogdan hesaplanan canlı aylık EUR fiyatını görebiliyor. Kart gerekmez; aboneliğiniz yalnızca kontrol panelinizden başlattığınızda başlar."
       }
     }
   },
@@ -1299,7 +1308,7 @@
         "reservations": "Çevrimiçi rezervasyon ve masa yönetimi",
         "loyalty": "Puanlar, müşteri grupları ve indirimler",
         "printing": "Termal yazıcılar için yardımcı uygulama",
-        "online-payments": "Kart ve TWINT ya da iDEAL gibi yerel yöntemler, doğrudan kendi Stripe hesabınıza",
+        "online-payments": "İsteğe bağlı çevrim içi ödeme eklentisi; desteklenen yöntemler restoranın pazarına ve Stripe kurulumuna bağlıdır.",
         "extra-languages": "İngilizce + bir dilin ötesinde, 10 dile kadar"
       },
       "rowTrial": "ücretsiz dönem"
@@ -1481,7 +1490,7 @@
       "languagesHint": "İngilizce her zaman dahildir. Üçüncü dilden itibaren ek diller paketi eklenir.",
       "currency": "Para birimi",
       "perMonth": "aylık",
-      "priceHint": "Bu, aboneliğiniz başladığında faturalanacak aylık fiyatınızdır. Kaydolmak için kart gerekmez — hazır olduğunuzda kontrol panelinizden başlatırsınız.",
+      "priceHint": "Bu, geçerli KDV hariç aylık EUR liste fiyatınızdır. Kaydolmak için kart gerekmez — hazır olduğunuzda aboneliği kontrol panelinizden başlatırsınız.",
       "bundleSaving": "«{bundle}» paketi uygulandı — {saving} tasarruf ediyorsunuz",
       "module": {
         "core": "Temel — QR menü ve çevrimiçi sipariş",
@@ -1500,7 +1509,7 @@
         "reservations": "Çevrimiçi rezervasyon ve masa yönetimi",
         "loyalty": "Puanlar, müşteri grupları ve indirimler",
         "printing": "Termal yazıcılar için yardımcı uygulama",
-        "online-payments": "Kart ve TWINT ya da iDEAL gibi yerel yöntemler, doğrudan kendi Stripe hesabınıza"
+        "online-payments": "İsteğe bağlı eklenti. Desteklenen ödeme yöntemleri ve etkinleştirme pazarınıza ve Stripe kurulumunuza bağlıdır; kullanılabilirliği bize sorun."
       },
       "template": {
         "classic": "Klasik",
@@ -1521,7 +1530,7 @@
         "commissionLabel": "{floor}/ay + sipariş başına {percent}",
         "commissionHint": "Daha düşük bir sabit ücret, gerisi yalnızca bir misafir çevrimiçi ödeme yaptığında.",
         "crossover": "Aylık yaklaşık {amount} altındaki çevrimiçi ciroda {floor}/ay + {percent} sabit {price} ücretten daha ucuza gelir; bunun üzerinde sabit ücret daha avantajlıdır.",
-        "deferredNote": "Online ödemeler, yalnızca sizin oluşturabileceğiniz kendi Stripe hesabınızı gerektirir — yayına girer girmez bağlantıyı size göndereceğiz. O zamana kadar bu yalnızca tercihinizdir; hemen ardından devreye girer."
+        "deferredNote": "Çevrim içi ödemeler için kendi Stripe hesabınız ve ayrı bir kurulum gerekir. Bu seçim tercihinizi kaydeder; restoranınız hazır olduğunda kullanılabilir yöntemleri ve sonraki adımları doğrularız."
       }
     }
   },
@@ -1682,5 +1691,194 @@
     "unknownToken": "Bu bağlantıyı tanımıyoruz. Her bağlantı tek bir restorana aittir — lütfen hoş geldiniz e-postanızdaki bağlantıyı ya da kendi yönetim panelinizde Ayarlar → Ödemeler altındaki düğmeyi kullanın.",
     "unavailable": "Şu anda Stripe'a ulaşamadık, bu yüzden formunuz açılamıyor. Hiçbir şey kaybolmadı — birkaç dakika sonra aynı bağlantıyı yeniden deneyin.",
     "contact": "Sorun sürerse e-postalarımızdan herhangi birini yanıtlayın, birlikte çözelim."
+  },
+  "discovery": {
+    "alternatives": {
+      "meta": {
+        "title": "İsviçre restoranları için GloriaFood alternatifleri (2026)",
+        "description": "İsviçre'deki restoranlar için SofraPiwas, FoodAmigos ve Lightspeed'in tarihli, kaynak bağlantılı karşılaştırması; GloriaFood'tan geçiş öncesi genel fiyatlandırma ve kontroller dahil."
+      },
+      "title": "İsviçre restoranları için GloriaFood alternatifleri",
+      "label": "Seçeneklerinizi karşılaştırın",
+      "checked": "Kontrol edilen kaynaklar: {date}",
+      "intro": "GloriaFood, hizmetinin 30 Nisan 2027'de sona erdiğini ve mevcut müşterilere verilen desteğin bu tarihe kadar devam ettiğini açıkladı. Oracle, doğrudan değiştirilmesinin mümkün olmadığını ve müşterilerini FoodAmigos'a yönlendirdiğini söylüyor. GloriaFood kullanıyorsanız, canlı bağlantıları değiştirmeden önce seçenekleri kendi menünüz, hizmet akışınız, ödemeleriniz, verileriniz ve personel ihtiyaçlarınızla karşılaştırın.",
+      "subtitle": "Üç farklı seçeneğin kaynaklı ve tarihli karşılaştırması: İsviçre pazarında sunulan bir POS, GloriaFood'un adını verdiği geçiş sağlayıcısı ve kurulum desteği arayan restoranlar için SofraPiwas.",
+      "scopeNote": "Bu, kaynaklara dayalı bir karşılaştırmadır; sıralama değildir. Sağlayıcı açıklamaları ve geçiş vaatleri, bunları yayımlayan şirkete atfedilmiştir. İncelenen herkese açık sayfalar her sağlayıcının İsviçre'de hizmet verdiğini, işlem ücretlerini veya sözleşme koşullarını doğrulamıyor; restoranınıza özel yazılı teklif isteyin.",
+      "table": {
+        "columns": {
+          "provider": "sağlayıcı",
+          "verify": "Seçmeden önce doğrulayın",
+          "fit": "Şu durumda uygun olabilir",
+          "published": "Herkese açık sayfasında ne yazıyor?"
+        },
+        "caption": "İsviçre için restoran yazılımı seçeneklerinin karşılaştırılması",
+        "note": "Aşağıdaki bilgiler {date} tarihinde kontrol edilen sağlayıcı sayfalarına dayanır. Yayınlanan liste fiyatları değişebilir; eklentiler veya ödeme ücretleri hariç olabilir.",
+        "title": "İşletme ihtiyaçlarına göre karşılaştırın"
+      },
+      "providers": {
+        "sofra": {
+          "name": "SofraPiwas",
+          "verify": "Yayınlanan fiyat EUR cinsindendir. Planınızdaki ve katılımdaki tam modül karışımını, dil ayarını, para birimi gösterimini ve ödeme yöntemlerini kontrol edin.",
+          "fit": "Sipariş, rezervasyon ve sadakat özelliklerinin yanı sıra personel iş akışlarının restoranınıza göre yapılandırılmasını ve yazıcı uyumluluğunun kurulumunuz için kontrol edilmesini istiyorsunuz.",
+          "published": "Kamu planı oluşturucu, Core'u ayda 19 €'dan başlayan fiyatlarla listeler ve seçilen modüller için aylık toplam EUR tutarını, konuk dillerini, görünümü ve geçerli KDV öncesi para birimini gösterir. Hesap istemek için karta gerek yoktur; faturalandırma yalnızca kontrol panelinde bir abonelik başlattığınızda başlar."
+        },
+        "foodAmigos": {
+          "fit": "Zaten GloriaFood kullanıyorsunuz ve Oracle'ın şu anda adlandırdığı geçiş sağlayıcısını değerlendirmek istiyorsunuz.",
+          "name": "FoodAmigos — GloriaFood'un yönlendirdiği geçiş seçeneği",
+          "verify": "İncelenen herkese açık sayfalar İsviçre'de hizmet verildiğini, CHF fiyatlarını veya yerel ödeme yöntemlerini doğrulamıyor. Geçiş kapsamını, dışa aktarma biçimini, ücretleri, ödeme yöntemlerini, veri işlemeyi ve takvimi yazılı olarak teyit edin.",
+          "published": "FoodAmigos, ekibinin restoran menüsünü, web sitesi içeriğini, müşteri verilerini ve ayarlarını aktarabildiğini söylüyor; ayrıca %0 komisyon sunduğunu belirtiyor. Bunlar sağlayıcının kendi beyanlarıdır. İncelenen geçiş sayfasında standart fiyat yayımlanmıyor."
+        },
+        "lightspeed": {
+          "name": "Lightspeed Restaurant",
+          "verify": "Güncel teklifte tam planı, donanımı, QR eklentilerini, ödeme sağlayıcısını, işlem ücretlerini ve sözleşme koşullarını doğrulayın; aylık abonelik toplam maliyetin yalnızca bir parçasıdır.",
+          "fit": "İsviçre pazarında QR siparişli bir restoran POS'unu değerlendirmek istiyorsunuz.",
+          "published": "İsviçre restoran sayfası masadan ve QR ile siparişi, TWINT dahil entegre ödemeleri tanıtıyor. Genel fiyat sayfasında Basic, bir lisans için ayda 89 CHF; QR sipariş/ödeme eklenti. Core, iki lisans için ayda 159 CHF ve QR sipariş/ödeme dahil olarak listeleniyor."
+        }
+      },
+      "transition": {
+        "intro": "Değiştirme işlemini test ederken mevcut müşteri rotanızı kullanılabilir durumda tutun. Açıklanan bitiş tarihi, çalışan bir hizmeti prova olmadan değiştirmek için bir neden değil, bir planlama sınırıdır.",
+        "steps": {
+          "export": "GloriaFood'a neyin, hangi formatta ve ne zamana kadar ihraç edilebileceğini sorun. İhtiyacınız olan menüyü, değiştiricileri, fotoğrafları, alerjen notlarını, müşteri verilerini ve ayarları isteyin; herhangi bir şeyi iptal etmeden önce dışa aktarımı doğrulayın.",
+          "pilot": "Temsili bir menüyü yeniden oluşturun ve bunu personel ile gerçek telefonlarda test edin. Dilleri, fiyatları, değiştiricileri, sipariş yönlendirmeyi, makbuzları, ödemeleri ve yazıcı veya mutfak ekranını kontrol edin.",
+          "cutover": "Sessiz bir hizmet penceresi seçin, bir seferde bir müşteri bağlantısını güncelleyin, bir personelin yedek kopyasını hazır bulundurun ve eski rotayı kaldırmadan önce ilk canlı siparişleri izleyin.",
+          "inventory": "Tüm canlı temas noktalarını ve iş akışını listeleyin: web sitesi düğmeleri, tablolara göre QR kodları, sosyal bağlantılar ve harita bağlantıları, rezervasyonlar, teslimat veya teslim alma, ödemeler, bildirimler, raporlar ve mutfakta yazdırma."
+        },
+        "title": "Düşük riskli GloriaFood geçiş kontrol listesi"
+      },
+      "faq": {
+        "endDate": {
+          "a": "GloriaFood'un mevcut bildiriminde, hizmetin 30 Nisan 2027'de kullanım ömrünün sonuna ulaşacağı ve mevcut müşterilere yönelik desteğin bu tarihe kadar devam edeceği belirtiliyor. Geçiş planı yapmadan önce resmi bildirimini tekrar kontrol edin.",
+          "q": "GloriaFood hizmeti ne zaman bitiyor?"
+        },
+        "foodAmigos": {
+          "q": "FoodAmigos, GloriaFood’un doğrudan yerine geçiyor mu?",
+          "a": "Oracle'ın bildirimine göre doğrudan değiştirme olanağı sunulmuyor. FoodAmigos'u, taşınmayı seçen müşteriler için katılım kaynakları sağlayan bir sağlayıcı olarak adlandırıyor. Bu yönlendirme, özellik denkliği, İsviçre'de kullanılabilirlik veya belirli bir geçiş sonucunu belirlemez."
+        },
+        "swissPayments": {
+          "a": "Ödeme yöntemleriyle başlayın ve kendi restoran ihtiyaçlarınızı işleyin, ardından uygunluğu, ücretleri, ödeme para birimini ve kurulumu yazılı olarak doğrulayın. Lightspeed'in İsviçre sayfası TWINT'in reklamını yapıyor; Burada incelenen kamu kaynakları, her plan veya sağlayıcı için İsviçre'de eşdeğer ödeme olanağı sağlamamaktadır.",
+          "q": "İsviçre ödemeleri için hangi seçeneği seçmeliyim?"
+        }
+      },
+      "sources": {
+        "title": "Kaynaklar ve tarih kontrol edildi",
+        "items": {
+          "gloriafood": "GloriaFood resmi servis bildirimi ve FoodAmigos yönlendirmesi",
+          "sofra": "SofraPiwas herkese açık plan oluşturucusu",
+          "foodAmigos": "FoodAmigos GloriaFood geçiş sayfası",
+          "lightspeedSwiss": "Lightspeed Restaurant İsviçre ürün sayfası",
+          "lightspeedPrices": "Lightspeed Restaurant İsviçre fiyatlandırma sayfası"
+        },
+        "note": "{date}'da satıcı sayfaları kontrol edildi. Fiyatlar, planlar ve hizmet bildirimleri değişebilir."
+      },
+      "related": {
+        "label": "İlgili kılavuzlar",
+        "geneva": "Cenevre için QR menü kurulum kılavuzu",
+        "gloriafood": "GloriaFood karşılaştırma ve geçiş kontrol listesi",
+        "switzerland": "İsviçre için QR menü kurulum kılavuzu"
+      }
+    },
+    "switzerland": {
+      "label": "Restoran saha rehberi",
+      "subtitle": "Diller, fiyatlar, masa kodları ve servis aktarımı için yoğun bir vardiyada kullanacak ekibe yönelik pratik bir iş akışı.",
+      "meta": {
+        "description": "İsviçre restoranları için pratik QR menü kontrol listesi: konuk dillerini seçin, CHF fiyatlarını tutarlı gösterin, masa kodlarını eşleştirin ve sipariş, ödeme ve mutfak aktarımını prova edin.",
+        "title": "İsviçre için QR menüsü ve sipariş kurulum kılavuzu"
+      },
+      "title": "Bir İsviçre restoranı için QR menüsü oluşturma",
+      "checked": "Yerel dil kaynakları kontrol edildi: {date}",
+      "stepsTitle": "Kurulumu bu sırayla gerçekleştirin",
+      "steps": {
+        "languages": {
+          "title": "Ekibinizin koruyabileceği dilleri seçin",
+          "body": "Önce bu konumdaki misafirlerinizin beklediği dille başlayın, sonra gerçek müşteri kitlenize uyan dilleri ekleyin. Almanca konuşulan İsviçre'de günlük konuşma lehçeleri değişir; yazılı iletişimde standart Almanca kullanılır. Her dilde yemek adlarını, açıklamaları ve seçenekleri tutarlı tutun."
+        },
+        "currency": {
+          "title": "Fiyatlar için tek bir doğru kaynak belirleyin",
+          "body": "Menü para birimini bilinçli seçin; İsviçre'de bir restoran için CHF çoğunlukla başlangıç noktasıdır. Ürün fiyatları, ek seçenekler, fişler ve çevrimiçi ödeme tutarlı mı kontrol edin. Ödeme sağlayıcısının farklı para biriminde ödeme yapıp yapmadığını veya ek ücret kesip kesmediğini önceden doğrulayın."
+        },
+        "qrFlow": {
+          "title": "QR kodunun ne yapması gerektiğine karar verin",
+          "body": "QR kodunun yalnızca menü mü göstereceğine, sipariş mi başlatacağına yoksa çevrimiçi ödeme de mi sunacağına karar verin. Her masa kodunu doğru masaya eşleyin; misafir siparişi gönderdiğinde ekibin bunu nerede göreceğini kontrol edin."
+        },
+        "menuData": {
+          "title": "Yalnızca başlıkları değil, tüm seçeneği çevirin",
+          "body": "Her dilde yemek adlarını ve açıklamalarını, boyutları, seçenekleri, ekstraları, stok durumunu ve mutfağınızın tuttuğu alerjen bilgilerini kontrol edin. Değişiklikleri birlikte yayımlaması için tek bir menü sorumlusu belirleyin."
+        },
+        "rehearsal": {
+          "title": "Tam bir hizmet yolunun provasını yapın",
+          "body": "Her kodu gerçek telefonda tarayın, doğru dili açın, bir seçeneği değiştirin ve test siparişi gönderin. Masa bilgisini, mutfak/yazıcı yönlendirmesini, fiyatları, fişleri ve Wi-Fi, telefon veya sipariş akışı aksarsa kullanılacak yedek yöntemi kontrol edin."
+        }
+      },
+      "intro": "İsviçre'nin dört ulusal dili vardır - Almanca, Fransızca, İtalyanca ve Romanşça - ancak bu, her restoranın dört menüdeki tüm menüleri yayınlaması gerektiği anlamına gelmez. Konumunuz ve misafirlerinizle eşleşen ve ekibinizin doğru tutabileceği sürümleri seçin.",
+      "sources": {
+        "title": "Yerel kaynak",
+        "items": {
+          "dialects": "İsviçre Federal Dışişleri Bakanlığı: diller ve lehçeler",
+          "languages": "İsviçre Federal Dışişleri Bakanlığı: İsviçre'deki diller"
+        },
+        "note": "{date}'da kontrol edilen dil gerçekleri; iş akışı adımları pratik operatör önerileridir."
+      },
+      "fieldCheck": {
+        "title": "Her kodu yazdırmadan önce",
+        "body": "Kısa bir tablodan koda liste tutun. Bir menüyü, tablo numarasını, fiyatı veya ödeme ayarını değiştirdikten sonra, basılı kodu tekrar tarayın ve istenen canlı menüyü hâlâ açtığını doğrulayın."
+      },
+      "related": {
+        "label": "İlgili sayfalar",
+        "alternatives": "Restoran yazılımı alternatiflerini karşılaştırın",
+        "geneva": "Cenevre Fransa'da ilk QR menü kılavuzu"
+      }
+    },
+    "geneva": {
+      "meta": {
+        "title": "Cenevre'deki restoranlar için QR menü kurulum kılavuzu",
+        "description": "Cenevre restoranları için Fransızca öncelikli QR menü iş akışı: misafir dillerini seçin, menünün tamamını çevirin, masa kodlarını eşleyin ve başlamadan önce ekibe aktarımı test edin."
+      },
+      "label": "Cenevre restoranı alan rehberi",
+      "title": "Cenevre için Fransızca öncelikli QR menü",
+      "checked": "Yerel dil kaynakları kontrol edildi: {date}",
+      "intro": "Fransızca, Cenevre Cumhuriyeti ve Kantonu'nun resmi dilidir. Cenevre'de hizmet veren bir restoran için Fransızca öncelikli menü pratik bir başlangıçtır; ek dilleri misafirlerinize ve ekibinizin güncel tutabileceği çevirilere göre seçin.",
+      "subtitle": "Menüde Fransızcayı başlangıç dili yapın; ardından misafirlerinizin ihtiyaç duyduğu ve ekibinizin güncel tutabileceği dilleri ekleyin.",
+      "steps": {
+        "language": {
+          "title": "Fransızcayı net bir başlangıç ​​noktası haline getirin",
+          "body": "Fransızcayı varsayılan menü dili yapın ve görünür bir dil seçici ekleyin. İngilizceyi veya gerçek misafirlerinize yardımcı olacak başka dilleri ekleyin. İsviçre'nin dört ulusal dili her restoranda otomatik olarak açılmak zorunda değildir."
+        },
+        "menu": {
+          "body": "Yemek adlarını, açıklamalarını, porsiyonlarını, değiştiricilerini ve ekstralarını Fransızca olarak kontrol edin, ardından tüm seçimi etkin olan her dile çevirin. Mutfağınızın takip ettiği ürün stok durumu ve alerjen bilgilerinin sürümler arasında uyumlu olmasını sağlayın.",
+          "title": "Önce Fransızca kaynak menüsünü tamamlayın"
+        },
+        "maintain": {
+          "title": "Değişiklikleri senkronize tutun",
+          "body": "Menünün sahibi olacak bir kişiyi atayın. Bir fiyat, değiştirici veya yemek değiştiğinde, yayınlamadan önce her dili güncelleyin; Basılı kodları periyodik olarak tarayın ve tablolar veya bağlantılar değiştiğinde eski kodları kaldırın."
+        },
+        "tables": {
+          "title": "Her masaya doğru kodu verin",
+          "body": "Her masa için ayrı kod basın ve misafir gibi tarayın. Misafirler sipariş verebiliyorsa, gönderilen fişin doğru masa numarasıyla ekibe ulaştığını kontrol edin. Kod yalnızca menüyü açıyorsa sonraki adımı açıkça belirtin."
+        },
+        "service": {
+          "title": "Yedek yöntem dahil gerçek bir servisi prova edin",
+          "body": "Ekibinizden ve bir misafirden menüyü telefonlarında Fransızca ve etkin olan her dilde denemelerini isteyin. Menü değişikliğini veya tükenen ürünü, masada siparişi, açıksa ödemeyi, mutfak/yazıcı aktarımını ve tarama ya da bağlantı sorunu olduğunda yardım akışını prova edin."
+        }
+      },
+      "stepsTitle": "Konuk ve personel iş akışını oluşturun",
+      "fieldCheck": {
+        "title": "Cenevre'den gerçek bir örnek",
+        "link": "RUMI örnek olay incelemesini okuyun",
+        "body": "SofraPiwas, müşteri vaka çalışması olarak Cenevre restoranı RUMI'yı yayınladı. Bu bir ürün örneğidir, ölçülen iş sonuçlarına ilişkin bir iddia değildir."
+      },
+      "sources": {
+        "note": "{date}'da kontrol edilen dil gerçekleri; iş akışı adımları pratik operatör önerileridir.",
+        "items": {
+          "languages": "İsviçre Federal Dışişleri Bakanlığı: İsviçre'deki diller",
+          "officialLanguage": "Cenevre Cumhuriyeti ve Kantonu: kantonun resmi dili Fransızcadır"
+        },
+        "title": "Yerel kaynaklar"
+      },
+      "related": {
+        "label": "İlgili sayfalar",
+        "switzerland": "İsviçre için QR menü kurulum kılavuzu",
+        "alternatives": "Restoran yazılımı alternatiflerini karşılaştırın"
+      }
+    }
   }
 }

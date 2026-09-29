@@ -12,7 +12,10 @@ control plane is en-only, outside `[locale]`). Design system: craft/handmade —
 [docs/design-tokens.md](docs/design-tokens.md). Architecture decisions: [docs/adr/](docs/adr/) (ADR-001–011).
 
 Master plan: `rumi-workspace/docs/plans/SOFRA-SAAS-PLAN.md`; partner program:
-`rumi-workspace/docs/plans/SOFRA-PARTNER-PLAN.md`; AEO: `rumi-workspace/docs/plans/SOFRA-AEO-PLAN.md`.
+`rumi-workspace/docs/plans/SOFRA-PARTNER-PLAN.md`; AEO/discovery operations:
+`rumi-workspace/docs/runbooks/public-search-discovery.md`. The marketing route
+inventory lives in `lib/marketing-routes.ts`; canonical and staging crawl output
+contracts live in `scripts/verify-marketing-crawl-output.mjs`.
 
 ## Develop
 

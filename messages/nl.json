@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "SofraPiwas — Restaurantsoftware met een warm hart",
-    "description": "QR-menu's, live bestellingen, reserveringen en spaarpunten — één keukenvriendelijk platform, elke service bewezen in een echt restaurant. Genoemd naar de sofra — een gedekte tafel voor gasten."
+    "description": "SofraPiwas brengt QR-menu's, online bestellen, reserveringen, loyaliteit en personeelsworkflows samen. Modules, betalingsmethoden, taaldekking en hardware worden voor elke restaurantopstelling bevestigd."
   },
   "header": {
     "features": "Op het vuur",
@@ -21,20 +21,20 @@
     "note": "Een «sofra» is een tafel, gedekt voor gasten. Dat is onze hele filosofie.",
     "ctaPrimary": "Aan de slag",
     "ctaSecondary": "Kijk wat er op het vuur staat",
-    "proof": "Draait elke service bij RUMI Restaurant in Genève — bestellingen, keuken, reserveringen en printers, live in productie."
+    "proof": "RUMI is het referentierestaurant van SofraPiwas in Genève. Bekijk de huidige openbare menu- en tafelreserveringspagina's."
   },
   "features": {
     "label": "Op het vuur",
     "title": "Alles op één tafel",
-    "subtitle": "Zes gangen, geen opvulling. Elk ervan eerst beproefd in een echt restaurant voordat het deze pagina haalde.",
+    "subtitle": "Kies de gast- en personeelsworkflows die bij uw restaurant passen. Optionele modules, taaldekking en hardware worden voor elke configuratie bevestigd.",
     "items": {
       "qr": {
         "title": "QR-menu's & bestellen",
         "text": "Gasten scannen, bladeren en bestellen vanaf tafel — met foto's, allergenen en aanpassingen. Geen app nodig."
       },
       "live": {
-        "title": "Live bestelborden",
-        "text": "Keuken, kassa en bediening hebben elk hun eigen live overzicht. Nieuwe bestellingen komen binnen op de seconde dat ze geplaatst worden."
+        "title": "Besteloverzichten voor het team",
+        "text": "Kies de overzichten voor keuken, kassa en bediening die bij uw restaurant passen. Tijdens de inrichting bevestigen we welke personeelsworkflows zijn ingeschakeld."
       },
       "reservations": {
         "title": "Reserveringen",
@@ -42,15 +42,15 @@
       },
       "loyalty": {
         "title": "Spaarpunten",
-        "text": "Punten die vaste gasten laten terugkomen, met kortingsregels die jij per klantgroep instelt."
+        "text": "Gasten kunnen trouwpunten verdienen; kortingsregels kunnen per klantengroep worden geconfigureerd."
       },
       "printing": {
-        "title": "Keukenbonnen, geprint",
-        "text": "Een hulp-app stuurt je thermische printers aan — bestellingen komen op papier de keuken binnen, precies waar jij ze wilt."
+        "title": "Integratie van thermische printers",
+        "text": "Een begeleidende app voor Windows en Android ondersteunt netwerk-ESC/POS-printers. Controleer de printercompatibiliteit en installatie voor uw restaurant voordat u vertrouwt op afgedrukte tickets."
       },
       "languages": {
-        "title": "10 talen ingebouwd",
-        "text": "Je menukaart spreekt de taal van je gasten — van Frans tot Nederlands tot Arabisch."
+        "title": "10 gastinterfacetalen",
+        "text": "De gastinterface biedt tien taalopties. De tekst van menu-items verschijnt in de beschikbare vertalingen voor dat menu, dus controleer de dekking van uw catalogus voordat u elke taal publiceert."
       }
     }
   },
@@ -64,22 +64,22 @@
       },
       "two": {
         "title": "Wij dekken jouw sofra",
-        "text": "Wij zetten je menukaart, QR-codes, printers en personeelsschermen klaar — en geven jou de sleutels."
+        "text": "Wij configureren samen met u uw menu, QR-links en ingeschakelde personeelsworkflows. Printerhardware en betaalmethoden zijn bevestigd en getest voor uw restaurantopstelling."
       },
       "three": {
         "title": "Jij serveert",
-        "text": "Bestellingen stromen binnen, bonnen rollen eruit, vaste gasten sparen punten. Wij houden achter de schermen de borden in de lucht."
+        "text": "Je lanceert de voor jouw restaurant afgesproken gastenstromen. We houden contact terwijl uw menu, personeelsworkflows en hardware-instellingen evolueren."
       }
     }
   },
   "showcase": {
     "label": "Het bewijs op het bord",
     "title": "Proef het live",
-    "subtitle": "SofraPiwas is geen dia-demo — het draait sinds dag één een echte eetzaal, elke service opnieuw.",
-    "cardStamp": "Live in productie",
+    "subtitle": "SofraPiwas is ontwikkeld rond een restaurantreferentie in Genève. Blader door het livemenu en de reserveringspagina van RUMI om de gastgerichte stroom te zien.",
+    "cardStamp": "Live gastpagina's",
     "cardTitle": "RUMI Restaurant — Genève",
-    "cardBody": "QR-menu's op elke tafel, bestellingen op de keuken- en kassaschermen, reserveringen, spaarpunten en thermische bonnen — allemaal op SofraPiwas.",
-    "cardHint": "Open de kaart en blader als een gast — dat is precies het product.",
+    "cardBody": "De openbare menu- en tafelreserveringspagina's van RUMI draaien op SofraPiwas. De gastinterface biedt tien taalopties, terwijl de vertaalde inhoud van het livemenu gedeeltelijk is.",
+    "cardHint": "Open het menu en blader als gast - bekijk de live gerechten, prijzen en bestelstroom.",
     "visit": "Bezoek rumirestaurant.ch",
     "ctaTitle": "Wil je dit op jouw tafels?",
     "ctaBody": "Restaurant, café of afhaalzaak — vertel ons over je zaak en we komen binnen een dag bij je terug.",
@@ -90,18 +90,19 @@
   "pricing": {
     "label": "De kaart",
     "title": "Dagmenu",
-    "subtitle": "Vroege toegang — zo simpel als een krijtbord.",
+    "subtitle": "Bekijk de maandelijkse EUR-lijstprijs voor je restaurant voordat je een account aanvraagt.",
     "founding": {
-      "name": "Oprichtersrestaurants",
-      "price": "van het huis",
-      "detail": "Gratis tijdens de vroege toegang. Persoonlijke onboarding, een directe lijn met de makers en een stem in wat we hierna koken."
+      "name": "Stel je plan samen",
+      "price": "vanaf €19 / maand",
+      "detail": "Kies de modules, gasttalen, stijl en valuta die je nodig hebt. De planbouwer toont de maandelijkse EUR-lijstprijs exclusief eventueel toepasselijke btw."
     },
     "regular": {
-      "name": "Vaste kaart",
-      "price": "binnenkort",
-      "detail": "Eerlijke maandprijzen zodra de vroege toegang voorbij is. Oprichtersrestaurants houden levenslang korting."
+      "name": "Account aanvragen",
+      "price": "Geen kaart nodig",
+      "detail": "Je kunt een account aanvragen zonder betaalkaart. Je abonnement start pas wanneer je het vanuit je dashboard start."
     },
-    "note": "Geen creditcard nodig. Geen verplichtingen. Je gegevens blijven van jou."
+    "note": "Geen betaalkaart nodig om je aan te melden. Je gegevens blijven van jou.",
+    "cta": "Bekijk mijn prijs"
   },
   "partner": {
     "label": "Partners",
@@ -208,9 +209,12 @@
       "partner": "Partners",
       "faq": "FAQ",
       "caseStudy": "Casestudy",
-      "compare": "SofraPiwas vs GloriaFood",
+      "compare": "SofraPiwas en GloriaFood vergelijken",
       "changelog": "Wat is er nieuw",
-      "legal": "Juridisch"
+      "legal": "Juridisch",
+      "alternatives": "Alternatieven in Zwitserland",
+      "qrMenuSwitzerland": "QR-menugids: Zwitserland",
+      "qrMenuGeneva": "QR-menugids: Genève"
     },
     "copyright": "© {year} SofraPiwas. Alle rechten voorbehouden."
   },
@@ -221,27 +225,27 @@
     "items": {
       "what": {
         "q": "Wat is SofraPiwas?",
-        "a": "SofraPiwas is een platform voor restaurantbeheer: QR-menu's en online bestellen, live bestelborden voor keuken, kassa en bediening, reserveringen, spaarpunten en bonnen op thermische printers — alles op één plek. Het is voortgekomen uit het systeem dat elke service draait bij RUMI Restaurant in Genève."
+        "a": "SofraPiwas is een restaurantplatform voor QR-menu's, online bestellen, reserveringen, loyaliteits- en personeelsbestellingworkflows. Een bijbehorende app kan compatibele netwerk-ESC/POS-printers verbinden. Modules en hardware zijn afhankelijk van de opstelling van elk restaurant. RUMI in Genève is ons referentierestaurant."
       },
       "pricing": {
         "q": "Wat kost SofraPiwas?",
-        "a": "Tijdens de vroege toegang betalen oprichtersrestaurants niets — installatie en support zijn van het huis, en oprichters houden levenslang korting wanneer de vaste prijzen komen. De vaste plannen worden simpel: een vast maandbedrag met optionele extra modules."
+        "a": "Kies je modules, gasttalen, stijl en valuta in de planbouwer om je maandprijs in EUR exclusief eventueel toepasselijke btw te zien. Je hebt geen betaalkaart nodig om een account aan te vragen. Je abonnement start pas wanneer je het vanuit je dashboard start."
       },
       "payments": {
         "q": "Kunnen mijn gasten online betalen — ook met iDEAL of TWINT?",
-        "a": "Ja — met de module Online betalen betalen je gasten met kaart, plus lokale methoden zoals iDEAL in Nederland en TWINT in Zwitserland. Het geld komt direct op je eigen Stripe-account en wij nemen geen commissie. Vóór je eerste betaling doorloop je eenmalig de verificatie van Stripe. De module wordt gefactureerd vanaf de dag dat je hem activeert: is je account bij de eerste factuur nog in verificatie, vraag het ons dan en we crediteren die maand. Afrekenen aan de balie blijft gewoon mogelijk."
+        "a": "Online betalingen is een optionele module. De planbouwer biedt €19 per maand vast, of €9 per maand plus 1,5% van elke online bestelling. Btw kan van toepassing zijn. Beschikbare betaalmethoden en activering hangen af van je markt en Stripe-configuratie; vraag ons om de beschikbaarheid te bevestigen voordat je op een specifieke methode rekent. De beschikbaarheid van TWINT is momenteel niet bevestigd; vraag het na voordat je erop rekent."
       },
       "languages": {
-        "q": "Welke talen ondersteunt de menukaart?",
-        "a": "Tien talen uit de doos — Engels, Frans, Duits, Nederlands, Italiaans, Spaans, Turks, Arabisch, Russisch en Chinees. Je gasten bestellen in hun eigen taal, van dezelfde kaart."
+        "q": "Welke talen ondersteunt de SofraPiwas-gastinterface?",
+        "a": "De gastinterface biedt tien taalopties: Engels, Frans, Duits, Nederlands, Italiaans, Spaans, Turks, Arabisch, Russisch en Chinees. De menu-inhoud wordt alleen vertaald als een restaurant die taalversie heeft gepubliceerd. Controleer dus de catalogusdekking voordat u een taal inschakelt."
       },
       "printing": {
-        "q": "Werkt het met mijn keukenprinter?",
-        "a": "Ja. Een hulp-app (Windows en Android) stuurt ESC/POS thermische printers aan via het netwerk, zodat bestellingen in de keuken geprint worden, precies waar jij ze wilt — zonder extra hardware-abonnement."
+        "q": "Kan SofraPiwas verbinding maken met mijn keukenprinter?",
+        "a": "De bijbehorende app ondersteunt netwerk-ESC/POS-printers op Windows en Android. Bevestig uw printermodel, netwerk en fysieke configuratie tijdens de onboarding voordat u vertrouwt op afgedrukte keukentickets."
       },
       "who": {
         "q": "Wie zit er achter SofraPiwas, en wordt het echt gebruikt?",
-        "a": "SofraPiwas wordt gebouwd door een klein team uit Nederland en draait elke live service bij RUMI Restaurant in Genève (rumirestaurant.ch) — bestellingen, keukenbord, reserveringen en printers zijn daar sinds juni 2026 in productie. Nieuwe restaurants onboarden we persoonlijk."
+        "a": "SofraPiwas wordt gebouwd door een klein team gevestigd in Nederland. RUMI is ons referentierestaurant in Genève; de openbare menu- en tafelreserveringspagina's draaien op SofraPiwas. De workflows van het personeel, de printerhardware en de menuvertaling moeten voor elke restaurantopstelling worden gecontroleerd. Wij onboarden nieuwe restaurants persoonlijk."
       },
       "domain": {
         "q": "Kan ik mijn eigen domeinnaam gebruiken?",
@@ -252,11 +256,11 @@
   "caseStudy": {
     "meta": {
       "title": "Casestudy: RUMI Restaurant, Genève — draait op SofraPiwas",
-      "description": "RUMI Restaurant in Genève draait zijn online bestellingen, tafelreserveringen en keukenbonprinten op SofraPiwas — in tien gasttalen, op EU-infrastructuur, live in productie sinds juni 2026."
+      "description": "RUMI is het referentierestaurant van SofraPiwas in Genève. De openbare menu- en tafelreserveringspagina's zijn live; de SofraPiwas-gastinterface biedt tien taalopties, terwijl de vertaalde menu-inhoud varieert. Gehost in de EU sinds juni 2026."
     },
     "label": "Casestudy",
     "title": "RUMI Restaurant, Genève",
-    "subtitle": "SofraPiwas's eerste restaurant — en de eetzaal waar elke functie zich bewijst voordat die uitkomt.",
+    "subtitle": "SofraPiwas's eerste referentierestaurant in Genève. Ontdek de livemenu- en tafelreserveringspagina's van RUMI.",
     "facts": {
       "location": {
         "label": "Locatie",
@@ -266,7 +270,7 @@
         "label": "In productie sinds"
       },
       "languages": {
-        "label": "Gasttalen",
+        "label": "Taalopties voor de gastinterface",
         "value": "10"
       },
       "hosting": {
@@ -275,34 +279,22 @@
       }
     },
     "runs": {
-      "title": "Wat RUMI op SofraPiwas draait",
-      "intro": "Geen pilot, geen deelproject — de dagelijkse service van het restaurant draait op het platform:",
+      "title": "Gastgerichte stromen live bij RUMI",
+      "intro": "De openbare menu- en tafelreserveringspagina's van RUMI zijn live op SofraPiwas. Deze casus beschrijft de gastgerichte stromen; personeelstools en fysieke hardware worden afzonderlijk geconfigureerd en geverifieerd.",
       "items": {
         "ordering": {
-          "title": "QR-menu's & online bestellen",
-          "text": "Gasten scannen aan tafel of bestellen online — foto's, allergenen, aanpassingen."
-        },
-        "boards": {
-          "title": "Live bestelborden",
-          "text": "Keuken, kassa en bediening volgen bestellingen elk op hun eigen live scherm."
+          "title": "Live menu en online bestellen",
+          "text": "Gasten kunnen door het huidige menu van RUMI bladeren, artikeldetails en CHF-prijzen bekijken, gerechten aan de winkelwagen toevoegen en een online bestelling plaatsen."
         },
         "reservations": {
           "title": "Tafelreserveringen",
-          "text": "Online boeken met tafelindeling en openingstijden; het team keurt goed met één tik."
-        },
-        "loyalty": {
-          "title": "Spaarpunten",
-          "text": "Spaarpunten en kortingsregels per klantgroep laten vaste gasten terugkomen."
-        },
-        "printing": {
-          "title": "Keukenbonnen printen",
-          "text": "Bestellingen printen op thermische netwerkprinters — precies op de werkplekken waar ze nodig zijn."
+          "text": "Gasten kunnen tafel(s), groepsgrootte, datum en tijd kiezen en een reservering indienen via de openbare pagina van RUMI."
         }
       }
     },
     "languagesSection": {
-      "title": "Tien talen aan één tafel",
-      "body": "Genève is een internationale stad, en RUMI's kaart kan dat aan: gasten bladeren en bestellen in het Engels, Frans, Duits, Nederlands, Italiaans, Spaans, Turks, Arabisch, Russisch of Chinees — zelfde kaart, zelfde keuken."
+      "title": "Tien interfacetalen; menudekking varieert",
+      "body": "SofraPiwas biedt gastinterface-opties in het Engels, Frans, Duits, Nederlands, Italiaans, Spaans, Turks, Arabisch, Russisch en Chinees. Het momenteel gepubliceerde menu van RUMI is slechts gedeeltelijk vertaald; het is geen volledige tientalige catalogus. Restaurants moeten de itemnamen, beschrijvingen en opties in elke taal controleren voordat ze deze publiceren."
     },
     "infra": {
       "title": "De infrastructuur erachter",
@@ -319,15 +311,15 @@
   },
   "compare": {
     "meta": {
-      "title": "SofraPiwas vs GloriaFood (2026): een eerlijke vergelijking",
-      "description": "GloriaFood is een gratis online bestelsysteem met betaalde modules; SofraPiwas is een full-service restaurantplatform uit Nederland. Een eerlijke, gedateerde vergelijking met bronnen."
+      "title": "SofraPiwas vs GloriaFood (2026): prijzen, functies en overstap",
+      "description": "Vergelijk functies, prijzen en ondersteuningsdatums van SofraPiwas en GloriaFood. GloriaFood heeft aangekondigd dat de dienst eindigt op 30 april 2027; bronnen gecontroleerd op 30 september 2026."
     },
     "label": "Zij aan zij",
-    "title": "SofraPiwas vs GloriaFood",
+    "title": "SofraPiwas en GloriaFood vergelijken",
     "subtitle": "Twee eerlijke manieren om een restaurant online te brengen — eerlijk vergeleken, met bronnen en datum.",
     "updated": "Laatst gecontroleerd: {date}",
-    "intro1": "GloriaFood — onderdeel van Oracle — is een van de bekendste online bestelsystemen: de kern is gratis en je voegt betaalde modules toe naarmate je groeit. SofraPiwas is een jonger full-service platform, gebouwd in Nederland en dagelijks bewezen in de service in Genève: bestellen, reserveren, spaarpunten en keukenprinten als één systeem, persoonlijk voor je opgezet.",
-    "intro2": "Allebei eerlijke keuzes. Welke past, hangt af van hoeveel je zelf wilt doen — de tabel hieronder houdt zich aan feiten die we op GloriaFoods eigen pagina's hebben gecontroleerd.",
+    "intro1": "GloriaFood — onderdeel van Oracle — vermeldt een gratis kernproduct met optionele betaalde modules. SofraPiwas is een in Nederland gebouwd restaurantplatform. In Genève draaien de openbare menu-, online bestel- en tafelreserveringspagina's van RUMI op SofraPiwas; andere personeelsworkflows en hardware worden voor elk restaurant geconfigureerd.",
+    "intro2": "Wat het beste past, hangt af van je inrichting en hoe lang je de dienst nodig hebt. GloriaFood heeft een einddatum aangekondigd; als je het gebruikt, neem dan een overstapplan mee in je vergelijking.",
     "table": {
       "caption": "SofraPiwas en GloriaFood, functie voor functie",
       "feature": "In één oogopslag",
@@ -336,8 +328,8 @@
       "rows": {
         "pricing": {
           "label": "Prijsmodel",
-          "sofra": "Vroege toegang: van het huis voor oprichtersrestaurants, met levenslange korting zodra vaste prijzen komen. Daarna: een eenvoudige vaste maandprijs met optionele modules.",
-          "gf": "Gratis kern: geen maandbedrag, geen commissie per bestelling. Betaalde modules: online betalingen US$ 29/maand, geavanceerde promoties US$ 19/maand, kassa (POS) US$ 49/maand per vestiging (tweejarig contract)."
+          "sofra": "Core begint bij €19 per maand. Kies modules, gasttalen, stijl en valuta in de planbouwer om je maandprijs in EUR exclusief eventueel toepasselijke btw te zien. Je hebt geen betaalkaart nodig om een account aan te vragen; de facturering start pas wanneer je het abonnement vanuit je dashboard start.",
+          "gf": "Huidige prijslijst: gratis kern zonder maandbedrag of commissie per bestelling; betaalde modules zijn online betalingen (US$29/maand), geavanceerde promoties (US$19/maand) en POS (US$49/maand per locatie, tweejarige looptijd). GloriaFood heeft aangekondigd dat de dienst op 30 april 2027 eindigt."
         },
         "ordering": {
           "label": "QR & online bestellen",
@@ -356,13 +348,13 @@
         },
         "printing": {
           "label": "Keukenprinten",
-          "sofra": "Een hulp-app (Windows en Android) stuurt thermische ESC/POS-netwerkprinters aan — bonnen per werkplek, zonder extra abonnement.",
+          "sofra": "Een begeleidende app voor Windows en Android ondersteunt netwerk-ESC/POS-printers. Controleer de printercompatibiliteit en installatie voor uw restaurant voordat u vertrouwt op afgedrukte tickets.",
           "gf": "Hun gratis bestelapp (Android en iOS) koppelt met een thermische printer en print geaccepteerde bestellingen automatisch."
         },
         "languages": {
           "label": "Talen",
-          "sofra": "Gasten bladeren en bestellen in 10 talen — op dezelfde menukaart.",
-          "gf": "Productinterface beschikbaar in een tiental talen, vertaald door hun community — zie hun vertaalpagina voor de details."
+          "sofra": "De gastinterface biedt tien taalopties. Tekst van menu-items verschijnt in de vertalingen die voor dat menu beschikbaar zijn; controleer uw catalogusdekking voordat u elke taal publiceert.",
+          "gf": "GloriaFood zegt dat het systeem beschikbaar is in veelgebruikte talen en dat bijdragers uit de community er meer toevoegen. De genoemde pagina geeft geen vast aantal."
         },
         "hosting": {
           "label": "Hosting & domeinen",
@@ -371,61 +363,74 @@
         },
         "setup": {
           "label": "Opzet & ondersteuning",
-          "sofra": "Persoonlijke onboarding — we zetten menukaart, QR-codes, printers en teamschermen samen met jou op, en blijven één berichtje verwijderd.",
+          "sofra": "Persoonlijke begeleiding: we richten samen uw menu, QR-links en afgesproken teamoverzichten in. We bevestigen de printercompatibiliteit en installatie voordat u op afgedrukte tickets vertrouwt.",
           "gf": "Selfservice — je richt het systeem zelf in via hun beheerpaneel en documentatie."
         },
         "payments": {
           "label": "Online betalen",
-          "sofra": "Extra module voor € 19/maand — kaart plus lokale methoden zoals iDEAL en TWINT, direct op je eigen Stripe-account. Geen commissie.",
+          "sofra": "Optionele module: €19 per maand vast, of €9 per maand plus 1,5% van elke online bestelling. Btw kan van toepassing zijn. Beschikbare methoden en activering hangen af van je markt en Stripe-configuratie; laat de beschikbaarheid bij de onboarding bevestigen.",
           "gf": "Beschikbaar als betaalde module — online-/kaartbetalingen voor US$ 29/maand."
         }
       }
     },
-    "disclaimer": "De GloriaFood-gegevens hierboven zijn in juli 2026 gecontroleerd op hun openbare pagina's en kunnen veranderen — hun prijspagina is altijd leidend. GloriaFood is een Oracle-product; alle namen en merken zijn van hun eigenaren. Genoemde prijzen zijn hún prijzen, in Amerikaanse dollars, exclusief belastingen.",
+    "disclaimer": "GloriaFood-functies en prijzen zijn op 30 september 2026 gecontroleerd op openbare pagina's en kunnen veranderen. De officiële melding zegt dat de dienst eindigt op 30 april 2027 en dat bestaande klanten tot die datum ondersteuning krijgen. GloriaFood-prijzen zijn in Amerikaanse dollars, exclusief belasting. GloriaFood is een Oracle-product; namen en merken zijn van hun eigenaren.",
     "qa": {
       "free": {
         "q": "Is GloriaFood echt gratis?",
-        "a": "De kern wel. Hun prijspagina belooft geen commissie per bestelling en geen maandbedrag voor het basisbestelsysteem; online betalingen (US$ 29/maand), geavanceerde promoties (US$ 19/maand), de kassa (US$ 49/maand per vestiging, tweejarig contract), een verkoopgerichte website en eigen merk-apps zijn betaalde extra's. Voor veel kleine restaurants is het gratis plan echt genoeg."
+        "a": "De prijspagina van GloriaFood vermeldt momenteel geen maandbedrag en geen commissie voor de basisbesteldienst. Betaalde opties zijn onder meer online betalingen (US$29/maand), geavanceerde promoties (US$19/maand) en POS (US$49/maand per locatie met een looptijd van twee jaar). GloriaFood heeft aangekondigd dat de dienst op 30 april 2027 eindigt en bestaande klanten tot die datum ondersteunt. Plan daarom een overstap in plaats van het gratis aanbod als oplossing voor de lange termijn te zien."
       },
       "cost": {
         "q": "Wat kost SofraPiwas?",
-        "a": "Tijdens de vroege toegang betalen oprichtersrestaurants niets — opzet en ondersteuning zijn van het huis, en ze houden levenslang korting zodra vaste prijzen komen. Vaste plannen worden een eenvoudige vaste maandprijs met optionele modules."
+        "a": "Core begint bij €19 per maand. Kies modules, gasttalen, stijl en valuta in de planbouwer om de maandprijs in EUR exclusief eventueel toepasselijke btw te zien. Je hebt geen betaalkaart nodig om een account aan te vragen; het abonnement start pas wanneer je het vanuit je dashboard start."
       },
       "pick": {
         "q": "Welke moet ik kiezen?",
-        "a": "Wil je vooral een gratis bestelwidget op een website die je al hebt, en vind je het prima om alles zelf in te stellen? Dan is GloriaFood een degelijke, bewezen keuze. Wil je één systeem voor bestellen, reserveren, spaarpunten en keukenprinten — persoonlijk met jou opgezet, in de talen van je gasten, op EU-infrastructuur — dan is SofraPiwas daar precies voor gebouwd."
+        "a": "Gebruik je GloriaFood al en voldoen de beschreven functies aan je behoeften tijdens de aangekondigde ondersteuningsperiode, dan kun je het blijven gebruiken terwijl je een overstap vóór 30 april 2027 plant. Wil je bestellen, reserveren, loyaliteit en keukenprinten in één systeem met persoonlijke inrichting, vergelijk dan het plan en de onboarding van SofraPiwas met je eisen."
       }
     },
     "fitGf": {
-      "title": "Wanneer GloriaFood prima past",
+      "title": "Wanneer GloriaFood tijdens de ondersteuningsperiode kan passen",
       "items": {
-        "widget": "Je wilt vandaag een gratis bestelwidget op je bestaande website.",
+        "widget": "Je gebruikt GloriaFood al en de gratis bestelfuncties voldoen tijdens de aangekondigde ondersteuningsperiode aan je behoeften.",
         "self": "Je vindt het prima om het systeem zelf op te zetten en te beheren.",
-        "freeTier": "Het gratis plan dekt al wat je nodig hebt — geen reden om meer te betalen."
+        "freeTier": "Je hebt een overstap gepland voordat de aangekondigde einddatum van GloriaFood op 30 april 2027 aanbreekt."
       }
     },
     "fitSofra": {
       "title": "Wanneer SofraPiwas beter past",
       "items": {
-        "one": "Je wilt bestellen, reserveren, loyaliteit en keukenprinten als één systeem, niet als losse modules.",
-        "languages": "Je gasten spreken meer dan één taal — SofraPiwas serveert er tien op dezelfde kaart.",
+        "one": "U wilt bestellingen, reserveringen, loyaliteit en personeelsworkflows voor uw restaurant laten inrichten; de printercompatibiliteit wordt voor uw opstelling gecontroleerd.",
+        "languages": "U wilt gastinterface-opties in verschillende talen en u kunt vertaalde menu-inhoud bijhouden voor de versies die u publiceert.",
         "hands": "Je hebt liever iemand die de tafel mét je dekt — en één berichtje verwijderd blijft — dan alles alleen doen.",
         "domain": "Je wilt je restaurant op een eigen domein, in je eigen valuta, gehost in de EU."
       }
     },
     "sources": {
       "title": "Bronnen",
-      "note": "Elk GloriaFood-feit op deze pagina is op {date} gecontroleerd op hun openbare pagina's:",
+      "note": "De GloriaFood-feiten op deze pagina zijn op {date} gecontroleerd aan de hand van hun openbare pagina's:",
       "items": {
         "pricing": "GloriaFood-prijspagina",
         "app": "GloriaFood-bestelapp",
-        "translation": "GloriaFood-interfacetalen"
+        "translation": "Informatie van GloriaFood over systeemtalen",
+        "service": "Officiële service-update van GloriaFood"
       }
     },
     "ctaTitle": "Proef het verschil",
     "ctaBody": "De snelste manier om te vergelijken is SofraPiwas zien draaien in een echt restaurant — of op je eigen tafels.",
     "ctaButton": "Aan de slag",
-    "ctaCase": "Lees de RUMI-casestudy"
+    "ctaCase": "Lees de RUMI-casestudy",
+    "service": {
+      "title": "Service-update GloriaFood",
+      "body": "GloriaFood meldt dat de dienst op 30 april 2027 eindigt en dat bestaande klanten tot die datum ondersteuning krijgen. Oracle biedt geen directe vervanging en verwijst naar FoodAmigos.",
+      "link": "Lees de officiële service-update van GloriaFood.",
+      "transitionTitle": "Gebruikt je restaurant GloriaFood? Plan de overstap vóór die datum:",
+      "steps": {
+        "confirm": "Bevestig bij GloriaFood de einddatum, de ondersteuning en de mogelijkheden om gegevens te exporteren.",
+        "inventory": "Breng alle contactpunten en koppelingen in kaart: websitewidget, QR-codes, social links, reserveringen, bezorginstellingen, betalingen en printers.",
+        "export": "Vraag exports aan van menu's, opties, foto's, allergenen en bedrijfsgegevens; bevestig welke data beschikbaar is, in welk formaat en hoe lang die wordt bewaard.",
+        "pilot": "Test de vervanger met je team. Controleer bestellen ter plaatse, afhalen of bezorgen, meldingen, betalingen, rapporten en printen voordat je live links aanpast."
+      }
+    }
   },
   "changelog": {
     "meta": {
@@ -438,7 +443,7 @@
     "entries": {
       "currency": {
         "title": "Jouw valuta, van begin tot eind",
-        "body": "Elk restaurant op SofraPiwas draait nu in zijn eigen valuta — menukaart, bestellingen, bonnen en betaalbewijzen spreken dezelfde taal. We legden ook de basis voor een eigen uitstraling per restaurant, met een klassiek en een ambachtelijk sjabloon in de maak."
+        "body": "Elk SofraPiwas-restaurant gebruikt nu de ingestelde valuta voor menu, bestellingen, tickets en kassabonnen."
       },
       "hardening": {
         "title": "Week van beveiliging & betrouwbaarheid",
@@ -455,6 +460,10 @@
       "launch": {
         "title": "SofraPiwas opent de deuren",
         "body": "sofrapiwas.com is live — en het partnerprogramma ook: bureaus en zelfstandigen melden zich aan, worden persoonlijk goedgekeurd en volgen elk restaurant van het eerste gesprek tot live service, met transparante commissie-opvolging."
+      },
+      "configurator": {
+        "title": "Stel je plan samen voordat je je aanmeldt",
+        "body": "Op 29 juli lanceerden we een openbare planbouwer op de aanmeldpagina. Restaurants kunnen modules, gasttalen, een Classic- of Craft-stijl en een valuta kiezen en live de maandprijs in EUR uit de modulecatalogus zien voordat ze een account aanvragen. Een betaalkaart is niet nodig; het abonnement start pas wanneer je het vanuit je dashboard start."
       }
     }
   },
@@ -1299,7 +1308,7 @@
         "reservations": "Online reserveren en tafelbeheer",
         "loyalty": "Punten, klantgroepen en kortingen",
         "printing": "Companion-app voor thermische printers",
-        "online-payments": "Kaart en lokale methoden zoals iDEAL of TWINT, direct op je eigen Stripe-account",
+        "online-payments": "Optionele module voor online betalingen; beschikbare methoden hangen af van de markt en Stripe-configuratie van het restaurant.",
         "extra-languages": "Naast Engels + één, tot 10 talen"
       },
       "rowTrial": "gratis periode"
@@ -1481,7 +1490,7 @@
       "languagesHint": "Engels is altijd inbegrepen. Vanaf een derde taal komt de extra-talen module erbij.",
       "currency": "Valuta",
       "perMonth": "per maand",
-      "priceHint": "Dit is je maandprijs, gefactureerd zodra je abonnement start. Aanmelden kan zonder kaart — je start het zelf in je dashboard wanneer je wilt.",
+      "priceHint": "Dit is de maandelijkse EUR-lijstprijs exclusief eventueel toepasselijke btw. Je hebt geen betaalkaart nodig om je aan te melden — je start het abonnement vanuit je dashboard wanneer je er klaar voor bent.",
       "bundleSaving": "Pakket «{bundle}» toegepast — u bespaart {saving}",
       "module": {
         "core": "Basis — QR-menu en online bestellen",
@@ -1500,7 +1509,7 @@
         "reservations": "Online reserveren en tafelbeheer",
         "loyalty": "Punten, klantgroepen en kortingen",
         "printing": "Companion-app voor thermische printers",
-        "online-payments": "Kaart en lokale methoden zoals iDEAL of TWINT, direct op je eigen Stripe-account"
+        "online-payments": "Optionele module. Beschikbare betaalmethoden en activering hangen af van je markt en Stripe-configuratie; vraag ons om de beschikbaarheid te bevestigen."
       },
       "template": {
         "classic": "Klassiek",
@@ -1521,7 +1530,7 @@
         "commissionLabel": "{floor}/maand + {percent} per bestelling",
         "commissionHint": "Een lagere vaste prijs, en de rest alleen als een gast online betaalt.",
         "crossover": "Onder ongeveer {amount} aan online omzet per maand kost {floor}/maand + {percent} minder dan de vaste {price}; daarboven is de vaste prijs voordeliger.",
-        "deferredNote": "Online betalen heeft je eigen Stripe-account nodig, die alleen jij kunt aanmaken — we sturen je de link zodra je live bent. Tot die tijd is dit alleen je voorkeur; die gaat direct daarna in."
+        "deferredNote": "Voor online betalingen is een eigen Stripe-account en aparte configuratie nodig. Deze keuze legt je voorkeur vast; we bevestigen beschikbare methoden en vervolgstappen zodra je restaurant klaar is."
       }
     }
   },
@@ -1682,5 +1691,194 @@
     "unknownToken": "Deze link kennen we niet. Elke link hoort bij één restaurant — gebruik de link uit je welkomstmail, of de knop in je eigen beheer onder Instellingen → Betalingen.",
     "unavailable": "We konden Stripe zojuist niet bereiken, dus je formulier kan niet openen. Er gaat niets verloren — probeer dezelfde link over een paar minuten opnieuw.",
     "contact": "Blijft het gebeuren, beantwoord dan een van onze e-mails; dan lossen we het samen op."
+  },
+  "discovery": {
+    "alternatives": {
+      "meta": {
+        "description": "Een gedateerde vergelijking met bronverwijzingen van SofraPiwas, FoodAmigos en Lightspeed voor restaurants in Zwitserland, met openbare prijzen en aandachtspunten vóór de migratie van GloriaFood.",
+        "title": "GloriaFood-alternatieven voor restaurants in Zwitserland (2026)"
+      },
+      "label": "Vergelijk uw opties",
+      "title": "GloriaFood-alternatieven voor Zwitserse restaurants",
+      "checked": "Bronnen gecontroleerd: {date}",
+      "scopeNote": "Dit is een overzicht op basis van bronnen, geen ranglijst. Productbeschrijvingen en migratiebeloften zijn toegeschreven aan de leverancier zelf. De geraadpleegde openbare pagina's bevestigen niet voor elke leverancier beschikbaarheid in Zwitserland, verwerkingskosten of contractvoorwaarden; vraag om een schriftelijke offerte voor uw restaurant.",
+      "intro": "GloriaFood zegt dat de service eindigt op 30 april 2027 en dat de ondersteuning voor bestaande klanten tot die datum voortduurt. Oracle zegt geen directe vervanging te hebben en verwijst klanten naar FoodAmigos. Als u GloriaFood gebruikt, vergelijk dan de opties met uw eigen menu, servicestroom, betalingen, gegevens en personeelsbehoeften voordat u live links wijzigt.",
+      "table": {
+        "columns": {
+          "provider": "Aanbieder",
+          "published": "Wat de openbare pagina zegt",
+          "fit": "Past mogelijk als",
+          "verify": "Controleer vóór uw keuze"
+        },
+        "note": "De informatie hieronder komt van leverancierspagina's die op {date} zijn gecontroleerd. Openbare prijzen kunnen wijzigen en add-ons of betaalkosten uitsluiten.",
+        "caption": "Een vergelijking van restaurantsoftwareopties voor Zwitserland",
+        "title": "Vergelijk op basis van uw bedrijfsvoering"
+      },
+      "subtitle": "Een gedateerde vergelijking met bronnen van drie verschillende opties: een kassasysteem op de Zwitserse markt, de migratieaanbieder die GloriaFood noemt en SofraPiwas met hulp bij de inrichting.",
+      "providers": {
+        "sofra": {
+          "name": "Sofra Piwas",
+          "verify": "De gepubliceerde prijs is in EUR. Controleer de exacte modulemix, taalinstellingen, valutaweergave en betalingsmethoden in uw plan en onboarding.",
+          "fit": "U wilt bestellingen, reserveringen en loyaliteit, met personeelsworkflows die voor uw restaurant worden ingericht en printercompatibiliteit die voor uw opstelling wordt gecontroleerd.",
+          "published": "De openbare planbouwer vermeldt Core vanaf € 19/maand en toont een maandelijks EUR-totaal voor de geselecteerde modules, gasttalen, uiterlijk en valuta vóór toepasselijke btw. Voor het aanvragen van een account is geen kaart nodig; facturering start pas wanneer u een abonnement start in het dashboard."
+        },
+        "foodAmigos": {
+          "fit": "U gebruikt GloriaFood al en wilt de migratieprovider evalueren die Oracle momenteel noemt.",
+          "verify": "De geraadpleegde openbare pagina's bevestigen geen beschikbaarheid in Zwitserland, CHF-prijzen of lokale betaalmethoden. Laat de omvang, exportindeling, kosten, betaalmethoden, gegevensverwerking en planning schriftelijk bevestigen.",
+          "published": "FoodAmigos zegt dat het team het menu, website-inhoud, klantgegevens en instellingen kan overzetten. Het bedrijf adverteert ook met 0% commissie. Dit zijn uitspraken van de leverancier zelf. De geraadpleegde migratiepagina vermeldt geen standaardprijs.",
+          "name": "FoodAmigos — migratieoptie waar GloriaFood naar verwijst"
+        },
+        "lightspeed": {
+          "name": "Lightspeed Restaurant",
+          "fit": "U wilt een restaurant-POS met QR-bestelling op de Zwitserse markt evalueren.",
+          "verify": "Bevestig het exacte abonnement, de hardware, QR-add-ons, betalingsverwerker, transactiekosten en contractvoorwaarden in een actuele offerte; het geadverteerde maandabonnement is slechts een deel van de totale kosten.",
+          "published": "De Zwitserse restaurantpagina maakt reclame voor tafel- en QR-bestellingen met geïntegreerde betalingen, waaronder TWINT. Op de openbare prijspagina staat Basic voor CHF 89/maand voor één licentie, met QR-bestelling/betaling als add-on, en Core voor CHF 159/maand voor twee licenties, inclusief QR-bestelling/betaling."
+        }
+      },
+      "transition": {
+        "title": "Een GloriaFood-transitiechecklist met een laag risico",
+        "intro": "Houd uw huidige klantroute beschikbaar terwijl u de vervanging ervan test. De aangekondigde einddatum is een planningsgrens, geen reden om zonder repetitie van werkende dienst te wisselen.",
+        "steps": {
+          "inventory": "Maak een lijst van elk live touchpoint en workflow: websiteknoppen, QR-codes per tafel, sociale en kaartlinks, reserveringen, bezorging of afhaling, betalingen, meldingen, rapporten en keukenafdrukken.",
+          "export": "Vraag GloriaFood wat er geëxporteerd mag worden, in welk formaat en tot wanneer. Vraag het menu, de aanpassingen, foto's, allergenennotities, klantgegevens en instellingen op die je nodig hebt; verifieer de export voordat u iets annuleert.",
+          "pilot": "Bouw een representatief menu opnieuw op en test het met het personeel op echte telefoons. Controleer talen, prijzen, modifiers, orderrouting, ontvangstbewijzen, betalingen en printer- of keukendisplay.",
+          "cutover": "Kies een rustig servicevenster, update één klantlink tegelijk, houd een personeelsreserve gereed en monitor de eerste live bestellingen voordat u de oude route verwijdert."
+        }
+      },
+      "faq": {
+        "endDate": {
+          "q": "Wanneer eindigt de GloriaFood-service?",
+          "a": "In de huidige kennisgeving van GloriaFood staat dat de dienst op 30 april 2027 het einde van zijn levensduur bereikt en dat de ondersteuning voor bestaande klanten tot die datum voortduurt. Controleer de officiële kennisgeving opnieuw voordat u een migratieschema opstelt."
+        },
+        "foodAmigos": {
+          "q": "Is FoodAmigos een directe Oracle-vervanger voor GloriaFood?",
+          "a": "Volgens de mededeling van Oracle wordt er geen directe vervanging aangeboden. Het noemt FoodAmigos een aanbieder met onboarding-middelen voor klanten die ervoor kiezen om te verhuizen. Door deze verwijzing wordt geen gelijkwaardigheid van kenmerken, Zwitserse beschikbaarheid of een bepaald migratieresultaat vastgesteld."
+        },
+        "swissPayments": {
+          "q": "Welke optie moet ik kiezen voor Zwitserse betalingen?",
+          "a": "Begin met de betaalmethoden en de processor die uw eigen restaurant nodig heeft en verifieer vervolgens de geschiktheid, kosten, betalingsvaluta en instellingen schriftelijk. De Zwitserse pagina van Lightspeed maakt reclame voor TWINT; openbare bronnen die hier worden beoordeeld, stellen niet voor elk abonnement of elke aanbieder een gelijkwaardige Zwitserse betalingsbeschikbaarheid vast."
+        }
+      },
+      "sources": {
+        "title": "Bronnen en datum gecontroleerd",
+        "note": "Leverancierspagina's zijn gecontroleerd op {date}. Prijzen, plannen en servicemededelingen kunnen veranderen.",
+        "items": {
+          "gloriafood": "Officiële servicekennisgeving van GloriaFood en verwijzing van FoodAmigos",
+          "lightspeedSwiss": "Lightspeed Restaurant Zwitserse productpagina",
+          "foodAmigos": "FoodAmigos-pagina over migratie vanaf GloriaFood",
+          "lightspeedPrices": "Lightspeed Restaurant Zwitserse prijspagina",
+          "sofra": "Openbare planbouwer van SofraPiwas"
+        }
+      },
+      "related": {
+        "label": "Gerelateerde handleidingen",
+        "gloriafood": "GloriaFood vergelijkings- en transitiechecklist",
+        "switzerland": "QR-menu-installatiegids voor Zwitserland",
+        "geneva": "QR-menu-installatiegids voor Genève"
+      }
+    },
+    "switzerland": {
+      "meta": {
+        "title": "QR-menu en bestelgids voor Zwitserland",
+        "description": "Een praktische checklist voor Zwitserse restaurants voor QR-menu's: kies gasttalen, houd CHF-prijzen consistent, breng tafelcodes in kaart en oefenbestellingen, betaling en keukenoverdracht."
+      },
+      "label": "Veldgids voor restaurants",
+      "subtitle": "Een praktische workflow voor talen, prijzen, tafelcodes en serviceoverdracht, geschreven voor het team dat deze moet runnen tijdens een drukke dienst.",
+      "checked": "Lokale taalbronnen gecontroleerd: {date}",
+      "title": "Stel een QR-menu in voor een Zwitsers restaurant",
+      "intro": "Zwitserland heeft vier nationale talen – Duits, Frans, Italiaans en Reto-Romaans – maar dat betekent niet dat elk restaurant elk menu in alle vier moet publiceren. Kies versies die passen bij uw locatie en gasten, en die uw team accuraat kan houden.",
+      "stepsTitle": "Doorloop de installatie in deze volgorde",
+      "steps": {
+        "languages": {
+          "title": "Kies talen die uw team kan onderhouden",
+          "body": "Begin met de taal die gasten op deze locatie verwachten en voeg versies toe die passen bij uw echte klantenmix. In Duitstalig Zwitserland verschillen spreekdialecten; voor geschreven communicatie wordt standaardduits gebruikt. Houd gerecht- en optienamen en beschrijvingen in elke versie gelijk."
+        },
+        "currency": {
+          "title": "Kies één betrouwbare bron voor prijzen",
+          "body": "Kies bewust de menuvaluta — CHF is vaak het startpunt voor een Zwitsers restaurant — en controleer of artikelprijzen, extra’s, bonnen en online afrekenen overeenkomen. Vraag vóór de start na of een betaalprovider in een andere valuta uitbetaalt of extra kosten berekent."
+        },
+        "qrFlow": {
+          "title": "Bepaal wat de QR-code moet doen",
+          "body": "Kies of een QR-code een menu toont, een bestelling start of ook online betalen aanbiedt. Koppel iedere tafelcode aan de juiste tafel en controleer waar het team de bestelling ziet nadat een gast deze heeft verstuurd."
+        },
+        "menuData": {
+          "title": "Vertaal de volledige keuze, niet alleen de kopjes",
+          "body": "Controleer gerecht- en optienamen, beschrijvingen, maten, extra's, beschikbaarheid en de allergeneninformatie die uw keuken bijhoudt in elke taal. Wijs één menu-eigenaar aan die wijzigingen tegelijk publiceert, zodat geen taal achterloopt."
+        },
+        "rehearsal": {
+          "title": "Oefen één volledig servicepad",
+          "body": "Scan elke code met een echte telefoon, kies de juiste taal, wijzig een optie en verstuur een testbestelling. Controleer tafelherkenning, keuken- of printerroutering, prijzen, bonnen en de terugvaloptie als wifi, telefoon of bestellen uitvalt."
+        }
+      },
+      "sources": {
+        "title": "Lokale bron",
+        "items": {
+          "dialects": "Zwitserse Federale Ministerie van Buitenlandse Zaken: talen en dialecten",
+          "languages": "Zwitserse Federale Ministerie van Buitenlandse Zaken: talen in Zwitserland"
+        },
+        "note": "Taalfeiten gecontroleerd op {date}; workflowstappen zijn praktische aanbevelingen voor operators."
+      },
+      "fieldCheck": {
+        "title": "Voordat u elke code afdrukt",
+        "body": "Houd een korte lijst bij van tafels en codes. Scan na een wijziging van menu, tafelnummer, prijs of betaling een geprinte code opnieuw om te controleren of deze nog het juiste live menu opent."
+      },
+      "related": {
+        "label": "Gerelateerde pagina's",
+        "alternatives": "Vergelijk alternatieven voor restaurantsoftware",
+        "geneva": "Genève Frans-eerste QR-menugids"
+      }
+    },
+    "geneva": {
+      "label": "Veldgids voor restaurants in Genève",
+      "meta": {
+        "title": "QR-menu-installatiegids voor restaurants in Genève",
+        "description": "Een Frans-eerst QR-menuproces voor restaurants in Genève: kies gasttalen, vertaal het volledige menu, koppel codes aan tafels en test de overdracht aan het team voor de start."
+      },
+      "checked": "Lokale taalbronnen gecontroleerd: {date}",
+      "steps": {
+        "language": {
+          "title": "Maak het Frans tot een duidelijk uitgangspunt",
+          "body": "Stel Frans in als standaardmenu en houd de taalkeuze zichtbaar. Voeg Engels of andere talen toe als ze echte gasten helpen. De vier Zwitserse nationale talen hoeven niet automatisch voor elk restaurant aan te staan."
+        },
+        "tables": {
+          "title": "Geef elke tafel de juiste code",
+          "body": "Print een code voor elke bedoelde tafel en scan deze vanuit het oogpunt van een gast. Als gasten kunnen bestellen, controleer dan of het ticket met het juiste tafelnummer bij het team aankomt. Is het alleen een menu, maak de volgende stap duidelijk."
+        },
+        "menu": {
+          "title": "Vul eerst het Franse bronmenu in",
+          "body": "Controleer de namen, beschrijvingen, porties, aanpassingen en extra's van gerechten in het Frans en vertaal vervolgens de hele keuze naar elke ingeschakelde taal. Houd de beschikbaarheid van artikelen en de allergeeninformatie die uw keuken bijhoudt, op één lijn tussen de versies."
+        },
+        "service": {
+          "body": "Laat medewerkers en een gast het menu op hun telefoon uitproberen in het Frans en elke ingeschakelde taal. Oefen een wisselgeld of een uitverkocht artikel, een bestelling voor een diner, een betaling indien ingeschakeld, een overdracht aan de keuken of een printer, en hoe het personeel helpt als het scannen of de verbinding mislukt.",
+          "title": "Oefen een echte dienst, inclusief een terugvaloptie"
+        },
+        "maintain": {
+          "body": "Wijs één persoon aan die eigenaar is van het menu. Wanneer een prijs, wijziging of gerecht verandert, update dan elke taal voordat u deze publiceert; scan periodiek afgedrukte codes en verwijder oude wanneer tabellen of koppelingen veranderen.",
+          "title": "Houd wijzigingen gesynchroniseerd"
+        }
+      },
+      "stepsTitle": "Bouw de workflow voor gasten en personeel",
+      "title": "QR-menu in Genève: begin met Frans",
+      "subtitle": "Gebruik Frans als uitgangspunt voor het menu en voeg daarna de talen toe die uw gasten nodig hebben en uw team actueel kan houden.",
+      "intro": "Frans is de officiële taal van de Republiek en het kanton Genève. Voor een restaurant in Genève is een Frans menu een praktisch uitgangspunt. Voeg talen toe op basis van uw gasten en van de vertalingen die uw team zorgvuldig kan bijhouden.",
+      "fieldCheck": {
+        "title": "Een echte Genève-referentie",
+        "body": "SofraPiwas publiceert RUMI, een restaurant in Genève, als klantcasestudy. Het is een productvoorbeeld, geen claim over gemeten bedrijfsresultaten.",
+        "link": "Lees de RUMI-casestudy"
+      },
+      "sources": {
+        "items": {
+          "languages": "Zwitserse Federale Ministerie van Buitenlandse Zaken: talen in Zwitserland",
+          "officialLanguage": "Republiek en kanton Genève: Frans als officiële taal van het kanton"
+        },
+        "note": "Taalfeiten gecontroleerd op {date}; workflowstappen zijn praktische aanbevelingen voor operators.",
+        "title": "Lokale bronnen"
+      },
+      "related": {
+        "label": "Gerelateerde pagina's",
+        "alternatives": "Vergelijk alternatieven voor restaurantsoftware",
+        "switzerland": "QR-menu-installatiegids voor Zwitserland"
+      }
+    }
   }
 }

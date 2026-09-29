@@ -4,7 +4,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import "../globals.css";
 import { routing } from "@/i18n/routing";
-import { SITE_URL, pageAlternates, OG_IMAGE } from "@/lib/seo";
+import { IS_CANONICAL_SITE, SITE_URL, pageAlternates, OG_IMAGE } from "@/lib/seo";
 import { fontClassNames, themeInitScript } from "@/lib/fonts";
 import ThemeSync from "@/components/ThemeSync";
 
@@ -40,7 +40,7 @@ export async function generateMetadata({
       description: t("description"),
       images: [OG_IMAGE],
     },
-    robots: { index: true, follow: true },
+    robots: { index: IS_CANONICAL_SITE, follow: true },
   };
 }
 

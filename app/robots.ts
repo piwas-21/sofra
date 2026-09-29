@@ -1,19 +1,16 @@
 import type { MetadataRoute } from "next";
 import { IS_CANONICAL_SITE, SITE_URL } from "@/lib/seo";
 
-// AI answer engines cite what they can crawl — explicitly welcome their bots
-// (AEO: workspace docs/plans/SOFRA-AEO-PLAN.md §1). Keep the default allow-all
-// too; never add WAF/Caddy rules that fingerprint-block these agents.
-const AI_CRAWLERS = [
-  "GPTBot",
-  "OAI-SearchBot",
-  "ChatGPT-User",
-  "ClaudeBot",
-  "Claude-User",
-  "PerplexityBot",
-  "Google-Extended",
-  "CCBot",
-];
+// Keep policy by purpose clear: search/citation fetchers, user-requested fetches,
+// model-development controls, and the Common Crawl archive crawler are distinct.
+// These are explicit allows for transparency; the wildcard allow remains the
+// actual baseline. Do not fingerprint-block any of them in WAF/Caddy rules.
+const CRAWLER_GROUPS = [
+  { purpose: "search", userAgents: ["OAI-SearchBot", "PerplexityBot"] },
+  { purpose: "user-requested fetch", userAgents: ["ChatGPT-User", "Claude-User"] },
+  { purpose: "model development", userAgents: ["GPTBot", "ClaudeBot", "Google-Extended"] },
+  { purpose: "web archive", userAgents: ["CCBot"] },
+] as const;
 
 /**
  * `robots.txt` — allow-all on the canonical site, DISALLOW-all anywhere else.
@@ -38,7 +35,9 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       { userAgent: "*", allow: "/" },
-      ...AI_CRAWLERS.map((userAgent) => ({ userAgent, allow: "/" })),
+      ...CRAWLER_GROUPS.flatMap(({ userAgents }) =>
+        userAgents.map((userAgent) => ({ userAgent, allow: "/" })),
+      ),
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
   };

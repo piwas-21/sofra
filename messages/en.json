@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "SofraPiwas — Restaurant software with a warm heart",
-    "description": "QR menus, live orders, reservations and loyalty — one kitchen-friendly platform, proven in a real restaurant every single service. Named for the sofra — a table laid for guests."
+    "description": "SofraPiwas brings QR menus, online ordering, reservations, loyalty and staff workflows together. Modules, payment methods, language coverage and hardware are confirmed for each restaurant setup."
   },
   "header": {
     "features": "What's cooking",
@@ -21,20 +21,20 @@
     "note": "A «sofra» is a table laid for guests. That's the whole philosophy.",
     "ctaPrimary": "Get started",
     "ctaSecondary": "See what's cooking",
-    "proof": "Running every service at RUMI Restaurant, Geneva — orders, kitchen, reservations and printers, live in production."
+    "proof": "RUMI is SofraPiwas's Geneva reference restaurant — explore its current public menu and table-reservation pages."
   },
   "features": {
     "label": "What's cooking",
     "title": "Everything on one table",
-    "subtitle": "Six courses, no filler. Each one battle-tested in a real restaurant before it ever reached this page.",
+    "subtitle": "Choose the guest and staff workflows that fit your restaurant. Optional modules, language coverage and hardware are confirmed for each setup.",
     "items": {
       "qr": {
         "title": "QR menus & ordering",
         "text": "Guests scan, browse and order from the table — with photos, allergens and customizations. No app to install."
       },
       "live": {
-        "title": "Live order boards",
-        "text": "Kitchen, cashier and servers each get their own live view. New orders arrive the second they're placed."
+        "title": "Staff order views",
+        "text": "Choose the kitchen, cashier and service views that fit your restaurant. We confirm which staff workflows are enabled for your setup."
       },
       "reservations": {
         "title": "Reservations",
@@ -42,15 +42,15 @@
       },
       "loyalty": {
         "title": "Loyalty points",
-        "text": "Fidelity points that bring regulars back, with discount rules you control per customer group."
+        "text": "Guests can earn fidelity points; discount rules can be configured by customer group."
       },
       "printing": {
-        "title": "Kitchen tickets, printed",
-        "text": "A companion app drives your thermal printers — orders hit the kitchen on paper, exactly where you want them."
+        "title": "Thermal printer integration",
+        "text": "A Windows and Android companion app supports network ESC/POS printers. Confirm printer compatibility and installation for your restaurant before relying on printed tickets."
       },
       "languages": {
-        "title": "10 languages built in",
-        "text": "Your menu speaks your guests' languages out of the box — from French to Dutch to Arabic."
+        "title": "10 guest-interface languages",
+        "text": "The guest interface offers ten language options. Menu-item text appears in the translations available for that menu, so check your catalogue coverage before publishing each language."
       }
     }
   },
@@ -64,22 +64,22 @@
       },
       "two": {
         "title": "We lay your sofra",
-        "text": "We set up your menu, QR codes, printers and staff views — and hand you the keys."
+        "text": "We configure your menu, QR links and enabled staff workflows with you. Printer hardware and payment methods are confirmed and tested for your restaurant setup."
       },
       "three": {
         "title": "You serve",
-        "text": "Orders flow, tickets print, regulars collect points. We keep the plates spinning behind the scenes."
+        "text": "You launch the guest flows agreed for your restaurant. We stay in touch as your menu, staff workflows and hardware setup evolve."
       }
     }
   },
   "showcase": {
     "label": "The proof of the pudding",
     "title": "Taste it live",
-    "subtitle": "SofraPiwas isn't a slideware demo — it has been running a real dining room, every service, since day one.",
-    "cardStamp": "Live in production",
+    "subtitle": "SofraPiwas is developed around a Geneva restaurant reference. Browse RUMI's live menu and reservation page to see the guest-facing flow.",
+    "cardStamp": "Live guest pages",
     "cardTitle": "RUMI Restaurant — Geneva",
-    "cardBody": "QR menus on every table, orders flowing to the kitchen and cashier screens, reservations, loyalty points and thermal tickets — all running on SofraPiwas.",
-    "cardHint": "Open the menu and browse like a guest — that's exactly the product.",
+    "cardBody": "RUMI's public menu and table-reservation pages run on SofraPiwas. The guest interface offers ten language options, while the live menu's translated content is partial.",
+    "cardHint": "Open the menu and browse as a guest — see the live dishes, prices and ordering flow.",
     "visit": "Visit rumirestaurant.ch",
     "ctaTitle": "Want this on your tables?",
     "ctaBody": "Restaurant, café or takeaway — tell us about your place and we'll get back to you within a day.",
@@ -90,18 +90,19 @@
   "pricing": {
     "label": "Menu",
     "title": "Menu du jour",
-    "subtitle": "Early access — simple as a chalkboard.",
+    "subtitle": "See the monthly EUR list price for your restaurant before you request an account.",
     "founding": {
-      "name": "Founding restaurants",
-      "price": "on the house",
-      "detail": "Free during early access. White-glove onboarding, direct line to the founders, and a say in what we cook next."
+      "name": "Build your plan",
+      "price": "from €19 / month",
+      "detail": "Choose the modules, guest languages, look and currency you need. The plan builder shows the monthly EUR list price before applicable VAT."
     },
     "regular": {
-      "name": "Regular menu",
-      "price": "coming soon",
-      "detail": "Fair monthly pricing when we're out of early access. Founding restaurants keep a lifetime discount."
+      "name": "Request an account",
+      "price": "No card needed",
+      "detail": "Request an account without a payment card. Your subscription starts only when you start it from your dashboard."
     },
-    "note": "No card required. No lock-in. Your data is yours."
+    "note": "No card needed to sign up. Your data is yours.",
+    "cta": "See my price"
   },
   "partner": {
     "label": "Partners",
@@ -210,7 +211,10 @@
       "caseStudy": "Case study",
       "compare": "SofraPiwas vs GloriaFood",
       "changelog": "What's new",
-      "legal": "Legal"
+      "legal": "Legal",
+      "alternatives": "Swiss alternatives",
+      "qrMenuSwitzerland": "QR menu guide: Switzerland",
+      "qrMenuGeneva": "QR menu guide: Geneva"
     },
     "copyright": "© {year} SofraPiwas. All rights reserved."
   },
@@ -221,27 +225,27 @@
     "items": {
       "what": {
         "q": "What is SofraPiwas?",
-        "a": "SofraPiwas is a restaurant management platform: QR menus and online ordering, live order boards for kitchen, cashier and servers, reservations, loyalty points and thermal-printer tickets — all in one place. It grew out of the system running every service at RUMI Restaurant in Geneva."
+        "a": "SofraPiwas is a restaurant platform for QR menus, online ordering, reservations, loyalty and staff order workflows. A companion app can connect compatible network ESC/POS printers. Modules and hardware depend on each restaurant's setup. RUMI in Geneva is our reference restaurant."
       },
       "pricing": {
         "q": "How much does SofraPiwas cost?",
-        "a": "During early access, founding restaurants pay nothing — setup and support are on the house, and founding restaurants keep a lifetime discount when regular pricing arrives. Regular plans will be simple flat monthly pricing with optional add-on modules."
+        "a": "Choose your modules, guest languages, look and currency in the plan builder to see your monthly EUR price before applicable VAT. No card is needed to request an account. Your subscription starts only when you start it from your dashboard."
       },
       "payments": {
         "q": "Can my guests pay online — including TWINT?",
-        "a": "Yes — add the Online payments module and your guests pay by card, with local methods like TWINT in Switzerland and iDEAL in the Netherlands. The money goes straight into your own Stripe account and we take no commission. You complete Stripe's one-time verification before your first payment. The module is billed from the day you activate it, so if your account is still being verified when the first invoice lands, ask us and we will credit that month. You can always keep charging at the counter as well."
+        "a": "Online payments is an optional module. The plan builder offers €19/month flat, or €9/month plus 1.5% of each online order. VAT may apply. Supported payment methods and activation depend on your market and Stripe setup; ask us to confirm availability before you rely on a specific method. TWINT is not currently confirmed as available, so ask us before relying on it."
       },
       "languages": {
-        "q": "Which languages does the menu support?",
-        "a": "Ten languages out of the box — English, French, German, Dutch, Italian, Spanish, Turkish, Arabic, Russian and Chinese. Your guests order in their own language from the same menu."
+        "q": "Which languages does the SofraPiwas guest interface support?",
+        "a": "The guest interface offers ten language options: English, French, German, Dutch, Italian, Spanish, Turkish, Arabic, Russian and Chinese. Menu content is translated only where a restaurant has published that language version, so check catalogue coverage before enabling a language."
       },
       "printing": {
-        "q": "Does it work with my kitchen printer?",
-        "a": "Yes. A companion app (Windows and Android) drives ESC/POS thermal printers over the network, so orders print in the kitchen exactly where you want them — no extra hardware subscription."
+        "q": "Can SofraPiwas connect to my kitchen printer?",
+        "a": "The companion app supports network ESC/POS printers on Windows and Android. Confirm your printer model, network and physical setup during onboarding before relying on printed kitchen tickets."
       },
       "who": {
         "q": "Who is behind SofraPiwas, and is it actually used anywhere?",
-        "a": "SofraPiwas is built by a small team based in the Netherlands, and it runs every live service at RUMI Restaurant in Geneva (rumirestaurant.ch) — orders, kitchen board, reservations and printers have been in production there since June 2026. We onboard new restaurants personally."
+        "a": "SofraPiwas is built by a small team based in the Netherlands. RUMI is our Geneva reference restaurant; its public menu and table-reservation pages run on SofraPiwas. Staff workflows, printer hardware and menu translation coverage should be checked for each restaurant setup. We onboard new restaurants personally."
       },
       "domain": {
         "q": "Can I use my own domain name?",
@@ -252,11 +256,11 @@
   "caseStudy": {
     "meta": {
       "title": "Case study: RUMI Restaurant, Geneva — running on SofraPiwas",
-      "description": "RUMI Restaurant in Geneva runs its online ordering, table reservations and kitchen ticket printing on SofraPiwas — in ten guest languages, on EU infrastructure, live in production since June 2026."
+      "description": "RUMI is SofraPiwas's Geneva reference restaurant. Its public menu and table-reservation pages are live; the SofraPiwas guest interface offers ten language options, while the translated menu content varies. Hosted in the EU since June 2026."
     },
     "label": "Case study",
     "title": "RUMI Restaurant, Geneva",
-    "subtitle": "SofraPiwas's first restaurant — and the dining room where every feature proves itself before it ships.",
+    "subtitle": "SofraPiwas's first reference restaurant in Geneva. Explore RUMI's live menu and table-reservation pages.",
     "facts": {
       "location": {
         "label": "Location",
@@ -266,7 +270,7 @@
         "label": "In production since"
       },
       "languages": {
-        "label": "Guest languages",
+        "label": "Guest interface language options",
         "value": "10"
       },
       "hosting": {
@@ -275,34 +279,22 @@
       }
     },
     "runs": {
-      "title": "What RUMI runs on SofraPiwas",
-      "intro": "Not a pilot, not a subset — the restaurant's daily service runs on the platform:",
+      "title": "Guest-facing flows live at RUMI",
+      "intro": "RUMI's public menu and table-reservation pages are live on SofraPiwas. This case describes those guest-facing flows; staff tools and physical hardware are configured and verified separately.",
       "items": {
         "ordering": {
-          "title": "QR menus & online ordering",
-          "text": "Guests scan at the table or order online — photos, allergens, customizations."
-        },
-        "boards": {
-          "title": "Live order boards",
-          "text": "Kitchen, cashier and servers each follow orders on their own live screen."
+          "title": "Live menu and online ordering",
+          "text": "Guests can browse RUMI's current menu, see item details and CHF prices, add dishes to the cart and place an online order."
         },
         "reservations": {
           "title": "Table reservations",
-          "text": "Online booking with table planning and working hours; the team approves with a tap."
-        },
-        "loyalty": {
-          "title": "Loyalty points",
-          "text": "Fidelity points and per-group discount rules keep regulars coming back."
-        },
-        "printing": {
-          "title": "Kitchen ticket printing",
-          "text": "Orders print on network thermal printers — exactly at the stations where they're needed."
+          "text": "Guests can choose table(s), party size, date and time and submit a reservation through RUMI's public page."
         }
       }
     },
     "languagesSection": {
-      "title": "Ten languages at one table",
-      "body": "Geneva is an international city, and RUMI's menu meets it: guests browse and order in English, French, German, Dutch, Italian, Spanish, Turkish, Arabic, Russian or Chinese — same menu, same kitchen."
+      "title": "Ten interface languages; menu coverage varies",
+      "body": "SofraPiwas offers guest-interface options in English, French, German, Dutch, Italian, Spanish, Turkish, Arabic, Russian and Chinese. RUMI's currently published menu is only partly translated; it is not a complete ten-language catalogue. Restaurants should check item names, descriptions and options in each language before publishing it."
     },
     "infra": {
       "title": "The infrastructure behind it",
@@ -319,15 +311,15 @@
   },
   "compare": {
     "meta": {
-      "title": "SofraPiwas vs GloriaFood (2026): an honest comparison",
-      "description": "GloriaFood is a free online-ordering system with paid add-on modules; SofraPiwas is a full-service restaurant platform from the Netherlands. A fair, dated comparison with sources."
+      "title": "SofraPiwas vs GloriaFood (2026): pricing, features & transition",
+      "description": "Compare current features, prices and support dates for SofraPiwas and GloriaFood. GloriaFood has announced service end on 30 April 2027; sources checked 30 September 2026."
     },
     "label": "Side by side",
     "title": "SofraPiwas vs GloriaFood",
     "subtitle": "Two honest ways to put a restaurant online — compared fairly, with sources and a date.",
     "updated": "Last checked: {date}",
-    "intro1": "GloriaFood — part of Oracle — is one of the best-known online-ordering systems: the core product is free, and you add paid modules as you grow. SofraPiwas is a younger, full-service platform built in the Netherlands and proven in daily service in Geneva: ordering, reservations, loyalty and kitchen printing as one system, set up for you personally.",
-    "intro2": "Both are honest choices. Which one fits depends on how much you want to do yourself — the table below sticks to facts we verified on GloriaFood's own pages.",
+    "intro1": "GloriaFood — part of Oracle — lists a free core product with optional paid modules. SofraPiwas is a Netherlands-built restaurant platform. In Geneva, RUMI's public menu, online ordering and table-reservation pages run on SofraPiwas; other staff workflows and hardware are configured for each restaurant.",
+    "intro2": "The right fit depends on your setup and how long you need the service. GloriaFood has announced an end-of-life date; if you use it, include a transition plan in your comparison.",
     "table": {
       "caption": "SofraPiwas and GloriaFood, feature by feature",
       "feature": "At a glance",
@@ -336,8 +328,8 @@
       "rows": {
         "pricing": {
           "label": "Pricing model",
-          "sofra": "Early access: on the house for founding restaurants, with a lifetime discount when regular pricing arrives. After that: a simple flat monthly price with optional modules.",
-          "gf": "Free core: no monthly fee, no commission per order. Paid modules: online payments US$29/month, advanced promotions US$19/month, POS US$49/month per location (two-year commitment)."
+          "sofra": "Core starts at €19/month. Choose modules, guest languages, look and currency to see your monthly EUR price in the plan builder, before applicable VAT. No card is needed to request an account; billing starts only when you start a subscription from your dashboard.",
+          "gf": "Current listing: free core with no monthly fee or commission per order; paid modules include online payments (US$29/month), advanced promotions (US$19/month), and POS (US$49/month per location, two-year commitment). GloriaFood has announced service end on 30 April 2027."
         },
         "ordering": {
           "label": "QR & online ordering",
@@ -356,13 +348,13 @@
         },
         "printing": {
           "label": "Kitchen printing",
-          "sofra": "A companion app (Windows and Android) drives ESC/POS network thermal printers — tickets per station, no extra subscription.",
+          "sofra": "A Windows and Android companion app supports network ESC/POS printers. Confirm printer compatibility and installation for your restaurant before relying on printed tickets.",
           "gf": "Their free order-taking app (Android and iOS) connects to a thermal printer and prints accepted orders automatically."
         },
         "languages": {
           "label": "Languages",
-          "sofra": "Guests browse and order in 10 languages — on the same menu.",
-          "gf": "Product interface available in a dozen languages, translated by their community — see their translation page for specifics."
+          "sofra": "The guest interface offers ten language options. Menu-item text appears in the translations available for that menu; check your catalogue coverage before publishing each language.",
+          "gf": "GloriaFood says its system is available in widely used languages, with more added by community contributors. Its cited page does not give a fixed language count."
         },
         "hosting": {
           "label": "Hosting & domains",
@@ -371,61 +363,74 @@
         },
         "setup": {
           "label": "Setup & support",
-          "sofra": "White-glove onboarding — we set up your menu, QR codes, printers and staff views with you, and stay a direct line away.",
+          "sofra": "Personal onboarding: we configure your menu, QR codes and agreed staff views with you. We confirm compatible printer hardware and setup before you rely on printed tickets.",
           "gf": "Self-service — you set the system up yourself through their admin panel and documentation."
         },
         "payments": {
           "label": "Online payments",
-          "sofra": "Add-on module at €19/month — card plus local methods like TWINT and iDEAL, paid straight into your own Stripe account. No commission.",
+          "sofra": "Optional module: €19/month flat, or €9/month plus 1.5% of each online order. VAT may apply. Supported methods and activation depend on your market and Stripe setup; confirm availability during onboarding.",
           "gf": "Available as a paid module — online / card payments at US$29/month."
         }
       }
     },
-    "disclaimer": "GloriaFood facts above were checked on their public pages in July 2026 and can change — always confirm on their pricing page. GloriaFood is an Oracle product; all names and trademarks belong to their owners. Prices shown are theirs, in US dollars, excluding taxes.",
+    "disclaimer": "GloriaFood's features and prices were checked on 30 September 2026 against its public pages and may change. Its official notice says service ends on 30 April 2027 and support for existing customers continues through that date. Prices shown for GloriaFood are in US dollars, excluding taxes. GloriaFood is an Oracle product; names and trademarks belong to their owners.",
     "qa": {
       "free": {
         "q": "Is GloriaFood really free?",
-        "a": "The core is. Their pricing page states no commission per order and no monthly fee for the basic ordering system; online payments (US$29/month), advanced promotions (US$19/month), the POS (US$49/month per location, two-year commitment), a sales-optimized website and branded mobile apps are paid extras. For many small restaurants the free tier is genuinely enough."
+        "a": "GloriaFood's pricing page currently lists no monthly fee and no commission for its core ordering service. Paid options include online payments (US$29/month), advanced promotions (US$19/month), and POS (US$49/month per location, with a two-year commitment). GloriaFood has announced an end-of-life date of 30 April 2027, with support for existing customers through that date, so plan for a transition rather than treating the free tier as a long-term option."
       },
       "cost": {
         "q": "How much does SofraPiwas cost?",
-        "a": "During early access, founding restaurants pay nothing — setup and support are on the house, and they keep a lifetime discount when regular pricing arrives. Regular plans will be simple flat monthly pricing with optional add-on modules."
+        "a": "Core starts at €19/month. Select modules, guest languages, look and currency in the plan builder to see your monthly EUR price before applicable VAT. No card is needed to request an account; your subscription starts only when you start it from your dashboard."
       },
       "pick": {
         "q": "Which one should I pick?",
-        "a": "If you mainly want a free ordering widget on a website you already run, and you're happy to set it up yourself, GloriaFood is a solid, proven choice. If you want one system for ordering, reservations, loyalty and kitchen printing — set up with you personally, in your guests' languages, on EU infrastructure — that's exactly what SofraPiwas is built for."
+        "a": "If you already use GloriaFood and its documented features meet your needs through the announced support period, you can keep using it while planning a move before 30 April 2027. If you want one system for ordering, reservations, loyalty and kitchen printing with personal setup, compare SofraPiwas' plan and onboarding against your requirements."
       }
     },
     "fitGf": {
-      "title": "When GloriaFood is a fine fit",
+      "title": "When GloriaFood may fit during the support period",
       "items": {
-        "widget": "You want a free ordering widget on your existing website, today.",
+        "widget": "You already use GloriaFood and its free ordering tools cover your needs during the announced support period.",
         "self": "You're comfortable setting up and running the system yourself.",
-        "freeTier": "The free tier already covers what you need — no reason to pay more."
+        "freeTier": "You have a transition plan before GloriaFood's announced end-of-life date: 30 April 2027."
       }
     },
     "fitSofra": {
       "title": "When SofraPiwas fits better",
       "items": {
-        "one": "You want ordering, reservations, loyalty and kitchen printing as one system, not separate modules.",
-        "languages": "Your guests speak more than one language — SofraPiwas serves ten from the same menu.",
+        "one": "You want ordering, reservations, loyalty and staff-order workflows configured for your restaurant, with printer compatibility confirmed for your setup.",
+        "languages": "You want guest-interface options in several languages and can maintain translated menu content for the versions you publish.",
         "hands": "You'd rather have someone lay the table with you — and stay one message away — than do it all alone.",
         "domain": "You want your restaurant on its own domain, in your own currency, hosted in the EU."
       }
     },
     "sources": {
       "title": "Sources",
-      "note": "Every GloriaFood fact on this page was verified on {date} against their public pages:",
+      "note": "GloriaFood facts on this page were checked on {date} against its public pages:",
       "items": {
         "pricing": "GloriaFood pricing page",
         "app": "GloriaFood order-taking app",
-        "translation": "GloriaFood interface languages"
+        "translation": "GloriaFood information about system languages",
+        "service": "GloriaFood official service update"
       }
     },
     "ctaTitle": "Taste the difference",
     "ctaBody": "The fastest way to compare is to see SofraPiwas running in a real restaurant — or on your own tables.",
     "ctaButton": "Get started",
-    "ctaCase": "Read the RUMI case study"
+    "ctaCase": "Read the RUMI case study",
+    "service": {
+      "title": "GloriaFood service update",
+      "body": "GloriaFood says its service will reach end of life on 30 April 2027 and that support for existing customers will continue through that date. Oracle says it has no direct replacement and points customers to FoodAmigos.",
+      "link": "Read GloriaFood's official service update.",
+      "transitionTitle": "If your restaurant uses GloriaFood, plan the change ahead of that date:",
+      "steps": {
+        "confirm": "Confirm the end date, support arrangements and data-export options with GloriaFood.",
+        "inventory": "List every customer touchpoint and integration: website widgets, QR codes, social links, reservations, delivery settings, payments and printers.",
+        "export": "Request exports of menus, modifiers, photos, allergens and operational data; confirm what is available, in which format, and how long it is retained.",
+        "pilot": "Trial the replacement with staff. Test dine-in, pickup or delivery, notifications, payments, reporting and printing before changing live links."
+      }
+    }
   },
   "changelog": {
     "meta": {
@@ -438,7 +443,7 @@
     "entries": {
       "currency": {
         "title": "Your currency, end to end",
-        "body": "Every restaurant on SofraPiwas now runs in its own currency — menu, orders, tickets and receipts all speak the same one. We also laid the groundwork for per-restaurant looks, with a classic and a craft template in the making."
+        "body": "Each SofraPiwas restaurant now uses its configured currency across the menu, orders, tickets and receipts."
       },
       "hardening": {
         "title": "Security & reliability week",
@@ -455,6 +460,10 @@
       "launch": {
         "title": "SofraPiwas opens its doors",
         "body": "sofrapiwas.com is live — and so is the partner program: agencies and independents apply, are approved personally, and follow every restaurant from first call to live service, with transparent commission tracking."
+      },
+      "configurator": {
+        "title": "Build your plan before signing up",
+        "body": "On 29 July, we launched a public plan builder on the signup page. Restaurants can choose modules, guest languages, a Classic or Craft look and a currency, then see a live monthly EUR price from the module catalogue before requesting an account. No card is needed; the subscription starts only when you start it from your dashboard."
       }
     }
   },
@@ -1299,7 +1308,7 @@
         "reservations": "Online booking and table management",
         "loyalty": "Points, customer groups and discounts",
         "printing": "Companion app for thermal printers",
-        "online-payments": "Cards and local methods like TWINT or iDEAL, paid into your own Stripe account",
+        "online-payments": "Optional online-payments add-on; supported methods depend on the restaurant's market and Stripe setup.",
         "extra-languages": "Beyond English + one, up to 10 languages"
       },
       "rowTrial": "free period"
@@ -1481,7 +1490,7 @@
       "languagesHint": "English is always included. A third language adds the extra-languages add-on.",
       "currency": "Currency",
       "perMonth": "per month",
-      "priceHint": "This is your monthly price, billed once your subscription starts. No card needed to sign up — you start it from your dashboard when you're ready.",
+      "priceHint": "This is your monthly EUR list price before any applicable VAT. No card needed to sign up — you start the subscription from your dashboard when you're ready.",
       "bundleSaving": "«{bundle}» bundle applied — you save {saving}",
       "module": {
         "core": "Core — QR menu & online ordering",
@@ -1500,7 +1509,7 @@
         "reservations": "Online booking and table management",
         "loyalty": "Points, customer groups and discounts",
         "printing": "Companion app for thermal printers",
-        "online-payments": "Cards and local methods like TWINT or iDEAL, paid into your own Stripe account"
+        "online-payments": "Optional add-on. Supported payment methods and activation depend on your market and Stripe setup; ask us to confirm availability."
       },
       "template": {
         "classic": "Classic",
@@ -1521,7 +1530,7 @@
         "commissionLabel": "{floor}/month + {percent} per order",
         "commissionHint": "A smaller fixed price, and the rest only when a guest pays online.",
         "crossover": "Below about {amount} a month of online orders, {floor}/month + {percent} costs less than the flat {price}; above that, the flat fee is cheaper.",
-        "deferredNote": "Online payments needs your own Stripe account, which only you can set up — we'll send you the link once you're live. Until then this is just your preference; it switches on right after."
+        "deferredNote": "Online payments requires your own Stripe account and separate setup. This choice records your preference; we will confirm available methods and next steps when your restaurant is ready."
       }
     }
   },
@@ -1682,5 +1691,194 @@
     "unknownToken": "This link is not one we recognise. Links are personal to one restaurant, so please use the one in your welcome email or the button in your own admin under Settings → Payments.",
     "unavailable": "We could not reach Stripe just now, so we cannot open your form. Nothing is lost — please try the same link again in a few minutes.",
     "contact": "If it keeps happening, reply to any of our emails and we will sort it out with you."
+  },
+  "discovery": {
+    "alternatives": {
+      "meta": {
+        "title": "GloriaFood alternatives for Swiss restaurants (2026)",
+        "description": "A dated, source-linked comparison of SofraPiwas, FoodAmigos and Lightspeed for restaurants in Switzerland, including public pricing and checks before migrating from GloriaFood."
+      },
+      "label": "Compare your options",
+      "title": "GloriaFood alternatives for Swiss restaurants",
+      "subtitle": "A dated comparison of three different routes: a Swiss-market POS, a migration option named by GloriaFood, and SofraPiwas for restaurants looking for setup help.",
+      "checked": "Sources checked: {date}",
+      "intro": "GloriaFood says its service ends on 30 April 2027 and that support for existing customers continues through that date. Oracle says it has no direct replacement and points customers to FoodAmigos. If you use GloriaFood, compare options against your own menu, service flow, payments, data and staff needs before changing live links.",
+      "scopeNote": "This is a source-led snapshot, not a ranking. Provider descriptions and migration promises are attributed to the provider that publishes them. Public pages reviewed did not confirm every vendor’s Switzerland availability, processing fees or contract terms; ask for a written, restaurant-specific offer.",
+      "table": {
+        "title": "Compare by operating fit",
+        "note": "The claims below reflect vendor pages checked on {date}. Public list prices can change and may exclude add-ons or payment charges.",
+        "caption": "A comparison of restaurant software options for Switzerland",
+        "columns": {
+          "provider": "Provider",
+          "fit": "May fit when",
+          "published": "What its public page says",
+          "verify": "Confirm before choosing"
+        }
+      },
+      "providers": {
+        "sofra": {
+          "name": "SofraPiwas",
+          "fit": "You want ordering, reservations and loyalty, with staff workflows configured for your restaurant and printer compatibility checked for your setup.",
+          "published": "The public plan builder lists Core from €19/month and shows a monthly EUR total for the selected modules, guest languages, look and currency before applicable VAT. Requesting an account needs no card; billing starts only when you start a subscription in the dashboard.",
+          "verify": "The published price is in EUR. Check the exact module mix, language setup, currency display and payment methods in your plan and onboarding."
+        },
+        "foodAmigos": {
+          "name": "FoodAmigos — the GloriaFood-referred migration option",
+          "fit": "You already use GloriaFood and want to evaluate the migration provider Oracle currently names.",
+          "published": "FoodAmigos says its team can move a restaurant’s menu, website content, customer data and settings; it also advertises 0% commission. These are the provider’s own claims. The reviewed migration page does not publish a standard price.",
+          "verify": "The public pages reviewed did not establish availability in Switzerland, CHF pricing or local payment support. Get written confirmation of migration scope, export format, fees, payment methods, data handling and timing."
+        },
+        "lightspeed": {
+          "name": "Lightspeed Restaurant",
+          "fit": "You want to evaluate a restaurant POS with QR ordering in the Swiss market.",
+          "published": "Its Swiss restaurant page advertises table and QR ordering with integrated payments including TWINT. The public price page lists Basic at CHF 89/month for one licence, with QR order/pay as an add-on, and Core at CHF 159/month for two licences, with QR order/pay included.",
+          "verify": "Confirm the exact plan, hardware, QR add-ons, payment processor, transaction charges and contract terms in a current quote; the advertised monthly subscription is only one part of total cost."
+        }
+      },
+      "transition": {
+        "title": "A low-risk GloriaFood transition checklist",
+        "intro": "Keep your current customer route available while you test its replacement. The announced end date is a planning boundary, not a reason to switch a working service without a rehearsal.",
+        "steps": {
+          "inventory": "List every live touchpoint and workflow: website buttons, QR codes by table, social and map links, reservations, delivery or pickup, payments, notifications, reports and kitchen printing.",
+          "export": "Ask GloriaFood what can be exported, in which format and until when. Request the menu, modifiers, photos, allergen notes, customer data and settings you need; verify the export before cancelling anything.",
+          "pilot": "Rebuild a representative menu and test it with staff on real phones. Check languages, prices, modifiers, order routing, receipts, payments and printer or kitchen display.",
+          "cutover": "Choose a quiet service window, update one customer link at a time, keep a staff fallback ready and monitor the first live orders before removing the old route."
+        }
+      },
+      "faq": {
+        "endDate": {
+          "q": "When does GloriaFood service end?",
+          "a": "GloriaFood’s current notice says the service reaches end of life on 30 April 2027 and that support for existing customers continues through that date. Recheck its official notice before making a migration schedule."
+        },
+        "foodAmigos": {
+          "q": "Is FoodAmigos a direct Oracle replacement for GloriaFood?",
+          "a": "No direct replacement is offered, according to Oracle’s notice. It names FoodAmigos as a provider with onboarding resources for customers who choose to move. That referral does not establish feature equivalence, Swiss availability or a particular migration outcome."
+        },
+        "swissPayments": {
+          "q": "Which option should I choose for Swiss payments?",
+          "a": "Start with the payment methods and processor your own restaurant needs, then verify eligibility, fees, settlement currency and setup in writing. Lightspeed’s Swiss page advertises TWINT; public sources reviewed here do not establish equivalent Swiss payment availability for every plan or provider."
+        }
+      },
+      "sources": {
+        "title": "Sources and date checked",
+        "note": "Vendor pages were checked on {date}. Prices, plans and service notices may change.",
+        "items": {
+          "gloriafood": "GloriaFood official service notice and FoodAmigos referral",
+          "foodAmigos": "FoodAmigos GloriaFood migration page",
+          "sofra": "SofraPiwas public plan builder",
+          "lightspeedSwiss": "Lightspeed Restaurant Swiss product page",
+          "lightspeedPrices": "Lightspeed Restaurant Swiss pricing page"
+        }
+      },
+      "related": {
+        "label": "Related guides",
+        "gloriafood": "GloriaFood comparison and transition checklist",
+        "switzerland": "QR menu setup guide for Switzerland",
+        "geneva": "QR menu setup guide for Geneva"
+      }
+    },
+    "switzerland": {
+      "meta": {
+        "title": "QR menu and ordering setup guide for Switzerland",
+        "description": "A practical Swiss restaurant checklist for QR menus: choose guest languages, keep CHF prices consistent, map table codes and rehearse ordering, payment and kitchen handoff."
+      },
+      "label": "Restaurant field guide",
+      "title": "Set up a QR menu for a Swiss restaurant",
+      "subtitle": "A practical workflow for languages, prices, table codes and service handoff, written for the team that has to run it during a busy shift.",
+      "checked": "Local language sources checked: {date}",
+      "intro": "Switzerland has four national languages—German, French, Italian and Romansh—but that does not mean every restaurant should publish every menu in all four. Choose versions that match your location and guests, and that your team can keep accurate.",
+      "stepsTitle": "Work through the setup in this order",
+      "steps": {
+        "languages": {
+          "title": "Choose languages your team can maintain",
+          "body": "Start with the language your guests expect at this location, then add versions that match your actual customer mix. In German-speaking Switzerland, everyday dialects vary; standard German is used for written communication. Keep dish names, descriptions and modifiers consistent across each published version."
+        },
+        "currency": {
+          "title": "Set one price source of truth",
+          "body": "Choose the menu currency deliberately—CHF is the common starting point for a Swiss restaurant—and check that item prices, add-ons, receipts and online checkout agree. If a payment provider settles in another currency or charges separately, confirm that before launch."
+        },
+        "qrFlow": {
+          "title": "Decide what the QR code should do",
+          "body": "Choose whether it opens a browse-only menu, starts an order, or also offers online payment. Map each table code to the intended table, then confirm what happens after a guest submits an order and where staff see it."
+        },
+        "menuData": {
+          "title": "Translate the full choice, not just the headings",
+          "body": "Review dish names, descriptions, sizes, modifiers, extras, sold-out status and the allergen information your kitchen maintains in every language. Assign one menu owner to publish changes together so one language does not quietly fall behind."
+        },
+        "rehearsal": {
+          "title": "Rehearse one complete service path",
+          "body": "Scan each code on a real phone, open the right language, change an option and submit a test order. Check table identification, kitchen or printer routing, displayed prices, receipts and the staff fallback if Wi-Fi, a phone or the ordering flow fails."
+        }
+      },
+      "fieldCheck": {
+        "title": "Before you print every code",
+        "body": "Keep a short table-to-code list. After changing a menu, table number, price or payment setting, scan a printed code again and confirm it still opens the intended live menu."
+      },
+      "sources": {
+        "title": "Local source",
+        "note": "Language facts checked on {date}; workflow steps are practical operator recommendations.",
+        "items": {
+          "languages": "Swiss Federal Department of Foreign Affairs: languages in Switzerland",
+          "dialects": "Swiss Federal Department of Foreign Affairs: languages and dialects"
+        }
+      },
+      "related": {
+        "label": "Related pages",
+        "alternatives": "Compare restaurant software alternatives",
+        "geneva": "Geneva French-first QR menu guide"
+      }
+    },
+    "geneva": {
+      "meta": {
+        "title": "QR menu setup guide for restaurants in Geneva",
+        "description": "A French-first QR menu workflow for Geneva restaurants: choose guest languages, translate the full menu, map table codes and test staff handoff before launch."
+      },
+      "label": "Geneva restaurant field guide",
+      "title": "A French-first QR menu workflow for Geneva",
+      "subtitle": "Use French as the menu’s starting point, then add the languages your guests need and your team can keep current.",
+      "checked": "Local language sources checked: {date}",
+      "intro": "French is the official language of the Republic and Canton of Geneva. For a restaurant operating in Geneva, a French-first menu is a practical starting point; choose additional guest languages from the people you serve and the translations your team can maintain.",
+      "stepsTitle": "Build the guest and staff workflow",
+      "steps": {
+        "language": {
+          "title": "Make French the clear starting point",
+          "body": "Set French as the default menu and keep a visible language selector. Add English or other languages where they serve real guests. Switzerland’s four national languages are not a reason to turn on every version for every restaurant."
+        },
+        "menu": {
+          "title": "Complete the French source menu first",
+          "body": "Check dish names, descriptions, portions, modifiers and extras in French, then translate the whole choice into each enabled language. Keep item availability and the allergen information your kitchen tracks aligned across versions."
+        },
+        "tables": {
+          "title": "Give every table the right code",
+          "body": "Print a code for each intended table and scan it from the guest side. If guests can order, confirm the submitted ticket reaches staff with the correct table identifier; if the code is browse-only, make the next step obvious."
+        },
+        "service": {
+          "title": "Test a real shift, including the fallback",
+          "body": "Have staff and a guest try the menu on their phones in French and each enabled language. Rehearse a change or sold-out item, a dine-in order, payment if enabled, kitchen or printer handoff, and how staff help when scanning or connectivity fails."
+        },
+        "maintain": {
+          "title": "Keep changes synchronized",
+          "body": "Assign one person to own the menu. When a price, modifier or dish changes, update every language before publishing; periodically scan printed codes and remove old ones when tables or links change."
+        }
+      },
+      "fieldCheck": {
+        "title": "A real Geneva reference",
+        "body": "SofraPiwas publishes RUMI, a Geneva restaurant, as a customer case study. It is a product example, not a claim about measured business results.",
+        "link": "Read the RUMI case study"
+      },
+      "sources": {
+        "title": "Local sources",
+        "note": "Language facts checked on {date}; workflow steps are practical operator recommendations.",
+        "items": {
+          "officialLanguage": "Republic and Canton of Geneva: French as the canton’s official language",
+          "languages": "Swiss Federal Department of Foreign Affairs: languages in Switzerland"
+        }
+      },
+      "related": {
+        "label": "Related pages",
+        "alternatives": "Compare restaurant software alternatives",
+        "switzerland": "QR menu setup guide for Switzerland"
+      }
+    }
   }
 }

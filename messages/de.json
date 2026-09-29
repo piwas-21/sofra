@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "SofraPiwas — Restaurant-Software mit Herz",
-    "description": "QR-Menüs, Live-Bestellungen, Reservierungen und Treuepunkte — eine küchenfreundliche Plattform, bewährt in einem echten Restaurant, Service für Service. Benannt nach dem Wort sofra — ein gedeckter Tisch für Gäste."
+    "description": "SofraPiwas vereint QR-Menüs, Online-Bestellungen, Reservierungen, Treue- und Personalabläufe. Module, Zahlungsmethoden, Sprachabdeckung und Hardware werden für jede Restauranteinrichtung bestätigt."
   },
   "header": {
     "features": "Auf dem Herd",
@@ -21,20 +21,20 @@
     "note": "Eine «SofraPiwas» ist ein für Gäste gedeckter Tisch. Das ist unsere ganze Philosophie.",
     "ctaPrimary": "Jetzt starten",
     "ctaSecondary": "Sehen, was auf dem Herd steht",
-    "proof": "Läuft in jedem Service im RUMI Restaurant, Genf — Bestellungen, Küche, Reservierungen und Drucker, live in Produktion."
+    "proof": "RUMI ist das Genfer Referenzrestaurant von SofraPiwas – entdecken Sie die aktuellen öffentlichen Menüs und Tischreservierungsseiten."
   },
   "features": {
     "label": "Auf dem Herd",
     "title": "Alles auf einem Tisch",
-    "subtitle": "Sechs Gänge, nichts Überflüssiges. Jeder davon in einem echten Restaurant erprobt, bevor er auf diese Seite kam.",
+    "subtitle": "Wählen Sie die Arbeitsabläufe für Gäste und Mitarbeiter, die zu Ihrem Restaurant passen. Optionale Module, Sprachabdeckung und Hardware werden für jedes Setup bestätigt.",
     "items": {
       "qr": {
         "title": "QR-Menüs & Bestellung",
         "text": "Gäste scannen, stöbern und bestellen direkt am Tisch — mit Fotos, Allergenen und Anpassungen. Keine App nötig."
       },
       "live": {
-        "title": "Live-Bestellübersichten",
-        "text": "Küche, Kasse und Service haben je ihre eigene Live-Ansicht. Neue Bestellungen kommen in der Sekunde an, in der sie aufgegeben werden."
+        "title": "Bestellansichten für das Team",
+        "text": "Wählen Sie passende Ansichten für Küche, Kasse und Service. Bei der Einrichtung bestätigen wir, welche Abläufe für Ihr Restaurant aktiviert sind."
       },
       "reservations": {
         "title": "Reservierungen",
@@ -42,15 +42,15 @@
       },
       "loyalty": {
         "title": "Treuepunkte",
-        "text": "Punkte, die Stammgäste zurückbringen — mit Rabattregeln, die Sie pro Kundengruppe steuern."
+        "text": "Gäste können Treuepunkte sammeln; Rabattregeln können nach Kundengruppe konfiguriert werden."
       },
       "printing": {
-        "title": "Küchenbons, gedruckt",
-        "text": "Eine Begleit-App steuert Ihre Thermodrucker — Bestellungen landen auf Papier in der Küche, genau dort, wo Sie sie brauchen."
+        "title": "Integration eines Thermodruckers",
+        "text": "Eine Begleit-App für Windows und Android unterstützt Netzwerk-ESC/POS-Drucker. Überprüfen Sie die Kompatibilität und Installation des Druckers für Ihr Restaurant, bevor Sie sich auf gedruckte Tickets verlassen."
       },
       "languages": {
-        "title": "10 Sprachen an Bord",
-        "text": "Ihre Karte spricht die Sprachen Ihrer Gäste — von Französisch über Niederländisch bis Arabisch."
+        "title": "10 Sprachen der Gastoberfläche",
+        "text": "Die Gastoberfläche bietet zehn Sprachoptionen. Der Text des Menüpunkts wird in den für dieses Menü verfügbaren Übersetzungen angezeigt. Überprüfen Sie daher die Katalogabdeckung, bevor Sie die einzelnen Sprachen veröffentlichen."
       }
     }
   },
@@ -64,22 +64,22 @@
       },
       "two": {
         "title": "Wir decken Ihre SofraPiwas",
-        "text": "Wir richten Karte, QR-Codes, Drucker und Personal-Ansichten ein — und übergeben Ihnen die Schlüssel."
+        "text": "Wir konfigurieren mit Ihnen Ihre Speisekarte, QR-Links und ermöglichten Personalabläufe. Druckerhardware und Zahlungsmethoden werden für die Einrichtung Ihres Restaurants bestätigt und getestet."
       },
       "three": {
         "title": "Sie servieren",
-        "text": "Bestellungen fließen, Bons werden gedruckt, Stammgäste sammeln Punkte. Wir halten im Hintergrund die Teller in der Luft."
+        "text": "Sie starten die für Ihr Restaurant vereinbarten Gästeströme. Wir bleiben in Kontakt, während sich Ihr Menü, Ihre Personalabläufe und Ihre Hardware-Einrichtung weiterentwickeln."
       }
     }
   },
   "showcase": {
     "label": "Probieren geht über Studieren",
     "title": "Live verkosten",
-    "subtitle": "SofraPiwas ist keine Folien-Demo — es betreibt seit dem ersten Tag einen echten Gastraum, Service für Service.",
-    "cardStamp": "Live in Produktion",
+    "subtitle": "SofraPiwas wurde rund um eine Genfer Restaurant-Referenz entwickelt. Durchsuchen Sie das Live-Menü und die Reservierungsseite von RUMI, um den Gästefluss zu sehen.",
+    "cardStamp": "Live-Gastseiten",
     "cardTitle": "RUMI Restaurant — Genf",
-    "cardBody": "QR-Menüs auf jedem Tisch, Bestellungen auf den Küchen- und Kassenbildschirmen, Reservierungen, Treuepunkte und Thermobons — alles auf SofraPiwas.",
-    "cardHint": "Öffnen Sie die Karte und stöbern Sie wie ein Gast — genau das ist das Produkt.",
+    "cardBody": "Die öffentlichen Menü- und Tischreservierungsseiten von RUMI laufen auf SofraPiwas. Die Gastoberfläche bietet zehn Sprachoptionen, während der Inhalt des Live-Menüs teilweise übersetzt ist.",
+    "cardHint": "Öffnen Sie die Speisekarte und stöbern Sie als Gast – sehen Sie sich die Gerichte, Preise und den Bestellablauf live an.",
     "visit": "rumirestaurant.ch besuchen",
     "ctaTitle": "Wollen Sie das auf Ihren Tischen?",
     "ctaBody": "Restaurant, Café oder Takeaway — erzählen Sie uns von Ihrem Lokal, wir melden uns innerhalb eines Tages.",
@@ -90,18 +90,19 @@
   "pricing": {
     "label": "Die Karte",
     "title": "Tagesmenü",
-    "subtitle": "Early Access — einfach wie eine Kreidetafel.",
+    "subtitle": "Sehen Sie den monatlichen EUR-Listenpreis für Ihr Restaurant, bevor Sie ein Konto anfordern.",
     "founding": {
-      "name": "Gründungsrestaurants",
-      "price": "aufs Haus",
-      "detail": "Kostenlos während des Early Access. Persönliche Einrichtung, direkter Draht zu den Gründern und Mitsprache bei dem, was wir als Nächstes kochen."
+      "name": "Plan zusammenstellen",
+      "price": "ab 19 € / Monat",
+      "detail": "Wählen Sie Module, Gastsprachen, Design und Währung. Der Plan-Konfigurator zeigt den monatlichen EUR-Listenpreis vor einer gegebenenfalls anfallenden Mehrwertsteuer."
     },
     "regular": {
-      "name": "Reguläre Karte",
-      "price": "bald",
-      "detail": "Faire monatliche Preise nach dem Early Access. Gründungsrestaurants behalten lebenslang ihren Rabatt."
+      "name": "Konto anfordern",
+      "price": "Keine Karte nötig",
+      "detail": "Sie können ein Konto ohne Zahlungskarte anfordern. Ihr Abo beginnt erst, wenn Sie es in Ihrem Dashboard starten."
     },
-    "note": "Keine Kreditkarte nötig. Keine Bindung. Ihre Daten gehören Ihnen."
+    "note": "Für die Anmeldung ist keine Karte nötig. Ihre Daten gehören Ihnen.",
+    "cta": "Preis anzeigen"
   },
   "partner": {
     "label": "Partner",
@@ -208,9 +209,12 @@
       "partner": "Partner",
       "faq": "FAQ",
       "caseStudy": "Fallstudie",
-      "compare": "SofraPiwas vs GloriaFood",
+      "compare": "SofraPiwas und GloriaFood im Vergleich",
       "changelog": "Was gibt's Neues",
-      "legal": "Rechtliches"
+      "legal": "Rechtliches",
+      "alternatives": "Alternativen in der Schweiz",
+      "qrMenuSwitzerland": "QR-Menü-Leitfaden: Schweiz",
+      "qrMenuGeneva": "QR-Menü-Leitfaden: Genf"
     },
     "copyright": "© {year} SofraPiwas. Alle Rechte vorbehalten."
   },
@@ -221,27 +225,27 @@
     "items": {
       "what": {
         "q": "Was ist SofraPiwas?",
-        "a": "SofraPiwas ist eine Plattform für Restaurantmanagement: QR-Menüs und Online-Bestellung, Live-Bestellübersichten für Küche, Kasse und Service, Reservierungen, Treuepunkte und Bons auf Thermodruckern — alles an einem Ort. Entstanden ist sie aus dem System, das im RUMI Restaurant in Genf jeden Service betreibt."
+        "a": "SofraPiwas ist eine Restaurantplattform für QR-Menüs, Online-Bestellungen, Reservierungen, Treue- und Personalbestellungsworkflows. Eine Begleit-App kann kompatible Netzwerk-ESC/POS-Drucker verbinden. Module und Hardware hängen von der Einrichtung des jeweiligen Restaurants ab. RUMI in Genf ist unser Referenzrestaurant."
       },
       "pricing": {
         "q": "Was kostet SofraPiwas?",
-        "a": "Während des Early Access zahlen Gründungsrestaurants nichts — Einrichtung und Support gehen aufs Haus, und Gründungsrestaurants behalten lebenslang einen Rabatt, wenn die regulären Preise kommen. Die regulären Pläne werden einfach sein: ein fester Monatspreis mit optionalen Zusatzmodulen."
+        "a": "Wählen Sie Module, Gastsprachen, Design und Währung im Plan-Konfigurator, um Ihren monatlichen EUR-Preis vor einer gegebenenfalls anfallenden Mehrwertsteuer zu sehen. Für die Kontoanfrage ist keine Karte nötig. Ihr Abo beginnt erst, wenn Sie es in Ihrem Dashboard starten."
       },
       "payments": {
         "q": "Können meine Gäste online bezahlen — auch mit TWINT?",
-        "a": "Ja — mit dem Modul Online-Zahlungen zahlen Ihre Gäste per Karte sowie mit lokalen Methoden wie TWINT in der Schweiz und iDEAL in den Niederlanden. Das Geld geht direkt auf Ihr eigenes Stripe-Konto, wir nehmen keine Provision. Vor der ersten Zahlung durchlaufen Sie einmalig die Verifizierung von Stripe. Das Modul wird ab dem Tag der Aktivierung berechnet – wird Ihr Konto zum Zeitpunkt der ersten Rechnung noch geprüft, schreiben wir Ihnen diesen Monat auf Anfrage gut. Am Tresen kassieren können Sie weiterhin."
+        "a": "Online-Zahlungen sind ein optionales Modul. Im Plan-Konfigurator können Sie zwischen 19 €/Monat pauschal und 9 €/Monat plus 1,5 % pro Online-Bestellung wählen. Mehrwertsteuer kann anfallen. Verfügbare Zahlungsarten und die Aktivierung hängen von Ihrem Markt und Ihrer Stripe-Einrichtung ab; lassen Sie die Verfügbarkeit bestätigen, bevor Sie mit einer bestimmten Methode planen. TWINT ist derzeit nicht als verfügbar bestätigt; fragen Sie bitte nach, bevor Sie damit planen."
       },
       "languages": {
-        "q": "Welche Sprachen unterstützt die Karte?",
-        "a": "Zehn Sprachen ab Werk — Englisch, Französisch, Deutsch, Niederländisch, Italienisch, Spanisch, Türkisch, Arabisch, Russisch und Chinesisch. Ihre Gäste bestellen in ihrer eigenen Sprache, von derselben Karte."
+        "q": "Welche Sprachen unterstützt die SofraPiwas-Gastoberfläche?",
+        "a": "Die Gastoberfläche bietet zehn Sprachoptionen: Englisch, Französisch, Deutsch, Niederländisch, Italienisch, Spanisch, Türkisch, Arabisch, Russisch und Chinesisch. Menüinhalte werden nur dann übersetzt, wenn ein Restaurant diese Sprachversion veröffentlicht hat. Überprüfen Sie daher die Katalogabdeckung, bevor Sie eine Sprache aktivieren."
       },
       "printing": {
-        "q": "Funktioniert es mit meinem Küchendrucker?",
-        "a": "Ja. Eine Begleit-App (Windows und Android) steuert ESC/POS-Thermodrucker über das Netzwerk — Bestellungen werden in der Küche gedruckt, genau dort, wo Sie sie brauchen. Ohne zusätzliches Hardware-Abo."
+        "q": "Kann SofraPiwas eine Verbindung zu meinem Küchendrucker herstellen?",
+        "a": "Die Begleit-App unterstützt Netzwerk-ESC/POS-Drucker unter Windows und Android. Bestätigen Sie beim Onboarding Ihr Druckermodell, Ihr Netzwerk und Ihre physische Einrichtung, bevor Sie sich auf gedruckte Küchentickets verlassen."
       },
       "who": {
         "q": "Wer steckt hinter SofraPiwas — und wird es wirklich benutzt?",
-        "a": "SofraPiwas wird von einem kleinen Team mit Sitz in den Niederlanden entwickelt und betreibt jeden Live-Service im RUMI Restaurant in Genf (rumirestaurant.ch) — Bestellungen, Küchenübersicht, Reservierungen und Drucker sind dort seit Juni 2026 in Produktion. Neue Restaurants nehmen wir persönlich auf."
+        "a": "SofraPiwas wird von einem kleinen Team mit Sitz in den Niederlanden aufgebaut. RUMI ist unser Genfer Referenzrestaurant; Die öffentlichen Menü- und Tischreservierungsseiten laufen auf SofraPiwas. Für jede Restauranteinrichtung sollten die Arbeitsabläufe des Personals, die Druckerhardware und die Abdeckung der Menüübersetzungen überprüft werden. Wir binden neue Restaurants persönlich ein."
       },
       "domain": {
         "q": "Kann ich meinen eigenen Domainnamen verwenden?",
@@ -252,11 +256,11 @@
   "caseStudy": {
     "meta": {
       "title": "Fallstudie: RUMI Restaurant, Genf — läuft auf SofraPiwas",
-      "description": "Das RUMI Restaurant in Genf betreibt Online-Bestellungen, Tischreservierungen und den Küchenbon-Druck auf SofraPiwas — in zehn Gästesprachen, auf EU-Infrastruktur, seit Juni 2026 in Produktion."
+      "description": "RUMI ist das Genfer Referenzrestaurant von SofraPiwas. Die öffentlichen Menü- und Tischreservierungsseiten sind online. Die Gästeoberfläche von SofraPiwas bietet zehn Sprachoptionen, während der übersetzte Menüinhalt variiert. Seit Juni 2026 in der EU gehostet."
     },
     "label": "Fallstudie",
     "title": "RUMI Restaurant, Genf",
-    "subtitle": "Sofras erstes Restaurant — und der Gastraum, in dem sich jede Funktion beweist, bevor sie ausgeliefert wird.",
+    "subtitle": "SofraPiwass erstes Referenzrestaurant in Genf. Entdecken Sie die Live-Menü- und Tischreservierungsseiten von RUMI.",
     "facts": {
       "location": {
         "label": "Ort",
@@ -266,7 +270,7 @@
         "label": "In Produktion seit"
       },
       "languages": {
-        "label": "Gästesprachen",
+        "label": "Sprachoptionen für die Gastoberfläche",
         "value": "10"
       },
       "hosting": {
@@ -275,34 +279,22 @@
       }
     },
     "runs": {
-      "title": "Was RUMI auf SofraPiwas betreibt",
-      "intro": "Kein Pilot, kein Teilbetrieb — der tägliche Service des Restaurants läuft auf der Plattform:",
+      "title": "Gästeströme live im RUMI",
+      "intro": "Die öffentlichen Menü- und Tischreservierungsseiten von RUMI sind live auf SofraPiwas. In diesem Fall werden die gastorientierten Ströme beschrieben. Mitarbeitertools und physische Hardware werden separat konfiguriert und überprüft.",
       "items": {
         "ordering": {
-          "title": "QR-Menüs & Online-Bestellung",
-          "text": "Gäste scannen am Tisch oder bestellen online — Fotos, Allergene, Anpassungen."
-        },
-        "boards": {
-          "title": "Live-Bestellübersichten",
-          "text": "Küche, Kasse und Service verfolgen Bestellungen je auf dem eigenen Live-Bildschirm."
+          "title": "Live-Menü und Online-Bestellung",
+          "text": "Gäste können die aktuelle Speisekarte von RUMI durchstöbern, Artikeldetails und CHF-Preise einsehen, Gerichte in den Warenkorb legen und eine Online-Bestellung aufgeben."
         },
         "reservations": {
           "title": "Tischreservierungen",
-          "text": "Online-Buchung mit Tischplanung und Öffnungszeiten; das Team bestätigt mit einem Tipp."
-        },
-        "loyalty": {
-          "title": "Treuepunkte",
-          "text": "Treuepunkte und Rabattregeln pro Gästegruppe bringen Stammgäste zurück."
-        },
-        "printing": {
-          "title": "Küchenbon-Druck",
-          "text": "Bestellungen drucken auf Netzwerk-Thermodruckern — genau an den Stationen, wo sie gebraucht werden."
+          "text": "Gäste können über die öffentliche Seite von RUMI Tisch(e), Gruppengröße, Datum und Uhrzeit auswählen und eine Reservierung vornehmen."
         }
       }
     },
     "languagesSection": {
-      "title": "Zehn Sprachen an einem Tisch",
-      "body": "Genf ist international — und RUMIs Karte hält mit: Gäste stöbern und bestellen auf Englisch, Französisch, Deutsch, Niederländisch, Italienisch, Spanisch, Türkisch, Arabisch, Russisch oder Chinesisch — gleiche Karte, gleiche Küche."
+      "title": "Zehn Sprachen für die Gästeoberfläche; die Menüabdeckung variiert",
+      "body": "SofraPiwas bietet die Gästeoberfläche auf Englisch, Französisch, Deutsch, Niederländisch, Italienisch, Spanisch, Türkisch, Arabisch, Russisch und Chinesisch an. Die aktuell veröffentlichte Speisekarte von RUMI ist nur teilweise übersetzt und kein vollständiger Katalog in zehn Sprachen. Restaurants sollten Artikelnamen, Beschreibungen und Optionen in jeder Sprache prüfen, bevor sie sie veröffentlichen."
     },
     "infra": {
       "title": "Die Infrastruktur dahinter",
@@ -319,15 +311,15 @@
   },
   "compare": {
     "meta": {
-      "title": "SofraPiwas vs. GloriaFood (2026): ein ehrlicher Vergleich",
-      "description": "GloriaFood ist ein kostenloses Online-Bestellsystem mit bezahlten Zusatzmodulen; SofraPiwas ist eine Full-Service-Restaurantplattform aus den Niederlanden. Ein fairer, datierter Vergleich mit Quellen."
+      "title": "SofraPiwas vs. GloriaFood (2026): Preise, Funktionen & Umstieg",
+      "description": "Vergleichen Sie Funktionen, Preise und Supportfristen von SofraPiwas und GloriaFood. GloriaFood hat das Serviceende zum 30. April 2027 angekündigt; Quellen geprüft am 30. September 2026."
     },
     "label": "Seite an Seite",
-    "title": "SofraPiwas vs GloriaFood",
+    "title": "SofraPiwas und GloriaFood im Vergleich",
     "subtitle": "Zwei ehrliche Wege, ein Restaurant online zu bringen — fair verglichen, mit Quellen und Datum.",
     "updated": "Zuletzt geprüft: {date}",
-    "intro1": "GloriaFood — Teil von Oracle — ist eines der bekanntesten Online-Bestellsysteme: Der Kern ist gratis, bezahlte Module kommen nach Bedarf dazu. SofraPiwas ist eine jüngere Full-Service-Plattform, gebaut in den Niederlanden und täglich im Genfer Service erprobt: Bestellungen, Reservierungen, Treuepunkte und Küchendruck als ein System — persönlich für Sie eingerichtet.",
-    "intro2": "Beides sind ehrliche Optionen. Welche passt, hängt davon ab, wie viel Sie selbst machen wollen — die Tabelle unten hält sich an Fakten, die wir auf GloriaFoods eigenen Seiten geprüft haben.",
+    "intro1": "GloriaFood – Teil von Oracle – listet ein kostenloses Kernprodukt mit optionalen kostenpflichtigen Modulen auf. SofraPiwas ist eine in den Niederlanden entwickelte Restaurantplattform. In Genf laufen die öffentlichen Menü-, Online-Bestell- und Tischreservierungsseiten von RUMI auf SofraPiwas; für jedes Restaurant werden andere Personalabläufe und Hardware konfiguriert.",
+    "intro2": "Was passt, hängt von Ihrer Einrichtung und dem benötigten Zeitraum ab. GloriaFood hat ein Enddatum angekündigt; wenn Sie den Dienst nutzen, sollte ein Wechselplan in den Vergleich einfließen.",
     "table": {
       "caption": "SofraPiwas und GloriaFood, Funktion für Funktion",
       "feature": "Auf einen Blick",
@@ -336,8 +328,8 @@
       "rows": {
         "pricing": {
           "label": "Preismodell",
-          "sofra": "Early Access: für Gründungsrestaurants aufs Haus, mit lebenslangem Rabatt, sobald reguläre Preise kommen. Danach: ein einfacher, fixer Monatspreis mit optionalen Modulen.",
-          "gf": "Kostenloser Kern: keine Monatsgebühr, keine Provision pro Bestellung. Bezahlte Module: Online-Zahlungen 29 US$/Monat, erweiterte Promotions 19 US$/Monat, Kasse (POS) 49 US$/Monat pro Standort (zwei Jahre Bindung)."
+          "sofra": "Core beginnt bei 19 €/Monat. Im Plan-Konfigurator wählen Sie Module, Gastsprachen, Design und Währung und sehen den monatlichen EUR-Preis vor einer gegebenenfalls anfallenden Mehrwertsteuer. Für die Kontoanfrage ist keine Karte nötig; die Abrechnung beginnt, wenn Sie das Abo im Dashboard starten.",
+          "gf": "Aktuell gelistetes Angebot: kostenloser Kern ohne Monatsgebühr oder Provision pro Bestellung; kostenpflichtige Module: Online-Zahlungen (29 US$/Monat), erweiterte Promotionen (19 US$/Monat) und POS (49 US$/Monat je Standort, zwei Jahre Laufzeit). GloriaFood hat das Serviceende zum 30. April 2027 angekündigt."
         },
         "ordering": {
           "label": "QR & Online-Bestellung",
@@ -356,13 +348,13 @@
         },
         "printing": {
           "label": "Küchendruck",
-          "sofra": "Eine Begleit-App (Windows und Android) steuert ESC/POS-Thermodrucker im Netzwerk — Bons pro Station, ohne Zusatzabo.",
+          "sofra": "Eine Begleit-App für Windows und Android unterstützt Netzwerk-ESC/POS-Drucker. Überprüfen Sie die Kompatibilität und Installation des Druckers für Ihr Restaurant, bevor Sie sich auf gedruckte Tickets verlassen.",
           "gf": "Ihre kostenlose Bestellannahme-App (Android und iOS) verbindet sich mit einem Thermodrucker und druckt angenommene Bestellungen automatisch."
         },
         "languages": {
           "label": "Sprachen",
-          "sofra": "Gäste stöbern und bestellen in 10 Sprachen — auf derselben Karte.",
-          "gf": "Produktoberfläche in rund einem Dutzend Sprachen, übersetzt von ihrer Community — Details auf ihrer Übersetzungsseite."
+          "sofra": "Die Gastoberfläche bietet zehn Sprachoptionen. Der Text des Menüelements wird in den für dieses Menü verfügbaren Übersetzungen angezeigt. Überprüfen Sie die Abdeckung Ihres Katalogs, bevor Sie die einzelnen Sprachen veröffentlichen.",
+          "gf": "GloriaFood sagt, sein System sei in den gängigen Sprachen verfügbar; Community-Mitwirkende fügen weitere hinzu. Die zitierte Seite nennt keine feste Anzahl."
         },
         "hosting": {
           "label": "Hosting & Domains",
@@ -371,61 +363,74 @@
         },
         "setup": {
           "label": "Einrichtung & Support",
-          "sofra": "Persönliche Einrichtung — wir bauen Karte, QR-Codes, Drucker und Team-Ansichten mit Ihnen auf und bleiben einen Draht entfernt.",
+          "sofra": "Persönliche Begleitung: Wir konfigurieren mit Ihnen das Menü, die QR-Links und die vereinbarten Teamansichten. Bevor Sie sich auf gedruckte Tickets verlassen, bestätigen wir die Druckerkompatibilität und Einrichtung.",
           "gf": "Self-Service — Sie richten das System selbst über Admin-Bereich und Dokumentation ein."
         },
         "payments": {
           "label": "Online-Zahlungen",
-          "sofra": "Zusatzmodul für 19 €/Monat — Karte plus lokale Methoden wie TWINT und iDEAL, direkt auf Ihr eigenes Stripe-Konto. Ohne Provision.",
+          "sofra": "Optionales Modul: 19 €/Monat pauschal oder 9 €/Monat plus 1,5 % jeder Online-Bestellung. Mehrwertsteuer kann anfallen. Verfügbare Methoden und Aktivierung hängen von Markt und Stripe-Einrichtung ab; bitte bei der Einrichtung bestätigen lassen.",
           "gf": "Als bezahltes Modul verfügbar — Online-/Kartenzahlungen für 29 US$/Monat."
         }
       }
     },
-    "disclaimer": "Die GloriaFood-Angaben oben wurden im Juli 2026 auf deren öffentlichen Seiten geprüft und können sich ändern — massgeblich ist immer deren Preisseite. GloriaFood ist ein Oracle-Produkt; alle Namen und Marken gehören ihren Eigentümern. Genannte Preise sind deren Preise, in US-Dollar, exklusive Steuern.",
+    "disclaimer": "GloriaFood-Funktionen und Preise wurden am 30. September 2026 anhand öffentlicher Seiten geprüft und können sich ändern. Der offizielle Hinweis nennt den 30. April 2027 als Serviceende und Unterstützung für bestehende Kunden bis dahin. GloriaFood-Preise sind in US-Dollar und ohne Steuern angegeben. GloriaFood ist ein Oracle-Produkt; Namen und Marken gehören ihren Eigentümern.",
     "qa": {
       "free": {
         "q": "Ist GloriaFood wirklich gratis?",
-        "a": "Der Kern schon. Laut ihrer Preisseite: keine Provision pro Bestellung, keine Monatsgebühr für das Basis-Bestellsystem; Online-Zahlungen (29 US$/Monat), erweiterte Promotions (19 US$/Monat), die Kasse (49 US$/Monat pro Standort, zwei Jahre Bindung), eine verkaufsoptimierte Website und eigene Marken-Apps kosten extra. Für viele kleine Restaurants reicht der Gratisplan tatsächlich."
+        "a": "Die GloriaFood-Preisseite nennt derzeit keine Monatsgebühr und keine Provision für den Bestellkern. Kostenpflichtig sind unter anderem Online-Zahlungen (29 US$/Monat), erweiterte Promotionen (19 US$/Monat) und POS (49 US$/Monat je Standort bei zwei Jahren Laufzeit). GloriaFood hat das Serviceende zum 30. April 2027 angekündigt und unterstützt bestehende Kunden bis dahin. Planen Sie deshalb einen Wechsel, statt den kostenlosen Tarif als langfristige Lösung zu betrachten."
       },
       "cost": {
         "q": "Was kostet SofraPiwas?",
-        "a": "Während des Early Access zahlen Gründungsrestaurants nichts — Einrichtung und Support gehen aufs Haus, und sie behalten lebenslang ihren Rabatt, wenn reguläre Preise kommen. Reguläre Pläne werden ein einfacher, fixer Monatspreis mit optionalen Modulen sein."
+        "a": "Core beginnt bei 19 €/Monat. Wählen Sie Module, Gastsprachen, Design und Währung im Plan-Konfigurator und sehen Sie den monatlichen EUR-Preis vor einer gegebenenfalls anfallenden Mehrwertsteuer. Für die Kontoanfrage ist keine Karte nötig; das Abo startet erst, wenn Sie es in Ihrem Dashboard starten."
       },
       "pick": {
         "q": "Welches soll ich nehmen?",
-        "a": "Wenn Sie vor allem ein kostenloses Bestell-Widget auf Ihrer bestehenden Website wollen und die Einrichtung gern selbst übernehmen, ist GloriaFood eine solide, bewährte Wahl. Wenn Sie ein System für Bestellungen, Reservierungen, Treuepunkte und Küchendruck wollen — persönlich mit Ihnen eingerichtet, in den Sprachen Ihrer Gäste, auf EU-Infrastruktur — genau dafür ist SofraPiwas gebaut."
+        "a": "Wenn Sie GloriaFood bereits nutzen und die dokumentierten Funktionen Ihren Bedarf während des angekündigten Supportzeitraums abdecken, können Sie es weiter nutzen und den Wechsel vor dem 30. April 2027 planen. Wenn Sie Bestellungen, Reservierungen, Treueprogramm und Küchendruck mit persönlicher Einrichtung in einem System möchten, vergleichen Sie SofraPiwas' Plan und Einrichtung mit Ihren Anforderungen."
       }
     },
     "fitGf": {
-      "title": "Wann GloriaFood gut passt",
+      "title": "Wann GloriaFood während der Supportzeit passen kann",
       "items": {
-        "widget": "Sie wollen heute ein kostenloses Bestell-Widget auf Ihrer bestehenden Website.",
+        "widget": "Sie nutzen GloriaFood bereits und dessen kostenlose Bestellfunktionen decken Ihren Bedarf während des angekündigten Supportzeitraums ab.",
         "self": "Sie richten das System gern selbst ein und betreiben es selbst.",
-        "freeTier": "Der Gratisplan deckt bereits ab, was Sie brauchen — kein Grund, mehr zu zahlen."
+        "freeTier": "Sie haben einen Wechsel vor GloriaFoods angekündigtem Serviceende am 30. April 2027 eingeplant."
       }
     },
     "fitSofra": {
       "title": "Wann SofraPiwas besser passt",
       "items": {
-        "one": "Sie wollen Bestellungen, Reservierungen, Treue und Küchendruck als ein System, nicht als einzelne Module.",
-        "languages": "Ihre Gäste sprechen mehr als eine Sprache — SofraPiwas serviert zehn auf derselben Karte.",
+        "one": "Sie möchten Bestellungen, Reservierungen, Treueprogramme und Teamabläufe für Ihr Restaurant einrichten lassen; die Druckerkompatibilität wird für Ihr Setup geprüft.",
+        "languages": "Sie möchten Gastoberflächenoptionen in mehreren Sprachen und können übersetzte Menüinhalte für die von Ihnen veröffentlichten Versionen pflegen.",
         "hands": "Sie hätten lieber jemanden, der den Tisch mit Ihnen deckt — und eine Nachricht entfernt bleibt — statt alles allein zu machen.",
         "domain": "Sie wollen Ihr Restaurant auf eigener Domain, in Ihrer Währung, gehostet in der EU."
       }
     },
     "sources": {
       "title": "Quellen",
-      "note": "Jede GloriaFood-Angabe auf dieser Seite wurde am {date} auf deren öffentlichen Seiten geprüft:",
+      "note": "Die GloriaFood-Angaben auf dieser Seite wurden am {date} anhand der öffentlichen Seiten geprüft:",
       "items": {
         "pricing": "GloriaFood-Preisseite",
         "app": "GloriaFood-Bestellannahme-App",
-        "translation": "GloriaFood-Oberflächensprachen"
+        "translation": "GloriaFood-Informationen zu Systemsprache",
+        "service": "Offizielle GloriaFood-Serviceankündigung"
       }
     },
     "ctaTitle": "Kosten Sie den Unterschied",
     "ctaBody": "Am schnellsten vergleicht man, indem man SofraPiwas in einem echten Restaurant laufen sieht — oder auf den eigenen Tischen.",
     "ctaButton": "Jetzt starten",
-    "ctaCase": "Zur RUMI-Fallstudie"
+    "ctaCase": "Zur RUMI-Fallstudie",
+    "service": {
+      "title": "GloriaFood-Serviceankündigung",
+      "body": "GloriaFood kündigt an, den Dienst am 30. April 2027 einzustellen und bestehende Kunden bis zu diesem Datum weiter zu unterstützen. Oracle bietet keinen direkten Ersatz an und verweist auf FoodAmigos.",
+      "link": "Offizielle GloriaFood-Serviceankündigung lesen.",
+      "transitionTitle": "Wenn Ihr Restaurant GloriaFood nutzt, planen Sie den Wechsel vor diesem Datum:",
+      "steps": {
+        "confirm": "Klären Sie mit GloriaFood das Enddatum, den Support und die Möglichkeiten zum Datenexport.",
+        "inventory": "Erfassen Sie Kontaktpunkte und Integrationen: Website-Widget, QR-Codes, Social-Links, Reservierungen, Lieferoptionen, Zahlungen und Drucker.",
+        "export": "Fordern Sie Exporte von Speisekarten, Optionen, Fotos, Allergenen und Betriebsdaten an; klären Sie Umfang, Format und Aufbewahrungsdauer.",
+        "pilot": "Testen Sie den Ersatz mit dem Team. Prüfen Sie Vor-Ort-, Abhol- und Lieferbestellungen, Benachrichtigungen, Zahlungen, Berichte und Druck, bevor Sie Live-Links ändern."
+      }
+    }
   },
   "changelog": {
     "meta": {
@@ -438,7 +443,7 @@
     "entries": {
       "currency": {
         "title": "Ihre Währung, durchgängig",
-        "body": "Jedes Restaurant auf SofraPiwas läuft jetzt in seiner eigenen Währung — Karte, Bestellungen, Bons und Belege sprechen dieselbe Sprache. Zudem haben wir den Grundstein für eigene Looks pro Restaurant gelegt: eine klassische und eine handwerkliche Vorlage sind in Arbeit."
+        "body": "Jedes SofraPiwas-Restaurant nutzt nun die konfigurierte Währung für Karte, Bestellungen, Bons und Belege."
       },
       "hardening": {
         "title": "Woche der Sicherheit & Zuverlässigkeit",
@@ -455,6 +460,10 @@
       "launch": {
         "title": "SofraPiwas öffnet die Türen",
         "body": "sofrapiwas.com ist live — und mit ihm das Partnerprogramm: Agenturen und Selbstständige bewerben sich, werden persönlich freigeschaltet und begleiten jedes Restaurant vom ersten Anruf bis zum Live-Service, mit transparenter Provisionsübersicht."
+      },
+      "configurator": {
+        "title": "Stellen Sie Ihren Plan vor der Anmeldung zusammen",
+        "body": "Am 29. Juli haben wir den öffentlichen Plan-Konfigurator auf der Anmeldeseite gestartet. Restaurants können Module, Gastsprachen, Classic- oder Craft-Design und Währung wählen und den monatlichen EUR-Preis aus dem Modulkatalog live sehen, bevor sie ein Konto anfordern. Eine Karte ist nicht nötig; das Abo startet erst, wenn Sie es in Ihrem Dashboard starten."
       }
     }
   },
@@ -1299,7 +1308,7 @@
         "reservations": "Online-Buchung und Tischverwaltung",
         "loyalty": "Punkte, Kundengruppen und Rabatte",
         "printing": "Begleit-App für Thermodrucker",
-        "online-payments": "Karte und lokale Methoden wie TWINT oder iDEAL, direkt auf Ihr eigenes Stripe-Konto",
+        "online-payments": "Optionales Online-Zahlungsmodul; verfügbare Methoden hängen vom Markt des Restaurants und dessen Stripe-Einrichtung ab.",
         "extra-languages": "Über Englisch + eine hinaus, bis zu 10 Sprachen"
       },
       "rowTrial": "Gratiszeitraum"
@@ -1481,7 +1490,7 @@
       "languagesHint": "Englisch ist immer enthalten. Ab der dritten Sprache kommt das Zusatzpaket Sprachen hinzu.",
       "currency": "Währung",
       "perMonth": "pro Monat",
-      "priceHint": "Das ist Ihr monatlicher Preis, berechnet ab dem Start Ihres Abonnements. Für die Registrierung ist keine Karte nötig — Sie starten es in Ihrem Dashboard, wenn Sie möchten.",
+      "priceHint": "Dies ist der monatliche EUR-Listenpreis vor gegebenenfalls anfallender Mehrwertsteuer. Für die Anmeldung ist keine Karte nötig — das Abo starten Sie in Ihrem Dashboard, wenn Sie bereit sind.",
       "bundleSaving": "Paket «{bundle}» angewendet — Sie sparen {saving}",
       "module": {
         "core": "Basis — QR-Karte und Online-Bestellung",
@@ -1500,7 +1509,7 @@
         "reservations": "Online-Buchung und Tischverwaltung",
         "loyalty": "Punkte, Kundengruppen und Rabatte",
         "printing": "Begleit-App für Thermodrucker",
-        "online-payments": "Karte und lokale Methoden wie TWINT oder iDEAL, direkt auf Ihr eigenes Stripe-Konto"
+        "online-payments": "Optionales Modul. Verfügbare Zahlungsarten und Aktivierung hängen von Ihrem Markt und Ihrer Stripe-Einrichtung ab; lassen Sie die Verfügbarkeit von uns bestätigen."
       },
       "template": {
         "classic": "Klassisch",
@@ -1521,7 +1530,7 @@
         "commissionLabel": "{floor}/Monat + {percent} pro Bestellung",
         "commissionHint": "Ein kleinerer Festpreis, der Rest nur, wenn ein Gast online bezahlt.",
         "crossover": "Unter etwa {amount} Online-Umsatz im Monat kosten {floor}/Monat + {percent} weniger als der Festpreis von {price}; darüber ist der Festpreis günstiger.",
-        "deferredNote": "Online-Zahlungen benötigen Ihr eigenes Stripe-Konto, das nur Sie einrichten können — wir schicken Ihnen den Link, sobald Sie live sind. Bis dahin ist dies nur Ihre Präferenz; sie wird direkt danach aktiviert."
+        "deferredNote": "Online-Zahlungen benötigen ein eigenes Stripe-Konto und eine separate Einrichtung. Diese Auswahl hält Ihre Präferenz fest; verfügbare Methoden und nächste Schritte bestätigen wir, sobald Ihr Restaurant bereit ist."
       }
     }
   },
@@ -1682,5 +1691,194 @@
     "unknownToken": "Diesen Link kennen wir nicht. Jeder Link gehört zu genau einem Restaurant — bitte nehmen Sie den aus Ihrer Willkommens-E-Mail oder die Schaltfläche in Ihrer eigenen Verwaltung unter Einstellungen → Zahlungen.",
     "unavailable": "Wir konnten Stripe gerade nicht erreichen, deshalb lässt sich Ihr Formular nicht öffnen. Es geht nichts verloren — versuchen Sie denselben Link in ein paar Minuten erneut.",
     "contact": "Wenn es weiter auftritt, antworten Sie einfach auf eine unserer E-Mails, und wir klären es gemeinsam."
+  },
+  "discovery": {
+    "alternatives": {
+      "meta": {
+        "description": "Datierter, quellenbasierter Vergleich von SofraPiwas, FoodAmigos und Lightspeed für Schweizer Restaurants – mit öffentlichen Preisen und Prüfpunkten vor dem Wechsel von GloriaFood.",
+        "title": "GloriaFood-Alternativen für Restaurants in der Schweiz (2026)"
+      },
+      "subtitle": "Ein datierter Vergleich dreier unterschiedlicher Optionen: ein POS-Angebot für den Schweizer Markt, der von GloriaFood genannte Migrationsanbieter und SofraPiwas mit persönlicher Unterstützung bei der Einrichtung.",
+      "title": "GloriaFood-Alternativen für Schweizer Restaurants",
+      "intro": "GloriaFood gibt an, dass sein Service am 30. April 2027 endet und dass der Support für bestehende Kunden bis zu diesem Datum fortgesetzt wird. Oracle gibt an, keinen direkten Ersatz zu haben und verweist Kunden auf FoodAmigos. Wenn Sie GloriaFood nutzen, vergleichen Sie die Optionen mit Ihrem eigenen Menü, Serviceablauf, Zahlungen, Daten und Personalbedarf, bevor Sie Live-Links ändern.",
+      "label": "Vergleichen Sie Ihre Optionen",
+      "checked": "Geprüfte Quellen: {date}",
+      "table": {
+        "columns": {
+          "provider": "Anbieter",
+          "fit": "Geeignet, wenn",
+          "published": "Was die öffentliche Seite sagt",
+          "verify": "Vor der Auswahl prüfen"
+        },
+        "note": "Die Angaben stammen von den Anbieter-Websites, geprüft am {date}. Öffentliche Preise können sich ändern und Add-ons oder Zahlungsgebühren ausschließen.",
+        "title": "Vergleichen Sie nach dem Betriebsbedarf",
+        "caption": "Ein Vergleich der Restaurantsoftware-Optionen für die Schweiz"
+      },
+      "scopeNote": "Dieser quellenbasierte Überblick ist kein Ranking. Anbieterbeschreibungen und Migrationsversprechen sind als deren eigene Angaben gekennzeichnet. Die geprüften öffentlichen Seiten bestätigen weder die Verfügbarkeit in der Schweiz noch alle Bearbeitungsgebühren oder Vertragsbedingungen; verlangen Sie ein schriftliches, auf Ihr Restaurant zugeschnittenes Angebot.",
+      "providers": {
+        "sofra": {
+          "fit": "Sie möchten Bestellungen, Reservierungen und Treueprogramme sowie Teamabläufe, die für Ihr Restaurant eingerichtet werden. Die Druckerkompatibilität wird für Ihr Setup geprüft.",
+          "name": "SofraPiwas",
+          "published": "Der öffentliche Planersteller listet Core ab 19 €/Monat auf und zeigt einen monatlichen EUR-Gesamtbetrag für die ausgewählten Module, Gastsprachen, Aussehen und Währung vor der geltenden Mehrwertsteuer an. Zum Anfordern eines Kontos ist keine Karte erforderlich. Die Abrechnung beginnt erst, wenn Sie im Dashboard ein Abonnement starten.",
+          "verify": "Der veröffentlichte Preis ist in EUR. Überprüfen Sie den genauen Modulmix, die Spracheinstellung, die Währungsanzeige und die Zahlungsmethoden in Ihrem Plan und Onboarding."
+        },
+        "foodAmigos": {
+          "name": "FoodAmigos – die von GloriaFood genannte Migrationsoption",
+          "verify": "Die geprüften öffentlichen Seiten bestätigen weder die Verfügbarkeit in der Schweiz noch Preise in CHF oder lokale Zahlungsmethoden. Lassen Sie Umfang, Exportformat, Gebühren, Zahlungsmethoden, Datenverarbeitung und Zeitplan schriftlich bestätigen.",
+          "fit": "Sie nutzen GloriaFood bereits und möchten den aktuell von Oracle benannten Migrationsanbieter evaluieren.",
+          "published": "FoodAmigos gibt an, dass sein Team Speisekarte, Website-Inhalte, Kundendaten und Einstellungen eines Restaurants übertragen kann. Das Unternehmen wirbt außerdem mit 0 % Provision. Dies sind eigene Angaben des Anbieters. Auf der geprüften Migrationsseite ist kein Standardpreis veröffentlicht."
+        },
+        "lightspeed": {
+          "name": "Lightspeed Restaurant",
+          "fit": "Sie möchten ein Restaurant-POS mit QR-Bestellung im Schweizer Markt evaluieren.",
+          "verify": "Bestätigen Sie den genauen Plan, die Hardware, die QR-Add-ons, den Zahlungsabwickler, die Transaktionsgebühren und die Vertragsbedingungen in einem aktuellen Angebot; Das beworbene Monatsabonnement macht nur einen Teil der Gesamtkosten aus.",
+          "published": "Die Schweizer Restaurantseite wirbt mit Bestellungen am Tisch und per QR-Code sowie integrierten Zahlungen, darunter TWINT. Die öffentliche Preisseite nennt Basic für 89 CHF/Monat mit einer Lizenz; QR-Bestellung und -Zahlung sind ein Add-on. Core kostet 159 CHF/Monat für zwei Lizenzen und enthält QR-Bestellung und -Zahlung."
+        }
+      },
+      "transition": {
+        "intro": "Halten Sie Ihre aktuelle Kundenroute verfügbar, während Sie den Ersatz testen. Der angekündigte Endtermin ist eine Planungsgrenze und kein Grund, den Dienst ohne Probe zu wechseln.",
+        "title": "Eine GloriaFood-Übergangscheckliste mit geringem Risiko",
+        "steps": {
+          "pilot": "Erstellen Sie ein repräsentatives Menü neu und testen Sie es mit Mitarbeitern auf echten Telefonen. Überprüfen Sie Sprachen, Preise, Modifikatoren, Bestellweiterleitung, Quittungen, Zahlungen und Drucker- oder Küchenanzeige.",
+          "cutover": "Wählen Sie ein ruhiges Servicefenster, aktualisieren Sie jeweils einen Kundenlink, halten Sie einen Personal-Fallback bereit und überwachen Sie die ersten Live-Bestellungen, bevor Sie die alte Route entfernen.",
+          "inventory": "Listen Sie alle Live-Touchpoints und Arbeitsabläufe auf: Website-Schaltflächen, QR-Codes nach Tabelle, Links zu sozialen Netzwerken und Karten, Reservierungen, Lieferung oder Abholung, Zahlungen, Benachrichtigungen, Berichte und Küchendruck.",
+          "export": "Fragen Sie GloriaFood, was in welchem ​​Format und bis wann exportiert werden kann. Fordern Sie das Menü, die Modifikatoren, Fotos, Allergenhinweise, Kundendaten und Einstellungen an, die Sie benötigen; Überprüfen Sie den Export, bevor Sie etwas abbrechen."
+        }
+      },
+      "faq": {
+        "endDate": {
+          "q": "Wann endet der GloriaFood-Service?",
+          "a": "In der aktuellen Mitteilung von GloriaFood heißt es, dass der Service am 30. April 2027 das Ende seiner Lebensdauer erreicht und dass der Support für bestehende Kunden bis zu diesem Datum fortgesetzt wird. Überprüfen Sie die offizielle Bekanntmachung noch einmal, bevor Sie einen Migrationsplan erstellen."
+        },
+        "swissPayments": {
+          "q": "Welche Option soll ich für Schweizer Zahlungen wählen?",
+          "a": "Beginnen Sie mit den Zahlungsmethoden und dem Prozessor, die Ihr eigenes Restaurant benötigt, und überprüfen Sie dann die Berechtigung, die Gebühren, die Abrechnungswährung und die Einrichtung schriftlich. Die Schweizer Seite von Lightspeed bewirbt TWINT; Die hier überprüften öffentlichen Quellen belegen nicht die gleichwertige Zahlungsverfügbarkeit in der Schweiz für jeden Plan oder Anbieter."
+        },
+        "foodAmigos": {
+          "q": "Ist FoodAmigos ein direkter Oracle-Ersatz für GloriaFood?",
+          "a": "Laut der Mitteilung von Oracle wird kein direkter Ersatz angeboten. Darin wird FoodAmigos als Anbieter von Onboarding-Ressourcen für Kunden genannt, die sich für einen Umzug entscheiden. Mit dieser Überweisung wird weder die Äquivalenz der Funktionen, die Verfügbarkeit in der Schweiz noch ein bestimmtes Migrationsergebnis festgestellt."
+        }
+      },
+      "sources": {
+        "title": "Quellen und Datum überprüft",
+        "items": {
+          "foodAmigos": "FoodAmigos-Seite zur GloriaFood-Migration",
+          "sofra": "Öffentlicher Plan-Konfigurator von SofraPiwas",
+          "gloriafood": "Offizieller Servicehinweis von GloriaFood und Empfehlung von FoodAmigos",
+          "lightspeedPrices": "Preisseite des Lightspeed Restaurant Swiss",
+          "lightspeedSwiss": "Lightspeed Restaurant Swiss Produktseite"
+        },
+        "note": "Anbieterseiten wurden auf {date} überprüft. Preise, Pläne und Servicehinweise können sich ändern."
+      },
+      "related": {
+        "label": "Verwandte Leitfäden",
+        "switzerland": "QR-Menü-Einrichtungsanleitung für die Schweiz",
+        "geneva": "QR-Menü-Einrichtungsanleitung für Genf",
+        "gloriafood": "GloriaFood-Vergleichs- und Übergangscheckliste"
+      }
+    },
+    "switzerland": {
+      "title": "Richten Sie ein QR-Menü für ein Schweizer Restaurant ein",
+      "meta": {
+        "title": "QR-Menü und Bestell-Setup-Anleitung für die Schweiz",
+        "description": "Praktische Checkliste für QR-Menüs in Schweizer Restaurants: Gästesprachen wählen, CHF-Preise abstimmen, Tischcodes zuordnen und Bestellung, Zahlung sowie Küchenübergabe proben."
+      },
+      "label": "Restaurantführer",
+      "subtitle": "Ein praktischer Workflow für Sprachen, Preise, Tabellencodes und Serviceübergabe, geschrieben für das Team, das ihn während einer geschäftigen Schicht ausführen muss.",
+      "steps": {
+        "languages": {
+          "body": "Beginnen Sie mit der Sprache, die Gäste an diesem Standort erwarten, und ergänzen Sie Sprachen passend zur tatsächlichen Kundschaft. In der Deutschschweiz unterscheiden sich die gesprochenen Dialekte; schriftlich wird Standarddeutsch verwendet. Halten Sie Namen, Beschreibungen und Optionen in allen veröffentlichten Versionen konsistent.",
+          "title": "Wählen Sie Sprachen aus, die Ihr Team verwalten kann"
+        },
+        "menuData": {
+          "title": "Übersetzen Sie die gesamte Auswahl, nicht nur die Überschriften",
+          "body": "Überprüfen Sie die Namen, Beschreibungen, Größen, Modifikatoren, Extras, den Ausverkaufsstatus und die Allergeninformationen Ihrer Küche in jeder Sprache. Weisen Sie einen Menüeigentümer zu, Änderungen gemeinsam zu veröffentlichen, damit eine Sprache nicht stillschweigend ins Hintertreffen gerät."
+        },
+        "qrFlow": {
+          "title": "Entscheiden Sie, was der QR-Code bewirken soll",
+          "body": "Entscheiden Sie, ob der Code ein Menü zum Lesen, eine Bestellung oder zusätzlich eine Online-Zahlung öffnet. Ordnen Sie jeden Code dem richtigen Tisch zu und prüfen Sie, wo die Bestellung nach dem Absenden beim Team erscheint."
+        },
+        "currency": {
+          "title": "Eine verbindliche Preisquelle festlegen",
+          "body": "Legen Sie die Menüsprache und Währung bewusst fest — für ein Schweizer Restaurant ist CHF meist der naheliegende Ausgangspunkt — und prüfen Sie Preise, Extras, Belege und Online-Checkout. Klären Sie vor dem Start, ob ein Zahlungsanbieter in einer anderen Währung abrechnet oder zusätzliche Gebühren erhebt."
+        },
+        "rehearsal": {
+          "title": "Üben Sie einen vollständigen Servicepfad",
+          "body": "Scannen Sie jeden Code mit einem echten Smartphone, wählen Sie die richtige Sprache, ändern Sie eine Option und senden Sie eine Testbestellung. Prüfen Sie Tischzuordnung, Küche oder Drucker, angezeigte Preise, Belege und die Ausweichlösung bei WLAN-, Geräte- oder Bestellproblemen."
+        }
+      },
+      "intro": "Die Schweiz hat vier Landessprachen – Deutsch, Französisch, Italienisch und Rätoromanisch – aber das bedeutet nicht, dass jedes Restaurant jede Speisekarte in allen vier Sprachen veröffentlichen sollte. Wählen Sie Versionen, die zu Ihrem Standort und Ihren Gästen passen und die Ihr Team genau einhalten kann.",
+      "checked": "Überprüfte lokale Sprachquellen: {date}",
+      "stepsTitle": "Arbeiten Sie die Einrichtung in dieser Reihenfolge durch",
+      "fieldCheck": {
+        "title": "Bevor Sie jeden Code ausdrucken",
+        "body": "Führen Sie eine kurze Liste mit Tisch und Code. Scannen Sie nach Änderungen am Menü, Tisch, Preis oder an den Zahlungseinstellungen einen gedruckten Code erneut und prüfen Sie, ob er weiterhin das richtige Live-Menü öffnet."
+      },
+      "related": {
+        "label": "Verwandte Seiten",
+        "geneva": "Genfer französischer QR-Menüführer",
+        "alternatives": "Vergleichen Sie Alternativen zur Restaurantsoftware"
+      },
+      "sources": {
+        "title": "Lokale Quelle",
+        "items": {
+          "dialects": "Eidgenössisches Departement für auswärtige Angelegenheiten: Sprachen und Dialekte",
+          "languages": "Eidgenössisches Departement für auswärtige Angelegenheiten: Sprachen in der Schweiz"
+        },
+        "note": "Sprachfakten überprüft auf {date}; Workflow-Schritte sind praktische Bedienerempfehlungen."
+      }
+    },
+    "geneva": {
+      "label": "Reiseführer für Genfer Restaurants",
+      "meta": {
+        "title": "QR-Menü-Einrichtungsleitfaden für Restaurants in Genf",
+        "description": "Ein französischsprachiger Start für QR-Menüs in Genfer Restaurants: Gästesprachen wählen, das gesamte Menü übersetzen, Tischcodes zuordnen und die Übergabe ans Team vor dem Start testen."
+      },
+      "title": "QR-Menüs in Genf: Französisch als Ausgangspunkt",
+      "checked": "Überprüfte lokale Sprachquellen: {date}",
+      "steps": {
+        "language": {
+          "body": "Legen Sie Französisch als Standardsprache fest und zeigen Sie die Sprachauswahl gut sichtbar an. Ergänzen Sie Englisch oder weitere Sprachen, wenn sie Ihren Gästen helfen. Die vier Schweizer Landessprachen müssen nicht automatisch in jedem Restaurant aktiviert werden.",
+          "title": "Machen Sie Französisch zum klaren Ausgangspunkt"
+        },
+        "menu": {
+          "title": "Vervollständigen Sie zunächst das französische Quellmenü",
+          "body": "Überprüfen Sie die Namen, Beschreibungen, Portionen, Modifikatoren und Extras der Gerichte auf Französisch und übersetzen Sie dann die gesamte Auswahl in jede aktivierte Sprache. Sorgen Sie dafür, dass die Artikelverfügbarkeit und die Allergeninformationen, die Ihre Küche verfolgt, in allen Versionen aufeinander abgestimmt sind."
+        },
+        "tables": {
+          "title": "Den richtigen Code jeder Tischposition zuordnen",
+          "body": "Drucken und scannen Sie für jeden vorgesehenen Tisch einen eigenen Code aus Gästesicht. Können Gäste bestellen, prüfen Sie, ob das Team das Ticket mit der richtigen Tischnummer erhält. Öffnet der Code nur das Menü, muss der nächste Schritt klar sein."
+        },
+        "service": {
+          "title": "Eine echte Schicht samt Ausweichlösung testen",
+          "body": "Lassen Sie Team und Gäste das Menü auf ihren Smartphones auf Französisch und in jeder aktivierten Sprache testen. Proben Sie Änderungen und ausverkaufte Artikel, eine Bestellung am Tisch, gegebenenfalls die Zahlung, die Übergabe an Küche oder Drucker und die Hilfe bei Scan- oder Verbindungsproblemen."
+        },
+        "maintain": {
+          "title": "Halten Sie Änderungen synchron",
+          "body": "Weisen Sie einer Person die Leitung des Menüs zu. Wenn sich ein Preis, ein Modifikator oder ein Gericht ändert, aktualisieren Sie jede Sprache vor der Veröffentlichung; Scannen Sie regelmäßig gedruckte Codes und entfernen Sie alte, wenn sich Tabellen oder Links ändern."
+        }
+      },
+      "subtitle": "Beginnen Sie mit Französisch und ergänzen Sie die Sprachen, die Ihre Gäste benötigen und Ihr Team aktuell halten kann.",
+      "intro": "Französisch ist die Amtssprache der Republik und des Kantons Genf. Für ein Restaurant in Genf ist ein französischsprachiges Menü ein sinnvoller Ausgangspunkt. Ergänzen Sie weitere Sprachen nach Ihrer Kundschaft und danach, welche Übersetzungen Ihr Team zuverlässig pflegen kann.",
+      "stepsTitle": "Erstellen Sie den Arbeitsablauf für Gäste und Mitarbeiter",
+      "fieldCheck": {
+        "title": "Ein echtes Beispiel aus Genf",
+        "body": "SofraPiwas veröffentlicht RUMI, ein Genfer Restaurant, als Kundenfallstudie. Es handelt sich um ein Produktbeispiel und nicht um eine Aussage über gemessene Geschäftsergebnisse.",
+        "link": "Lesen Sie die RUMI-Fallstudie"
+      },
+      "sources": {
+        "items": {
+          "languages": "Eidgenössisches Departement für auswärtige Angelegenheiten: Sprachen in der Schweiz",
+          "officialLanguage": "Republik und Kanton Genf: Französisch ist die Amtssprache des Kantons"
+        },
+        "note": "Sprachfakten überprüft auf {date}; Workflow-Schritte sind praktische Bedienerempfehlungen.",
+        "title": "Lokale Quellen"
+      },
+      "related": {
+        "alternatives": "Vergleichen Sie Alternativen zur Restaurantsoftware",
+        "label": "Verwandte Seiten",
+        "switzerland": "QR-Menü-Einrichtungsanleitung für die Schweiz"
+      }
+    }
   }
 }

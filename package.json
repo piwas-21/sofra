@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && prisma generate --config prisma.catalogue.config.ts && next build",
+    "verify:seo-output": "node scripts/verify-marketing-crawl-output.mjs",
     "start": "next start",
     "start:standalone": "node scripts/start-standalone.mjs",
     "lint": "eslint . --max-warnings=0",
