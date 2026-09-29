@@ -1725,8 +1725,8 @@
         "foodAmigos": {
           "name": "FoodAmigos — the GloriaFood-referred migration option",
           "fit": "You already use GloriaFood and want to evaluate the migration provider Oracle currently names.",
-          "published": "FoodAmigos says its team can move a restaurant’s menu, website content, customer data and settings; it also advertises 0% commission. These are the provider’s own claims. The reviewed migration page does not publish a standard price.",
-          "verify": "The public pages reviewed did not establish availability in Switzerland, CHF pricing or local payment support. Get written confirmation of migration scope, export format, fees, payment methods, data handling and timing."
+          "published": "FoodAmigos says its team can move a restaurant’s menu, website content, customer data and settings, and advertises 0% commission. Its GloriaFood migration pricing page lists the All-In-One restaurant plan at US$35 per month per restaurant, monthly cancellable, with the first month free for GloriaFood customers. The page says the exact price is confirmed on a migration call. These are provider claims and a migration-specific offer.",
+          "verify": "The listed offer is in USD; the page does not establish whether it applies to Swiss restaurants, CHF billing or local payment support. Confirm current price, taxes, eligibility, migration scope, export format, payment methods, data handling and timing in writing."
         },
         "lightspeed": {
           "name": "Lightspeed Restaurant",
@@ -1765,6 +1765,7 @@
         "items": {
           "gloriafood": "GloriaFood official service notice and FoodAmigos referral",
           "foodAmigos": "FoodAmigos GloriaFood migration page",
+          "foodAmigosPricing": "FoodAmigos GloriaFood migration pricing",
           "sofra": "SofraPiwas public plan builder",
           "lightspeedSwiss": "Lightspeed Restaurant Swiss product page",
           "lightspeedPrices": "Lightspeed Restaurant Swiss pricing page"

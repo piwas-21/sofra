@@ -1725,8 +1725,8 @@
         "foodAmigos": {
           "name": "FoodAmigos — l'option de migration référencée par GloriaFood",
           "fit": "Vous utilisez déjà GloriaFood et souhaitez évaluer le fournisseur de migration actuellement nommé par Oracle.",
-          "verify": "Les pages publiques examinées n'ont pas établi la disponibilité en Suisse, les prix en CHF ou l'assistance au paiement locale. Obtenez une confirmation écrite de la portée de la migration, du format d'exportation, des frais, des méthodes de paiement, du traitement des données et du calendrier.",
-          "published": "FoodAmigos affirme que son équipe peut déplacer le menu d'un restaurant, le contenu d'un site Web, les données et les paramètres des clients ; il annonce également une commission de 0 %. Ce sont les propres affirmations du fournisseur. La page de migration examinée ne publie pas de prix standard."
+          "verify": "L’offre affichée est en USD ; la page ne confirme pas son application aux restaurants suisses, une facturation en CHF ou la prise en charge des paiements locaux. Confirmez par écrit le prix actuel, les taxes, l’éligibilité, le périmètre de migration, le format d’exportation, les paiements, le traitement des données et le calendrier.",
+          "published": "FoodAmigos affirme que son équipe peut transférer le menu, le contenu du site, les données clients et les paramètres d’un restaurant, et annonce une commission de 0 %. Sa page de tarifs pour la migration GloriaFood affiche l’offre All-In-One à 35 $ US par mois et par restaurant, résiliable chaque mois, avec le premier mois offert aux clients GloriaFood. La page précise que le prix exact est confirmé lors d’un appel de migration. Il s’agit d’affirmations du fournisseur et d’une offre spécifique à la migration."
         },
         "lightspeed": {
           "fit": "Vous souhaitez évaluer un point de vente de restaurant avec commande QR sur le marché suisse.",
@@ -1765,6 +1765,7 @@
           "gloriafood": "Avis de service officiel GloriaFood et référence FoodAmigos",
           "lightspeedPrices": "Page de tarification du Lightspeed Restaurant Suisse",
           "foodAmigos": "Page de migration GloriaFood de FoodAmigos",
+          "foodAmigosPricing": "Tarifs de migration GloriaFood de FoodAmigos",
           "lightspeedSwiss": "Page produit Lightspeed Restaurant Suisse",
           "sofra": "Configurateur public de SofraPiwas"
         },

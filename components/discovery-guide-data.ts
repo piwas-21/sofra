@@ -4,7 +4,7 @@ export const DISCOVERY_CONTENT_LAST_CHECKED = "2026-09-30";
 export const ALTERNATIVE_PROVIDER_KEYS = ["sofra", "foodAmigos", "lightspeed"] as const;
 export const ALTERNATIVE_PROVIDER_SOURCE_KEYS = {
   sofra: ["sofra"],
-  foodAmigos: ["gloriafood", "foodAmigos"],
+  foodAmigos: ["gloriafood", "foodAmigos", "foodAmigosPricing"],
   lightspeed: ["lightspeedSwiss", "lightspeedPrices"],
 } as const;
 export const ALTERNATIVE_FAQ_KEYS = ["endDate", "foodAmigos", "swissPayments"] as const;
@@ -14,6 +14,7 @@ export const GENEVA_STEP_KEYS = ["language", "menu", "tables", "service", "maint
 export const ALTERNATIVES_SOURCES = [
   { key: "gloriafood", url: "https://www.gloriafood.com/" },
   { key: "foodAmigos", url: "https://gloriafood.foodamigos.io/restaurant.html" },
+  { key: "foodAmigosPricing", url: "https://gloriafood.foodamigos.io/pricing.html" },
   { key: "sofra", url: "https://sofrapiwas.com/en/signup" },
   { key: "lightspeedSwiss", url: "https://www.lightspeedhq.com/ch/caisse/restaurant/" },
   { key: "lightspeedPrices", url: "https://www.lightspeedhq.com/ch-de/kassensystem/restaurant/preise/" },

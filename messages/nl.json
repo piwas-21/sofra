@@ -1724,8 +1724,8 @@
         },
         "foodAmigos": {
           "fit": "U gebruikt GloriaFood al en wilt de migratieprovider evalueren die Oracle momenteel noemt.",
-          "verify": "De geraadpleegde openbare pagina's bevestigen geen beschikbaarheid in Zwitserland, CHF-prijzen of lokale betaalmethoden. Laat de omvang, exportindeling, kosten, betaalmethoden, gegevensverwerking en planning schriftelijk bevestigen.",
-          "published": "FoodAmigos zegt dat het team het menu, website-inhoud, klantgegevens en instellingen kan overzetten. Het bedrijf adverteert ook met 0% commissie. Dit zijn uitspraken van de leverancier zelf. De geraadpleegde migratiepagina vermeldt geen standaardprijs.",
+          "verify": "Het vermelde aanbod is in USD; de pagina bevestigt niet of het geldt voor Zwitserse restaurants, facturering in CHF of lokale betaalmethoden. Vraag schriftelijke bevestiging van de actuele prijs, belastingen, voorwaarden, migratieomvang, exportformaat, betaalmethoden, gegevensverwerking en planning.",
+          "published": "FoodAmigos zegt dat het team een restaurantmenu, website-inhoud, klantgegevens en instellingen kan overzetten en adverteert met 0% commissie. De prijzenpagina voor GloriaFood-migraties vermeldt het All-In-One-restaurantplan voor US$ 35 per maand per restaurant, maandelijks opzegbaar; GloriaFood-klanten krijgen de eerste maand gratis. Volgens de pagina wordt de exacte prijs tijdens een migratiegesprek bevestigd. Dit zijn claims van de aanbieder en een migratiespecifiek aanbod.",
           "name": "FoodAmigos — migratieoptie waar GloriaFood naar verwijst"
         },
         "lightspeed": {
@@ -1766,6 +1766,7 @@
           "gloriafood": "Officiële servicekennisgeving van GloriaFood en verwijzing van FoodAmigos",
           "lightspeedSwiss": "Lightspeed Restaurant Zwitserse productpagina",
           "foodAmigos": "FoodAmigos-pagina over migratie vanaf GloriaFood",
+          "foodAmigosPricing": "FoodAmigos-prijzen voor migratie vanaf GloriaFood",
           "lightspeedPrices": "Lightspeed Restaurant Zwitserse prijspagina",
           "sofra": "Openbare planbouwer van SofraPiwas"
         }

@@ -1725,8 +1725,8 @@
         "foodAmigos": {
           "fit": "Zaten GloriaFood kullanıyorsunuz ve Oracle'ın şu anda adlandırdığı geçiş sağlayıcısını değerlendirmek istiyorsunuz.",
           "name": "FoodAmigos — GloriaFood'un yönlendirdiği geçiş seçeneği",
-          "verify": "İncelenen herkese açık sayfalar İsviçre'de hizmet verildiğini, CHF fiyatlarını veya yerel ödeme yöntemlerini doğrulamıyor. Geçiş kapsamını, dışa aktarma biçimini, ücretleri, ödeme yöntemlerini, veri işlemeyi ve takvimi yazılı olarak teyit edin.",
-          "published": "FoodAmigos, ekibinin restoran menüsünü, web sitesi içeriğini, müşteri verilerini ve ayarlarını aktarabildiğini söylüyor; ayrıca %0 komisyon sunduğunu belirtiyor. Bunlar sağlayıcının kendi beyanlarıdır. İncelenen geçiş sayfasında standart fiyat yayımlanmıyor."
+          "verify": "Listelenen teklif USD cinsindedir; sayfa bunun İsviçre’deki restoranlar için geçerli olduğunu, CHF ile faturalandırmayı veya yerel ödeme yöntemlerini doğrulamıyor. Güncel fiyatı, vergileri, uygunluk koşullarını, geçiş kapsamını, dışa aktarma biçimini, ödeme yöntemlerini, veri işlemeyi ve takvimi yazılı olarak teyit edin.",
+          "published": "FoodAmigos, ekibinin restoran menüsünü, web sitesi içeriğini, müşteri verilerini ve ayarlarını aktarabildiğini söylüyor ve %0 komisyon duyuruyor. GloriaFood geçiş fiyatları sayfası, All-In-One restoran planını restoran başına ayda 35 ABD doları olarak listeliyor; aylık iptal edilebiliyor ve GloriaFood müşterilerine ilk ay ücretsiz. Sayfa, kesin fiyatın geçiş görüşmesinde onaylandığını söylüyor. Bunlar sağlayıcının kendi beyanları ve geçişe özel bir teklif."
         },
         "lightspeed": {
           "name": "Lightspeed Restaurant",
@@ -1765,6 +1765,7 @@
           "gloriafood": "GloriaFood resmi servis bildirimi ve FoodAmigos yönlendirmesi",
           "sofra": "SofraPiwas herkese açık plan oluşturucusu",
           "foodAmigos": "FoodAmigos GloriaFood geçiş sayfası",
+          "foodAmigosPricing": "FoodAmigos GloriaFood geçiş fiyatları",
           "lightspeedSwiss": "Lightspeed Restaurant İsviçre ürün sayfası",
           "lightspeedPrices": "Lightspeed Restaurant İsviçre fiyatlandırma sayfası"
         },

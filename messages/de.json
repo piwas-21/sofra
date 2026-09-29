@@ -1724,9 +1724,9 @@
         },
         "foodAmigos": {
           "name": "FoodAmigos – die von GloriaFood genannte Migrationsoption",
-          "verify": "Die geprüften öffentlichen Seiten bestätigen weder die Verfügbarkeit in der Schweiz noch Preise in CHF oder lokale Zahlungsmethoden. Lassen Sie Umfang, Exportformat, Gebühren, Zahlungsmethoden, Datenverarbeitung und Zeitplan schriftlich bestätigen.",
+          "verify": "Das Angebot ist in USD ausgewiesen; die Seite bestätigt weder seine Gültigkeit für Schweizer Restaurants noch CHF-Abrechnung oder lokale Zahlungsmethoden. Lassen Sie sich aktuellen Preis, Steuern, Teilnahmebedingungen, Migrationsumfang, Exportformat, Zahlungsmethoden, Datenverarbeitung und Zeitplan schriftlich bestätigen.",
           "fit": "Sie nutzen GloriaFood bereits und möchten den aktuell von Oracle benannten Migrationsanbieter evaluieren.",
-          "published": "FoodAmigos gibt an, dass sein Team Speisekarte, Website-Inhalte, Kundendaten und Einstellungen eines Restaurants übertragen kann. Das Unternehmen wirbt außerdem mit 0 % Provision. Dies sind eigene Angaben des Anbieters. Auf der geprüften Migrationsseite ist kein Standardpreis veröffentlicht."
+          "published": "FoodAmigos gibt an, dass sein Team Speisekarte, Website-Inhalte, Kundendaten und Einstellungen eines Restaurants übertragen kann, und wirbt mit 0 % Provision. Die Preisseite für den GloriaFood-Wechsel nennt den All-In-One-Tarif für Restaurants mit 35 US-Dollar pro Monat und Restaurant, monatlich kündbar; GloriaFood-Kunden erhalten den ersten Monat kostenlos. Laut Seite wird der genaue Preis im Migrationsgespräch bestätigt. Das sind Anbieterangaben und ein migrationsbezogenes Angebot."
         },
         "lightspeed": {
           "name": "Lightspeed Restaurant",
@@ -1763,6 +1763,7 @@
         "title": "Quellen und Datum überprüft",
         "items": {
           "foodAmigos": "FoodAmigos-Seite zur GloriaFood-Migration",
+          "foodAmigosPricing": "FoodAmigos-Preise für den GloriaFood-Wechsel",
           "sofra": "Öffentlicher Plan-Konfigurator von SofraPiwas",
           "gloriafood": "Offizieller Servicehinweis von GloriaFood und Empfehlung von FoodAmigos",
           "lightspeedPrices": "Preisseite des Lightspeed Restaurant Swiss",
