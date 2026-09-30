@@ -163,6 +163,16 @@ jobs:
       - run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: https://sofrapiwas.com
+      - run: npm run verify:seo-output
+        env:
+          SEO_EXPECTED_ORIGIN: https://sofrapiwas.com
+      - name: build non-canonical output (staging)
+        run: node_modules/.bin/next build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://staging.sofrapiwas.com
+      - run: npm run verify:seo-output
+        env:
+          SEO_EXPECTED_ORIGIN: https://staging.sofrapiwas.com
 
   prisma_drift:
     name: prisma (migrations apply + schema drift)

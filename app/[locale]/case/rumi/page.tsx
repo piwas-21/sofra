@@ -14,7 +14,7 @@ import { SITE_URL, marketingPageMetadata } from "@/lib/seo";
 const RUMI_URL = "https://www.rumirestaurant.ch";
 const LIVE_SINCE = "2026-06-29";
 const PUBLISHED = "2026-07-10";
-const RUN_KEYS = ["ordering", "boards", "reservations", "loyalty", "printing"] as const;
+const RUN_KEYS = ["ordering", "reservations"] as const;
 
 export async function generateMetadata({
   params,

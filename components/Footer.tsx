@@ -41,6 +41,15 @@ export default function Footer() {
           <Link href="/compare/gloriafood" className="hover:text-primary transition-colors">
             {t("nav.compare")}
           </Link>
+          <Link href="/compare/alternatives" className="hover:text-primary transition-colors">
+            {t("nav.alternatives")}
+          </Link>
+          <Link href="/guides/qr-menu-switzerland" className="hover:text-primary transition-colors">
+            {t("nav.qrMenuSwitzerland")}
+          </Link>
+          <Link href="/guides/qr-menu-geneva" className="hover:text-primary transition-colors">
+            {t("nav.qrMenuGeneva")}
+          </Link>
           <Link href="/changelog" className="hover:text-primary transition-colors">
             {t("nav.changelog")}
           </Link>

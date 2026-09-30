@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 // Native names — shown in the dropdown regardless of the current locale.
@@ -18,7 +18,6 @@ const NATIVE_NAMES: Record<string, string> = {
 export default function LocaleSwitcher({ label }: { label: string }) {
   const locale = useLocale();
   const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -45,7 +44,7 @@ export default function LocaleSwitcher({ label }: { label: string }) {
       <button
         type="button"
         aria-label={label}
-        aria-haspopup="listbox"
+        aria-controls="locale-options"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="hand-drawn-border h-10 px-3 flex items-center gap-1.5 font-label text-sm
@@ -60,34 +59,33 @@ export default function LocaleSwitcher({ label }: { label: string }) {
         </span>
       </button>
 
-      {open && (
-        <ul
-          role="listbox"
-          aria-label={label}
-          className="absolute inset-e-0 mt-2 min-w-44 hand-drawn-border bg-card p-1.5 shadow-lg z-50"
-        >
+      {/* Server-rendered anchors keep locale destinations crawlable before interaction. */}
+      <nav
+        id="locale-options"
+        hidden={!open}
+        aria-label={label}
+        className="absolute inset-e-0 mt-2 min-w-44 hand-drawn-border bg-card p-1.5 shadow-lg z-50"
+      >
+        <ul>
           {routing.locales.map((l) => (
             <li key={l}>
-              <button
-                type="button"
-                role="option"
-                aria-selected={l === locale}
-                onClick={() => {
-                  setOpen(false);
-                  router.replace(pathname, { locale: l });
-                }}
-                className={`w-full text-start px-3 py-2 rounded-craft font-label text-sm transition-colors ${
+              <Link
+                href={pathname}
+                locale={l}
+                aria-current={l === locale ? "page" : undefined}
+                onClick={() => setOpen(false)}
+                className={`block w-full text-start px-3 py-2 rounded-craft font-label text-sm transition-colors ${
                   l === locale
                     ? "bg-primary text-primary-foreground"
                     : "hover:bg-muted"
                 }`}
               >
                 {NATIVE_NAMES[l] ?? l}
-              </button>
+              </Link>
             </li>
           ))}
         </ul>
-      )}
+      </nav>
     </div>
   );
 }

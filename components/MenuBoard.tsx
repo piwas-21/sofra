@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import SectionLabel from "./SectionLabel";
 
 export default function MenuBoard() {
@@ -50,6 +51,11 @@ export default function MenuBoard() {
         <p className="mt-10 text-center font-label text-sm text-muted-foreground">
           {t("note")}
         </p>
+        <div className="mt-6 flex justify-center">
+          <Link href="/signup" className="btn-primary">
+            {t("cta")}
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import { routing } from "@/i18n/routing";
+import { isMarketingRoutePublished } from "@/lib/marketing-routes";
 
 /** The one host these pages are the canonical copy of. */
 export const CANONICAL_SITE_URL = "https://sofrapiwas.com";
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? CANONICAL_SITE_URL;
+
+type MarketingAlternates = {
+  canonical: string;
+  languages?: Record<string, string>;
+};
 
 /**
  * Is THIS deployment the canonical site?
@@ -33,13 +39,18 @@ export const OG_IMAGE = {
 export function pageAlternates(
   locale: string,
   path: string,
-): NonNullable<Metadata["alternates"]> {
+): MarketingAlternates {
+  const isPublished = isMarketingRoutePublished(path);
+  const languages = IS_CANONICAL_SITE && isPublished
+    ? {
+        ...Object.fromEntries(routing.locales.map((l) => [l, `/${l}${path}`])),
+        "x-default": `/${routing.defaultLocale}${path}`,
+      }
+    : undefined;
+
   return {
     canonical: `/${locale}${path}`,
-    languages: {
-      ...Object.fromEntries(routing.locales.map((l) => [l, `/${l}${path}`])),
-      "x-default": `/${routing.defaultLocale}${path}`,
-    },
+    ...(languages ? { languages } : {}),
   };
 }
 
@@ -73,6 +84,6 @@ export function marketingPageMetadata({
       description,
       images: [OG_IMAGE],
     },
-    robots: { index: true, follow: true },
+    robots: { index: IS_CANONICAL_SITE && isMarketingRoutePublished(path), follow: true },
   };
 }
