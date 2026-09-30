@@ -11,8 +11,11 @@ Next.js 15 App Router, Tailwind, next-intl (en/fr/de/nl/tr/ar — ar is RTL;
 control plane is en-only, outside `[locale]`). Design system: craft/handmade — see
 [docs/design-tokens.md](docs/design-tokens.md). Architecture decisions: [docs/adr/](docs/adr/) (ADR-001–011).
 
-Master plan: `rumi-workspace/docs/plans/SOFRA-SAAS-PLAN.md`; partner program:
-`rumi-workspace/docs/plans/SOFRA-PARTNER-PLAN.md`; AEO: `rumi-workspace/docs/plans/SOFRA-AEO-PLAN.md`.
+Master plan: `rumi-workspace/docs/plans/SOFRA-SAAS-PLAN.md`; partner flexibility:
+`rumi-workspace/docs/plans/SOFRA-PARTNER-FLEXIBILITY-PLAN.md`; AEO/discovery operations:
+`rumi-workspace/docs/runbooks/public-search-discovery.md`. The marketing route
+inventory lives in `lib/marketing-routes.ts`; canonical and staging crawl output
+contracts live in `scripts/verify-marketing-crawl-output.mjs`.
 
 ## Develop
 

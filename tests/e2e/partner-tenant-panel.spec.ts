@@ -47,7 +47,7 @@ test("a live client shows its tenant, what it includes and what it costs", async
   await expect(page.getByText("Craft", { exact: true })).toBeVisible();
   // Modules as human names + what they unlock, never the raw registry ids.
   await expect(page.getByText("Online payments", { exact: true })).toBeVisible();
-  await expect(page.getByText(/paid into your own Stripe account/i)).toBeVisible();
+  await expect(page.getByText(/supported methods depend on the restaurant's market and Stripe setup/i)).toBeVisible();
   // The plan the partner is charged for this restaurant.
   await expect(page.getByRole("heading", { name: /what this costs you/i })).toBeVisible();
   await expect(page.getByText(/45,00/)).toBeVisible();

@@ -21,10 +21,9 @@ export default async function JsonLd({ locale }: { locale: string }) {
     url: SITE_URL,
     logo: `${SITE_URL}/favicon.svg`,
     description: meta("description"),
-    // Entity grounding for answer engines: Dutch company, European market.
+    // Entity grounding for answer engines: Dutch-registered company.
     // RUMI (Geneva) is the reference customer, not the company location.
     address: { "@type": "PostalAddress", addressCountry: "NL" },
-    areaServed: "Europe",
   };
 
   const website = {
@@ -46,15 +45,8 @@ export default async function JsonLd({ locale }: { locale: string }) {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     inLanguage: locale,
-    // Free applies to the early-access founding cohort only — name the offer
-    // so answer engines don't lift a bare "SofraPiwas is free" claim.
-    offers: {
-      "@type": "Offer",
-      name: "Early access — founding restaurants",
-      price: "0",
-      priceCurrency: "EUR",
-      description: faq(`items.pricing.a`),
-    },
+    // The plan builder prices selected modules, languages, appearance, and
+    // currency. Do not flatten those configurations into one universal Offer.
     publisher: { "@id": `${SITE_URL}/#organization` },
   };
 

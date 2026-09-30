@@ -5,6 +5,7 @@
  * message files (newest first; dates are ISO, rendered per locale).
  */
 export const CHANGELOG_ENTRIES = [
+  { key: "configurator", date: "2026-07-29" },
   { key: "currency", date: "2026-07-10" },
   { key: "hardening", date: "2026-07-09" },
   { key: "billing", date: "2026-07-07" },

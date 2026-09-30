@@ -9,6 +9,8 @@ import CompareTable from "@/components/CompareTable";
 import {
   COMPARE_LAST_CHECKED,
   COMPARE_QA_KEYS,
+  COMPARE_TRANSITION_KEYS,
+  GLORIAFOOD_SERVICE_URL,
   COMPARE_SOURCES,
   FIT_GF_KEYS,
   FIT_SOFRA_KEYS,
@@ -80,6 +82,37 @@ export default async function CompareGloriaFoodPage({
             <p>{t("intro2")}</p>
           </div>
 
+          <section
+            aria-labelledby="gloriafood-service-update"
+            className="mt-8 hand-drawn-border bg-muted/40 p-6"
+          >
+            <h2
+              id="gloriafood-service-update"
+              className="font-hand text-3xl font-bold"
+            >
+              {t("service.title")}
+            </h2>
+            <p className="mt-3 max-w-3xl text-muted-foreground leading-relaxed">
+              {t("service.body")}{" "}
+              <a
+                href={GLORIAFOOD_SERVICE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-primary/60 underline-offset-4 hover:text-primary transition-colors"
+              >
+                {t("service.link")}
+              </a>
+            </p>
+            <h3 className="mt-6 font-label font-bold">
+              {t("service.transitionTitle")}
+            </h3>
+            <ol className="mt-3 list-decimal space-y-2 ps-5 text-muted-foreground leading-relaxed">
+              {COMPARE_TRANSITION_KEYS.map((key) => (
+                <li key={key}>{t("service.steps." + key)}</li>
+              ))}
+            </ol>
+          </section>
+
           <CompareTable />
           <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
             {t("disclaimer")}
@@ -140,7 +173,7 @@ export default async function CompareGloriaFoodPage({
             <h2 className="font-hand text-3xl font-bold">{t("ctaTitle")}</h2>
             <p className="mt-2 text-muted-foreground">{t("ctaBody")}</p>
             <div className="mt-6 flex flex-wrap gap-4">
-              <Link href="/#waitlist" className="btn-primary">
+              <Link href="/signup" className="btn-primary">
                 {t("ctaButton")}
               </Link>
               <Link href="/case/rumi" className="btn-secondary">
