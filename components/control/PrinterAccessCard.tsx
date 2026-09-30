@@ -7,7 +7,7 @@ import { revealPrinterKey, renewPrinterKey } from "@/lib/actions/printer-access-
 
 type Props = { failed: boolean; slug: string; name: string; apiUrl: string; ready: boolean;
   pending: boolean; reported: boolean; fingerprint: string | null; syncedAt: string | null; enabled: boolean };
-export default function PrinterAccessCard(props: Props) {
+export default function PrinterAccessCard(props: Readonly<Props>) {
   const t = useTranslations("control.admin.printers");
   const router = useRouter();
   const [state, action, submitting] = useActionState(renewPrinterKey, {});
@@ -29,6 +29,11 @@ export default function PrinterAccessCard(props: Props) {
     const timer = setInterval(() => router.refresh(), 10_000);
     return () => clearInterval(timer);
   }, [pending, router]);
+  let status = "waiting";
+  if (props.reported) status = "stale";
+  if (props.ready) status = "ready";
+  if (pending) status = "pending";
+  if (pending && props.failed) status = "pendingFailed";
   async function copySetup() {
     try {
       await navigator.clipboard.writeText(`${t("apiUrl")}: ${props.apiUrl}\n${t("slug")}: ${props.slug}\n${t("token")}: ${secret}`);
@@ -44,7 +49,7 @@ export default function PrinterAccessCard(props: Props) {
         <div><dt className="text-muted-foreground">{t("slug")}</dt><dd><code>{props.slug}</code></dd></div>
         <div><dt className="text-muted-foreground">{t("token")}</dt><dd className="break-all"><code>{secret || "••••••••••••••••"}</code></dd></div>
       </dl>
-      <p role="status" className="font-label text-sm">{t(pending ? props.failed ? "pendingFailed" : "pending" : props.ready ? "ready" : props.reported ? "stale" : "waiting")}</p>
+      <output className="font-label text-sm">{t(status)}</output>
       {props.syncedAt && <p className="font-label text-sm text-muted-foreground">{t("lastSync")} <time dateTime={props.syncedAt}>{new Date(props.syncedAt).toLocaleString()}</time></p>}
       <div className="flex flex-wrap gap-3">
         <button type="button" className="btn-secondary" disabled={!props.ready || pending || revealing}
@@ -64,7 +69,7 @@ export default function PrinterAccessCard(props: Props) {
           <input type="hidden" name="tenantSlug" value={props.slug} />
           <label className="font-label">{t("confirm", { slug: props.slug })}
             <input name="confirmSlug" required autoComplete="off" className="block mt-1 border border-border bg-background rounded-md p-2 w-full" /></label>
-          <button className="btn-secondary justify-self-start" disabled={!props.enabled || !props.reported || pending || submitting}>{t("request")}</button>
+          <button type="submit" className="btn-secondary justify-self-start" disabled={!props.enabled || !props.reported || pending || submitting}>{t("request")}</button>
         </form>
       </details>
       {(error || state.error) && <p role="alert" className="font-label text-craft-error-text">{t(`errors.${error || state.error}`)}</p>}

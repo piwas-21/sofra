@@ -19,6 +19,9 @@ describe("printer credential custody", () => {
     expect(value).not.toContain(key);
     expect(encryptPrinterKey(key, "demo:current")).not.toBe(value);
     expect(decryptPrinterKey(value, "demo:current")).toBe(key);
+    const shortTag = value.split(":");
+    shortTag[2] = shortTag[2].slice(0, 8);
+    expect(() => decryptPrinterKey(shortTag.join(":"), "demo:current")).toThrow();
     expect(() => decryptPrinterKey(value, "other:current")).toThrow();
     expect(() => decryptPrinterKey(value, "demo:pending")).toThrow();
     expect(() => decryptPrinterKey(value.slice(0, -2) + (parseInt(value.slice(-2), 16) ^ 255).toString(16).padStart(2, "0"), "demo:current")).toThrow();

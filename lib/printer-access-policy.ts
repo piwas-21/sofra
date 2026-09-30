@@ -15,7 +15,7 @@ export const printerReportSchema = z.object({
   box: slug,
   credentials: z.array(z.object({
     tenantSlug: slug,
-    key: z.string().max(256).regex(/^[A-Za-z0-9_+\/=-]*$/),
+    key: z.string().max(256).regex(/^[A-Za-z0-9_+/=-]*$/),
     verified: z.boolean(),
     renewable: z.boolean(),
     renewalFailed: z.boolean().optional(),

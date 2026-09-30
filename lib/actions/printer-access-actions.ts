@@ -36,7 +36,7 @@ export async function renewPrinterKey(_previous: PrinterActionState, form: FormD
   if (typeof slug !== "string" || form.get("confirmSlug") !== slug) return { error: "confirmation" };
   if (!printerCredentialsConfigured() || !await eligible(slug)) return { error: "unavailable" };
   const credential = await db.printerCredential.findUnique({ where: { tenantSlug: slug } });
-  if (credential?.box !== (await eligible(slug))?.box || !credential || !credential.renewable || !printerAgentFresh(credential.lastSyncedAt)) return { error: "notReady" };
+  if (credential?.box !== (await eligible(slug))?.box || !credential?.renewable || !printerAgentFresh(credential.lastSyncedAt)) return { error: "notReady" };
   if (!rateLimit(`printer-renew:${admin.id}:${slug}`, 3, 60_000)) return { error: "limited" };
   const key = newPrinterKey();
   try {

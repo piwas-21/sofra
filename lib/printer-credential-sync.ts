@@ -11,8 +11,12 @@ export async function syncPrinterCredentials(report: Report, tenants: RegistryTe
   const slugs = new Set(allowed.map((t) => t.slug));
   if (report.credentials.some((c) => !slugs.has(c.tenantSlug))) return null;
   await db.$transaction(async (tx) => {
-    for (const item of report.credentials) {
-      const previous = await tx.printerCredential.findUnique({ where: { tenantSlug: item.tenantSlug } });
+    const existing = await tx.printerCredential.findMany({ where: {
+      tenantSlug: { in: report.credentials.map((c) => c.tenantSlug) },
+    } });
+    const bySlug = new Map(existing.map((c) => [c.tenantSlug, c]));
+    await Promise.all(report.credentials.map(async (item) => {
+      const previous = bySlug.get(item.tenantSlug);
       const verified = item.verified && item.key.length > 0;
       const hash = verified ? fingerprint(item.key) : null;
       const applied = verified && previous?.pendingFingerprint === hash;
@@ -35,7 +39,7 @@ export async function syncPrinterCredentials(report: Report, tenants: RegistryTe
         actorId: null, action: "printer.key.applied", entityType: "PrinterCredential", entityId: item.tenantSlug,
         meta: { box: report.box },
       } });
-    }
+    }));
   }, { isolationLevel: "Serializable" });
   const pending = await db.printerCredential.findMany({
     where: { tenantSlug: { in: report.credentials.map((c) => c.tenantSlug) }, pendingCipher: { not: null } },
