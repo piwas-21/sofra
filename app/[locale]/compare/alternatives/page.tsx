@@ -78,7 +78,7 @@ export default async function AlternativesPage({ params }: Readonly<{
           <section className="mt-10" aria-labelledby="alternatives-table">
             <h2 id="alternatives-table" className="font-hand text-3xl font-bold">{t("table.title")}</h2>
             <p className="mt-2 text-sm text-muted-foreground">{t("table.note", { date: checkedDate })}</p>
-            <div tabIndex={0} aria-label={t("table.caption")} className="mt-4 overflow-x-auto hand-drawn-border">
+            <div role="region" aria-label={t("table.caption")} className="mt-4 overflow-x-auto hand-drawn-border">
               <table className="w-full min-w-[900px] border-collapse text-start text-sm">
                 <caption className="sr-only">{t("table.caption")}</caption>
                 <thead className="bg-muted/50">

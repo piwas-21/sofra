@@ -23,9 +23,9 @@ const publicPaths = [
   "", "/signup", "/case/rumi", "/compare/alternatives", "/compare/gloriafood",
   "/changelog", "/guides/qr-menu-switzerland", "/guides/qr-menu-geneva",
 ];
-const discoveryPaths = [
+const discoveryPaths = new Set([
   "/compare/alternatives", "/guides/qr-menu-switzerland", "/guides/qr-menu-geneva",
-];
+]);
 const crawler = "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)";
 const crawlerNames = [
   "OAI-SearchBot", "PerplexityBot", "ChatGPT-User", "Claude-User",
@@ -67,7 +67,7 @@ async function withServer(identity, run) {
     AUTH_SECRET: "crawl-contract-only-not-a-real-secret",
     AUTH_TRUST_HOST: "true",
     NEXTAUTH_URL: expectedOrigin,
-    DATABASE_URL: "postgresql://unused:unused@127.0.0.1:1/unused",
+    DATABASE_URL: "postgresql://127.0.0.1:1/unused",
     SOFRA_LEGAL_NAME: "",
     SOFRA_LEGAL_ADDRESS: "",
     SOFRA_LEGAL_POSTAL: "",
@@ -89,24 +89,8 @@ async function withServer(identity, run) {
   }
   const origin = "http://127.0.0.1:" + port;
   const deadline = Date.now() + 45_000;
-  let lastCheck = "no HTTP response";
-  let ready = false;
   try {
-    while (Date.now() < deadline) {
-      if (child.exitCode !== null) throw new Error("Server exited " + child.exitCode + ": " + output.text);
-      try {
-        const response = await fetch(origin + "/robots.txt", { signal: AbortSignal.timeout(1500) });
-        if (response.status === 200) {
-          ready = true;
-          break;
-        }
-        lastCheck = "HTTP " + response.status + " from /robots.txt";
-      } catch (error) {
-        lastCheck = error instanceof Error ? error.message : String(error);
-      }
-      await wait(250);
-    }
-    if (!ready) throw new Error("Server did not serve /robots.txt (" + lastCheck + "): " + output.text);
+    await waitForServer(origin, child, output, deadline, "no HTTP response");
     return await run(origin);
   } finally {
     if (child.exitCode === null) {
@@ -117,8 +101,26 @@ async function withServer(identity, run) {
   }
 }
 
+async function waitForServer(origin, child, output, deadline, lastCheck) {
+  if (child.exitCode !== null) {
+    throw new Error("Server exited " + child.exitCode + ": " + output.text);
+  }
+  if (Date.now() >= deadline) {
+    throw new Error("Server did not serve /robots.txt (" + lastCheck + "): " + output.text);
+  }
+  try {
+    const response = await fetch(origin + "/robots.txt", { signal: AbortSignal.timeout(1500) });
+    if (response.status === 200) return;
+    lastCheck = "HTTP " + response.status + " from /robots.txt";
+  } catch (error) {
+    lastCheck = error instanceof Error ? error.message : String(error);
+  }
+  await wait(250);
+  return waitForServer(origin, child, output, deadline, lastCheck);
+}
+
 function attr(tag, name) {
-  return tag.match(new RegExp("(?:^|\\s)" + name + "=\"([^\"]*)\"", "i"))?.[1];
+  return tag.match(new RegExp(String.raw`(?:^|\s)${name}="([^"]*)"`, "i"))?.[1];
 }
 function headOf(html, label) {
   const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1];
@@ -126,27 +128,32 @@ function headOf(html, label) {
   return head;
 }
 function tagsIn(head, name) {
-  return [...head.matchAll(new RegExp("<" + name + "\\b[^>]*>", "gi"))].map(([tag]) => tag);
+  return [...head.matchAll(new RegExp(String.raw`<${name}\b[^>]*>`, "gi"))].map(([tag]) => tag);
 }
 function decodeHtml(value) {
   return value
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#x27;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">");
+    .replaceAll(/&amp;/g, "&")
+    .replaceAll(/&quot;/g, '"')
+    .replaceAll(/&#x27;/g, "'")
+    .replaceAll(/&lt;/g, "<")
+    .replaceAll(/&gt;/g, ">");
 }
 function normalizeText(value) {
-  return value.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+  return value.replaceAll(/\u00a0/g, " ").replaceAll(/\s+/g, " ").trim();
 }
 function visibleText(html) {
   return normalizeText(decodeHtml(
     html
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-      .replace(/<[^>]*>/g, " "),
+      .replaceAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+      .replaceAll(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+      .replaceAll(/<[^<>]*>/g, " "),
   ));
 }
+const knownMessageNamespaces = new Set([
+  "meta", "header", "hero", "features", "how", "showcase", "pricing", "partner",
+  "waitlist", "auth", "footer", "faq", "caseStudy", "compare", "changelog", "control",
+  "signup", "legal", "onboardingPayments", "discovery",
+]);
 function verifyVisibleBody(html, label) {
   const body = html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? "";
   assert.ok(body, label + ": response has a body");
@@ -156,11 +163,10 @@ function verifyVisibleBody(html, label) {
   assert.ok(heading.length >= 5, label + ": raw HTML has a meaningful H1");
   assert.ok(text.length >= 100, label + ": raw HTML has meaningful body text");
   assert.ok(text.includes(heading), label + ": H1 is present in visible body text");
-  assert.doesNotMatch(
-    text,
-    /(?:^|\s)(?:meta|header|hero|features|how|showcase|pricing|partner|waitlist|auth|footer|faq|caseStudy|compare|changelog|control|signup|legal|onboardingPayments|discovery)\.[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*/,
-    label + ": visible text must not contain an unresolved message key",
-  );
+  const unresolvedKeys = [...text.matchAll(/\b([A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z0-9_-]+)+)\b/g)]
+    .map(([, key]) => key)
+    .filter((key) => knownMessageNamespaces.has(key.split(".")[0]));
+  assert.deepEqual(unresolvedKeys, [], label + ": visible text must not contain an unresolved message key");
   assert.doesNotMatch(text, /\{\s*[A-Za-z][\w.]*\s*\}/, label + ": visible text must not contain an unresolved message variable");
   assert.doesNotMatch(text, /MISSING_MESSAGE|MISSING_VALUE|IntlError/i, label + ": visible text must not contain next-intl errors");
 }
@@ -169,7 +175,7 @@ function jsonLdBlocks(html) {
     .map(([, json]) => JSON.parse(json));
 }
 function verifyCrawlableLink(html, href, label) {
-  assert.match(html, new RegExp("<a\\b(?=[^>]*\\shref=\"" + href + "(?:/)?\")", "i"), label + ": crawlable link " + href);
+  assert.match(html, new RegExp(String.raw`<a\b(?=[^>]*\shref="${href}(?:/)?)`, "i"), label + ": crawlable link " + href);
 }
 function verifyDocument(html, locale, route, indexable, alternates) {
   const label = "/" + locale + route;
@@ -231,9 +237,11 @@ function verifySitemap(xml, includeLegal) {
   const expectedPaths = [...publicPaths, ...(includeLegal ? ["/legal"] : [])];
   const expectedUrls = locales
     .flatMap((locale) => expectedPaths.map((route) => expectedOrigin + "/" + locale + route))
-    .sort();
+    .sort((left, right) => left.localeCompare(right));
   const entries = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/gi)].map(([, block]) => block);
-  const actualUrls = entries.map((block) => block.match(/<loc>([^<]+)<\/loc>/i)?.[1] ?? "").sort();
+  const actualUrls = entries
+    .map((block) => block.match(/<loc>([^<]+)<\/loc>/i)?.[1] ?? "")
+    .sort((left, right) => left.localeCompare(right));
   assert.deepEqual(actualUrls, expectedUrls, "sitemap route inventory and conditional legal publication");
   for (const block of entries) {
     const loc = block.match(/<loc>([^<]+)<\/loc>/i)?.[1] ?? "";
@@ -282,13 +290,13 @@ function verifyLandingSchema(html) {
   assert.ok(faq && Array.isArray(faq.mainEntity) && faq.mainEntity.length > 0, "honest FAQPage semantics remain available");
   const faqMarkup = html.slice(html.indexOf('id="faq"')).split("</section>")[0];
   const faqSection = faqMarkup
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#x27;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/\s+/g, " ");
+    .replaceAll(/<[^<>]*>/g, " ")
+    .replaceAll(/&amp;/g, "&")
+    .replaceAll(/&quot;/g, '"')
+    .replaceAll(/&#x27;/g, "'")
+    .replaceAll(/&lt;/g, "<")
+    .replaceAll(/&gt;/g, ">")
+    .replaceAll(/\s+/g, " ");
   assert.equal((faqMarkup.match(/<summary\b/g) ?? []).length, faq.mainEntity.length, "FAQ schema count must match visible questions");
   for (const question of faq.mainEntity) {
     assert.ok(question.name && question.acceptedAnswer?.text, "FAQ schema entries need question and answer text");
@@ -346,23 +354,21 @@ await withServer({}, async (origin) => {
   const landingHtml = await getText(origin, "/en");
   verifyLandingSchema(landingHtml);
   for (const route of discoveryPaths) verifyCrawlableLink(landingHtml, "/en" + route, "English landing page");
-  for (const route of publicPaths) {
-    for (const locale of locales) {
+  await Promise.all(publicPaths.flatMap((route) => locales.map(async (locale) => {
       const html = await getText(origin, "/" + locale + route);
       verifyDocument(html, locale, route, canonicalBuild, canonicalBuild);
-      if (discoveryPaths.includes(route)) {
+      if (discoveryPaths.has(route)) {
         verifyDiscoverySchema(html, locale, route);
         for (const target of discoveryPaths) {
           verifyCrawlableLink(html, "/" + locale + target, "/" + locale + route + ": discovery route graph");
         }
       }
-    }
-  }
-  for (const locale of locales) {
+  })));
+  await Promise.all(locales.map(async (locale) => {
     const legalHtml = await getText(origin, "/" + locale + "/legal");
     assert.ok(!legalHtml.includes("Example Company B.V."), "unpublished legal identity must not appear");
     verifyDocument(legalHtml, locale, "/legal", false, false);
-  }
+  }));
   verifyPrivateHead(await getText(origin, "/login"), "control login");
   verifyPrivateHead(
     await getText(origin, "/en/onboarding/payments/discovery-contract-token"),
@@ -386,11 +392,11 @@ await withServer({
   SOFRA_LEGAL_EMAIL: "legal@example.test",
 }, async (origin) => {
   verifySitemap(await getText(origin, "/sitemap.xml"), canonicalBuild);
-  for (const locale of locales) {
+  await Promise.all(locales.map(async (locale) => {
     const legalHtml = await getText(origin, "/" + locale + "/legal");
     assert.ok(legalHtml.includes("Example Company B.V."), "runtime legal identity must appear after publication");
     verifyDocument(legalHtml, locale, "/legal", canonicalBuild, canonicalBuild);
-  }
+  }));
 });
 
 console.log("Marketing crawl output contract passed (HTML head, locale links, sitemap and robots).");
