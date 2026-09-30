@@ -132,14 +132,14 @@ function tagsIn(head, name) {
 }
 function decodeHtml(value) {
   return value
-    .replaceAll(/&amp;/g, "&")
-    .replaceAll(/&quot;/g, '"')
-    .replaceAll(/&#x27;/g, "'")
-    .replaceAll(/&lt;/g, "<")
-    .replaceAll(/&gt;/g, ">");
+    .replaceAll("&amp;", "&")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#x27;", "'")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">");
 }
 function normalizeText(value) {
-  return value.replaceAll(/\u00a0/g, " ").replaceAll(/\s+/g, " ").trim();
+  return value.replaceAll("\u00a0", " ").replaceAll(/\s+/g, " ").trim();
 }
 function visibleText(html) {
   return normalizeText(decodeHtml(
@@ -301,14 +301,7 @@ function verifyLandingSchema(html) {
   const faq = blocks.find((entry) => entry["@type"] === "FAQPage");
   assert.ok(faq && Array.isArray(faq.mainEntity) && faq.mainEntity.length > 0, "honest FAQPage semantics remain available");
   const faqMarkup = html.slice(html.indexOf('id="faq"')).split("</section>")[0];
-  const faqSection = faqMarkup
-    .replaceAll(/<[^<>]*>/g, " ")
-    .replaceAll(/&amp;/g, "&")
-    .replaceAll(/&quot;/g, '"')
-    .replaceAll(/&#x27;/g, "'")
-    .replaceAll(/&lt;/g, "<")
-    .replaceAll(/&gt;/g, ">")
-    .replaceAll(/\s+/g, " ");
+  const faqSection = visibleText(faqMarkup);
   assert.equal((faqMarkup.match(/<summary\b/g) ?? []).length, faq.mainEntity.length, "FAQ schema count must match visible questions");
   for (const question of faq.mainEntity) {
     assert.ok(question.name && question.acceptedAnswer?.text, "FAQ schema entries need question and answer text");
