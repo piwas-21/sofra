@@ -175,8 +175,20 @@ function jsonLdBlocks(html) {
     .map(([, json]) => JSON.parse(json));
 }
 function verifyCrawlableLink(html, href, label) {
-  assert.match(html, new RegExp(String.raw`<a\b(?=[^>]*\shref="${href}(?:/)?)`, "i"), label + ": crawlable link " + href);
+  assert.ok(
+    hasCrawlableLink(html, href),
+    label + ": crawlable link " + href,
+  );
 }
+function hasCrawlableLink(html, href) {
+  return tagsIn(html, "a").some((tag) => {
+    const actualHref = attr(tag, "href");
+    return actualHref === href || actualHref === href + "/";
+  });
+}
+assert.equal(hasCrawlableLink('<a href="/en/foo">', "/en/foo"), true, "link matcher accepts an exact href");
+assert.equal(hasCrawlableLink('<a href="/en/foo/">', "/en/foo"), true, "link matcher accepts a trailing slash");
+assert.equal(hasCrawlableLink('<a href="/en/foo-not-a-route">', "/en/foo"), false, "link matcher rejects an href prefix");
 function verifyDocument(html, locale, route, indexable, alternates) {
   const label = "/" + locale + route;
   verifyVisibleBody(html, label);
