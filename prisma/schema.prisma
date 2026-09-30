@@ -1069,3 +1069,19 @@ model StripeAccountStatus {
 
   createdAt DateTime @default(now())
 }
+
+// Printer-only credential custody; box execution credentials remain outside Sofra (ADR-015).
+model PrinterCredential {
+  tenantSlug         String   @id
+  box                String
+  keyCipher          String?
+  keyFingerprint     String?
+  pendingCipher      String?
+  pendingFingerprint String?
+  requestedAt        DateTime?
+  lastSyncedAt       DateTime
+  verified           Boolean  @default(false)
+  renewable          Boolean  @default(false)
+  renewalFailed      Boolean  @default(false)
+  updatedAt          DateTime @default(now())
+}

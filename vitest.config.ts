@@ -28,6 +28,9 @@ export default defineConfig({
       provider: "v8",
       include: [
         "lib/format.ts",
+        "lib/printer-credential-crypto.ts",
+        "lib/printer-access-policy.ts",
+        "lib/printer-agent-auth.ts",
         "lib/rate-limit.ts",
         "lib/validation.ts",
         // Split out of validation.ts (D2) when the pair outgrew the LOC limit. Listed

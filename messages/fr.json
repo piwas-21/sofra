@@ -493,7 +493,8 @@
         "billingDetails": "Infos de facturation",
         "domains": "Domaines",
         "brand": "Marque",
-        "cron": "Tâches planifiées"
+        "cron": "Tâches planifiées",
+        "printers": "Accès aux imprimantes"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -1057,6 +1058,41 @@
           "overdue": "OVERDUE",
           "never": "never run"
         }
+      },
+      "printers": {
+        "title": "Accès aux imprimantes",
+        "intro": "Configurez les applications des établissements actifs. Tous les appareils d’un restaurant partagent un jeton.",
+        "apiUrl": "URL de base de l’API",
+        "slug": "Identifiant de l’établissement",
+        "token": "Jeton API",
+        "pending": "Renouvellement en attente. Le serveur doit installer et vérifier le nouveau jeton.",
+        "ready": "Prêt à partager",
+        "stale": "La vérification du serveur a échoué ou est trop ancienne. Vérifiez l’agent puis actualisez.",
+        "waiting": "En attente du premier rapport du serveur.",
+        "lastSync": "Dernier rapport vérifié :",
+        "reveal": "Afficher le jeton",
+        "hide": "Masquer le jeton",
+        "copy": "Copier la configuration",
+        "copied": "Copié",
+        "refresh": "Actualiser",
+        "sharing": "Transmettez ces informations en privé au restaurant. Le jeton est masqué après une minute.",
+        "renew": "Renouveler le jeton",
+        "generate": "Générer un jeton",
+        "renewWarning": "Le renouvellement redémarre brièvement le serveur et déconnecte les appareils utilisant l’ancien jeton. Mettez chaque appareil à jour dès que le nouveau jeton est prêt.",
+        "confirm": "Saisissez {slug} pour confirmer",
+        "request": "Demander un nouveau jeton",
+        "registryUnavailable": "Registre des établissements indisponible.",
+        "configurationMissing": "Le chiffrement des jetons n’est pas configuré.",
+        "empty": "Aucun établissement actif avec le service d’impression.",
+        "errors": {
+          "unavailable": "Accès indisponible. Vérifiez l’agent et le chiffrement.",
+          "limited": "Trop de demandes. Réessayez dans une minute.",
+          "notReady": "Un rapport serveur récent et vérifié est nécessaire.",
+          "confirmation": "L’identifiant doit correspondre exactement.",
+          "pending": "Un renouvellement est déjà en attente. Actualisez.",
+          "clipboard": "Presse-papiers indisponible. Sélectionnez et copiez les informations affichées."
+        },
+        "pendingFailed": "Le renouvellement a échoué. Le serveur a rétabli l’ancien jeton et réessaiera. Vérifiez l’agent avant de partager le nouveau jeton."
       }
     },
     "errors": {

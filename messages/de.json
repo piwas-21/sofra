@@ -493,7 +493,8 @@
         "billingDetails": "Rechnungsdaten",
         "domains": "Domains",
         "brand": "Marke",
-        "cron": "Geplante Läufe"
+        "cron": "Geplante Läufe",
+        "printers": "Druckerzugang"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -1057,6 +1058,41 @@
           "overdue": "OVERDUE",
           "never": "never run"
         }
+      },
+      "printers": {
+        "title": "Druckerzugang",
+        "intro": "Richten Sie Drucker-Apps für aktive Restaurants ein. Alle Geräte eines Restaurants teilen sich einen Token.",
+        "apiUrl": "API-Basis-URL",
+        "slug": "Restaurant-Kennung",
+        "token": "API-Token",
+        "pending": "Erneuerung ausstehend. Der Server muss den neuen Token installieren und prüfen.",
+        "ready": "Bereit zum Teilen",
+        "stale": "Die Serverprüfung ist fehlgeschlagen oder veraltet. Prüfen Sie den Agenten und aktualisieren Sie.",
+        "waiting": "Warten auf den ersten Bericht des Restaurantservers.",
+        "lastSync": "Letzter geprüfter Bericht:",
+        "reveal": "Token anzeigen",
+        "hide": "Token ausblenden",
+        "copy": "Einrichtung kopieren",
+        "copied": "Kopiert",
+        "refresh": "Status aktualisieren",
+        "sharing": "Teilen Sie diese Angaben vertraulich mit dem Restaurant. Der Token wird nach einer Minute ausgeblendet.",
+        "renew": "Token erneuern",
+        "generate": "Token erzeugen",
+        "renewWarning": "Die Erneuerung startet den Restaurantserver kurz neu und trennt alle Apps mit dem alten Token. Aktualisieren Sie jedes Gerät, sobald der neue Token bereit ist.",
+        "confirm": "Zur Bestätigung {slug} eingeben",
+        "request": "Neuen Token anfordern",
+        "registryUnavailable": "Restaurantregister nicht verfügbar.",
+        "configurationMissing": "Die Token-Verschlüsselung ist nicht konfiguriert.",
+        "empty": "Keine aktiven Restaurants mit Druckservice.",
+        "errors": {
+          "unavailable": "Zugang nicht verfügbar. Prüfen Sie Agent und Verschlüsselung.",
+          "limited": "Zu viele Anfragen. Versuchen Sie es in einer Minute erneut.",
+          "notReady": "Ein aktueller geprüfter Serverbericht ist erforderlich.",
+          "confirmation": "Die Restaurant-Kennung muss genau übereinstimmen.",
+          "pending": "Eine Erneuerung ist bereits ausstehend. Aktualisieren Sie.",
+          "clipboard": "Zwischenablage nicht verfügbar. Markieren und kopieren Sie die Angaben."
+        },
+        "pendingFailed": "Erneuerung fehlgeschlagen. Der Server hat den vorherigen Token wiederhergestellt und versucht es erneut. Prüfen Sie den Agenten vor dem Teilen."
       }
     },
     "errors": {
