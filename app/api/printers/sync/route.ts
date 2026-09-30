@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { boxAuthorized } from "@/lib/backup-agent-auth";
 import { authenticatedPrinterBox } from "@/lib/printer-agent-auth";
 import { printerCredentialsConfigured } from "@/lib/printer-credential-crypto";
-import { printerReportSchema } from "@/lib/printer-access-policy";
+import { printerReportSchema, PRINTER_SYNC_MAX_BODY_BYTES } from "@/lib/printer-access-policy";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { syncPrinterCredentials } from "@/lib/printer-credential-sync";
 
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       const { done, value } = await reader.read();
       if (done) break;
       length += value.byteLength;
-      if (length > 64_000) {
+      if (length > PRINTER_SYNC_MAX_BODY_BYTES) {
         await reader.cancel();
         return NextResponse.json({ error: "Too large" }, { status: 413, headers });
       }

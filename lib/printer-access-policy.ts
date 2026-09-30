@@ -1,6 +1,8 @@
 import { z } from "zod";
 import type { RegistryTenant } from "@/lib/tenant-registry";
 
+export const PRINTER_SYNC_MAX_BODY_BYTES = z.coerce.number().int().min(1024).max(1_048_576)
+  .catch(64_000).parse(process.env.PRINTER_SYNC_MAX_BODY_BYTES);
 export const PRINTER_AGENT_FRESH_MS = 5 * 60 * 1000;
 export function printerTenantEligible(tenant: RegistryTenant): boolean {
   return tenant.status === "active" && (tenant.modules.includes("printing") || tenant.managed === "legacy");
