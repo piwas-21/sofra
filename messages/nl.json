@@ -493,7 +493,8 @@
         "billingDetails": "Factuurgegevens",
         "domains": "Domeinen",
         "brand": "Merk",
-        "cron": "Geplande taken"
+        "cron": "Geplande taken",
+        "printers": "Printertoegang"
       },
       "groups": {
         "pipeline": "Pijplijn",
@@ -1057,6 +1058,41 @@
           "overdue": "OVERDUE",
           "never": "never run"
         }
+      },
+      "printers": {
+        "title": "Printertoegang",
+        "intro": "Stel printerapps in voor actieve restaurants. Alle apparaten van één restaurant delen een token.",
+        "apiUrl": "API-basis-URL",
+        "slug": "Restaurantcode",
+        "token": "API-token",
+        "pending": "Vernieuwing aangevraagd. De server moet het nieuwe token installeren en controleren.",
+        "ready": "Klaar om te delen",
+        "stale": "De servercontrole is mislukt of verouderd. Controleer de agent en vernieuw de status.",
+        "waiting": "Wachten op het eerste rapport van de restaurantserver.",
+        "lastSync": "Laatste gecontroleerde rapport:",
+        "reveal": "Token tonen",
+        "hide": "Token verbergen",
+        "copy": "Instellingen kopiëren",
+        "copied": "Gekopieerd",
+        "refresh": "Status vernieuwen",
+        "sharing": "Deel deze gegevens privé met het restaurant. Het token wordt na één minuut verborgen.",
+        "renew": "Token vernieuwen",
+        "generate": "Token genereren",
+        "renewWarning": "Vernieuwing herstart kort de restaurantserver en verbreekt de verbinding van alle apps met het oude token. Werk elk apparaat bij zodra het nieuwe token klaar is.",
+        "confirm": "Typ {slug} om te bevestigen",
+        "request": "Nieuw token aanvragen",
+        "registryUnavailable": "Restaurantregister niet beschikbaar.",
+        "configurationMissing": "Tokenversleuteling is niet ingesteld.",
+        "empty": "Geen actieve restaurants met de printservice.",
+        "errors": {
+          "unavailable": "Toegang niet beschikbaar. Controleer de agent en versleuteling.",
+          "limited": "Te veel aanvragen. Probeer het over een minuut opnieuw.",
+          "notReady": "Een recent gecontroleerd serverrapport is vereist.",
+          "confirmation": "De restaurantcode moet exact overeenkomen.",
+          "pending": "Er staat al een vernieuwing open. Vernieuw de status.",
+          "clipboard": "Klembord niet beschikbaar. Selecteer en kopieer de getoonde gegevens."
+        },
+        "pendingFailed": "Vernieuwing mislukt. De server heeft het vorige token hersteld en probeert opnieuw. Controleer de agent voordat u een nieuw token deelt."
       }
     },
     "errors": {

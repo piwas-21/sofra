@@ -493,7 +493,8 @@
         "billingDetails": "Fatura bilgileri",
         "domains": "Alan adları",
         "brand": "Marka",
-        "cron": "Zamanlanmış görevler"
+        "cron": "Zamanlanmış görevler",
+        "printers": "Yazıcı erişimi"
       },
       "groups": {
         "pipeline": "Süreç",
@@ -1057,6 +1058,41 @@
           "overdue": "OVERDUE",
           "never": "never run"
         }
+      },
+      "printers": {
+        "title": "Yazıcı erişimi",
+        "intro": "Aktif restoranların yazıcı uygulamalarını kurun. Bir restoranın tüm cihazları aynı tokenı kullanır.",
+        "apiUrl": "API temel URL’si",
+        "slug": "Restoran kodu",
+        "token": "API tokenı",
+        "pending": "Yenileme bekliyor. Restoran sunucusu yeni tokenı yükleyip doğrulayacak.",
+        "ready": "Paylaşmaya hazır",
+        "stale": "Sunucu doğrulaması başarısız veya güncel değil. Ajanı kontrol edip durumu yenileyin.",
+        "waiting": "Restoran sunucusunun ilk raporu bekleniyor.",
+        "lastSync": "Son doğrulanmış rapor:",
+        "reveal": "Tokenı göster",
+        "hide": "Tokenı gizle",
+        "copy": "Kurulum bilgilerini kopyala",
+        "copied": "Kopyalandı",
+        "refresh": "Durumu yenile",
+        "sharing": "Bu bilgileri restoranla özel olarak paylaşın. Token bir dakika sonra gizlenir.",
+        "renew": "Tokenı yenile",
+        "generate": "Token oluştur",
+        "renewWarning": "Yenileme restoran sunucusunu kısa süreli yeniden başlatır ve eski tokenı kullanan tüm cihazların bağlantısını keser. Yeni token hazır olduğunda her cihazı güncelleyin.",
+        "confirm": "Onaylamak için {slug} yazın",
+        "request": "Yeni token iste",
+        "registryUnavailable": "Restoran kayıtları kullanılamıyor.",
+        "configurationMissing": "Token şifrelemesi yapılandırılmamış.",
+        "empty": "Yazdırma hizmeti olan aktif restoran yok.",
+        "errors": {
+          "unavailable": "Erişim kullanılamıyor. Ajanı ve şifreleme ayarlarını kontrol edin.",
+          "limited": "Çok fazla istek. Bir dakika sonra tekrar deneyin.",
+          "notReady": "Güncel ve doğrulanmış sunucu raporu gerekiyor.",
+          "confirmation": "Restoran kodu tam olarak eşleşmelidir.",
+          "pending": "Yenileme zaten bekliyor. Durumu yenileyin.",
+          "clipboard": "Pano kullanılamıyor. Görünen bilgileri seçip kopyalayın."
+        },
+        "pendingFailed": "Yenileme başarısız. Sunucu önceki tokenı geri yükledi ve tekrar deneyecek. Yeni tokenı paylaşmadan önce ajanı kontrol edin."
       }
     },
     "errors": {

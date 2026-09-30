@@ -493,7 +493,8 @@
         "billingDetails": "Billing details",
         "domains": "Domains",
         "brand": "Brand",
-        "cron": "Scheduled sweeps"
+        "cron": "Scheduled sweeps",
+        "printers": "Printer access"
       },
       "groups": {
         "pipeline": "Pipeline",
@@ -1057,6 +1058,41 @@
           "overdue": "OVERDUE",
           "never": "never run"
         }
+      },
+      "printers": {
+        "title": "Printer access",
+        "intro": "Set up printer apps for active tenants. Tokens are shared by all printer apps for one restaurant.",
+        "apiUrl": "API base URL",
+        "slug": "Tenant slug",
+        "token": "API token",
+        "pending": "Renewal pending. Waiting for the tenant server to install and verify the replacement.",
+        "ready": "Ready to share",
+        "stale": "Server verification failed or is out of date. Refresh after checking the printer agent.",
+        "waiting": "Waiting for the tenant server to report its printer access.",
+        "lastSync": "Last verified report:",
+        "reveal": "Reveal token",
+        "hide": "Hide token",
+        "copy": "Copy setup details",
+        "copied": "Copied",
+        "refresh": "Refresh status",
+        "sharing": "Share these details privately with the restaurant. The token hides after one minute.",
+        "renew": "Renew token",
+        "generate": "Generate token",
+        "renewWarning": "Renewal briefly restarts the tenant backend and disconnects all printer apps using the old token. Update every device once the replacement is ready.",
+        "confirm": "Type {slug} to confirm",
+        "request": "Request new token",
+        "registryUnavailable": "Tenant registry unavailable.",
+        "configurationMissing": "Printer credential encryption is not configured.",
+        "empty": "No active tenants with the printing service.",
+        "errors": {
+          "unavailable": "Printer access is unavailable. Check the server agent and encryption configuration.",
+          "limited": "Too many requests. Try again in a minute.",
+          "notReady": "A recent verified server report is required.",
+          "confirmation": "The tenant slug must match exactly.",
+          "pending": "A renewal is already pending. Refresh the status.",
+          "clipboard": "Clipboard unavailable. Select and copy the displayed details."
+        },
+        "pendingFailed": "Renewal failed. The server restored the previous token and will retry. Check the printer agent before sharing a replacement."
       }
     },
     "errors": {
