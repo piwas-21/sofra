@@ -266,3 +266,25 @@ tenants:
     db: tenant_e2e_backup_lapsed
     languages: [en]
     modules: [core]
+
+  e2e-printer:
+    name: E2E Printer Restaurant
+    status: active
+    managed: scripts
+    box: staging
+    domain: e2e-printer.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_printer
+    languages: [en]
+    modules: [core, printing]
+
+  e2e-printer-other:
+    name: E2E Other Printer Restaurant
+    status: active
+    managed: scripts
+    box: staging
+    domain: e2e-printer-other.example.test
+    domain_mode: subdomain
+    db: tenant_e2e_printer_other
+    languages: [en]
+    modules: [core, printing]

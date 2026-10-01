@@ -26,6 +26,11 @@
 | **Anything about tenant backups** — the `/admin/backups` page, the box agent's three endpoints, or "do we still have that restaurant's data?" | **ADR-014** + `lib/backup-*.ts`. Five rules that are easy to break by accident: every credential points **BOX → SOFRA** and the control plane must never gain one that can reach a box (so no SSH and no `Actions: write` token — it cannot be narrowed to one workflow, so it would also dispatch `deprovision-tenant.yml --drop-db`); the whole-box push **PRUNES** what it stops listing, which is what makes an emptied repository visible and is the reason a partial push must never be sent; and the retention date is a **display** of the box's `restic forget` policy, so it may never promise longer than an artifact we can actually see. `delete` is implemented and **disabled** — `BACKUP_DELETE_ENABLED` — because retention already removes copies and a button does not. Since D5 the same verdicts are also MAILED (twice-daily sweep → founder inbox), which adds the fourth rule: an unreadable registry must **stop** the sweep rather than degrade it as the page does — with no registry nothing is "expected", so it would mail an all-clear at the moment it went blind. The fifth is that the agent bearer is **per box** (`BACKUP_AGENT_SECRET_<BOX>`, D1a — the shared one is retired, and a box whose value is missing gets 401 and goes quiet, which the alarm reports). **D6 answers the question that always comes next:** restore is deliberately not a button — it writes into a live database, so it stays `deploy/restore-tenant.sh`, rehearse-by-default |
 | Manual QA logins | workspace `docs/runbooks/sofra-test-accounts.md` (ADMIN + PARTNER test accounts; **never run billing flows from them** — the key is live) |
 
+## Printer credentials
+
+`/admin/printers` + ADR-015: encrypted printer-only keys, admin reveal/renew
+actions, and a per-box pull agent. No SSH/Docker execution privilege in Sofra.
+
 ## §3 — Architecture (load-bearing patterns)
 
 - **RBAC**: `lib/rbac.ts` — `requireUser()` / `requireAdmin()` / `requirePartner()`. **Every** `(control)` page AND server action AND route handler guards itself; layouts are chrome, not security boundaries (ADR-008). `middleware.ts` is locale routing only — it protects nothing.
