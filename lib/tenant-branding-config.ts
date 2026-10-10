@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { isHttpsUrl } from "@/lib/partner-brand";
+import { isHttpsUrl, partnerBrandSchema } from "@/lib/partner-brand";
 
 const schema = z.object({
-  name: z.string().trim().min(1).max(120),
+  name: partnerBrandSchema.shape.displayName,
   url: z.string().trim().refine(isHttpsUrl),
   email: z.email(),
 });
