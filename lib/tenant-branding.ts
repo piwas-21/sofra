@@ -1,3 +1,4 @@
+import { platformTenantBranding } from "@/lib/tenant-branding-config";
 import { db } from "@/lib/db";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { hiddenBranding, resolveTenantBranding } from "@/lib/tenant-branding-policy";
@@ -29,7 +30,7 @@ export async function publicTenantBranding(tenantSlug: string) {
   // A legacy registry credit or an orphan reseller bill is not proof of no partner.
   if (!client && (tenant.partner_name?.trim() || billing?.clientId)) return hiddenBranding;
   return resolveTenantBranding({
-    enabled: true, hasPartner: Boolean(client),
+    enabled: true, hasPartner: Boolean(client), platform: client ? undefined : platformTenantBranding(),
     partnerActive: client?.partner.status === "ACTIVE" && client.partner.role === "PARTNER",
     brand: client?.partner.brand ?? null, legalName: client?.partner.billingIdentity?.legalName,
   });

@@ -9,6 +9,9 @@ const client = { id: "client", tenantSlug: "tenant", status: "LIVE", partnerId: 
   billing: { tenantSlug: "tenant" }, partner: { status: "ACTIVE", role: "PARTNER", brand, billingIdentity: null } };
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.stubEnv("SOFRA_BRAND_NAME", "Sofra");
+  vi.stubEnv("SOFRA_BRAND_URL", "https://sofrapiwas.com");
+  vi.stubEnv("SOFRA_BRAND_EMAIL", "sofra@piwas.nl");
   mocks.registry.mockResolvedValue({ ok: true, tenants: [{ slug: "tenant", status: "active" }] });
   mocks.preference.mockResolvedValue(null); mocks.clients.mockResolvedValue([client]);
   mocks.billing.mockResolvedValue({ clientId: "client", payerUserId: null });

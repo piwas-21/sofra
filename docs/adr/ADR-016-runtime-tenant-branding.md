@@ -19,7 +19,7 @@ is never mistaken for an unpartnered tenant. The endpoint never exposes private 
 identity, partner contact details, notes or ownership IDs.
 
 A genuinely unpartnered tenant displays the configured platform attribution from
-`config/tenant-branding.json`: Sofra, its website and company contact email. An assigned
+`SOFRA_BRAND_NAME`, `SOFRA_BRAND_URL` and `SOFRA_BRAND_EMAIL`: Sofra, its website and company contact email. Missing or invalid platform configuration answers 503 for an unpartnered tenant. An assigned
 partner whose brand is missing, unpublished, disabled or a legal-name echo renders no
 credit; it never falls back to Sofra. Existing `partner_attribution: false` remains the
 restaurant-owned veto and cannot be overridden by a partner preference.

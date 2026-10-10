@@ -4,7 +4,7 @@ import { hiddenBranding, resolveTenantBranding } from "@/lib/tenant-branding-pol
 const brand = { displayName: "Public Studio", websiteUrl: "https://studio.example.test", publishToTenants: true,
   tagline: "Private tagline", email: "private@example.test", phone: "private",
   addressLine1: "private", postalCode: "private", city: "private", countryCode: "NL" };
-const input = { enabled: true, hasPartner: true, partnerActive: true, brand, legalName: "Private Person" };
+const input = { enabled: true, hasPartner: true, partnerActive: true, brand, platform: { name: "Sofra", url: "https://sofrapiwas.com", email: "sofra@piwas.nl" }, legalName: "Private Person" };
 
 describe("runtime branding publication", () => {
   it("defaults only an unpartnered tenant to the explicitly configured platform", () => {
