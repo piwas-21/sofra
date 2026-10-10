@@ -72,6 +72,9 @@ export default defineConfig({
         // billing-vs-enforcement predicate, same shape and same reason as
         // payments-pending.ts just below it.
         "lib/registry-commission-edit.ts",
+        // Existing partner credits use the same surgical, comment-preserving
+        // registry boundary and stay in the floor for the same reason.
+        "lib/partner-brand-registry-edit.ts",
         // The PR body that amendment opens with, split out of its GitHub-calling
         // sibling on 2026-09-05 so the sentence a founder reads before merging a
         // live rate is decidable by a test rather than by re-reading it. Listed

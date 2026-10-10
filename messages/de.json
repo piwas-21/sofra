@@ -1190,7 +1190,11 @@
         "reasonRequired": "Eine Begründung ist Pflicht, und sie muss etwas aussagen.",
         "lastArtifact": "Das ist die einzige Kopie der Daten dieses Restaurants. Setzen Sie das Häkchen, wenn Sie es wirklich meinen.",
         "artifactNotFound": "Diese Kopie existiert nicht mehr."
-      }
+      },
+      "partnerBrandProposalUnavailable": "Die Anwendung ist nicht verfügbar, weil der Vorschlagsdienst nicht eingerichtet ist. Ihre gespeicherten Angaben bleiben auf bestehenden Websites unverändert.",
+      "partnerBrandApplyFailed": "Der Website-Vorschlag konnte nicht vorbereitet werden. Prüfen Sie, ob die Website noch aktiv ist, und versuchen Sie es erneut.",
+      "partnerBrandProposalConflict": "Ein früherer Vorschlag für diese Website muss geklärt werden. Prüfen oder schließen Sie den Registry-Vorschlag, bevor Sie andere gespeicherte Angaben anwenden.",
+      "partnerBrandMappingAmbiguous": "Diese Website lässt sich nicht sicher genau einem Kunden und Abrechnungskonto zuordnen. Bitte versuchen Sie es später erneut."
     },
     "plan": {
       "title": "Ihr Abo",
@@ -1374,16 +1378,28 @@
         "city": "Stadt",
         "countryCode": "Land (2 Buchstaben)"
       },
-      "publishLabel": "Diese Angaben in der Fußzeile jeder Restaurant-Website zeigen, die Sie weiterverkaufen.",
-      "publishMeaning": "Die Gäste Ihrer Kunden sehen sie.",
-      "publishUnavailable": "Noch nicht verfügbar — die Veröffentlichung bleibt aus, bis der Plattformbetreiber sie freigibt. Ihre Angaben werden in jedem Fall gespeichert.",
+      "publishLabel": "Ihren Anzeigenamen und Ihre Website in der Fußzeile Ihrer Restaurant-Websites anzeigen.",
+      "publishMeaning": "Nur Ihr öffentlicher Name und Ihre HTTPS-Website können erscheinen.",
       "save": "Speichern",
       "saving": "Speichern…",
       "saved": "Gespeichert.",
       "adminTitle": "Ihre öffentliche Marke",
       "adminEmpty": "Keine öffentlichen Angaben eingegeben.",
       "adminPublishAsked": "Möchte auf den Websites der eigenen Restaurants gezeigt werden.",
-      "adminPublishOff": "Hat nicht darum gebeten, öffentlich gezeigt zu werden."
+      "adminPublishOff": "Hat nicht darum gebeten, öffentlich gezeigt zu werden.",
+      "savedApply": "Gespeichert. Sie können unten die Aktualisierung bestehender Websites vorschlagen.",
+      "existingSitesTitle": "Bestehende Restaurant-Websites",
+      "existingSitesIntro": "Wählen Sie eine Website aus, um das Hinzufügen oder Entfernen Ihres öffentlichen Namens und Ihrer Website vorzuschlagen. Die Plattform muss die Änderung prüfen und bereitstellen, bevor sie auf der Website erscheint.",
+      "sitesUnavailable": "Berechtigte Websites konnten gerade nicht bestätigt werden. Bitte versuchen Sie es später erneut.",
+      "noExistingSites": "Es gibt noch keine aktiven, skriptverwalteten Kundenseiten zur Aktualisierung.",
+      "applyToSite": "Auf dieser Website anwenden",
+      "applying": "Vorschlag wird vorbereitet…",
+      "changesAwaitingDeployment": "Gespeichert. Die Änderung wartet auf Prüfung und Bereitstellung durch die Plattform, bevor sie auf der Website erscheint.",
+      "changesAwaitingReview": "Ein Vorschlag wartet bereits auf die Prüfung durch die Plattform. Es wurde kein Duplikat erstellt. Prüfen Sie den Status, bevor Sie eine weitere Änderung vorschlagen.",
+      "alreadyApplied": "Es ist keine neue Aktualisierung erforderlich. Prüfen Sie die Fußzeile der Website, um die aktuelle Anzeige zu bestätigen.",
+      "viewProposal": "Vorschlag prüfen",
+      "removalAwaitingDeployment": "Gespeichert. Die Entfernung wartet auf Prüfung und Bereitstellung durch die Plattform, bevor sie von der Website verschwindet.",
+      "tenantOptedOut": "Die Registry vermerkt den Widerspruch dieses Restaurants. Prüfen Sie die Fußzeile der Website, um die aktuelle Anzeige zu bestätigen."
     },
     "baseDomain": {
       "title": "Ihre eigenen Domains",

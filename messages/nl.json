@@ -1190,7 +1190,11 @@
         "reasonRequired": "Een reden is verplicht, en hij moet iets zeggen.",
         "lastArtifact": "Dit is de enige kopie van de gegevens van dat restaurant. Vink de uitzondering aan als je het echt meent.",
         "artifactNotFound": "Die kopie bestaat niet meer."
-      }
+      },
+      "partnerBrandProposalUnavailable": "Toepassen is niet beschikbaar omdat de voorsteldienst niet is ingesteld. Uw opgeslagen gegevens blijven ongewijzigd op bestaande sites.",
+      "partnerBrandApplyFailed": "Kon dit sitevoorstel niet voorbereiden. Controleer of de site nog actief is en probeer het opnieuw.",
+      "partnerBrandProposalConflict": "Een eerder voorstel voor deze site moet eerst worden afgehandeld. Controleer of sluit het registryvoorstel voordat u andere opgeslagen gegevens toepast.",
+      "partnerBrandMappingAmbiguous": "Deze site kan niet veilig aan precies één klant en factureringsrecord worden gekoppeld. Probeer het later opnieuw."
     },
     "plan": {
       "title": "Jouw abonnement",
@@ -1374,16 +1378,28 @@
         "city": "Plaats",
         "countryCode": "Land (2 letters)"
       },
-      "publishLabel": "Toon deze gegevens in de voettekst van elke restaurantsite die u doorverkoopt.",
-      "publishMeaning": "De gasten van uw klanten zien ze.",
-      "publishUnavailable": "Nog niet beschikbaar — publiceren blijft uit tot de eigenaar van het platform het inschakelt. Uw gegevens worden hoe dan ook bewaard.",
+      "publishLabel": "Toon uw weergavenaam en website in de footer van restaurantsites die u doorverkoopt.",
+      "publishMeaning": "Alleen uw openbare naam en HTTPS-website kunnen worden opgenomen.",
       "save": "Opslaan",
       "saving": "Opslaan…",
       "saved": "Opgeslagen.",
       "adminTitle": "Hun publieke merk",
       "adminEmpty": "Geen publieke gegevens ingevuld.",
       "adminPublishAsked": "Wil getoond worden op de sites van hun restaurants.",
-      "adminPublishOff": "Heeft niet gevraagd om publiek getoond te worden."
+      "adminPublishOff": "Heeft niet gevraagd om publiek getoond te worden.",
+      "savedApply": "Opgeslagen. Hieronder kunt u een wijziging voor bestaande websites voorstellen.",
+      "existingSitesTitle": "Bestaande restaurantsites",
+      "existingSitesIntro": "Kies een site om voor te stellen je openbare naam en website toe te voegen of te verwijderen. Het platform moet de wijziging beoordelen en uitrollen voordat deze op de site verschijnt.",
+      "sitesUnavailable": "We konden geschikte sites nu niet bevestigen. Probeer het later opnieuw.",
+      "noExistingSites": "Er zijn nog geen actieve, door scripts beheerde klantensites om bij te werken.",
+      "applyToSite": "Toepassen op deze site",
+      "applying": "Voorstel voorbereiden…",
+      "changesAwaitingDeployment": "Opgeslagen. De wijziging wacht op beoordeling en uitrol door het platform voordat deze op de site verschijnt.",
+      "changesAwaitingReview": "Er staat al een voorstel ter beoordeling door het platform. Er is geen duplicaat gemaakt; controleer de status voordat u een nieuwe wijziging voorstelt.",
+      "alreadyApplied": "Er is geen nieuwe update nodig. Controleer de voettekst van de site om te zien wat er nu wordt weergegeven.",
+      "viewProposal": "Voorstel bekijken",
+      "removalAwaitingDeployment": "Opgeslagen. De verwijdering wacht op beoordeling en uitrol door het platform voordat deze van de site verdwijnt.",
+      "tenantOptedOut": "Het register vermeldt dat dit restaurant zich heeft afgemeld. Controleer de voettekst om te zien wat er nu wordt weergegeven."
     },
     "baseDomain": {
       "title": "Je eigen domeinen",

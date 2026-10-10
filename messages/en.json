@@ -1190,7 +1190,11 @@
         "reasonRequired": "A reason is required, and it has to say something.",
         "lastArtifact": "This is the only copy of that tenant's data. Tick the override if you really mean it.",
         "artifactNotFound": "That artifact no longer exists."
-      }
+      },
+      "partnerBrandProposalUnavailable": "Applying is unavailable because the proposal service is not configured. Your saved details are unchanged on existing sites.",
+      "partnerBrandApplyFailed": "Couldn’t prepare this site proposal. Confirm the site is still active and try again.",
+      "partnerBrandProposalConflict": "A previous proposal for this site needs resolution. Review or close its registry proposal before applying different saved details.",
+      "partnerBrandMappingAmbiguous": "This site cannot be safely matched to one client and billing record. Try again later."
     },
     "plan": {
       "title": "Your plan",
@@ -1374,16 +1378,28 @@
         "city": "City",
         "countryCode": "Country (2 letters)"
       },
-      "publishLabel": "Show these details in the footer of every restaurant site you resell.",
-      "publishMeaning": "Your customers' guests will see them.",
-      "publishUnavailable": "Not available yet — publishing stays off until the platform owner enables it. Your details are saved either way.",
+      "publishLabel": "Show your display name and website in the footer of restaurant sites you resell.",
+      "publishMeaning": "Only your public name and HTTPS website can be included.",
       "save": "Save",
       "saving": "Saving…",
       "saved": "Saved.",
       "adminTitle": "Their public brand",
       "adminEmpty": "No public details entered.",
       "adminPublishAsked": "Asked to be shown on their restaurants' sites.",
-      "adminPublishOff": "Has not asked to be shown publicly."
+      "adminPublishOff": "Has not asked to be shown publicly.",
+      "savedApply": "Saved. Apply to existing sites below when you are ready.",
+      "existingSitesTitle": "Existing restaurant sites",
+      "existingSitesIntro": "Choose a site to propose adding or removing your public name and website. Changes need platform review and deployment before they appear on the site.",
+      "sitesUnavailable": "We could not confirm eligible sites right now. Try again later.",
+      "noExistingSites": "There are no active, script-managed client sites to update yet.",
+      "applyToSite": "Apply to this site",
+      "applying": "Preparing proposal…",
+      "changesAwaitingDeployment": "Saved. Changes await platform review and deployment before they appear on the site.",
+      "changesAwaitingReview": "A proposal is already awaiting platform review. No duplicate was created; check its status before applying another change.",
+      "alreadyApplied": "No new update is needed. Check the site's footer to confirm its current display.",
+      "viewProposal": "Review proposal",
+      "removalAwaitingDeployment": "Saved. Removal awaits platform review and deployment before it disappears from the site.",
+      "tenantOptedOut": "The registry records this restaurant's opt-out. Check the site's footer to confirm its current display."
     },
     "baseDomain": {
       "title": "Your own domains",

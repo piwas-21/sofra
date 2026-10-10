@@ -3,7 +3,9 @@ import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { prefillFromBillingIdentity } from "@/lib/partner-brand";
+import { loadTenantRegistry } from "@/lib/tenant-registry";
 import PartnerBrandForm from "@/components/control/PartnerBrandForm";
+import PartnerBrandApplyForm from "@/components/control/PartnerBrandApplyForm";
 
 /**
  * `/dashboard/brand` — the partner's own public details (SOFRA-PARTNER-PLAN §11).
@@ -25,7 +27,15 @@ export default async function PartnerBrandPage() {
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.brand" });
 
-  const brand = await db.partnerBrand.findUnique({ where: { partnerId: partner.id } });
+  const [brand, clients, registry] = await Promise.all([
+    db.partnerBrand.findUnique({ where: { partnerId: partner.id } }),
+    db.client.findMany({
+      where: { partnerId: partner.id, status: "LIVE", tenantSlug: { not: null } },
+      select: { id: true, restaurantName: true, tenantSlug: true },
+      orderBy: { restaurantName: "asc" },
+    }),
+    loadTenantRegistry(),
+  ]);
 
   // Only consulted when there is no brand yet, and only for a NAME. Looked up by
   // `userId` — the simple link, which is the right one here: this page is about a
@@ -47,6 +57,14 @@ export default async function PartnerBrandPage() {
     select: { legalName: true, tradeName: true },
   });
   const prefill = brand ? null : prefillFromBillingIdentity(identity);
+  const eligibleSlugs = new Set(
+    registry.ok
+      ? registry.tenants
+          .filter((tenant) => tenant.status === "active" && tenant.managed === "scripts")
+          .map((tenant) => tenant.slug)
+      : [],
+  );
+  const sites = clients.filter((client) => client.tenantSlug && eligibleSlugs.has(client.tenantSlug));
 
   return (
     <div className="grid gap-8">
@@ -65,6 +83,30 @@ export default async function PartnerBrandPage() {
           legalName={identity?.legalName}
           hasTradeName={Boolean(identity?.tradeName?.trim())}
         />
+      </section>
+
+      <section className="hand-drawn-border bg-card p-6 grid gap-4">
+        <div>
+          <h2 className="font-hand text-3xl font-bold">{t("existingSitesTitle")}</h2>
+          <p className="mt-2 font-label text-sm text-muted-foreground">{t("existingSitesIntro")}</p>
+        </div>
+        {!registry.ok ? (
+          <p className="font-label text-sm text-muted-foreground">{t("sitesUnavailable")}</p>
+        ) : sites.length === 0 ? (
+          <p className="font-label text-sm text-muted-foreground">{t("noExistingSites")}</p>
+        ) : (
+          <ul className="grid gap-4">
+            {sites.map((client) => (
+              <li key={client.id} className="flex flex-wrap items-center justify-between gap-4 rounded-craft border-2 border-border p-4">
+                <div className="grid gap-1">
+                  <span className="font-label font-bold">{client.restaurantName}</span>
+                  <code className="font-mono text-xs text-muted-foreground">{client.tenantSlug}</code>
+                </div>
+                <PartnerBrandApplyForm clientId={client.id} />
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );
