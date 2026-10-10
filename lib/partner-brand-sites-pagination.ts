@@ -12,6 +12,53 @@ export type PartnerBrandSiteBoundary = {
   restaurantName: string;
 };
 
+export type PartnerBrandSiteRow = PartnerBrandSiteBoundary & { tenantSlug: string | null };
+export type PartnerBrandCursorClient = PartnerBrandSiteBoundary & {
+  partnerId: string;
+  status: string;
+  tenantSlug: string | null;
+};
+export type ActivePartnerBrandSiteCursor = {
+  direction: PartnerBrandSiteCursor["direction"];
+  boundary: PartnerBrandSiteBoundary;
+} | null;
+export type PartnerBrandSitesPage = {
+  sites: PartnerBrandSiteRow[];
+  previousHref: string | null;
+  nextHref: string | null;
+};
+
+export function eligiblePartnerBrandCursorBoundary(
+  candidate: PartnerBrandCursorClient | null,
+  partnerId: string,
+  eligibleSlugs: Set<string>,
+): PartnerBrandSiteBoundary | null {
+  const tenantSlug = candidate?.tenantSlug;
+  if (candidate?.partnerId !== partnerId || candidate?.status !== "LIVE" || !tenantSlug) return null;
+  if (!eligibleSlugs.has(tenantSlug)) return null;
+  return { id: candidate.id, restaurantName: candidate.restaurantName };
+}
+
+export function assemblePartnerBrandSitesPage(
+  rows: PartnerBrandSiteRow[],
+  cursor: ActivePartnerBrandSiteCursor,
+): PartnerBrandSitesPage {
+  const hasExtraSite = rows.length > PARTNER_BRAND_SITE_PAGE_SIZE;
+  const sites = rows.slice(0, PARTNER_BRAND_SITE_PAGE_SIZE);
+  const isBeforeCursor = cursor?.direction === "before";
+  if (isBeforeCursor) sites.reverse();
+
+  const hasPreviousSites = isBeforeCursor ? hasExtraSite : Boolean(cursor);
+  const hasNextSites = isBeforeCursor || hasExtraSite;
+  const previousHref = hasPreviousSites && sites.length > 0
+    ? partnerBrandSitePageHref("before", sites[0].id)
+    : null;
+  const nextHref = hasNextSites && sites.length > 0
+    ? partnerBrandSitePageHref("after", sites[sites.length - 1].id)
+    : null;
+  return { sites, previousHref, nextHref };
+}
+
 type SiteSearchParams = {
   siteAfter?: string | string[];
   siteBefore?: string | string[];

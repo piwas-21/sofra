@@ -161,11 +161,16 @@ describe("partner brand registry edit", () => {
 
   it("rejects unknown, duplicate, malformed, inactive, and legacy targets", () => {
     expect(() => setRegistryPartnerBrand(source(), "missing", brand)).toThrow(UnknownPartnerBrandTenantError);
+    expect(() => partnerBrandTenantState(source(), "missing")).toThrow(UnknownPartnerBrandTenantError);
     expect(() => setRegistryPartnerBrand(source().replace("  other-demo:", "  cafe-demo:\n  other-demo:"), "cafe-demo", brand))
       .toThrow(AmbiguousPartnerBrandRegistryError);
     expect(() => setRegistryPartnerBrand(source().replace("partner_attribution: true", "partner_attribution: maybe"), "cafe-demo", brand))
       .toThrow(AmbiguousPartnerBrandRegistryError);
     expect(() => setRegistryPartnerBrand(source().replace("partner_attribution: true", "partner_attribution:"), "cafe-demo", brand))
+      .toThrow(AmbiguousPartnerBrandRegistryError);
+    expect(() => setRegistryPartnerBrand(source().replace("partner_attribution: true", "partner_attribution: |"), "cafe-demo", brand))
+      .toThrow(AmbiguousPartnerBrandRegistryError);
+    expect(() => setRegistryPartnerBrand(source().replace("partner_attribution: true", "partner_attribution: ["), "cafe-demo", brand))
       .toThrow(AmbiguousPartnerBrandRegistryError);
     expect(() => setRegistryPartnerBrand(source().replace("    managed: scripts", "    managed: legacy"), "cafe-demo", brand))
       .toThrow(IneligiblePartnerBrandTenantError);

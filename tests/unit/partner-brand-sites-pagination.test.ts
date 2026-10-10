@@ -1,10 +1,18 @@
 import { describe, expect, it } from "vitest";
 import {
   PARTNER_BRAND_SITE_PAGE_SIZE,
+  assemblePartnerBrandSitesPage,
+  eligiblePartnerBrandCursorBoundary,
   parsePartnerBrandSiteCursor,
   partnerBrandSitePageHref,
   partnerBrandSiteQuery,
 } from "@/lib/partner-brand-sites-pagination";
+
+const siteRows = (count: number, start = 1) => Array.from({ length: count }, (_, index) => ({
+  id: `client-${start + index}`,
+  restaurantName: `Restaurant ${start + index}`,
+  tenantSlug: "cafe",
+}));
 
 describe("partner brand site pagination", () => {
   it("uses a bounded first-page query scoped to the partner and eligible registry slugs", () => {
@@ -63,5 +71,48 @@ describe("partner brand site pagination", () => {
     const previousHref = partnerBrandSitePageHref("before", "client 19");
     expect(new URL(href, "https://sofrapiwas.com").searchParams.get("siteAfter")).toBe("client/20?next=1");
     expect(new URL(previousHref, "https://sofrapiwas.com").searchParams.get("siteBefore")).toBe("client 19");
+  });
+
+  it("accepts a cursor boundary only for this partner's active eligible site", () => {
+    const candidate = {
+      id: "client-20",
+      restaurantName: "Cafe",
+      partnerId: "partner-1",
+      status: "LIVE",
+      tenantSlug: "cafe",
+    };
+    const eligible = new Set(["cafe"]);
+
+    expect(eligiblePartnerBrandCursorBoundary(candidate, "partner-1", eligible)).toEqual({
+      id: "client-20",
+      restaurantName: "Cafe",
+    });
+    expect(eligiblePartnerBrandCursorBoundary({ ...candidate, partnerId: "partner-2" }, "partner-1", eligible)).toBeNull();
+    expect(eligiblePartnerBrandCursorBoundary({ ...candidate, status: "SUSPENDED" }, "partner-1", eligible)).toBeNull();
+    expect(eligiblePartnerBrandCursorBoundary({ ...candidate, tenantSlug: "unknown" }, "partner-1", eligible)).toBeNull();
+    expect(eligiblePartnerBrandCursorBoundary(null, "partner-1", eligible)).toBeNull();
+  });
+
+  it("assembles bounded next and previous pages with stable navigation cursors", () => {
+    const firstPage = assemblePartnerBrandSitesPage(siteRows(PARTNER_BRAND_SITE_PAGE_SIZE + 1), null);
+    expect(firstPage.sites).toHaveLength(PARTNER_BRAND_SITE_PAGE_SIZE);
+    expect(firstPage.previousHref).toBeNull();
+    expect(firstPage.nextHref).toBe("/dashboard/brand?siteAfter=client-20");
+
+    const afterPage = assemblePartnerBrandSitesPage(siteRows(PARTNER_BRAND_SITE_PAGE_SIZE, 21), {
+      direction: "after",
+      boundary: { id: "client-20", restaurantName: "Restaurant 20" },
+    });
+    expect(afterPage.previousHref).toBe("/dashboard/brand?siteBefore=client-21");
+    expect(afterPage.nextHref).toBeNull();
+
+    const beforePage = assemblePartnerBrandSitesPage(siteRows(PARTNER_BRAND_SITE_PAGE_SIZE + 1, 0).reverse(), {
+      direction: "before",
+      boundary: { id: "client-21", restaurantName: "Restaurant 21" },
+    });
+    expect(beforePage.sites[0]?.id).toBe("client-1");
+    expect(beforePage.sites.at(-1)?.id).toBe("client-20");
+    expect(beforePage.previousHref).toBe("/dashboard/brand?siteBefore=client-1");
+    expect(beforePage.nextHref).toBe("/dashboard/brand?siteAfter=client-20");
   });
 });

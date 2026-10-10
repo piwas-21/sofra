@@ -8,11 +8,20 @@ import { loadTenantRegistry } from "@/lib/tenant-registry";
 import PartnerBrandForm from "@/components/control/PartnerBrandForm";
 import PartnerBrandApplyForm from "@/components/control/PartnerBrandApplyForm";
 import {
-  PARTNER_BRAND_SITE_PAGE_SIZE,
+  assemblePartnerBrandSitesPage,
+  eligiblePartnerBrandCursorBoundary,
   parsePartnerBrandSiteCursor,
-  partnerBrandSitePageHref,
   partnerBrandSiteQuery,
+  type ActivePartnerBrandSiteCursor,
+  type PartnerBrandSitesPage,
+  type PartnerBrandSiteRow,
 } from "@/lib/partner-brand-sites-pagination";
+
+type PartnerBrandPageSearchParams = Readonly<{
+  siteAfter?: string | string[];
+  siteBefore?: string | string[];
+}>;
+type PartnerBrandPageProps = Readonly<{ searchParams: Promise<PartnerBrandPageSearchParams> }>;
 
 /**
  * `/dashboard/brand` — the partner's own public details (SOFRA-PARTNER-PLAN §11).
@@ -29,11 +38,44 @@ import {
  */
 export const dynamic = "force-dynamic";
 
-export default async function PartnerBrandPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ siteAfter?: string | string[]; siteBefore?: string | string[] }>;
-}) {
+async function fetchPartnerBrandSiteRows(
+  partnerId: string,
+  eligibleSlugs: string[],
+  cursor: ActivePartnerBrandSiteCursor,
+): Promise<PartnerBrandSiteRow[]> {
+  if (eligibleSlugs.length === 0) return [];
+  return db.client.findMany({
+    ...partnerBrandSiteQuery(partnerId, eligibleSlugs, cursor),
+    select: { id: true, restaurantName: true, tenantSlug: true },
+  });
+}
+
+async function loadPartnerBrandSitesPage(
+  partnerId: string,
+  eligibleSlugSet: Set<string>,
+  search: PartnerBrandPageSearchParams,
+): Promise<PartnerBrandSitesPage> {
+  const eligibleSlugs = [...eligibleSlugSet];
+  const requestedCursor = parsePartnerBrandSiteCursor(search);
+  const cursorClient = requestedCursor
+    ? await db.client.findUnique({
+        where: { id: requestedCursor.clientId },
+        select: { id: true, restaurantName: true, partnerId: true, status: true, tenantSlug: true },
+      })
+    : null;
+  const boundary = eligiblePartnerBrandCursorBoundary(cursorClient, partnerId, eligibleSlugSet);
+  let activeCursor: ActivePartnerBrandSiteCursor = requestedCursor && boundary
+    ? { direction: requestedCursor.direction, boundary }
+    : null;
+  let rows = await fetchPartnerBrandSiteRows(partnerId, eligibleSlugs, activeCursor);
+  if (activeCursor && rows.length === 0) {
+    activeCursor = null;
+    rows = await fetchPartnerBrandSiteRows(partnerId, eligibleSlugs, null);
+  }
+  return assemblePartnerBrandSitesPage(rows, activeCursor);
+}
+
+export default async function PartnerBrandPage({ searchParams }: PartnerBrandPageProps) {
   const partner = await requirePartner();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.brand" });
@@ -71,47 +113,10 @@ export default async function PartnerBrandPage({
           .map((tenant) => tenant.slug)
       : [],
   );
-  const eligibleSlugList = [...eligibleSlugs];
-  const requestedCursor = parsePartnerBrandSiteCursor(query);
-  const cursorClient = requestedCursor
-    ? await db.client.findUnique({
-        where: { id: requestedCursor.clientId },
-        select: { id: true, restaurantName: true, partnerId: true, status: true, tenantSlug: true },
-      })
-    : null;
-  const cursorIsEligible = Boolean(
-    cursorClient &&
-      cursorClient.partnerId === partner.id &&
-      cursorClient.status === "LIVE" &&
-      cursorClient.tenantSlug &&
-      eligibleSlugs.has(cursorClient.tenantSlug),
-  );
-  let activeCursor = cursorIsEligible && cursorClient && requestedCursor
-    ? { direction: requestedCursor.direction, boundary: cursorClient }
-    : null;
-  const fetchSites = (cursor: typeof activeCursor) =>
-    db.client.findMany({
-      ...partnerBrandSiteQuery(partner.id, eligibleSlugList, cursor),
-      select: { id: true, restaurantName: true, tenantSlug: true },
-    });
-  let rows = eligibleSlugList.length > 0 ? await fetchSites(activeCursor) : [];
-  if (activeCursor && rows.length === 0) {
-    activeCursor = null;
-    rows = eligibleSlugList.length > 0 ? await fetchSites(null) : [];
-  }
-
-  const hasExtraSite = rows.length > PARTNER_BRAND_SITE_PAGE_SIZE;
-  const visibleRows = rows.slice(0, PARTNER_BRAND_SITE_PAGE_SIZE);
-  const sites = activeCursor?.direction === "before" ? visibleRows.reverse() : visibleRows;
-  const hasPreviousSites = activeCursor?.direction === "after" ||
-    (activeCursor?.direction === "before" && hasExtraSite);
-  const hasNextSites = activeCursor?.direction === "before" ? true : hasExtraSite;
-  const previousHref = hasPreviousSites && sites.length > 0
-    ? partnerBrandSitePageHref("before", sites[0].id)
-    : null;
-  const nextHref = hasNextSites && sites.length > 0
-    ? partnerBrandSitePageHref("after", sites[sites.length - 1].id)
-    : null;
+  const sitePage = await loadPartnerBrandSitesPage(partner.id, eligibleSlugs, query);
+  let siteMessage: string | null = null;
+  if (!registry.ok) siteMessage = t("sitesUnavailable");
+  else if (sitePage.sites.length === 0) siteMessage = t("noExistingSites");
 
   return (
     <div className="grid gap-8">
@@ -137,13 +142,11 @@ export default async function PartnerBrandPage({
           <h2 className="font-hand text-3xl font-bold">{t("existingSitesTitle")}</h2>
           <p className="mt-2 font-label text-sm text-muted-foreground">{t("existingSitesIntro")}</p>
         </div>
-        {!registry.ok ? (
-          <p className="font-label text-sm text-muted-foreground">{t("sitesUnavailable")}</p>
-        ) : sites.length === 0 ? (
-          <p className="font-label text-sm text-muted-foreground">{t("noExistingSites")}</p>
+        {siteMessage ? (
+          <p className="font-label text-sm text-muted-foreground">{siteMessage}</p>
         ) : (
           <ul className="grid gap-4">
-            {sites.map((client) => (
+            {sitePage.sites.map((client) => (
               <li key={client.id} className="flex flex-wrap items-center justify-between gap-4 rounded-craft border-2 border-border p-4">
                 <div className="grid gap-1">
                   <span className="font-label font-bold">{client.restaurantName}</span>
@@ -154,13 +157,13 @@ export default async function PartnerBrandPage({
             ))}
           </ul>
         )}
-        {sites.length > 0 && (previousHref || nextHref) && (
+        {sitePage.sites.length > 0 && (sitePage.previousHref || sitePage.nextHref) && (
           <nav aria-label={t("existingSitesTitle")} className="flex justify-between gap-4">
-            {previousHref ? (
-              <Link href={previousHref} className="font-label text-sm underline">{t("previousSites")}</Link>
+            {sitePage.previousHref ? (
+              <Link href={sitePage.previousHref} className="font-label text-sm underline">{t("previousSites")}</Link>
             ) : <span />}
-            {nextHref && (
-              <Link href={nextHref} className="font-label text-sm underline">{t("nextSites")}</Link>
+            {sitePage.nextHref && (
+              <Link href={sitePage.nextHref} className="font-label text-sm underline">{t("nextSites")}</Link>
             )}
           </nav>
         )}

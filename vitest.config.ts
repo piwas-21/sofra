@@ -75,6 +75,7 @@ export default defineConfig({
         // Existing partner credits use the same surgical, comment-preserving
         // registry boundary and stay in the floor for the same reason.
         "lib/partner-brand-registry-edit.ts",
+        "lib/partner-brand-registry-edit-helpers.ts",
         // Cursor predicates for the bounded existing-site list: ties and both
         // navigation directions must stay covered so no eligible site is skipped.
         "lib/partner-brand-sites-pagination.ts",

@@ -22,6 +22,19 @@ import { ProvisioningApiError, ProvisioningNotConfiguredError } from "@/lib/prov
 const PARTNER_BRAND_APPLY_MAX_ATTEMPTS = 12;
 const PARTNER_BRAND_APPLY_WINDOW_MS = 15 * 60 * 1000;
 
+type MappedClient = {
+  id: string;
+  partnerId: string;
+  tenantSlug: string | null;
+  billing: { tenantSlug: string } | null;
+};
+
+type BillingClientMapping = { clientId: string | null; payerUserId: string | null } | null;
+type PartnerClient = NonNullable<Awaited<ReturnType<typeof ownClient>>>;
+type ApplyTargetResult =
+  | { ok: true; client: PartnerClient; slug: string }
+  | { ok: false; error: "clientNotFound" | "clientNotProvisioned" | "partnerBrandMappingAmbiguous" };
+
 export type PartnerBrandApplyState = {
   error?: string;
   ok?: boolean;
@@ -35,23 +48,32 @@ const readString = (formData: FormData, name: string): string => {
   return typeof value === "string" ? value : "";
 };
 
-export async function applyPartnerBrandAction(
-  _previous: PartnerBrandApplyState,
-  formData: FormData,
-): Promise<PartnerBrandApplyState> {
-  const partner = await requirePartner();
-  if (!rateLimit(`partner-brand-apply:${partner.id}`, PARTNER_BRAND_APPLY_MAX_ATTEMPTS, PARTNER_BRAND_APPLY_WINDOW_MS)) {
-    return { error: "tooManyAttempts" };
+function mappingIsUnambiguous(
+  mappedClients: MappedClient[],
+  billing: BillingClientMapping,
+  partnerId: string,
+  clientId: string,
+  slug: string,
+): boolean {
+  if (mappedClients.length !== 1) return false;
+  const [mapped] = mappedClients;
+  if (!mapped || mapped.id !== clientId || mapped.partnerId !== partnerId || mapped.tenantSlug !== slug) {
+    return false;
   }
+  if (mapped.billing && mapped.billing.tenantSlug !== slug) return false;
+  return !billing || (billing.clientId === clientId && billing.payerUserId === null);
+}
 
-  const client = await ownClient(partner.id, readString(formData, "clientId"));
-  if (!client) return { error: "clientNotFound" };
-  if (client.status !== "LIVE" || !client.tenantSlug) return { error: "clientNotProvisioned" };
+async function resolveApplyTarget(partnerId: string, clientId: string): Promise<ApplyTargetResult> {
+  const client = await ownClient(partnerId, clientId);
+  if (!client) return { ok: false, error: "clientNotFound" };
+  if (client.status !== "LIVE" || !client.tenantSlug) {
+    return { ok: false, error: "clientNotProvisioned" };
+  }
   const slug = client.tenantSlug;
 
-  // A tenant slug is not accepted from the browser. Re-check both directions of
-  // the CRM/billing join so a direct-owner billing row or stale mapping cannot be
-  // treated as this partner's registered site.
+  // Both CRM directions must resolve to this partner's unique client before a
+  // registry proposal can be opened.
   const [mappedClients, billing] = await Promise.all([
     db.client.findMany({
       where: { OR: [{ tenantSlug: slug }, { billing: { tenantSlug: slug } }] },
@@ -68,38 +90,62 @@ export async function applyPartnerBrandAction(
       select: { clientId: true, payerUserId: true },
     }),
   ]);
-  const mapped = mappedClients[0];
-  if (
-    mappedClients.length !== 1 ||
-    !mapped ||
-    mapped.id !== client.id ||
-    mapped.partnerId !== partner.id ||
-    mapped.tenantSlug !== slug ||
-    (mapped.billing && mapped.billing.tenantSlug !== slug) ||
-    (billing && (billing.clientId !== client.id || billing.payerUserId !== null))
-  ) {
-    return { error: "partnerBrandMappingAmbiguous" };
+  if (!mappingIsUnambiguous(mappedClients, billing, partnerId, client.id, slug)) {
+    return { ok: false, error: "partnerBrandMappingAmbiguous" };
   }
+  return { ok: true, client, slug };
+}
 
-  // Legal identity is consulted only for the D-B1a refusal. The only value passed
-  // to the registry proposal is `renderableBrand`: public name plus optional HTTPS
-  // URL, never legal identity, email, phone, address, or any other private field.
+async function loadRenderablePartnerBrand(partnerId: string) {
   const [storedBrand, identity] = await Promise.all([
-    db.partnerBrand.findUnique({ where: { partnerId: partner.id } }),
-    db.billingIdentity.findUnique({ where: { userId: partner.id }, select: { legalName: true } }),
+    db.partnerBrand.findUnique({ where: { partnerId } }),
+    db.billingIdentity.findUnique({ where: { userId: partnerId }, select: { legalName: true } }),
   ]);
-  const publicBrand = renderableBrand(storedBrand, { legalName: identity?.legalName });
+  return renderableBrand(storedBrand, { legalName: identity?.legalName });
+}
+
+function proposalFailureState(error: unknown): PartnerBrandApplyState {
+  if (error instanceof ProvisioningNotConfiguredError) return { error: "partnerBrandProposalUnavailable" };
+  if (error instanceof PartnerBrandProposalConflictError) {
+    return {
+      error: "partnerBrandProposalConflict",
+      ...(error.prUrl ? { prUrl: error.prUrl } : {}),
+    };
+  }
+  if (
+    error instanceof ProvisioningApiError ||
+    error instanceof UnknownPartnerBrandTenantError ||
+    error instanceof IneligiblePartnerBrandTenantError ||
+    error instanceof AmbiguousPartnerBrandRegistryError
+  ) {
+    return { error: "partnerBrandApplyFailed" };
+  }
+  console.error("applyPartnerBrandAction failed", error instanceof Error ? error.name : "unknown error");
+  return { error: "partnerBrandApplyFailed" };
+}
+
+export async function applyPartnerBrandAction(
+  _previous: PartnerBrandApplyState,
+  formData: FormData,
+): Promise<PartnerBrandApplyState> {
+  const partner = await requirePartner();
+  if (!rateLimit(`partner-brand-apply:${partner.id}`, PARTNER_BRAND_APPLY_MAX_ATTEMPTS, PARTNER_BRAND_APPLY_WINDOW_MS)) {
+    return { error: "tooManyAttempts" };
+  }
+  const target = await resolveApplyTarget(partner.id, readString(formData, "clientId"));
+  if (!target.ok) return { error: target.error };
 
   try {
-    const proposal = await openPartnerBrandRegistryPr(partner.id, slug, publicBrand);
-    await audit(partner.id, "partner.brand.apply_requested", "Client", client.id, {
-      tenantSlug: slug,
+    const publicBrand = await loadRenderablePartnerBrand(partner.id);
+    const proposal = await openPartnerBrandRegistryPr(partner.id, target.slug, publicBrand);
+    await audit(partner.id, "partner.brand.apply_requested", "Client", target.client.id, {
+      tenantSlug: target.slug,
       outcome: proposal.kind,
       optedOut: proposal.optedOut,
       ...(proposal.kind === "unchanged" ? {} : { prUrl: proposal.prUrl }),
     });
     revalidatePath("/dashboard/brand");
-    revalidatePath(`/dashboard/clients/${client.id}`);
+    revalidatePath(`/dashboard/clients/${target.client.id}`);
     return {
       ok: true,
       outcome: proposal.kind === "opened" ? "proposed" : proposal.kind,
@@ -107,22 +153,6 @@ export async function applyPartnerBrandAction(
       ...(proposal.kind === "unchanged" ? {} : { prUrl: proposal.prUrl }),
     };
   } catch (error) {
-    if (error instanceof ProvisioningNotConfiguredError) return { error: "partnerBrandProposalUnavailable" };
-    if (error instanceof PartnerBrandProposalConflictError) {
-      return {
-        error: "partnerBrandProposalConflict",
-        ...(error.prUrl ? { prUrl: error.prUrl } : {}),
-      };
-    }
-    if (
-      error instanceof ProvisioningApiError ||
-      error instanceof UnknownPartnerBrandTenantError ||
-      error instanceof IneligiblePartnerBrandTenantError ||
-      error instanceof AmbiguousPartnerBrandRegistryError
-    ) {
-      return { error: "partnerBrandApplyFailed" };
-    }
-    console.error("applyPartnerBrandAction failed", error instanceof Error ? error.name : "unknown error");
-    return { error: "partnerBrandApplyFailed" };
+    return proposalFailureState(error);
   }
 }
