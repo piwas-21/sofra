@@ -1,12 +1,7 @@
 "use server";
 
-// A partner records the public brand their clients' guests may be shown
-// (SOFRA-PARTNER-PLAN §11).
-//
-// This action STORES and EDITS the partner's opt-in and public details. New tenant
-// proposals and the separate existing-site apply action both pass through
-// `renderableBrand()` before a name or HTTPS URL reaches the registry. Billing
-// contacts and legal identity never cross that projection.
+// Stores public partner details. Runtime tenant reads resolve current publication
+// through renderableBrand; saving never creates a deployment proposal.
 
 import { revalidatePath } from "next/cache";
 import { requirePartner } from "@/lib/rbac";

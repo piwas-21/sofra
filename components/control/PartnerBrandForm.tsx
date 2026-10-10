@@ -122,7 +122,7 @@ export default function PartnerBrandForm({
         </button>
         {state.ok && (
           <span className="font-label text-craft-success-text dark:text-craft-success">
-            {t("savedApply")}
+            {t("runtimeSavedApply")}
           </span>
         )}
         <ActionError code={state.error} />

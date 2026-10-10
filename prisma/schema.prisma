@@ -1083,3 +1083,10 @@ model PrinterCredential {
   renewalFailed      Boolean  @default(false)
   updatedAt          DateTime @default(now())
 }
+
+// Display preference only; Client/TenantBilling retain partner ownership.
+model TenantBranding {
+  tenantSlug String @id
+  enabled Boolean @default(true)
+  updatedAt DateTime @updatedAt
+}
