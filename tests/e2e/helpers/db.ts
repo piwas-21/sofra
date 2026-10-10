@@ -711,9 +711,9 @@ export async function findBackupJobs(tenantSlug: string): Promise<BackupJobRow[]
  *  cross-partner attempt must NOT have touched (SOFRA-PARTNER-PLAN §11). */
 export async function findPartnerBrand(
   partnerId: string,
-): Promise<{ displayName: string; city: string | null; publish: boolean } | null> {
-  const rows = await query<{ displayName: string; city: string | null; publish: boolean }>(
-    `SELECT "displayName", city, "publishToTenants" AS publish
+): Promise<{ displayName: string; city: string | null; websiteUrl: string | null; publish: boolean } | null> {
+  const rows = await query<{ displayName: string; city: string | null; websiteUrl: string | null; publish: boolean }>(
+    `SELECT "displayName", city, "websiteUrl", "publishToTenants" AS publish
        FROM "PartnerBrand" WHERE "partnerId" = $1`,
     [partnerId],
   );
@@ -739,13 +739,13 @@ export async function arrangeBillingIdentityFor(
   userId: string,
   opts: { legalName: string; tradeName?: string | null; addressLine1: string },
 ): Promise<void> {
+  const billingEmail = `billing-${userId}@restaurant.test`;
   await query(
     `INSERT INTO "BillingIdentity"
        (id, "userId", "legalName", "tradeName", "addressLine1", "postalCode", city,
         "countryCode", "billingEmail", "updatedAt")
-     VALUES (gen_random_uuid()::text, $1, $2, $3, $4, '1204', 'Genève', 'CH',
-             'billing@example.com', now())`,
-    [userId, opts.legalName, opts.tradeName ?? null, opts.addressLine1],
+     VALUES (gen_random_uuid()::text, $1, $2, $3, $4, '1204', 'Genève', 'CH', $5, now())`,
+    [userId, opts.legalName, opts.tradeName ?? null, opts.addressLine1, billingEmail],
   );
 }
 

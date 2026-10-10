@@ -72,6 +72,13 @@ export default defineConfig({
         // billing-vs-enforcement predicate, same shape and same reason as
         // payments-pending.ts just below it.
         "lib/registry-commission-edit.ts",
+        // Existing partner credits use the same surgical, comment-preserving
+        // registry boundary and stay in the floor for the same reason.
+        "lib/partner-brand-registry-edit.ts",
+        "lib/partner-brand-registry-edit-helpers.ts",
+        // Cursor predicates for the bounded existing-site list: ties and both
+        // navigation directions must stay covered so no eligible site is skipped.
+        "lib/partner-brand-sites-pagination.ts",
         // The PR body that amendment opens with, split out of its GitHub-calling
         // sibling on 2026-09-05 so the sentence a founder reads before merging a
         // live rate is decidable by a test rather than by re-reading it. Listed
@@ -152,6 +159,7 @@ export default defineConfig({
         // looks like a footer with a name in it. The https-only and ISO-country
         // refusals are decidable here too, and nowhere cheaper.
         "lib/partner-brand.ts",
+        "lib/partner-brand-config.ts",
         // The publish half, split out of it for the LOC limit. Listed explicitly for
         // the reason provisioning-pr-body.ts is: leaving it off would quietly move
         // already-covered code OUT of the floor's scope, which reads as a passing gate

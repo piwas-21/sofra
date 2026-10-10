@@ -1190,7 +1190,11 @@
         "reasonRequired": "Gerekçe zorunlu ve bir şey söylemesi gerekiyor.",
         "lastArtifact": "Bu, o restoranın verisinin tek kopyası. Gerçekten istiyorsanız istisnayı işaretleyin.",
         "artifactNotFound": "O kopya artık mevcut değil."
-      }
+      },
+      "partnerBrandProposalUnavailable": "Öneri hizmeti yapılandırılmadığı için uygulama kullanılamıyor. Kayıtlı bilgileriniz mevcut sitelerde değişmeden kalır.",
+      "partnerBrandApplyFailed": "Bu site için öneri hazırlanamadı. Sitenin hâlâ etkin olduğunu doğrulayıp tekrar deneyin.",
+      "partnerBrandProposalConflict": "Bu site için önceki bir teklifin çözüme kavuşturulması gerekiyor. Farklı kayıtlı bilgileri uygulamadan önce registry teklifini inceleyin veya kapatın.",
+      "partnerBrandMappingAmbiguous": "Bu site güvenli biçimde tek bir müşteri ve faturalandırma kaydıyla eşleştirilemiyor. Daha sonra tekrar deneyin."
     },
     "plan": {
       "title": "Aboneliğiniz",
@@ -1374,16 +1378,34 @@
         "city": "Şehir",
         "countryCode": "Ülke (2 harf)"
       },
-      "publishLabel": "Bu bilgileri, sattığınız her restoran sitesinin alt bilgisinde gösterin.",
-      "publishMeaning": "Müşterilerinizin misafirleri bunları görecek.",
-      "publishUnavailable": "Henüz kullanılamıyor — platform sahibi etkinleştirene kadar yayınlama kapalı kalır. Bilgileriniz yine de kaydedilir.",
+      "publishLabel": "Görünen adınızı ve web sitenizi sattığınız restoran sitelerinin altbilgisinde gösterin.",
+      "publishMeaning": "Yalnızca herkese açık adınız ve HTTPS web siteniz eklenebilir.",
       "save": "Kaydet",
       "saving": "Kaydediliyor…",
       "saved": "Kaydedildi.",
       "adminTitle": "Herkese açık markası",
       "adminEmpty": "Herkese açık bilgi girilmemiş.",
       "adminPublishAsked": "Restoranlarının sitelerinde gösterilmek istiyor.",
-      "adminPublishOff": "Herkese açık gösterilmeyi istemedi."
+      "adminPublishOff": "Herkese açık gösterilmeyi istemedi.",
+      "savedApply": "Kaydedildi. Aşağıdan mevcut siteler için değişiklik önerebilirsiniz.",
+      "existingSitesTitle": "Mevcut restoran siteleri",
+      "existingSitesIntro": "Herkese açık adınızı ve web sitenizi eklemeyi veya kaldırmayı önermek için bir site seçin. Değişikliklerin sitede görünmesi için platform tarafından incelenip dağıtılması gerekir.",
+      "pageLoading": "Marka bilgileriniz ve uygun siteler yükleniyor…",
+      "pageLoadErrorTitle": "Marka sayfanız yüklenemedi",
+      "pageLoadError": "Marka bilgileriniz veya uygun siteler yüklenemedi. Lütfen tekrar deneyin.",
+      "retryPage": "Tekrar dene",
+      "sitesUnavailable": "Uygun siteler şu anda doğrulanamadı. Daha sonra tekrar deneyin.",
+      "noExistingSites": "Henüz güncellenecek etkin ve betiklerle yönetilen müşteri sitesi yok.",
+      "previousSites": "Önceki siteler",
+      "nextSites": "Sonraki siteler",
+      "applyToSite": "Bu siteye uygula",
+      "applying": "Öneri hazırlanıyor…",
+      "changesAwaitingDeployment": "Kaydedildi. Değişiklik sitede görünmeden önce platform incelemesi ve dağıtımı bekliyor.",
+      "changesAwaitingReview": "Bir teklif zaten platform incelemesini bekliyor. Kopya oluşturulmadı; yeni bir değişiklik önermeden önce durumunu kontrol edin.",
+      "alreadyApplied": "Yeni bir güncelleme gerekmiyor. Mevcut görünümü doğrulamak için sitenin altbilgisini kontrol edin.",
+      "viewProposal": "Öneriyi incele",
+      "removalAwaitingDeployment": "Kaydedildi. Kaldırma siteden kaybolmadan önce platform incelemesi ve dağıtımı bekliyor.",
+      "tenantOptedOut": "Kayıt, bu restoranın partner gösterimini reddettiğini belirtiyor. Mevcut görünümü doğrulamak için sitenin altbilgisini kontrol edin."
     },
     "baseDomain": {
       "title": "Kendi alan adlarınız",

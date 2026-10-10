@@ -1,0 +1,5 @@
+# Narrow development-only exception; mirrored by the guarded npm audit gate.
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm"
+ignoreUntil = 2026-10-17
+reason = "Reviewed 2026-10-10: braces 3.0.3 has no patched npm release. The lockfile confines it to development-only eslint-config-next -> @next/eslint-plugin-next -> fast-glob -> micromatch, using trusted repository patterns. Absent from the deployed Sofra runtime, with next/react resolution as positive controls. The npm gate additionally rejects any production-reachable braces instance. Recheck https://github.com/advisories/GHSA-vfj7-8cjw-p6xm and remove this exception when patched."

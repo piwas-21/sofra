@@ -7,26 +7,21 @@ import {
   findPartnerBrand,
 } from "./helpers/db";
 
-// A partner recording the PUBLIC details they may one day be shown by
+// A partner recording the PUBLIC details they may be shown by
 // (SOFRA-PARTNER-PLAN §11).
 //
-// What this suite proves: the details are stored, the prefill carries the trade
-// name and NOT the billing address, the publish switch is present but inert, and
-// one partner's save cannot reach another partner's row even when the payload
-// says it should.
-//
-// What it deliberately does NOT try to prove: that anything is published. Nothing
-// consumes `publishToTenants` yet — that is §11e, an open owner decision — so
-// there is no rendered footer to assert against, and a test that pretended
-// otherwise would be asserting a feature that does not exist.
+// This suite proves the stored opt-in remains false by default, can be changed by
+// the partner, and does not expose billing identity details. Applying that consent
+// to an existing site is a separate reviewable registry proposal.
 
 // Derived from the run id rather than written as a literal, for the reason
 // partner-trial.spec.ts documents: a `const PASSWORD = "…"` line is a gitleaks
 // `generic-api-key` hit (entropy, not meaning), and a scan that cries wolf on a
 // test fixture is a scan people learn to skip past.
 const PASSWORD = `e2e-brand-${RUN_ID}`;
+const PUBLIC_BRAND_URL = `https://partner-brand-${RUN_ID}.test`;
 
-test("a partner saves their public details, and the publish switch is inert", async ({ page }) => {
+test("a partner explicitly opts in to a public brand", async ({ page }) => {
   const email = uniq.email("brandsave");
   const partnerId = await arrangePartnerUser(email, PASSWORD);
 
@@ -35,30 +30,41 @@ test("a partner saves their public details, and the publish switch is inert", as
   await page.getByRole("link", { name: /brand/i }).first().click();
   await page.waitForURL("**/dashboard/brand");
 
-  await page.getByLabel(/display name/i).fill("Solution Eva");
+  await page
+    .getByRole("textbox", { name: /^display name$/i })
+    .fill("Solution Eva");
   await page.getByLabel(/^city$/i).fill("Genève");
-  await page.getByLabel(/website/i).fill("https://solutioneva.com");
+  await page.getByRole("textbox", { name: /^Website /i }).fill(PUBLIC_BRAND_URL);
 
-  // Present, so the partner can see what is being decided about them — and
-  // disabled, because nothing consumes it. An enabled switch that changed nothing
-  // would be a lie told to the one person entitled to decide this.
-  const publish = page.getByRole("checkbox");
-  await expect(publish).toBeDisabled();
-  await expect(page.getByText(/not available yet/i)).toBeVisible();
+  const publish = page.getByRole("checkbox", {
+    name: /^Show your display name and website in the footer of restaurant sites you resell\.$/i,
+  });
+  await expect(publish).toBeEnabled();
+  await expect(publish).not.toBeChecked();
 
   await page.getByRole("button", { name: /^save$/i }).click();
-  await expect(page.getByText(/^saved\.$/i)).toBeVisible();
+  await expect(
+    page.getByText(/saved\. apply to existing sites below/i),
+  ).toBeVisible();
 
   expect(await findPartnerBrand(partnerId)).toMatchObject({
     displayName: "Solution Eva",
     city: "Genève",
-    // A disabled checkbox is not submitted, and the action reads an absent one as
-    // false. Nothing a partner can do on this page turns publishing on today.
+    websiteUrl: PUBLIC_BRAND_URL,
     publish: false,
   });
+
+  await publish.check();
+  await page.getByRole("button", { name: /^save$/i }).click();
+  await expect(
+    page.getByText(/saved\. apply to existing sites below/i),
+  ).toBeVisible();
+  expect(await findPartnerBrand(partnerId)).toMatchObject({ publish: true });
 });
 
-test("the prefill carries the trade name and NOT the billing address", async ({ page }) => {
+test("the prefill carries the trade name and NOT the billing address", async ({
+  page,
+}) => {
   const email = uniq.email("brandprefill");
   const partnerId = await arrangePartnerUser(email, PASSWORD);
   await arrangeBillingIdentityFor(partnerId, {
@@ -73,7 +79,9 @@ test("the prefill carries the trade name and NOT the billing address", async ({ 
   await page.waitForURL("**/dashboard");
   await page.goto("/dashboard/brand");
 
-  await expect(page.getByLabel(/display name/i)).toHaveValue("Solution Eva");
+  await expect(
+    page.getByRole("textbox", { name: /^display name$/i }),
+  ).toHaveValue("Solution Eva");
   await expect(page.getByLabel(/^address$/i)).toHaveValue("");
   await expect(page.getByLabel(/^postcode$/i)).toHaveValue("");
   await expect(page.getByLabel(/^city$/i)).toHaveValue("");
@@ -84,7 +92,9 @@ test("the prefill carries the trade name and NOT the billing address", async ({ 
   expect(await findPartnerBrand(partnerId)).toBeNull();
 });
 
-test("a partner cannot write another partner's brand, even by naming them", async ({ page }) => {
+test("a partner cannot write another partner's brand, even by naming them", async ({
+  page,
+}) => {
   const mine = uniq.email("brandmine");
   const theirs = uniq.email("brandtheirs");
   const mineId = await arrangePartnerUser(mine, PASSWORD);
@@ -108,15 +118,21 @@ test("a partner cannot write another partner's brand, even by naming them", asyn
     form?.appendChild(field);
   }, theirsId);
 
-  await page.getByLabel(/display name/i).fill("My Brand");
+  await page.getByRole("textbox", { name: /^display name$/i }).fill("My Brand");
   await page.getByRole("button", { name: /^save$/i }).click();
-  await expect(page.getByText(/^saved\.$/i)).toBeVisible();
+  await expect(page.getByText(/saved\. apply to existing sites below/i)).toBeVisible();
 
-  expect(await findPartnerBrand(mineId)).toMatchObject({ displayName: "My Brand" });
-  expect(await findPartnerBrand(theirsId)).toMatchObject({ displayName: "Their Brand" });
+  expect(await findPartnerBrand(mineId)).toMatchObject({
+    displayName: "My Brand",
+  });
+  expect(await findPartnerBrand(theirsId)).toMatchObject({
+    displayName: "Their Brand",
+  });
 });
 
-test("a sole trader is told why their own name cannot be published (D-B1a)", async ({ page }) => {
+test("a sole trader is told why their own name cannot be published (D-B1a)", async ({
+  page,
+}) => {
   const email = uniq.email("brandsole");
   const partnerId = await arrangePartnerUser(email, PASSWORD);
   // The case §11b is about: a legal record naming a PERSON, with no trade name. The
@@ -134,19 +150,32 @@ test("a sole trader is told why their own name cannot be published (D-B1a)", asy
 
   // Said before they type, not after they save.
   await expect(page.getByText(/no trading name/i)).toBeVisible();
-  await expect(page.getByText(/will not be shown on any restaurant/i)).toBeVisible();
+  await expect(
+    page.getByText(/will not be shown on any restaurant/i),
+  ).toBeVisible();
 
-  // The save still SUCCEEDS — it is their record, and refusing the write would leave
-  // them unable to record anything at all. What is refused is publishing it, and the
-  // page says so rather than accepting the value and dropping it out of sight.
+  // The save still SUCCEEDS — it is their record. The public projection refuses
+  // this legal-name echo when a site proposal is built.
   await page.getByRole("button", { name: /^save$/i }).click();
-  await expect(page.getByText(/^saved\.$/i)).toBeVisible();
-  expect(await findPartnerBrand(partnerId)).toMatchObject({ displayName: "Mustafa Vural" });
+  await expect(
+    page.getByText(/saved\. apply to existing sites below/i),
+  ).toBeVisible();
+  expect(await findPartnerBrand(partnerId)).toMatchObject({
+    displayName: "Mustafa Vural",
+  });
 
   // Type a real brand and the warning goes; type the legal name back, in another
   // case and with stray spaces, and it returns — the comparison is normalised.
-  await page.getByLabel(/display name/i).fill("Solution Eva");
-  await expect(page.getByText(/will not be shown on any restaurant/i)).toHaveCount(0);
-  await page.getByLabel(/display name/i).fill("  mustafa   VURAL ");
-  await expect(page.getByText(/will not be shown on any restaurant/i)).toBeVisible();
+  await page
+    .getByRole("textbox", { name: /^display name$/i })
+    .fill("Solution Eva");
+  await expect(
+    page.getByText(/will not be shown on any restaurant/i),
+  ).toHaveCount(0);
+  await page
+    .getByRole("textbox", { name: /^display name$/i })
+    .fill("  mustafa   VURAL ");
+  await expect(
+    page.getByText(/will not be shown on any restaurant/i),
+  ).toBeVisible();
 });
