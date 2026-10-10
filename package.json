@@ -27,7 +27,7 @@
     "@prisma/client": "^7.8.0",
     "@sentry/nextjs": "^10.64.0",
     "bcryptjs": "^3.0.3",
-    "next": "^15.5.24",
+    "next": "^15.5.27",
     "next-auth": "^5.0.0-beta.32",
     "next-intl": "^4.3.4",
     "pg": "^8.16.3",
@@ -46,10 +46,10 @@
     "@types/react-dom": "^19.1.0",
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^15.5.20",
+    "eslint-config-next": "^15.5.27",
     "postcss": "^8.5.23",
     "prisma": "^7.8.0",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.9.3",
     "vitest": "^4.1.11"
@@ -59,11 +59,12 @@
     "postcss": "^8.5.23",
     "@hono/node-server": "^2.0.5",
     "fast-uri": "^3.1.8",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "brace-expansion": "^5.0.11",
     "@auth/core": "^0.41.3",
     "valibot": "^1.4.2",
     "mysql2": "^3.22.0",
-    "browserslist": "^4.28.7"
+    "browserslist": "^4.28.7",
+    "source-map-js": "^1.2.2"
   }
 }
