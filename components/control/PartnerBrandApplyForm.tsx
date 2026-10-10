@@ -9,9 +9,9 @@ export function PartnerBrandApplyFeedback({ state }: Readonly<{ state: PartnerBr
   const t = useTranslations("control.brand");
   return (
     <>
-      {state.ok && <p role="status" className="font-label text-sm text-muted-foreground">
+      {state.ok && <output className="block font-label text-sm text-muted-foreground">
         {state.optedOut ? t("tenantOptedOut") : t("runtimeSaved")}
-      </p>}
+      </output>}
       <ActionError code={state.error} />
     </>
   );
@@ -23,11 +23,16 @@ export default function PartnerBrandApplyForm({ clientId, enabled, publishable, 
   const t = useTranslations("control.brand");
   const [state, action, pending] = useActionState<PartnerBrandApplyState, FormData>(applyPartnerBrandAction, {});
   const visible = state.enabled ?? enabled;
+  function statusText() {
+    if (optedOut) return t("tenantOptedOut");
+    if (!visible) return t("runtimeHidden");
+    if (!publishable) return t("runtimeUnpublished");
+    return t("runtimeEnabled");
+  }
   return (
     <div className="grid justify-items-start gap-2">
       <p className="font-label text-sm text-muted-foreground">
-        {optedOut ? t("tenantOptedOut") : !visible ? t("runtimeHidden")
-          : !publishable ? t("runtimeUnpublished") : t("runtimeEnabled")}
+        {statusText()}
       </p>
       <form action={action} className="flex flex-wrap gap-2">
         <input type="hidden" name="clientId" value={clientId} />

@@ -3,11 +3,10 @@ import { getTranslations } from "next-intl/server";
 import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
-import { prefillFromBillingIdentity } from "@/lib/partner-brand";
+import { prefillFromBillingIdentity, renderableBrand } from "@/lib/partner-brand";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { partnerBrandRuntimeConfig } from "@/lib/partner-brand-config";
 import PartnerBrandForm from "@/components/control/PartnerBrandForm";
-import { renderableBrand } from "@/lib/partner-brand";
 import PartnerBrandApplyForm from "@/components/control/PartnerBrandApplyForm";
 import {
   assemblePartnerBrandSitesPage,
