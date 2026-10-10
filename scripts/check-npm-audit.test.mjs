@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { auditFailures } from "./check-npm-audit.mjs";
 
 const id = "GHSA-vfj7-8cjw-p6xm";
@@ -44,4 +46,17 @@ test("rejects malformed roots and dangling transitive findings beside a valid ac
   assert.throws(() => auditFailures(malformed, allowed, lock, today));
   malformed.vulnerabilities.other = { severity: "high", via: ["missing-leaf"] };
   assert.throws(() => auditFailures(malformed, allowed, lock, today));
+});
+
+test("CLI reads a complete audit from standard input", () => {
+  const input = JSON.stringify({ auditReportVersion: 2, metadata: { vulnerabilities: {} }, vulnerabilities: {} });
+  const result = spawnSync(process.execPath, [fileURLToPath(new URL("./check-npm-audit.mjs", import.meta.url))], { input, encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /npm audit passed/);
+});
+
+test("CLI refuses file arguments instead of reading a caller-selected path", () => {
+  const result = spawnSync(process.execPath, [fileURLToPath(new URL("./check-npm-audit.mjs", import.meta.url)), "unexpected-audit-path"], { input: "{}", encoding: "utf8" });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /file arguments are not accepted/);
 });

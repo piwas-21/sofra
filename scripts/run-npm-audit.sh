@@ -9,4 +9,4 @@ if [[ "$status" -gt 1 ]]; then
   echo "npm audit failed before producing a verdict" >&2
   exit "$status"
 fi
-node scripts/check-npm-audit.mjs "$report"
+node scripts/check-npm-audit.mjs < "$report"

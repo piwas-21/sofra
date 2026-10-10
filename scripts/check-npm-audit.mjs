@@ -68,7 +68,8 @@ export function auditFailures(audit, allowlist, lock, today = new Date().toISOSt
 
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   try {
-    const audit = JSON.parse(readFileSync(process.argv[2] ?? 0, "utf8"));
+    if (process.argv.length !== 2) throw new Error("Audit JSON must be supplied on standard input; file arguments are not accepted");
+    const audit = JSON.parse(readFileSync(0, "utf8"));
     const allowlist = JSON.parse(readFileSync(new URL("../.npm-audit-allowlist.json", import.meta.url), "utf8"));
     const lock = JSON.parse(readFileSync(new URL("../package-lock.json", import.meta.url), "utf8"));
     const failures = auditFailures(audit, allowlist, lock);
