@@ -34,7 +34,7 @@ test("a partner explicitly opts in to a public brand", async ({ page }) => {
     .getByRole("textbox", { name: /^display name$/i })
     .fill("Solution Eva");
   await page.getByLabel(/^city$/i).fill("Genève");
-  await page.getByLabel(/website/i).fill(PUBLIC_BRAND_URL);
+  await page.getByRole("textbox", { name: /^Website /i }).fill(PUBLIC_BRAND_URL);
 
   const publish = page.getByRole("checkbox", {
     name: /^Show your display name and website in the footer of restaurant sites you resell\.$/i,
