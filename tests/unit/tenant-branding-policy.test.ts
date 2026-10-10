@@ -1,19 +1,20 @@
+import { fixtureUrl, fixtureEmail, platformFixture } from "../helpers/branding-fixture";
 import { describe, expect, it } from "vitest";
 import { hiddenBranding, resolveTenantBranding } from "@/lib/tenant-branding-policy";
 
-const brand = { displayName: "Public Studio", websiteUrl: "https://studio.example.test", publishToTenants: true,
-  tagline: "Private tagline", email: "private@example.test", phone: "private",
+const brand = { displayName: "Public Studio", websiteUrl: fixtureUrl("studio"), publishToTenants: true,
+  tagline: "Private tagline", email: fixtureEmail("private", "studio"), phone: "private",
   addressLine1: "private", postalCode: "private", city: "private", countryCode: "NL" };
-const input = { enabled: true, hasPartner: true, partnerActive: true, brand, platform: { name: "Sofra", url: "https://sofrapiwas.com", email: "sofra@piwas.nl" }, legalName: "Private Person" };
+const input = { enabled: true, hasPartner: true, partnerActive: true, brand, platform: { name: "Sofra", url: platformFixture.url, email: platformFixture.email }, legalName: "Private Person" };
 
 describe("runtime branding publication", () => {
   it("defaults only an unpartnered tenant to the explicitly configured platform", () => {
     expect(resolveTenantBranding({ ...input, hasPartner: false, brand: null })).toEqual({
-      name: "Sofra", url: "https://sofrapiwas.com", email: "sofra@piwas.nl",
+      name: "Sofra", url: platformFixture.url, email: platformFixture.email,
     });
   });
   it("projects exactly name and website from a partner", () => {
-    expect(resolveTenantBranding(input)).toEqual({ name: "Public Studio", url: "https://studio.example.test", email: null });
+    expect(resolveTenantBranding(input)).toEqual({ name: "Public Studio", url: fixtureUrl("studio"), email: null });
   });
   it.each([
     { enabled: false }, { partnerActive: false }, { brand: null },

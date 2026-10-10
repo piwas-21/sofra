@@ -1,9 +1,10 @@
+import { fixtureUrl } from "../helpers/branding-fixture";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ lookup: vi.fn() }));
 vi.mock("@/lib/tenant-branding", () => ({ publicTenantBranding: mocks.lookup }));
 const { GET } = await import("@/app/api/public/tenant-branding/[slug]/route");
 const request = (slug = "tenant", etag?: string) => GET(
-  new Request(`https://control.example.test/api/public/tenant-branding/${slug}`,
+  new Request(`${fixtureUrl("control")}/api/public/tenant-branding/${slug}`,
     { headers: etag ? { "if-none-match": etag } : {} }), { params: Promise.resolve({ slug }) });
 beforeEach(() => { vi.resetAllMocks(); mocks.lookup.mockResolvedValue({ name: "Public", url: null, email: null }); });
 describe("public branding route", () => {

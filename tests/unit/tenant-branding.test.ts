@@ -1,17 +1,18 @@
+import { fixtureUrl, platformFixture } from "../helpers/branding-fixture";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ registry: vi.fn(), preference: vi.fn(), clients: vi.fn(), billing: vi.fn() }));
 vi.mock("@/lib/tenant-registry", () => ({ loadTenantRegistry: mocks.registry }));
 vi.mock("@/lib/db", () => ({ db: { tenantBranding: { findUnique: mocks.preference },
   client: { findMany: mocks.clients }, tenantBilling: { findUnique: mocks.billing } } }));
 const { publicTenantBranding } = await import("@/lib/tenant-branding");
-const brand = { displayName: "Studio", websiteUrl: "https://studio.example.test", publishToTenants: true };
+const brand = { displayName: "Studio", websiteUrl: fixtureUrl("studio"), publishToTenants: true };
 const client = { id: "client", tenantSlug: "tenant", status: "LIVE", partnerId: "partner",
   billing: { tenantSlug: "tenant" }, partner: { status: "ACTIVE", role: "PARTNER", brand, billingIdentity: null } };
 beforeEach(() => {
   vi.resetAllMocks();
   vi.stubEnv("SOFRA_BRAND_NAME", "Sofra");
-  vi.stubEnv("SOFRA_BRAND_URL", "https://sofrapiwas.com");
-  vi.stubEnv("SOFRA_BRAND_EMAIL", "sofra@piwas.nl");
+  vi.stubEnv("SOFRA_BRAND_URL", platformFixture.url);
+  vi.stubEnv("SOFRA_BRAND_EMAIL", platformFixture.email);
   mocks.registry.mockResolvedValue({ ok: true, tenants: [{ slug: "tenant", status: "active" }] });
   mocks.preference.mockResolvedValue(null); mocks.clients.mockResolvedValue([client]);
   mocks.billing.mockResolvedValue({ clientId: "client", payerUserId: null });
@@ -28,7 +29,7 @@ describe("runtime lookup", () => {
   });
   it("serves platform branding for tenants with no partner", async () => {
     mocks.clients.mockResolvedValue([]); mocks.billing.mockResolvedValue(null);
-    expect(await publicTenantBranding("tenant")).toMatchObject({ name: "Sofra", email: "sofra@piwas.nl" });
+    expect(await publicTenantBranding("tenant")).toMatchObject({ name: "Sofra", email: platformFixture.email });
   });
   it.each([{ enabled: false }])("honours per-site database opt-out %o", async (preference) => {
     mocks.preference.mockResolvedValue(preference);
