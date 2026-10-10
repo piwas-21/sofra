@@ -29,16 +29,22 @@ test("a partner explicitly opts in to a public brand", async ({ page }) => {
   await page.getByRole("link", { name: /brand/i }).first().click();
   await page.waitForURL("**/dashboard/brand");
 
-  await page.getByLabel(/display name/i).fill("Solution Eva");
+  await page
+    .getByRole("textbox", { name: /^display name$/i })
+    .fill("Solution Eva");
   await page.getByLabel(/^city$/i).fill("Genève");
   await page.getByLabel(/website/i).fill("https://solutioneva.com");
 
-  const publish = page.getByRole("checkbox");
+  const publish = page.getByRole("checkbox", {
+    name: /^Show your display name and website in the footer of restaurant sites you resell\.$/i,
+  });
   await expect(publish).toBeEnabled();
   await expect(publish).not.toBeChecked();
 
   await page.getByRole("button", { name: /^save$/i }).click();
-  await expect(page.getByText(/saved\. apply to existing sites below/i)).toBeVisible();
+  await expect(
+    page.getByText(/saved\. apply to existing sites below/i),
+  ).toBeVisible();
 
   expect(await findPartnerBrand(partnerId)).toMatchObject({
     displayName: "Solution Eva",
@@ -48,11 +54,15 @@ test("a partner explicitly opts in to a public brand", async ({ page }) => {
 
   await publish.check();
   await page.getByRole("button", { name: /^save$/i }).click();
-  await expect(page.getByText(/saved\. apply to existing sites below/i)).toBeVisible();
+  await expect(
+    page.getByText(/saved\. apply to existing sites below/i),
+  ).toBeVisible();
   expect(await findPartnerBrand(partnerId)).toMatchObject({ publish: true });
 });
 
-test("the prefill carries the trade name and NOT the billing address", async ({ page }) => {
+test("the prefill carries the trade name and NOT the billing address", async ({
+  page,
+}) => {
   const email = uniq.email("brandprefill");
   const partnerId = await arrangePartnerUser(email, PASSWORD);
   await arrangeBillingIdentityFor(partnerId, {
@@ -67,7 +77,9 @@ test("the prefill carries the trade name and NOT the billing address", async ({ 
   await page.waitForURL("**/dashboard");
   await page.goto("/dashboard/brand");
 
-  await expect(page.getByLabel(/display name/i)).toHaveValue("Solution Eva");
+  await expect(
+    page.getByRole("textbox", { name: /^display name$/i }),
+  ).toHaveValue("Solution Eva");
   await expect(page.getByLabel(/^address$/i)).toHaveValue("");
   await expect(page.getByLabel(/^postcode$/i)).toHaveValue("");
   await expect(page.getByLabel(/^city$/i)).toHaveValue("");
@@ -78,7 +90,9 @@ test("the prefill carries the trade name and NOT the billing address", async ({ 
   expect(await findPartnerBrand(partnerId)).toBeNull();
 });
 
-test("a partner cannot write another partner's brand, even by naming them", async ({ page }) => {
+test("a partner cannot write another partner's brand, even by naming them", async ({
+  page,
+}) => {
   const mine = uniq.email("brandmine");
   const theirs = uniq.email("brandtheirs");
   const mineId = await arrangePartnerUser(mine, PASSWORD);
@@ -102,15 +116,21 @@ test("a partner cannot write another partner's brand, even by naming them", asyn
     form?.appendChild(field);
   }, theirsId);
 
-  await page.getByLabel(/display name/i).fill("My Brand");
+  await page.getByRole("textbox", { name: /^display name$/i }).fill("My Brand");
   await page.getByRole("button", { name: /^save$/i }).click();
   await expect(page.getByText(/^saved\.$/i)).toBeVisible();
 
-  expect(await findPartnerBrand(mineId)).toMatchObject({ displayName: "My Brand" });
-  expect(await findPartnerBrand(theirsId)).toMatchObject({ displayName: "Their Brand" });
+  expect(await findPartnerBrand(mineId)).toMatchObject({
+    displayName: "My Brand",
+  });
+  expect(await findPartnerBrand(theirsId)).toMatchObject({
+    displayName: "Their Brand",
+  });
 });
 
-test("a sole trader is told why their own name cannot be published (D-B1a)", async ({ page }) => {
+test("a sole trader is told why their own name cannot be published (D-B1a)", async ({
+  page,
+}) => {
   const email = uniq.email("brandsole");
   const partnerId = await arrangePartnerUser(email, PASSWORD);
   // The case §11b is about: a legal record naming a PERSON, with no trade name. The
@@ -128,18 +148,32 @@ test("a sole trader is told why their own name cannot be published (D-B1a)", asy
 
   // Said before they type, not after they save.
   await expect(page.getByText(/no trading name/i)).toBeVisible();
-  await expect(page.getByText(/will not be shown on any restaurant/i)).toBeVisible();
+  await expect(
+    page.getByText(/will not be shown on any restaurant/i),
+  ).toBeVisible();
 
   // The save still SUCCEEDS — it is their record. The public projection refuses
   // this legal-name echo when a site proposal is built.
   await page.getByRole("button", { name: /^save$/i }).click();
-  await expect(page.getByText(/saved\. apply to existing sites below/i)).toBeVisible();
-  expect(await findPartnerBrand(partnerId)).toMatchObject({ displayName: "Mustafa Vural" });
+  await expect(
+    page.getByText(/saved\. apply to existing sites below/i),
+  ).toBeVisible();
+  expect(await findPartnerBrand(partnerId)).toMatchObject({
+    displayName: "Mustafa Vural",
+  });
 
   // Type a real brand and the warning goes; type the legal name back, in another
   // case and with stray spaces, and it returns — the comparison is normalised.
-  await page.getByLabel(/display name/i).fill("Solution Eva");
-  await expect(page.getByText(/will not be shown on any restaurant/i)).toHaveCount(0);
-  await page.getByLabel(/display name/i).fill("  mustafa   VURAL ");
-  await expect(page.getByText(/will not be shown on any restaurant/i)).toBeVisible();
+  await page
+    .getByRole("textbox", { name: /^display name$/i })
+    .fill("Solution Eva");
+  await expect(
+    page.getByText(/will not be shown on any restaurant/i),
+  ).toHaveCount(0);
+  await page
+    .getByRole("textbox", { name: /^display name$/i })
+    .fill("  mustafa   VURAL ");
+  await expect(
+    page.getByText(/will not be shown on any restaurant/i),
+  ).toBeVisible();
 });
