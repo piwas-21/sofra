@@ -159,6 +159,7 @@ export default defineConfig({
         // looks like a footer with a name in it. The https-only and ISO-country
         // refusals are decidable here too, and nowhere cheaper.
         "lib/partner-brand.ts",
+        "lib/partner-brand-config.ts",
         // The publish half, split out of it for the LOC limit. Listed explicitly for
         // the reason provisioning-pr-body.ts is: leaving it off would quietly move
         // already-covered code OUT of the floor's scope, which reads as a passing gate

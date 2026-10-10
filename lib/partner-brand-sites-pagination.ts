@@ -1,7 +1,5 @@
 import type { Prisma } from "@/lib/generated/prisma/client";
 
-export const PARTNER_BRAND_SITE_PAGE_SIZE = 20;
-
 export type PartnerBrandSiteCursor = {
   direction: "after" | "before";
   clientId: string;
@@ -42,9 +40,10 @@ export function eligiblePartnerBrandCursorBoundary(
 export function assemblePartnerBrandSitesPage(
   rows: PartnerBrandSiteRow[],
   cursor: ActivePartnerBrandSiteCursor,
+  pageSize: number,
 ): PartnerBrandSitesPage {
-  const hasExtraSite = rows.length > PARTNER_BRAND_SITE_PAGE_SIZE;
-  const sites = rows.slice(0, PARTNER_BRAND_SITE_PAGE_SIZE);
+  const hasExtraSite = rows.length > pageSize;
+  const sites = rows.slice(0, pageSize);
   const isBeforeCursor = cursor?.direction === "before";
   if (isBeforeCursor) sites.reverse();
 
@@ -77,6 +76,7 @@ export function parsePartnerBrandSiteCursor(params: SiteSearchParams): PartnerBr
 export function partnerBrandSiteQuery(
   partnerId: string,
   eligibleSlugs: string[],
+  pageSize: number,
   cursor?: { direction: PartnerBrandSiteCursor["direction"]; boundary: PartnerBrandSiteBoundary } | null,
 ): Pick<Prisma.ClientFindManyArgs, "where" | "orderBy" | "take"> {
   const where: Prisma.ClientWhereInput = {
@@ -99,7 +99,7 @@ export function partnerBrandSiteQuery(
   return {
     where,
     orderBy: [{ restaurantName: order }, { id: order }],
-    take: PARTNER_BRAND_SITE_PAGE_SIZE + 1,
+    take: pageSize + 1,
   };
 }
 

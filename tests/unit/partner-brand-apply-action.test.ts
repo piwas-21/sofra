@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-  partner: { id: "partner-1", email: "private@example.com", name: "Private Contact", role: "PARTNER" as const },
+  partner: { id: "partner-1", email: "private-contact@partner.test", name: "Private Contact", role: "PARTNER" as const },
   requirePartner: vi.fn(),
   clientFindFirst: vi.fn(),
   clientFindMany: vi.fn(),
@@ -32,6 +32,12 @@ vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
 const { applyPartnerBrandAction } = await import("@/lib/actions/partner-brand-apply-actions");
 const { ProvisioningNotConfiguredError } = await import("@/lib/provisioning");
+const { PARTNER_BRAND_CONFIG_ENV, partnerBrandRuntimeConfig } = await import("@/lib/partner-brand-config");
+
+const PRIVATE_CONTACT_EMAIL = "private-contact@partner.test";
+const PUBLIC_BRAND_URL = "https://studio.partner.test";
+const PULL_REQUEST_FIXTURE_BASE = "https://github.test/piwas-21/restaurant-app-deploy/pull";
+const pullRequestUrl = (number: number) => `${PULL_REQUEST_FIXTURE_BASE}/${number}`;
 
 const client = {
   id: "client-mine",
@@ -46,8 +52,8 @@ const relatedClients = [
 const savedBrand = {
   displayName: "Public Studio",
   tagline: "Private unused field",
-  websiteUrl: "https://studio.example",
-  email: "private@example.com",
+  websiteUrl: PUBLIC_BRAND_URL,
+  email: PRIVATE_CONTACT_EMAIL,
   phone: "+31 20 000 0000",
   addressLine1: "Private street 1",
   postalCode: "1000",
@@ -78,7 +84,7 @@ beforeEach(() => {
   mocks.identityFindUnique.mockReset().mockResolvedValue({ legalName: "Private Legal Name" });
   mocks.audit.mockReset().mockResolvedValue(undefined);
   mocks.rateLimit.mockReset().mockReturnValue(true);
-  mocks.openProposal.mockReset().mockResolvedValue({ kind: "opened", prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/42", optedOut: false });
+  mocks.openProposal.mockReset().mockResolvedValue({ kind: "opened", prUrl: pullRequestUrl(42), optedOut: false });
 });
 
 describe("applyPartnerBrandAction authorization and projection", () => {
@@ -89,17 +95,36 @@ describe("applyPartnerBrandAction authorization and projection", () => {
       ok: true,
       outcome: "proposed",
       optedOut: false,
-      prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/42",
+      prUrl: pullRequestUrl(42),
     });
-    expect(mocks.rateLimit).toHaveBeenCalledWith("partner-brand-apply:partner-1", 12, 15 * 60 * 1000);
+    const config = partnerBrandRuntimeConfig({});
+    expect(mocks.rateLimit).toHaveBeenCalledWith(
+      "partner-brand-apply:partner-1",
+      config.applyMaxAttempts,
+      config.applyWindowMs,
+    );
     expect(mocks.clientFindFirst).toHaveBeenCalledWith({ where: { id: "client-mine", partnerId: "partner-1" } });
     expect(mocks.clientFindMany).toHaveBeenCalledWith(expect.objectContaining({ take: 2 }));
     expect(mocks.openProposal).toHaveBeenCalledWith("partner-1", "zeta", {
       displayName: "Public Studio",
-      websiteUrl: "https://studio.example",
+      websiteUrl: PUBLIC_BRAND_URL,
     });
     expect(JSON.stringify(mocks.openProposal.mock.calls)).not.toContain("Private Legal Name");
-    expect(JSON.stringify(mocks.openProposal.mock.calls)).not.toContain("private@example.com");
+    expect(JSON.stringify(mocks.openProposal.mock.calls)).not.toContain(PRIVATE_CONTACT_EMAIL);
+  });
+
+  it("fails closed on invalid runtime limits before proposal or throttle access", async () => {
+    const previous = process.env[PARTNER_BRAND_CONFIG_ENV.applyMaxAttempts];
+    process.env[PARTNER_BRAND_CONFIG_ENV.applyMaxAttempts] = "0";
+    try {
+      expect(await submit({ clientId: "client-mine" })).toEqual({ error: "partnerBrandApplyFailed" });
+      expect(mocks.rateLimit).not.toHaveBeenCalled();
+      expect(mocks.clientFindFirst).not.toHaveBeenCalled();
+      expect(mocks.openProposal).not.toHaveBeenCalled();
+    } finally {
+      if (previous === undefined) delete process.env[PARTNER_BRAND_CONFIG_ENV.applyMaxAttempts];
+      else process.env[PARTNER_BRAND_CONFIG_ENV.applyMaxAttempts] = previous;
+    }
   });
 
   it("does not let a cross-partner client id or forged slug reach registry proposal", async () => {
@@ -158,25 +183,25 @@ describe("applyPartnerBrandAction authorization and projection", () => {
   });
 
   it("preserves a pending proposal URL instead of claiming publication", async () => {
-    mocks.openProposal.mockResolvedValue({ kind: "pending", prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/9", optedOut: false });
+    mocks.openProposal.mockResolvedValue({ kind: "pending", prUrl: pullRequestUrl(9), optedOut: false });
 
     expect(await submit({ clientId: "client-mine" })).toEqual({
       ok: true,
       outcome: "pending",
       optedOut: false,
-      prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/9",
+      prUrl: pullRequestUrl(9),
     });
   });
 
   it("returns a conflicting proposal link when saved details differ from the open PR", async () => {
     const { PartnerBrandProposalConflictError } = await import("@/lib/partner-brand-registry-pr");
     mocks.openProposal.mockRejectedValue(
-      new PartnerBrandProposalConflictError("different proposal", "https://github.com/piwas-21/restaurant-app-deploy/pull/50"),
+      new PartnerBrandProposalConflictError("different proposal", pullRequestUrl(50)),
     );
 
     expect(await submit({ clientId: "client-mine" })).toEqual({
       error: "partnerBrandProposalConflict",
-      prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/50",
+      prUrl: pullRequestUrl(50),
     });
   });
 });

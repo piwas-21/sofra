@@ -18,11 +18,14 @@ vi.mock("@/lib/db", () => ({
 const { tenantPartnerBrand } = await import("@/lib/partner-brand-lookup");
 const { buildTenantRegistryEntry } = await import("@/lib/provisioning-registry");
 
+const PUBLIC_BRAND_URL = "https://partner.partner.test";
+const PRIVATE_CONTACT_EMAIL = "private-contact@partner.test";
+
 const savedBrand = {
   displayName: "Public Partner",
   tagline: "Private tagline",
-  websiteUrl: "https://partner.example",
-  email: "private@example.com",
+  websiteUrl: PUBLIC_BRAND_URL,
+  email: PRIVATE_CONTACT_EMAIL,
   phone: "+31 20 000 0000",
   addressLine1: "Private Street",
   postalCode: "1000",
@@ -34,7 +37,7 @@ const savedBrand = {
 const tenant = {
   slug: "cafe-demo",
   name: "Cafe Demo",
-  adminEmail: "owner@example.com",
+  adminEmail: "tenant-owner@restaurant.test",
   template: "craft" as const,
   currency: "CHF",
   languages: ["en"],
@@ -53,12 +56,12 @@ describe("tenantPartnerBrand new-tenant provisioning lookup", () => {
     const { entry } = buildTenantRegistryEntry({ ...tenant, partnerBrand: brand });
     const parsed = parse(entry) as Record<string, Record<string, unknown>>;
 
-    expect(brand).toEqual({ displayName: "Public Partner", websiteUrl: "https://partner.example" });
+    expect(brand).toEqual({ displayName: "Public Partner", websiteUrl: PUBLIC_BRAND_URL });
     expect(parsed[tenant.slug]).toMatchObject({
       partner_name: "Public Partner",
-      partner_url: "https://partner.example",
+      partner_url: PUBLIC_BRAND_URL,
     });
-    expect(entry).not.toContain("private@example.com");
+    expect(entry).not.toContain(PRIVATE_CONTACT_EMAIL);
     expect(entry).not.toContain("Private Street");
     expect(entry).not.toContain("Private Legal Name");
   });

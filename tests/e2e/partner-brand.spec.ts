@@ -19,6 +19,7 @@ import {
 // `generic-api-key` hit (entropy, not meaning), and a scan that cries wolf on a
 // test fixture is a scan people learn to skip past.
 const PASSWORD = `e2e-brand-${RUN_ID}`;
+const PUBLIC_BRAND_URL = `https://partner-brand-${RUN_ID}.test`;
 
 test("a partner explicitly opts in to a public brand", async ({ page }) => {
   const email = uniq.email("brandsave");
@@ -33,7 +34,7 @@ test("a partner explicitly opts in to a public brand", async ({ page }) => {
     .getByRole("textbox", { name: /^display name$/i })
     .fill("Solution Eva");
   await page.getByLabel(/^city$/i).fill("Genève");
-  await page.getByLabel(/website/i).fill("https://solutioneva.com");
+  await page.getByLabel(/website/i).fill(PUBLIC_BRAND_URL);
 
   const publish = page.getByRole("checkbox", {
     name: /^Show your display name and website in the footer of restaurant sites you resell\.$/i,
@@ -49,6 +50,7 @@ test("a partner explicitly opts in to a public brand", async ({ page }) => {
   expect(await findPartnerBrand(partnerId)).toMatchObject({
     displayName: "Solution Eva",
     city: "Genève",
+    websiteUrl: PUBLIC_BRAND_URL,
     publish: false,
   });
 
@@ -118,7 +120,7 @@ test("a partner cannot write another partner's brand, even by naming them", asyn
 
   await page.getByRole("textbox", { name: /^display name$/i }).fill("My Brand");
   await page.getByRole("button", { name: /^save$/i }).click();
-  await expect(page.getByText(/^saved\.$/i)).toBeVisible();
+  await expect(page.getByText(/saved\. apply to existing sites below/i)).toBeVisible();
 
   expect(await findPartnerBrand(mineId)).toMatchObject({
     displayName: "My Brand",

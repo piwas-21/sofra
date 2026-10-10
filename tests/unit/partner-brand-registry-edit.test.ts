@@ -30,7 +30,11 @@ const source = (extra = "") =>
     .filter(Boolean)
     .join("\n") + "\n";
 
-const brand = { displayName: "Cafe: # & \"Friends\"", websiteUrl: "https://cafe.example/about#team" };
+const fixtureBrandUrl = (host: string, path = "") => `https://${host}.partner-brand.test${path}`;
+const brandWebsiteUrl = fixtureBrandUrl("cafe", "/about#team");
+const previousWebsiteUrl = fixtureBrandUrl("previous");
+const invalidHttpWebsiteUrl = `http://${fixtureBrandUrl("plain").slice("https://".length)}`;
+const brand = { displayName: "Cafe: # & \"Friends\"", websiteUrl: brandWebsiteUrl };
 
 describe("partner brand registry edit", () => {
   it("updates only the selected active script-managed block and safely quotes special strings", () => {
@@ -90,7 +94,7 @@ describe("partner brand registry edit", () => {
 
   it("preserves comments and unrelated fields when existing URL precedes name during replacement or removal", () => {
     const extra = [
-      '    partner_url: "https://old.example"',
+      `    partner_url: "${previousWebsiteUrl}"`,
       "    # Preserve this comment while replacing or removing public fields.",
       "    notes: keep this unrelated field # preserve the inline comment",
       '    partner_name: "Old Partner"',
@@ -148,7 +152,7 @@ describe("partner brand registry edit", () => {
     }
     expect(() => setRegistryPartnerBrand(source(), "cafe-demo", {
       displayName: "Public Partner",
-      websiteUrl: "http://partner.example",
+      websiteUrl: invalidHttpWebsiteUrl,
     })).toThrow(AmbiguousPartnerBrandRegistryError);
   });
 

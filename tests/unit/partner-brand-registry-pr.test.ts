@@ -26,6 +26,12 @@ const { openPartnerBrandRegistryPr, PartnerBrandProposalConflictError } = await 
   "@/lib/partner-brand-registry-pr"
 );
 
+const fixtureUrl = (label: string) => `https://${label}.partner-brand.test`;
+const brandWebsiteUrl = fixtureUrl("partner");
+const previousWebsiteUrl = fixtureUrl("previous");
+const PULL_REQUEST_FIXTURE_BASE = "https://github.test/piwas-21/restaurant-app-deploy/pull";
+const pullRequestUrl = (number: number) => `${PULL_REQUEST_FIXTURE_BASE}/${number}`;
+
 const registry = [
   "version: 1",
   "tenants:",
@@ -42,10 +48,10 @@ const registry = [
   "    managed: scripts",
   '    partner_attribution: "false"',
   "    partner_name: Old Partner",
-  "    partner_url: https://old.example",
+  `    partner_url: ${previousWebsiteUrl}`,
   "" ]
   .join("\n");
-const brand = { displayName: "Public Partner", websiteUrl: "https://partner.example" };
+const brand = { displayName: "Public Partner", websiteUrl: brandWebsiteUrl };
 const baseSha = "a".repeat(40);
 
 const branchFor = (partnerId: string, slug: string) =>
@@ -132,7 +138,7 @@ function installApi(options: ApiOptions = {}) {
       pullBodies.push(body.body);
       pullNumber += 1;
       const proposal: PullRequest = {
-        html_url: `https://github.com/piwas-21/restaurant-app-deploy/pull/${pullNumber}`,
+        html_url: pullRequestUrl(pullNumber),
         head: { ref: body.head, repo: { full_name: "piwas-21/restaurant-app-deploy" } },
         base: { ref: "develop" },
       };
@@ -192,7 +198,7 @@ describe("openPartnerBrandRegistryPr", () => {
       branchSha: "branch-with-proposal",
       branchYaml: current,
       openPrs: [{
-        html_url: "https://github.com/piwas-21/restaurant-app-deploy/pull/18",
+        html_url: pullRequestUrl(18),
         head: { ref: branch, repo: { full_name: "piwas-21/restaurant-app-deploy" } },
         base: { ref: "develop" },
       }],
@@ -200,7 +206,7 @@ describe("openPartnerBrandRegistryPr", () => {
 
     await expect(openPartnerBrandRegistryPr("partner-1", "cafe-demo", brand)).resolves.toEqual({
       kind: "pending",
-      prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/18",
+      prUrl: pullRequestUrl(18),
       optedOut: false,
     });
     expect(api.updatedBranches).toHaveLength(0);
@@ -214,10 +220,10 @@ describe("openPartnerBrandRegistryPr", () => {
       branchSha: "branch-with-proposal",
       branchYaml: setRegistryPartnerBrand(registry, "cafe-demo", {
         displayName: "Old Public Partner",
-        websiteUrl: "https://old.example",
+        websiteUrl: previousWebsiteUrl,
       }).yaml,
       openPrs: [{
-        html_url: "https://github.com/piwas-21/restaurant-app-deploy/pull/19",
+        html_url: pullRequestUrl(19),
         head: { ref: branch, repo: { full_name: "piwas-21/restaurant-app-deploy" } },
         base: { ref: "develop" },
       }],
@@ -225,7 +231,7 @@ describe("openPartnerBrandRegistryPr", () => {
 
     await expect(openPartnerBrandRegistryPr("partner-1", "cafe-demo", brand)).rejects.toMatchObject({
       name: "PartnerBrandProposalConflictError",
-      prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/19",
+      prUrl: pullRequestUrl(19),
     });
     expect(api.updatedBranches).toHaveLength(0);
   });
@@ -235,7 +241,7 @@ describe("openPartnerBrandRegistryPr", () => {
     const api = installApi({
       existingBranch: true,
       closedPrs: [{
-        html_url: "https://github.com/piwas-21/restaurant-app-deploy/pull/20",
+        html_url: pullRequestUrl(20),
         head: { ref: branch, repo: { full_name: "piwas-21/restaurant-app-deploy" } },
         base: { ref: "develop" },
       }],
@@ -293,7 +299,7 @@ describe("openPartnerBrandRegistryPr", () => {
 
     await expect(openPartnerBrandRegistryPr("partner-1", "cafe-demo", brand)).resolves.toMatchObject({
       kind: "pending",
-      prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/1",
+      prUrl: pullRequestUrl(1),
       optedOut: false,
     });
   });

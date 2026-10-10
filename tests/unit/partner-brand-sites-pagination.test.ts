@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
-  PARTNER_BRAND_SITE_PAGE_SIZE,
   assemblePartnerBrandSitesPage,
   eligiblePartnerBrandCursorBoundary,
   parsePartnerBrandSiteCursor,
   partnerBrandSitePageHref,
   partnerBrandSiteQuery,
 } from "@/lib/partner-brand-sites-pagination";
+import { partnerBrandRuntimeConfig } from "@/lib/partner-brand-config";
+
+const DEFAULT_PAGE_SIZE = partnerBrandRuntimeConfig({}).sitePageSize;
+const FIXTURE_ORIGIN = "https://pagination.test";
 
 const siteRows = (count: number, start = 1) => Array.from({ length: count }, (_, index) => ({
   id: `client-${start + index}`,
@@ -16,19 +19,19 @@ const siteRows = (count: number, start = 1) => Array.from({ length: count }, (_,
 
 describe("partner brand site pagination", () => {
   it("uses a bounded first-page query scoped to the partner and eligible registry slugs", () => {
-    const query = partnerBrandSiteQuery("partner-1", ["cafe", "bistro"]);
+    const query = partnerBrandSiteQuery("partner-1", ["cafe", "bistro"], DEFAULT_PAGE_SIZE);
 
     expect(query).toEqual({
       where: { partnerId: "partner-1", status: "LIVE", tenantSlug: { in: ["cafe", "bistro"] } },
       orderBy: [{ restaurantName: "asc" }, { id: "asc" }],
-      take: PARTNER_BRAND_SITE_PAGE_SIZE + 1,
+      take: DEFAULT_PAGE_SIZE + 1,
     });
   });
 
   it("uses stable keyset boundaries in both directions while retaining a bounded take", () => {
     const boundary = { id: "client-20", restaurantName: "Cafe" };
-    const next = partnerBrandSiteQuery("partner-1", ["cafe"], { direction: "after", boundary });
-    const previous = partnerBrandSiteQuery("partner-1", ["cafe"], { direction: "before", boundary });
+    const next = partnerBrandSiteQuery("partner-1", ["cafe"], DEFAULT_PAGE_SIZE, { direction: "after", boundary });
+    const previous = partnerBrandSiteQuery("partner-1", ["cafe"], DEFAULT_PAGE_SIZE, { direction: "before", boundary });
 
     expect(next.where).toMatchObject({
       partnerId: "partner-1",
@@ -47,8 +50,8 @@ describe("partner brand site pagination", () => {
       ],
     });
     expect(previous.orderBy).toEqual([{ restaurantName: "desc" }, { id: "desc" }]);
-    expect(next.take).toBe(PARTNER_BRAND_SITE_PAGE_SIZE + 1);
-    expect(previous.take).toBe(PARTNER_BRAND_SITE_PAGE_SIZE + 1);
+    expect(next.take).toBe(DEFAULT_PAGE_SIZE + 1);
+    expect(previous.take).toBe(DEFAULT_PAGE_SIZE + 1);
   });
 
   it("accepts one bounded cursor ID and ignores malformed or conflicting directions", () => {
@@ -69,8 +72,8 @@ describe("partner brand site pagination", () => {
   it("encodes cursor IDs in navigation links", () => {
     const href = partnerBrandSitePageHref("after", "client/20?next=1");
     const previousHref = partnerBrandSitePageHref("before", "client 19");
-    expect(new URL(href, "https://sofrapiwas.com").searchParams.get("siteAfter")).toBe("client/20?next=1");
-    expect(new URL(previousHref, "https://sofrapiwas.com").searchParams.get("siteBefore")).toBe("client 19");
+    expect(new URL(href, FIXTURE_ORIGIN).searchParams.get("siteAfter")).toBe("client/20?next=1");
+    expect(new URL(previousHref, FIXTURE_ORIGIN).searchParams.get("siteBefore")).toBe("client 19");
   });
 
   it("accepts a cursor boundary only for this partner's active eligible site", () => {
@@ -94,25 +97,35 @@ describe("partner brand site pagination", () => {
   });
 
   it("assembles bounded next and previous pages with stable navigation cursors", () => {
-    const firstPage = assemblePartnerBrandSitesPage(siteRows(PARTNER_BRAND_SITE_PAGE_SIZE + 1), null);
-    expect(firstPage.sites).toHaveLength(PARTNER_BRAND_SITE_PAGE_SIZE);
+    const firstPage = assemblePartnerBrandSitesPage(siteRows(DEFAULT_PAGE_SIZE + 1), null, DEFAULT_PAGE_SIZE);
+    expect(firstPage.sites).toHaveLength(DEFAULT_PAGE_SIZE);
     expect(firstPage.previousHref).toBeNull();
-    expect(firstPage.nextHref).toBe("/dashboard/brand?siteAfter=client-20");
+    expect(firstPage.nextHref).toBe(`/dashboard/brand?siteAfter=client-${DEFAULT_PAGE_SIZE}`);
 
-    const afterPage = assemblePartnerBrandSitesPage(siteRows(PARTNER_BRAND_SITE_PAGE_SIZE, 21), {
+    const afterPage = assemblePartnerBrandSitesPage(siteRows(DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE + 1), {
       direction: "after",
-      boundary: { id: "client-20", restaurantName: "Restaurant 20" },
-    });
-    expect(afterPage.previousHref).toBe("/dashboard/brand?siteBefore=client-21");
+      boundary: { id: `client-${DEFAULT_PAGE_SIZE}`, restaurantName: `Restaurant ${DEFAULT_PAGE_SIZE}` },
+    }, DEFAULT_PAGE_SIZE);
+    expect(afterPage.previousHref).toBe(`/dashboard/brand?siteBefore=client-${DEFAULT_PAGE_SIZE + 1}`);
     expect(afterPage.nextHref).toBeNull();
 
-    const beforePage = assemblePartnerBrandSitesPage(siteRows(PARTNER_BRAND_SITE_PAGE_SIZE + 1, 0).reverse(), {
+    const beforePage = assemblePartnerBrandSitesPage(siteRows(DEFAULT_PAGE_SIZE + 1, 0).reverse(), {
       direction: "before",
-      boundary: { id: "client-21", restaurantName: "Restaurant 21" },
-    });
+      boundary: { id: `client-${DEFAULT_PAGE_SIZE + 1}`, restaurantName: `Restaurant ${DEFAULT_PAGE_SIZE + 1}` },
+    }, DEFAULT_PAGE_SIZE);
     expect(beforePage.sites[0]?.id).toBe("client-1");
-    expect(beforePage.sites.at(-1)?.id).toBe("client-20");
+    expect(beforePage.sites.at(-1)?.id).toBe(`client-${DEFAULT_PAGE_SIZE}`);
     expect(beforePage.previousHref).toBe("/dashboard/brand?siteBefore=client-1");
-    expect(beforePage.nextHref).toBe("/dashboard/brand?siteAfter=client-20");
+    expect(beforePage.nextHref).toBe(`/dashboard/brand?siteAfter=client-${DEFAULT_PAGE_SIZE}`);
+  });
+
+  it("uses one configured page size for both bounded query and returned page", () => {
+    const pageSize = 3;
+    const query = partnerBrandSiteQuery("partner-1", ["cafe"], pageSize);
+    const page = assemblePartnerBrandSitesPage(siteRows(pageSize + 1), null, pageSize);
+
+    expect(query.take).toBe(pageSize + 1);
+    expect(page.sites).toHaveLength(pageSize);
+    expect(page.nextHref).toBe("/dashboard/brand?siteAfter=client-3");
   });
 });

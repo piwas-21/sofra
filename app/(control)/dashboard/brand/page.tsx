@@ -5,6 +5,7 @@ import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { prefillFromBillingIdentity } from "@/lib/partner-brand";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
+import { partnerBrandRuntimeConfig } from "@/lib/partner-brand-config";
 import PartnerBrandForm from "@/components/control/PartnerBrandForm";
 import PartnerBrandApplyForm from "@/components/control/PartnerBrandApplyForm";
 import {
@@ -42,10 +43,11 @@ async function fetchPartnerBrandSiteRows(
   partnerId: string,
   eligibleSlugs: string[],
   cursor: ActivePartnerBrandSiteCursor,
+  pageSize: number,
 ): Promise<PartnerBrandSiteRow[]> {
   if (eligibleSlugs.length === 0) return [];
   return db.client.findMany({
-    ...partnerBrandSiteQuery(partnerId, eligibleSlugs, cursor),
+    ...partnerBrandSiteQuery(partnerId, eligibleSlugs, pageSize, cursor),
     select: { id: true, restaurantName: true, tenantSlug: true },
   });
 }
@@ -54,6 +56,7 @@ async function loadPartnerBrandSitesPage(
   partnerId: string,
   eligibleSlugSet: Set<string>,
   search: PartnerBrandPageSearchParams,
+  pageSize: number,
 ): Promise<PartnerBrandSitesPage> {
   const eligibleSlugs = [...eligibleSlugSet];
   const requestedCursor = parsePartnerBrandSiteCursor(search);
@@ -67,16 +70,17 @@ async function loadPartnerBrandSitesPage(
   let activeCursor: ActivePartnerBrandSiteCursor = requestedCursor && boundary
     ? { direction: requestedCursor.direction, boundary }
     : null;
-  let rows = await fetchPartnerBrandSiteRows(partnerId, eligibleSlugs, activeCursor);
+  let rows = await fetchPartnerBrandSiteRows(partnerId, eligibleSlugs, activeCursor, pageSize);
   if (activeCursor && rows.length === 0) {
     activeCursor = null;
-    rows = await fetchPartnerBrandSiteRows(partnerId, eligibleSlugs, null);
+    rows = await fetchPartnerBrandSiteRows(partnerId, eligibleSlugs, null, pageSize);
   }
-  return assemblePartnerBrandSitesPage(rows, activeCursor);
+  return assemblePartnerBrandSitesPage(rows, activeCursor, pageSize);
 }
 
 export default async function PartnerBrandPage({ searchParams }: PartnerBrandPageProps) {
   const partner = await requirePartner();
+  const { sitePageSize } = partnerBrandRuntimeConfig();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.brand" });
 
@@ -113,7 +117,7 @@ export default async function PartnerBrandPage({ searchParams }: PartnerBrandPag
           .map((tenant) => tenant.slug)
       : [],
   );
-  const sitePage = await loadPartnerBrandSitesPage(partner.id, eligibleSlugs, query);
+  const sitePage = await loadPartnerBrandSitesPage(partner.id, eligibleSlugs, query, sitePageSize);
   let siteMessage: string | null = null;
   if (!registry.ok) siteMessage = t("sitesUnavailable");
   else if (sitePage.sites.length === 0) siteMessage = t("noExistingSites");

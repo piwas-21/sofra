@@ -17,10 +17,7 @@ import {
   UnknownPartnerBrandTenantError,
 } from "@/lib/partner-brand-registry-edit";
 import { ProvisioningApiError, ProvisioningNotConfiguredError } from "@/lib/provisioning";
-
-// Limit registry-proposal attempts to 12 per partner in each 15-minute window.
-const PARTNER_BRAND_APPLY_MAX_ATTEMPTS = 12;
-const PARTNER_BRAND_APPLY_WINDOW_MS = 15 * 60 * 1000;
+import { partnerBrandRuntimeConfig } from "@/lib/partner-brand-config";
 
 type MappedClient = {
   id: string;
@@ -129,7 +126,14 @@ export async function applyPartnerBrandAction(
   formData: FormData,
 ): Promise<PartnerBrandApplyState> {
   const partner = await requirePartner();
-  if (!rateLimit(`partner-brand-apply:${partner.id}`, PARTNER_BRAND_APPLY_MAX_ATTEMPTS, PARTNER_BRAND_APPLY_WINDOW_MS)) {
+  let config;
+  try {
+    config = partnerBrandRuntimeConfig();
+  } catch {
+    console.error("applyPartnerBrandAction rejected invalid partner-brand config");
+    return { error: "partnerBrandApplyFailed" };
+  }
+  if (!rateLimit(`partner-brand-apply:${partner.id}`, config.applyMaxAttempts, config.applyWindowMs)) {
     return { error: "tooManyAttempts" };
   }
   const target = await resolveApplyTarget(partner.id, readString(formData, "clientId"));
