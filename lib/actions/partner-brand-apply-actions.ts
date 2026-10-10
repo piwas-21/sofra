@@ -54,7 +54,7 @@ function mappingIsUnambiguous(
 ): boolean {
   if (mappedClients.length !== 1) return false;
   const [mapped] = mappedClients;
-  if (!mapped || mapped.id !== clientId || mapped.partnerId !== partnerId || mapped.tenantSlug !== slug) {
+  if (mapped?.id !== clientId || mapped.partnerId !== partnerId || mapped.tenantSlug !== slug) {
     return false;
   }
   if (mapped.billing !== null && mapped.billing?.tenantSlug !== slug) return false;
