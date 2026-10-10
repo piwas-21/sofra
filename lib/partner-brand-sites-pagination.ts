@@ -46,8 +46,8 @@ export function assemblePartnerBrandSitesPage(
   const sites = rows.slice(0, pageSize);
   const isBeforeCursor = cursor?.direction === "before";
   if (isBeforeCursor) sites.reverse();
-  const firstSite = sites.length > 0 ? sites[0] : undefined;
-  const lastSite = sites.length > 0 ? sites[sites.length - 1] : undefined;
+  const firstSite = sites.at(0);
+  const lastSite = sites.at(-1);
 
   const hasPreviousSites = isBeforeCursor ? hasExtraSite : Boolean(cursor);
   const hasNextSites = isBeforeCursor || hasExtraSite;
