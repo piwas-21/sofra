@@ -17,15 +17,30 @@ import { partnerBrandRegistryPrBody } from "./partner-brand-registry-pr-body";
 import {
   assertSafeOrphanBranch,
   branchFor,
+  createBranchIfMissing,
+  findMatchingOpenProposal,
   findClosedProposal,
-  findOpenProposal,
   registryFile,
+  type PendingPartnerBrandProposal,
 } from "./partner-brand-registry-pr-branch";
 export { PartnerBrandProposalConflictError } from "./partner-brand-registry-pr-errors";
 import { PartnerBrandProposalConflictError } from "./partner-brand-registry-pr-errors";
+import type { RegistryFile } from "./partner-brand-registry-pr-branch";
+
 export type PartnerBrandProposal =
   | { kind: "opened" | "pending"; prUrl: string; optedOut: boolean }
   | { kind: "unchanged"; optedOut: boolean };
+
+type OrphanBranch = Awaited<ReturnType<typeof assertSafeOrphanBranch>>;
+type BranchInspection = {
+  pending: PendingPartnerBrandProposal | null;
+  orphan: OrphanBranch | null;
+};
+
+const OPEN_PROPOSAL_MISMATCH =
+  "A partner-brand proposal for this site is already open with different saved details.";
+const CREATE_PROPOSAL_MISMATCH =
+  "A partner-brand proposal for this site is open with different saved details.";
 
 /**
  * Apply a safe public projection to a registered tenant's branch and open (or
@@ -42,50 +57,71 @@ export async function openPartnerBrandRegistryPr(
 
   const baseFile = await registryFile(token, BASE);
   const baseEdit = setRegistryPartnerBrand(baseFile.content, slug, brand);
-  if (!baseEdit.changed) return { kind: "unchanged", optedOut: baseEdit.optedOut };
+  if (!baseEdit.changed)
+    return { kind: "unchanged", optedOut: baseEdit.optedOut };
 
   const branch = branchFor(partnerId, slug);
   const baseRef = await gh<{ object: { sha: string } }>(
     token,
     `/repos/${OWNER}/${REPO}/git/ref/heads/${BASE}`,
   );
-  let branchAlreadyExists = false;
-  try {
-    await gh(token, `/repos/${OWNER}/${REPO}/git/refs`, {
-      method: "POST",
-      body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: baseRef.object.sha }),
-    });
-  } catch (error) {
-    if (!(error instanceof ProvisioningApiError) || !/Reference already exists/i.test(error.message)) throw error;
-    branchAlreadyExists = true;
+  const inspection = await inspectBranch(
+    token,
+    branch,
+    baseRef.object.sha,
+    slug,
+    brand,
+  );
+  if (inspection.pending) return inspection.pending;
+
+  const edit = await saveBranchEdit(
+    token,
+    branch,
+    slug,
+    brand,
+    inspection.orphan,
+  );
+  return openOrRecoverProposal(token, branch, slug, brand, edit.optedOut);
+}
+
+async function inspectBranch(
+  token: string,
+  branch: string,
+  baseSha: string,
+  slug: string,
+  brand: RenderableBrand | null,
+): Promise<BranchInspection> {
+  const alreadyExists = await createBranchIfMissing(token, branch, baseSha);
+  if (!alreadyExists) return { pending: null, orphan: null };
+
+  const pending = await findMatchingOpenProposal(
+    token,
+    branch,
+    slug,
+    brand,
+    OPEN_PROPOSAL_MISMATCH,
+  );
+  if (pending) return { pending, orphan: null };
+
+  const closed = await findClosedProposal(token, branch);
+  if (closed) {
+    throw new PartnerBrandProposalConflictError(
+      "A previous partner-brand proposal for this site was closed; refusing to reuse its branch.",
+      closed.html_url,
+    );
   }
 
-  if (branchAlreadyExists) {
-    const pending = await findOpenProposal(token, branch);
-    if (pending) {
-      const pendingFile = await registryFile(token, branch);
-      const pendingEdit = setRegistryPartnerBrand(pendingFile.content, slug, brand);
-      if (pendingEdit.changed) {
-        throw new PartnerBrandProposalConflictError(
-          "A partner-brand proposal for this site is already open with different saved details.",
-          pending.html_url,
-        );
-      }
-      return { kind: "pending", prUrl: pending.html_url, optedOut: pendingEdit.optedOut };
-    }
+  const orphan = await assertSafeOrphanBranch(token, branch, baseSha, slug);
+  return { pending: null, orphan };
+}
 
-    const closed = await findClosedProposal(token, branch);
-    if (closed) {
-      throw new PartnerBrandProposalConflictError(
-        "A previous partner-brand proposal for this site was closed; refusing to reuse its branch.",
-        closed.html_url,
-      );
-    }
-  }
-
-  const orphan = branchAlreadyExists
-    ? await assertSafeOrphanBranch(token, branch, baseRef.object.sha, slug)
-    : null;
+async function saveBranchEdit(
+  token: string,
+  branch: string,
+  slug: string,
+  brand: RenderableBrand | null,
+  orphan: OrphanBranch | null,
+) {
   const source = orphan?.file ?? (await registryFile(token, branch));
   const edit = setRegistryPartnerBrand(source.content, slug, brand);
   if (orphan && !orphan.atBase && edit.changed) {
@@ -93,43 +129,61 @@ export async function openPartnerBrandRegistryPr(
       "A prior partner-brand proposal for this site contains different saved details; refusing to amend an orphaned branch.",
     );
   }
-  if (edit.changed) {
-    await gh(token, `/repos/${OWNER}/${REPO}/contents/${REGISTRY_PATH}`, {
-      method: "PUT",
-      body: JSON.stringify({
-        message: `chore(registry): update partner brand for '${slug}'`,
-        content: Buffer.from(edit.yaml, "utf8").toString("base64"),
-        sha: source.sha,
-        branch,
-      }),
-    });
-  }
+  if (edit.changed)
+    await updateRegistryFile(token, branch, slug, source, edit.yaml);
+  return edit;
+}
 
+async function updateRegistryFile(
+  token: string,
+  branch: string,
+  slug: string,
+  source: RegistryFile,
+  yaml: string,
+): Promise<void> {
+  await gh(token, `/repos/${OWNER}/${REPO}/contents/${REGISTRY_PATH}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      message: `chore(registry): update partner brand for '${slug}'`,
+      content: Buffer.from(yaml, "utf8").toString("base64"),
+      sha: source.sha,
+      branch,
+    }),
+  });
+}
+
+async function openOrRecoverProposal(
+  token: string,
+  branch: string,
+  slug: string,
+  brand: RenderableBrand | null,
+  optedOut: boolean,
+): Promise<PartnerBrandProposal> {
   try {
-    const pr = await gh<{ html_url: string }>(token, `/repos/${OWNER}/${REPO}/pulls`, {
-      method: "POST",
-      body: JSON.stringify({
-        title: `Update partner brand: ${slug}`,
-        head: branch,
-        base: BASE,
-        body: partnerBrandRegistryPrBody(slug, brand, edit.optedOut),
-      }),
-    });
-    return { kind: "opened", prUrl: pr.html_url, optedOut: edit.optedOut };
+    const pr = await gh<{ html_url: string }>(
+      token,
+      `/repos/${OWNER}/${REPO}/pulls`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          title: `Update partner brand: ${slug}`,
+          head: branch,
+          base: BASE,
+          body: partnerBrandRegistryPrBody(slug, brand, optedOut),
+        }),
+      },
+    );
+    return { kind: "opened", prUrl: pr.html_url, optedOut };
   } catch (error) {
     if (!(error instanceof ProvisioningApiError)) throw error;
-    const pending = await findOpenProposal(token, branch);
-    if (pending) {
-      const pendingFile = await registryFile(token, branch);
-      const pendingEdit = setRegistryPartnerBrand(pendingFile.content, slug, brand);
-      if (pendingEdit.changed) {
-        throw new PartnerBrandProposalConflictError(
-          "A partner-brand proposal for this site is open with different saved details.",
-          pending.html_url,
-        );
-      }
-      return { kind: "pending", prUrl: pending.html_url, optedOut: pendingEdit.optedOut };
-    }
+    const pending = await findMatchingOpenProposal(
+      token,
+      branch,
+      slug,
+      brand,
+      CREATE_PROPOSAL_MISMATCH,
+    );
+    if (pending) return pending;
     throw error;
   }
 }

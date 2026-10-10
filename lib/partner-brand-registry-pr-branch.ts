@@ -1,13 +1,16 @@
 // Helpers for isolating, finding, and safely recovering an existing-site proposal branch.
 
 import { createHash } from "node:crypto";
+import type { RenderableBrand } from "@/lib/partner-brand";
 import {
   gh,
   OWNER,
   REPO,
   BASE,
   REGISTRY_PATH,
+  ProvisioningApiError,
 } from "./provisioning";
+import { setRegistryPartnerBrand } from "./partner-brand-registry-edit";
 import { PartnerBrandProposalConflictError } from "./partner-brand-registry-pr-errors";
 
 export type RegistryFile = { content: string; sha: string };
@@ -22,8 +25,20 @@ type BranchCommit = {
   files: Array<{ filename: string }>;
 };
 
-export const branchFor = (partnerId: string, slug: string): string =>
-  `partner-brand-${createHash("sha256").update(`${partnerId}\0${slug}`).digest("hex").slice(0, 16)}`;
+export type PendingPartnerBrandProposal = {
+  kind: "pending";
+  prUrl: string;
+  optedOut: boolean;
+};
+
+export const branchFor = (partnerId: string, slug: string): string => {
+  const identity = `${partnerId}\0${slug}`;
+  const digest = createHash("sha256")
+    .update(identity)
+    .digest("hex")
+    .slice(0, 16);
+  return `partner-brand-${digest}`;
+};
 
 export async function registryFile(token: string, ref: string): Promise<RegistryFile> {
   const file = await gh<RegistryFile>(
@@ -59,6 +74,52 @@ export async function findClosedProposal(token: string, branch: string): Promise
       (!pr.head.repo?.full_name || pr.head.repo.full_name === `${OWNER}/${REPO}`) &&
       (!pr.base?.ref || pr.base.ref === BASE),
   );
+}
+
+export async function createBranchIfMissing(
+  token: string,
+  branch: string,
+  baseSha: string,
+): Promise<boolean> {
+  try {
+    await gh(token, `/repos/${OWNER}/${REPO}/git/refs`, {
+      method: "POST",
+      body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: baseSha }),
+    });
+    return false;
+  } catch (error) {
+    if (
+      error instanceof ProvisioningApiError &&
+      /Reference already exists/i.test(error.message)
+    )
+      return true;
+    throw error;
+  }
+}
+
+export async function findMatchingOpenProposal(
+  token: string,
+  branch: string,
+  slug: string,
+  brand: RenderableBrand | null,
+  mismatchMessage: string,
+): Promise<PendingPartnerBrandProposal | null> {
+  const pending = await findOpenProposal(token, branch);
+  if (!pending) return null;
+
+  const pendingFile = await registryFile(token, branch);
+  const pendingEdit = setRegistryPartnerBrand(pendingFile.content, slug, brand);
+  if (pendingEdit.changed)
+    throw new PartnerBrandProposalConflictError(
+      mismatchMessage,
+      pending.html_url,
+    );
+
+  return {
+    kind: "pending",
+    prUrl: pending.html_url,
+    optedOut: pendingEdit.optedOut,
+  };
 }
 
 export async function assertSafeOrphanBranch(
