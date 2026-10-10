@@ -1194,7 +1194,8 @@
       "partnerBrandProposalUnavailable": "Die Anwendung ist nicht verfügbar, weil der Vorschlagsdienst nicht eingerichtet ist. Ihre gespeicherten Angaben bleiben auf bestehenden Websites unverändert.",
       "partnerBrandApplyFailed": "Der Website-Vorschlag konnte nicht vorbereitet werden. Prüfen Sie, ob die Website noch aktiv ist, und versuchen Sie es erneut.",
       "partnerBrandProposalConflict": "Ein früherer Vorschlag für diese Website muss geklärt werden. Prüfen oder schließen Sie den Registry-Vorschlag, bevor Sie andere gespeicherte Angaben anwenden.",
-      "partnerBrandMappingAmbiguous": "Diese Website lässt sich nicht sicher genau einem Kunden und Abrechnungskonto zuordnen. Bitte versuchen Sie es später erneut."
+      "partnerBrandMappingAmbiguous": "Diese Website lässt sich nicht sicher genau einem Kunden und Abrechnungskonto zuordnen. Bitte versuchen Sie es später erneut.",
+      "runtimeBrandApplyFailed": "Diese Seite konnte nicht aktualisiert werden. Prüfen Sie, ob sie noch aktiv ist, und versuchen Sie es erneut."
     },
     "plan": {
       "title": "Ihr Abo",
@@ -1405,7 +1406,15 @@
       "alreadyApplied": "Es ist keine neue Aktualisierung erforderlich. Prüfen Sie die Fußzeile der Website, um die aktuelle Anzeige zu bestätigen.",
       "viewProposal": "Vorschlag prüfen",
       "removalAwaitingDeployment": "Gespeichert. Die Entfernung wartet auf Prüfung und Bereitstellung durch die Plattform, bevor sie von der Website verschwindet.",
-      "tenantOptedOut": "Die Registry vermerkt den Widerspruch dieses Restaurants. Prüfen Sie die Fußzeile der Website, um die aktuelle Anzeige zu bestätigen."
+      "tenantOptedOut": "Die Registry vermerkt den Widerspruch dieses Restaurants. Prüfen Sie die Fußzeile der Website, um die aktuelle Anzeige zu bestätigen.",
+      "runtimeIntro": "Veröffentlichte Änderungen aktualisieren aktivierte Restaurantseiten automatisch innerhalb von zwei Minuten. Sie können Ihren Hinweis für jede Seite unten ein- oder ausblenden.",
+      "runtimeSavedApply": "Gespeichert. Veröffentlichte Änderungen aktualisieren aktivierte Seiten automatisch.",
+      "runtimeShow": "Auf dieser Seite anzeigen",
+      "hideOnSite": "Auf dieser Seite ausblenden",
+      "runtimeSaved": "Gespeichert. Die Seite wird innerhalb von zwei Minuten aktualisiert.",
+      "runtimeEnabled": "Aktiviert — verwendet Ihre veröffentlichte Marke.",
+      "runtimeHidden": "Auf dieser Seite ausgeblendet.",
+      "runtimeUnpublished": "Aktiviert — Ihre Marke ist nicht veröffentlicht."
     },
     "baseDomain": {
       "title": "Ihre eigenen Domains",

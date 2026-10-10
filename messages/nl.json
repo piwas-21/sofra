@@ -1194,7 +1194,8 @@
       "partnerBrandProposalUnavailable": "Toepassen is niet beschikbaar omdat de voorsteldienst niet is ingesteld. Uw opgeslagen gegevens blijven ongewijzigd op bestaande sites.",
       "partnerBrandApplyFailed": "Kon dit sitevoorstel niet voorbereiden. Controleer of de site nog actief is en probeer het opnieuw.",
       "partnerBrandProposalConflict": "Een eerder voorstel voor deze site moet eerst worden afgehandeld. Controleer of sluit het registryvoorstel voordat u andere opgeslagen gegevens toepast.",
-      "partnerBrandMappingAmbiguous": "Deze site kan niet veilig aan precies één klant en factureringsrecord worden gekoppeld. Probeer het later opnieuw."
+      "partnerBrandMappingAmbiguous": "Deze site kan niet veilig aan precies één klant en factureringsrecord worden gekoppeld. Probeer het later opnieuw.",
+      "runtimeBrandApplyFailed": "Deze site kon niet worden bijgewerkt. Controleer of deze nog actief is en probeer opnieuw."
     },
     "plan": {
       "title": "Jouw abonnement",
@@ -1405,7 +1406,15 @@
       "alreadyApplied": "Er is geen nieuwe update nodig. Controleer de voettekst van de site om te zien wat er nu wordt weergegeven.",
       "viewProposal": "Voorstel bekijken",
       "removalAwaitingDeployment": "Opgeslagen. De verwijdering wacht op beoordeling en uitrol door het platform voordat deze van de site verdwijnt.",
-      "tenantOptedOut": "Het register vermeldt dat dit restaurant zich heeft afgemeld. Controleer de voettekst om te zien wat er nu wordt weergegeven."
+      "tenantOptedOut": "Het register vermeldt dat dit restaurant zich heeft afgemeld. Controleer de voettekst om te zien wat er nu wordt weergegeven.",
+      "runtimeIntro": "Gepubliceerde wijzigingen werken ingeschakelde restaurantsites automatisch binnen twee minuten bij. U kunt uw vermelding hieronder per site tonen of verbergen.",
+      "runtimeSavedApply": "Opgeslagen. Gepubliceerde wijzigingen werken ingeschakelde sites automatisch bij.",
+      "runtimeShow": "Tonen op deze site",
+      "hideOnSite": "Verbergen op deze site",
+      "runtimeSaved": "Opgeslagen. De site wordt binnen twee minuten bijgewerkt.",
+      "runtimeEnabled": "Ingeschakeld — volgt uw gepubliceerde merk.",
+      "runtimeHidden": "Verborgen op deze site.",
+      "runtimeUnpublished": "Ingeschakeld — uw merk is niet gepubliceerd."
     },
     "baseDomain": {
       "title": "Je eigen domeinen",

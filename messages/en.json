@@ -1194,7 +1194,8 @@
       "partnerBrandProposalUnavailable": "Applying is unavailable because the proposal service is not configured. Your saved details are unchanged on existing sites.",
       "partnerBrandApplyFailed": "Couldn’t prepare this site proposal. Confirm the site is still active and try again.",
       "partnerBrandProposalConflict": "A previous proposal for this site needs resolution. Review or close its registry proposal before applying different saved details.",
-      "partnerBrandMappingAmbiguous": "This site cannot be safely matched to one client and billing record. Try again later."
+      "partnerBrandMappingAmbiguous": "This site cannot be safely matched to one client and billing record. Try again later.",
+      "runtimeBrandApplyFailed": "Couldn’t update this site. Confirm it is still active and try again."
     },
     "plan": {
       "title": "Your plan",
@@ -1405,7 +1406,15 @@
       "alreadyApplied": "No new update is needed. Check the site's footer to confirm its current display.",
       "viewProposal": "Review proposal",
       "removalAwaitingDeployment": "Saved. Removal awaits platform review and deployment before it disappears from the site.",
-      "tenantOptedOut": "The registry records this restaurant's opt-out. Check the site's footer to confirm its current display."
+      "tenantOptedOut": "The registry records this restaurant's opt-out. Check the site's footer to confirm its current display.",
+      "runtimeIntro": "Published changes update your enabled restaurant sites automatically within two minutes. You can show or hide your credit for each site below.",
+      "runtimeSavedApply": "Saved. Published changes update enabled sites automatically.",
+      "runtimeShow": "Show on this site",
+      "hideOnSite": "Hide on this site",
+      "runtimeSaved": "Saved. The site will refresh within two minutes.",
+      "runtimeEnabled": "Enabled — follows your published brand.",
+      "runtimeHidden": "Hidden on this site.",
+      "runtimeUnpublished": "Enabled — your brand is not published."
     },
     "baseDomain": {
       "title": "Your own domains",

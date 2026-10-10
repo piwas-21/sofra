@@ -1194,7 +1194,8 @@
       "partnerBrandProposalUnavailable": "L'application est indisponible car le service de proposition n'est pas configuré. Vos informations enregistrées ne changent pas sur les sites existants.",
       "partnerBrandApplyFailed": "Impossible de préparer cette proposition. Vérifiez que le site est toujours actif, puis réessayez.",
       "partnerBrandProposalConflict": "Une proposition précédente pour ce site doit être résolue. Vérifiez ou fermez sa proposition de registre avant d’appliquer d’autres coordonnées enregistrées.",
-      "partnerBrandMappingAmbiguous": "Impossible d'associer ce site en toute sécurité à un client et à un compte de facturation uniques. Réessayez plus tard."
+      "partnerBrandMappingAmbiguous": "Impossible d'associer ce site en toute sécurité à un client et à un compte de facturation uniques. Réessayez plus tard.",
+      "runtimeBrandApplyFailed": "Impossible de mettre à jour ce site. Vérifiez qu’il est toujours actif et réessayez."
     },
     "plan": {
       "title": "Votre abonnement",
@@ -1405,7 +1406,15 @@
       "alreadyApplied": "Aucune nouvelle mise à jour n'est nécessaire. Consultez le pied de page du site pour vérifier son affichage actuel.",
       "viewProposal": "Vérifier la proposition",
       "removalAwaitingDeployment": "Enregistré. Le retrait attend l'examen de la plateforme et son déploiement avant de disparaître du site.",
-      "tenantOptedOut": "Le registre indique que ce restaurant a refusé l'attribution. Consultez le pied de page du site pour vérifier son affichage actuel."
+      "tenantOptedOut": "Le registre indique que ce restaurant a refusé l'attribution. Consultez le pied de page du site pour vérifier son affichage actuel.",
+      "runtimeIntro": "Les modifications publiées mettent automatiquement à jour les sites activés sous deux minutes. Vous pouvez afficher ou masquer votre attribution pour chaque site ci-dessous.",
+      "runtimeSavedApply": "Enregistré. Les modifications publiées mettent automatiquement à jour les sites activés.",
+      "runtimeShow": "Afficher sur ce site",
+      "hideOnSite": "Masquer sur ce site",
+      "runtimeSaved": "Enregistré. Le site sera actualisé sous deux minutes.",
+      "runtimeEnabled": "Activé — suit votre marque publiée.",
+      "runtimeHidden": "Masqué sur ce site.",
+      "runtimeUnpublished": "Activé — votre marque n’est pas publiée."
     },
     "baseDomain": {
       "title": "Vos propres domaines",

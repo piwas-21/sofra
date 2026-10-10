@@ -7,6 +7,7 @@ import { prefillFromBillingIdentity } from "@/lib/partner-brand";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import { partnerBrandRuntimeConfig } from "@/lib/partner-brand-config";
 import PartnerBrandForm from "@/components/control/PartnerBrandForm";
+import { renderableBrand } from "@/lib/partner-brand";
 import PartnerBrandApplyForm from "@/components/control/PartnerBrandApplyForm";
 import {
   assemblePartnerBrandSitesPage,
@@ -113,11 +114,16 @@ export default async function PartnerBrandPage({ searchParams }: PartnerBrandPag
   const eligibleSlugs = new Set(
     registry.ok
       ? registry.tenants
-          .filter((tenant) => tenant.status === "active" && tenant.managed === "scripts")
+          .filter((tenant) => tenant.status === "active")
           .map((tenant) => tenant.slug)
       : [],
   );
   const sitePage = await loadPartnerBrandSitesPage(partner.id, eligibleSlugs, query, sitePageSize);
+  const preferences = await db.tenantBranding.findMany({
+    where: { tenantSlug: { in: sitePage.sites.flatMap((site) => site.tenantSlug ? [site.tenantSlug] : []) } },
+  });
+  const enabledSites = new Map(preferences.map((row) => [row.tenantSlug, row.enabled]));
+  const publishable = Boolean(renderableBrand(brand, { legalName: identity?.legalName }));
   let siteMessage: string | null = null;
   if (!registry.ok) siteMessage = t("sitesUnavailable");
   else if (sitePage.sites.length === 0) siteMessage = t("noExistingSites");
@@ -144,7 +150,7 @@ export default async function PartnerBrandPage({ searchParams }: PartnerBrandPag
       <section className="hand-drawn-border bg-card p-6 grid gap-4">
         <div>
           <h2 className="font-hand text-3xl font-bold">{t("existingSitesTitle")}</h2>
-          <p className="mt-2 font-label text-sm text-muted-foreground">{t("existingSitesIntro")}</p>
+          <p className="mt-2 font-label text-sm text-muted-foreground">{t("runtimeIntro")}</p>
         </div>
         {siteMessage ? (
           <p className="font-label text-sm text-muted-foreground">{siteMessage}</p>
@@ -156,7 +162,10 @@ export default async function PartnerBrandPage({ searchParams }: PartnerBrandPag
                   <span className="font-label font-bold">{client.restaurantName}</span>
                   <code className="font-mono text-xs text-muted-foreground">{client.tenantSlug}</code>
                 </div>
-                <PartnerBrandApplyForm clientId={client.id} />
+                <PartnerBrandApplyForm clientId={client.id}
+                  enabled={enabledSites.get(client.tenantSlug ?? "") ?? true}
+                  publishable={publishable}
+                  optedOut={registry.ok && registry.tenants.some((tenant) => tenant.slug === client.tenantSlug && tenant.partner_attribution === false)} />
               </li>
             ))}
           </ul>
