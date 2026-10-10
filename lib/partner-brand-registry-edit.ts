@@ -26,6 +26,18 @@ function findBlock(lines: string[], slug: string): { start: number; end: number 
   return { start, end };
 }
 
+function assertNoUnsupportedYamlReferences(lines: string[], block: { start: number; end: number }): void {
+  for (let index = block.start + 1; index < block.end; index++) {
+    const line = lines[index];
+    if (/^ {4}<<\s*:/.test(line)) {
+      throw new AmbiguousPartnerBrandRegistryError("unsupported YAML merge key in tenant block");
+    }
+    if (/^ {4}[^#][^:]*:\s*(?:![^\s]+\s+)?[&*][A-Za-z0-9_-]+(?:\s|$)/.test(line)) {
+      throw new AmbiguousPartnerBrandRegistryError("unsupported YAML anchor or alias in tenant block");
+    }
+  }
+}
+
 function fieldRaws(lines: string[], key: string, block: { start: number; end: number }): string[] {
   const field = new RegExp(String.raw`^ {4}(?:${escapeForRegex(key)}|["']${escapeForRegex(key)}["'])\s*:`);
   const strict = new RegExp(String.raw`^ {4}${escapeForRegex(key)}:\s*(.*)$`);
@@ -82,6 +94,7 @@ export function partnerBrandTenantState(
   const lines = registryYaml.split("\n");
   const block = findBlock(lines, slug);
   if (!block) throw new UnknownPartnerBrandTenantError(`registry has no '${slug}' tenant`);
+  assertNoUnsupportedYamlReferences(lines, block);
   const status = uniqueFieldValue(lines, "status", block);
   const managed = uniqueFieldValue(lines, "managed", block);
   const optedOut = attributionOptedOut(uniqueFieldValue(lines, "partner_attribution", block));
@@ -102,6 +115,7 @@ export function setRegistryPartnerBrand(
   const lines = registryYaml.split("\n");
   const block = findBlock(lines, slug);
   if (!block) throw new UnknownPartnerBrandTenantError(`registry has no '${slug}' tenant`);
+  assertNoUnsupportedYamlReferences(lines, block);
 
   const status = uniqueFieldValue(lines, "status", block);
   const managed = uniqueFieldValue(lines, "managed", block);
@@ -149,7 +163,7 @@ export function setRegistryPartnerBrand(
     return { yaml: registryYaml, changed: false, optedOut };
   }
   const next = [...lines];
-  for (const index of existing.reverse()) next.splice(index, 1);
+  for (const index of [...existing].sort((left, right) => right - left)) next.splice(index, 1);
 
   if (brand && !optedOut) {
     // JSON strings are valid YAML double-quoted scalars. Quoting every value

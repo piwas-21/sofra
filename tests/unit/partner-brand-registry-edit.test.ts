@@ -88,6 +88,49 @@ describe("partner brand registry edit", () => {
     expect(parsed.tenants["cafe-demo"].partner_attribution).toBe("false");
   });
 
+  it("preserves comments and unrelated fields when existing URL precedes name during replacement or removal", () => {
+    const extra = [
+      '    partner_url: "https://old.example"',
+      "    # Preserve this comment while replacing or removing public fields.",
+      "    notes: keep this unrelated field # preserve the inline comment",
+      '    partner_name: "Old Partner"',
+    ].join("\n");
+    const input = source(extra);
+    const withoutPublicFields = (yaml: string) =>
+      yaml
+        .split("\n")
+        .filter((line) => !/^ {4}partner_(?:name|url):/.test(line))
+        .join("\n");
+
+    const replaced = setRegistryPartnerBrand(input, "cafe-demo", brand);
+    const replacedParsed = parse(replaced.yaml) as { tenants: Record<string, Record<string, unknown>> };
+    expect(replaced.changed).toBe(true);
+    expect(replacedParsed.tenants["cafe-demo"]).toMatchObject({
+      partner_name: brand.displayName,
+      partner_url: brand.websiteUrl,
+      notes: "keep this unrelated field",
+    });
+    expect(withoutPublicFields(replaced.yaml)).toBe(withoutPublicFields(input));
+
+    const removed = setRegistryPartnerBrand(input, "cafe-demo", null);
+    const removedParsed = parse(removed.yaml) as { tenants: Record<string, Record<string, unknown>> };
+    expect(removed.changed).toBe(true);
+    expect(removedParsed.tenants["cafe-demo"]).not.toHaveProperty("partner_name");
+    expect(removedParsed.tenants["cafe-demo"]).not.toHaveProperty("partner_url");
+    expect(removedParsed.tenants["cafe-demo"].notes).toBe("keep this unrelated field");
+    expect(withoutPublicFields(removed.yaml)).toBe(withoutPublicFields(input));
+    expect(removedParsed.tenants["other-demo"].partner_name).toBe("Preserve Me");
+  });
+
+  it("rejects target blocks with YAML merges or anchors instead of guessing inherited attribution", () => {
+    const merged = source().replace("    partner_attribution: true\n", "    <<: *restaurant-policy\n");
+    const anchored = source().replace("    partner_attribution: true", "    partner_attribution: &allowAttribution true");
+
+    expect(() => setRegistryPartnerBrand(merged, "cafe-demo", brand)).toThrow(AmbiguousPartnerBrandRegistryError);
+    expect(() => partnerBrandTenantState(merged, "cafe-demo")).toThrow(AmbiguousPartnerBrandRegistryError);
+    expect(() => setRegistryPartnerBrand(anchored, "cafe-demo", brand)).toThrow(AmbiguousPartnerBrandRegistryError);
+  });
+
   it("treats a quoted false as opt-out and never replaces it with true", () => {
     const input = source().replace("partner_attribution: true", 'partner_attribution: "false"');
     expect(partnerBrandTenantState(input, "cafe-demo")).toEqual({ eligible: true, optedOut: true });
