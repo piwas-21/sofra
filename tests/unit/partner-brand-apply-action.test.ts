@@ -91,6 +91,7 @@ describe("applyPartnerBrandAction authorization and projection", () => {
       optedOut: false,
       prUrl: "https://github.com/piwas-21/restaurant-app-deploy/pull/42",
     });
+    expect(mocks.rateLimit).toHaveBeenCalledWith("partner-brand-apply:partner-1", 12, 15 * 60 * 1000);
     expect(mocks.clientFindFirst).toHaveBeenCalledWith({ where: { id: "client-mine", partnerId: "partner-1" } });
     expect(mocks.clientFindMany).toHaveBeenCalledWith(expect.objectContaining({ take: 2 }));
     expect(mocks.openProposal).toHaveBeenCalledWith("partner-1", "zeta", {

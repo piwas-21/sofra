@@ -18,6 +18,10 @@ import {
 } from "@/lib/partner-brand-registry-edit";
 import { ProvisioningApiError, ProvisioningNotConfiguredError } from "@/lib/provisioning";
 
+// Limit registry-proposal attempts to 12 per partner in each 15-minute window.
+const PARTNER_BRAND_APPLY_MAX_ATTEMPTS = 12;
+const PARTNER_BRAND_APPLY_WINDOW_MS = 15 * 60 * 1000;
+
 export type PartnerBrandApplyState = {
   error?: string;
   ok?: boolean;
@@ -36,7 +40,7 @@ export async function applyPartnerBrandAction(
   formData: FormData,
 ): Promise<PartnerBrandApplyState> {
   const partner = await requirePartner();
-  if (!rateLimit(`partner-brand-apply:${partner.id}`, 12, 15 * 60 * 1000)) {
+  if (!rateLimit(`partner-brand-apply:${partner.id}`, PARTNER_BRAND_APPLY_MAX_ATTEMPTS, PARTNER_BRAND_APPLY_WINDOW_MS)) {
     return { error: "tooManyAttempts" };
   }
 
