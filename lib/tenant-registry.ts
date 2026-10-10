@@ -12,6 +12,8 @@ import { splitDeferredModules } from "./provisioning-registry";
 
 const tenantSchema = z.object({
   name: z.string(),
+  partner_attribution: z.boolean().optional(),
+  partner_name: z.string().optional(),
   status: z.string(),
   managed: z.string(),
   box: z.string(),

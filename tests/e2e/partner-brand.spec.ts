@@ -44,7 +44,7 @@ test("a partner explicitly opts in to a public brand", async ({ page }) => {
 
   await page.getByRole("button", { name: /^save$/i }).click();
   await expect(
-    page.getByText(/saved\. apply to existing sites below/i),
+    page.getByText(/saved\. published changes update enabled sites automatically/i),
   ).toBeVisible();
 
   expect(await findPartnerBrand(partnerId)).toMatchObject({
@@ -57,7 +57,7 @@ test("a partner explicitly opts in to a public brand", async ({ page }) => {
   await publish.check();
   await page.getByRole("button", { name: /^save$/i }).click();
   await expect(
-    page.getByText(/saved\. apply to existing sites below/i),
+    page.getByText(/saved\. published changes update enabled sites automatically/i),
   ).toBeVisible();
   expect(await findPartnerBrand(partnerId)).toMatchObject({ publish: true });
 });
@@ -120,7 +120,7 @@ test("a partner cannot write another partner's brand, even by naming them", asyn
 
   await page.getByRole("textbox", { name: /^display name$/i }).fill("My Brand");
   await page.getByRole("button", { name: /^save$/i }).click();
-  await expect(page.getByText(/saved\. apply to existing sites below/i)).toBeVisible();
+  await expect(page.getByText(/saved\. published changes update enabled sites automatically/i)).toBeVisible();
 
   expect(await findPartnerBrand(mineId)).toMatchObject({
     displayName: "My Brand",
@@ -158,7 +158,7 @@ test("a sole trader is told why their own name cannot be published (D-B1a)", asy
   // this legal-name echo when a site proposal is built.
   await page.getByRole("button", { name: /^save$/i }).click();
   await expect(
-    page.getByText(/saved\. apply to existing sites below/i),
+    page.getByText(/saved\. published changes update enabled sites automatically/i),
   ).toBeVisible();
   expect(await findPartnerBrand(partnerId)).toMatchObject({
     displayName: "Mustafa Vural",

@@ -165,6 +165,7 @@ export default defineConfig({
         // already-covered code OUT of the floor's scope, which reads as a passing gate
         // rather than as lost coverage — and this is the file holding the refusals.
         "lib/partner-brand-publish.ts",
+        "lib/tenant-branding-policy.ts",
         "lib/base-domain-verification.ts",
         // D2 — which of the four domain shapes a partner proposed, and what DNS it
         // needs. Pure by construction: it cannot see whose base domain it was handed or
