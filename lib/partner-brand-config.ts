@@ -32,7 +32,7 @@ function configuredInteger(
   if (!isValidSetting(setting)) throw new InvalidPartnerBrandConfigError(variable);
   if (raw === undefined) return setting.default;
   const normalized = raw.trim();
-  if (!/^[0-9]+$/.test(normalized)) throw new InvalidPartnerBrandConfigError(variable);
+  if (!/^\d+$/.test(normalized)) throw new InvalidPartnerBrandConfigError(variable);
   const value = Number(normalized);
   if (
     !Number.isSafeInteger(value) ||

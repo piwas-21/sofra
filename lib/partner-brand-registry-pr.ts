@@ -22,10 +22,10 @@ import {
   findClosedProposal,
   registryFile,
   type PendingPartnerBrandProposal,
+  type RegistryFile,
 } from "./partner-brand-registry-pr-branch";
 export { PartnerBrandProposalConflictError } from "./partner-brand-registry-pr-errors";
 import { PartnerBrandProposalConflictError } from "./partner-brand-registry-pr-errors";
-import type { RegistryFile } from "./partner-brand-registry-pr-branch";
 
 export type PartnerBrandProposal =
   | { kind: "opened" | "pending"; prUrl: string; optedOut: boolean }

@@ -102,8 +102,8 @@ export function inspectTenantPartnerBrandState(
 
 function hasDisplayNameControlCharacter(value: string): boolean {
   for (const character of value) {
-    const codePoint = character.charCodeAt(0);
-    if (codePoint === 0 || codePoint === 10 || codePoint === 13) return true;
+    const codePoint = character.codePointAt(0);
+    if (typeof codePoint === "number" && (codePoint === 0 || codePoint === 10 || codePoint === 13)) return true;
   }
   return false;
 }

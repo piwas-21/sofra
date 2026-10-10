@@ -3,7 +3,6 @@
 
 import type { RenderableBrand } from "@/lib/partner-brand";
 import {
-  AmbiguousPartnerBrandRegistryError,
   IneligiblePartnerBrandTenantError,
   UnknownPartnerBrandTenantError,
   assertNoUnsupportedYamlReferences,
@@ -19,7 +18,7 @@ export {
   AmbiguousPartnerBrandRegistryError,
   IneligiblePartnerBrandTenantError,
   UnknownPartnerBrandTenantError,
-};
+} from "@/lib/partner-brand-registry-edit-helpers";
 
 /** Read the exact safety boundary used by the existing-site apply action. */
 export function partnerBrandTenantState(

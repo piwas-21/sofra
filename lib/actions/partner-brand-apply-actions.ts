@@ -57,7 +57,7 @@ function mappingIsUnambiguous(
   if (!mapped || mapped.id !== clientId || mapped.partnerId !== partnerId || mapped.tenantSlug !== slug) {
     return false;
   }
-  if (mapped.billing && mapped.billing.tenantSlug !== slug) return false;
+  if (mapped.billing !== null && mapped.billing?.tenantSlug !== slug) return false;
   return !billing || (billing.clientId === clientId && billing.payerUserId === null);
 }
 

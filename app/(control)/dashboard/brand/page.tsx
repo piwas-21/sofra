@@ -46,7 +46,7 @@ async function fetchPartnerBrandSiteRows(
   pageSize: number,
 ): Promise<PartnerBrandSiteRow[]> {
   if (eligibleSlugs.length === 0) return [];
-  return db.client.findMany({
+  return await db.client.findMany({
     ...partnerBrandSiteQuery(partnerId, eligibleSlugs, pageSize, cursor),
     select: { id: true, restaurantName: true, tenantSlug: true },
   });

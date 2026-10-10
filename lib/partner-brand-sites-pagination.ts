@@ -46,14 +46,16 @@ export function assemblePartnerBrandSitesPage(
   const sites = rows.slice(0, pageSize);
   const isBeforeCursor = cursor?.direction === "before";
   if (isBeforeCursor) sites.reverse();
+  const firstSite = sites.length > 0 ? sites[0] : undefined;
+  const lastSite = sites.length > 0 ? sites[sites.length - 1] : undefined;
 
   const hasPreviousSites = isBeforeCursor ? hasExtraSite : Boolean(cursor);
   const hasNextSites = isBeforeCursor || hasExtraSite;
-  const previousHref = hasPreviousSites && sites.length > 0
-    ? partnerBrandSitePageHref("before", sites[0].id)
+  const previousHref = hasPreviousSites && firstSite
+    ? partnerBrandSitePageHref("before", firstSite.id)
     : null;
-  const nextHref = hasNextSites && sites.length > 0
-    ? partnerBrandSitePageHref("after", sites[sites.length - 1].id)
+  const nextHref = hasNextSites && lastSite
+    ? partnerBrandSitePageHref("after", lastSite.id)
     : null;
   return { sites, previousHref, nextHref };
 }
