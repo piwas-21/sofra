@@ -1392,6 +1392,8 @@
       "existingSitesIntro": "Herkese açık adınızı ve web sitenizi eklemeyi veya kaldırmayı önermek için bir site seçin. Değişikliklerin sitede görünmesi için platform tarafından incelenip dağıtılması gerekir.",
       "sitesUnavailable": "Uygun siteler şu anda doğrulanamadı. Daha sonra tekrar deneyin.",
       "noExistingSites": "Henüz güncellenecek etkin ve betiklerle yönetilen müşteri sitesi yok.",
+      "previousSites": "Önceki siteler",
+      "nextSites": "Sonraki siteler",
       "applyToSite": "Bu siteye uygula",
       "applying": "Öneri hazırlanıyor…",
       "changesAwaitingDeployment": "Kaydedildi. Değişiklik sitede görünmeden önce platform incelemesi ve dağıtımı bekliyor.",

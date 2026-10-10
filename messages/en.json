@@ -1392,6 +1392,8 @@
       "existingSitesIntro": "Choose a site to propose adding or removing your public name and website. Changes need platform review and deployment before they appear on the site.",
       "sitesUnavailable": "We could not confirm eligible sites right now. Try again later.",
       "noExistingSites": "There are no active, script-managed client sites to update yet.",
+      "previousSites": "Previous sites",
+      "nextSites": "Next sites",
       "applyToSite": "Apply to this site",
       "applying": "Preparing proposal…",
       "changesAwaitingDeployment": "Saved. Changes await platform review and deployment before they appear on the site.",

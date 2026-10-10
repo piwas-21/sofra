@@ -1392,6 +1392,8 @@
       "existingSitesIntro": "Choisissez un site pour proposer l'ajout ou le retrait de votre nom public et de votre site web. La plateforme doit examiner et déployer la modification avant son affichage sur le site.",
       "sitesUnavailable": "Impossible de confirmer les sites admissibles pour le moment. Réessayez plus tard.",
       "noExistingSites": "Aucun site client actif et géré par les scripts ne peut encore être mis à jour.",
+      "previousSites": "Sites précédents",
+      "nextSites": "Sites suivants",
       "applyToSite": "Appliquer à ce site",
       "applying": "Préparation de la proposition…",
       "changesAwaitingDeployment": "Enregistré. La modification attend l'examen de la plateforme et son déploiement avant son affichage sur le site.",

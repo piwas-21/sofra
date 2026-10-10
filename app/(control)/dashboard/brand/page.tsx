@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
@@ -6,6 +7,12 @@ import { prefillFromBillingIdentity } from "@/lib/partner-brand";
 import { loadTenantRegistry } from "@/lib/tenant-registry";
 import PartnerBrandForm from "@/components/control/PartnerBrandForm";
 import PartnerBrandApplyForm from "@/components/control/PartnerBrandApplyForm";
+import {
+  PARTNER_BRAND_SITE_PAGE_SIZE,
+  parsePartnerBrandSiteCursor,
+  partnerBrandSitePageHref,
+  partnerBrandSiteQuery,
+} from "@/lib/partner-brand-sites-pagination";
 
 /**
  * `/dashboard/brand` — the partner's own public details (SOFRA-PARTNER-PLAN §11).
@@ -22,19 +29,19 @@ import PartnerBrandApplyForm from "@/components/control/PartnerBrandApplyForm";
  */
 export const dynamic = "force-dynamic";
 
-export default async function PartnerBrandPage() {
+export default async function PartnerBrandPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ siteAfter?: string | string[]; siteBefore?: string | string[] }>;
+}) {
   const partner = await requirePartner();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.brand" });
 
-  const [brand, clients, registry] = await Promise.all([
+  const [brand, registry, query] = await Promise.all([
     db.partnerBrand.findUnique({ where: { partnerId: partner.id } }),
-    db.client.findMany({
-      where: { partnerId: partner.id, status: "LIVE", tenantSlug: { not: null } },
-      select: { id: true, restaurantName: true, tenantSlug: true },
-      orderBy: { restaurantName: "asc" },
-    }),
     loadTenantRegistry(),
+    searchParams,
   ]);
 
   // Only consulted when there is no brand yet, and only for a NAME. Looked up by
@@ -64,7 +71,47 @@ export default async function PartnerBrandPage() {
           .map((tenant) => tenant.slug)
       : [],
   );
-  const sites = clients.filter((client) => client.tenantSlug && eligibleSlugs.has(client.tenantSlug));
+  const eligibleSlugList = [...eligibleSlugs];
+  const requestedCursor = parsePartnerBrandSiteCursor(query);
+  const cursorClient = requestedCursor
+    ? await db.client.findUnique({
+        where: { id: requestedCursor.clientId },
+        select: { id: true, restaurantName: true, partnerId: true, status: true, tenantSlug: true },
+      })
+    : null;
+  const cursorIsEligible = Boolean(
+    cursorClient &&
+      cursorClient.partnerId === partner.id &&
+      cursorClient.status === "LIVE" &&
+      cursorClient.tenantSlug &&
+      eligibleSlugs.has(cursorClient.tenantSlug),
+  );
+  let activeCursor = cursorIsEligible && cursorClient && requestedCursor
+    ? { direction: requestedCursor.direction, boundary: cursorClient }
+    : null;
+  const fetchSites = (cursor: typeof activeCursor) =>
+    db.client.findMany({
+      ...partnerBrandSiteQuery(partner.id, eligibleSlugList, cursor),
+      select: { id: true, restaurantName: true, tenantSlug: true },
+    });
+  let rows = eligibleSlugList.length > 0 ? await fetchSites(activeCursor) : [];
+  if (activeCursor && rows.length === 0) {
+    activeCursor = null;
+    rows = eligibleSlugList.length > 0 ? await fetchSites(null) : [];
+  }
+
+  const hasExtraSite = rows.length > PARTNER_BRAND_SITE_PAGE_SIZE;
+  const visibleRows = rows.slice(0, PARTNER_BRAND_SITE_PAGE_SIZE);
+  const sites = activeCursor?.direction === "before" ? visibleRows.reverse() : visibleRows;
+  const hasPreviousSites = activeCursor?.direction === "after" ||
+    (activeCursor?.direction === "before" && hasExtraSite);
+  const hasNextSites = activeCursor?.direction === "before" ? true : hasExtraSite;
+  const previousHref = hasPreviousSites && sites.length > 0
+    ? partnerBrandSitePageHref("before", sites[0].id)
+    : null;
+  const nextHref = hasNextSites && sites.length > 0
+    ? partnerBrandSitePageHref("after", sites[sites.length - 1].id)
+    : null;
 
   return (
     <div className="grid gap-8">
@@ -106,6 +153,16 @@ export default async function PartnerBrandPage() {
               </li>
             ))}
           </ul>
+        )}
+        {sites.length > 0 && (previousHref || nextHref) && (
+          <nav aria-label={t("existingSitesTitle")} className="flex justify-between gap-4">
+            {previousHref ? (
+              <Link href={previousHref} className="font-label text-sm underline">{t("previousSites")}</Link>
+            ) : <span />}
+            {nextHref && (
+              <Link href={nextHref} className="font-label text-sm underline">{t("nextSites")}</Link>
+            )}
+          </nav>
         )}
       </section>
     </div>

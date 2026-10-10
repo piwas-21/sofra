@@ -51,6 +51,7 @@ export async function applyPartnerBrandAction(
   const [mappedClients, billing] = await Promise.all([
     db.client.findMany({
       where: { OR: [{ tenantSlug: slug }, { billing: { tenantSlug: slug } }] },
+      take: 2,
       select: {
         id: true,
         partnerId: true,

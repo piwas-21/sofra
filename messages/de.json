@@ -1392,6 +1392,8 @@
       "existingSitesIntro": "Wählen Sie eine Website aus, um das Hinzufügen oder Entfernen Ihres öffentlichen Namens und Ihrer Website vorzuschlagen. Die Plattform muss die Änderung prüfen und bereitstellen, bevor sie auf der Website erscheint.",
       "sitesUnavailable": "Berechtigte Websites konnten gerade nicht bestätigt werden. Bitte versuchen Sie es später erneut.",
       "noExistingSites": "Es gibt noch keine aktiven, skriptverwalteten Kundenseiten zur Aktualisierung.",
+      "previousSites": "Vorherige Websites",
+      "nextSites": "Nächste Websites",
       "applyToSite": "Auf dieser Website anwenden",
       "applying": "Vorschlag wird vorbereitet…",
       "changesAwaitingDeployment": "Gespeichert. Die Änderung wartet auf Prüfung und Bereitstellung durch die Plattform, bevor sie auf der Website erscheint.",
