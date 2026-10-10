@@ -228,7 +228,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --ignore-scripts --prefer-offline --no-audit
-      - run: npm audit --audit-level=high
+      - run: node --test scripts/check-npm-audit.test.mjs
+      - run: bash scripts/run-npm-audit.sh
 
   gitleaks:
     name: gitleaks (secret scan)

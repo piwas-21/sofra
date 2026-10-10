@@ -1190,7 +1190,11 @@
         "reasonRequired": "Un motif est obligatoire, et il doit dire quelque chose.",
         "lastArtifact": "C'est la seule copie des données de ce restaurant. Cochez la dérogation si vous le voulez vraiment.",
         "artifactNotFound": "Cette copie n'existe plus."
-      }
+      },
+      "partnerBrandProposalUnavailable": "L'application est indisponible car le service de proposition n'est pas configuré. Vos informations enregistrées ne changent pas sur les sites existants.",
+      "partnerBrandApplyFailed": "Impossible de préparer cette proposition. Vérifiez que le site est toujours actif, puis réessayez.",
+      "partnerBrandProposalConflict": "Une proposition précédente pour ce site doit être résolue. Vérifiez ou fermez sa proposition de registre avant d’appliquer d’autres coordonnées enregistrées.",
+      "partnerBrandMappingAmbiguous": "Impossible d'associer ce site en toute sécurité à un client et à un compte de facturation uniques. Réessayez plus tard."
     },
     "plan": {
       "title": "Votre abonnement",
@@ -1374,16 +1378,34 @@
         "city": "Ville",
         "countryCode": "Pays (2 lettres)"
       },
-      "publishLabel": "Afficher ces coordonnées dans le pied de page de chaque site de restaurant que vous revendez.",
-      "publishMeaning": "Les clients de vos restaurants les verront.",
-      "publishUnavailable": "Pas encore disponible — la publication reste désactivée jusqu'à ce que le propriétaire de la plateforme l'active. Vos coordonnées sont enregistrées dans tous les cas.",
+      "publishLabel": "Afficher votre nom et votre site web dans le pied de page des restaurants que vous revendez.",
+      "publishMeaning": "Seuls votre nom public et votre site web HTTPS peuvent être inclus.",
       "save": "Enregistrer",
       "saving": "Enregistrement…",
       "saved": "Enregistré.",
       "adminTitle": "Sa marque publique",
       "adminEmpty": "Aucune coordonnée publique saisie.",
       "adminPublishAsked": "A demandé à être affiché sur les sites de ses restaurants.",
-      "adminPublishOff": "N'a pas demandé à être affiché publiquement."
+      "adminPublishOff": "N'a pas demandé à être affiché publiquement.",
+      "savedApply": "Enregistré. Vous pouvez proposer la mise à jour des sites existants ci-dessous.",
+      "existingSitesTitle": "Sites de restaurants existants",
+      "existingSitesIntro": "Choisissez un site pour proposer l'ajout ou le retrait de votre nom public et de votre site web. La plateforme doit examiner et déployer la modification avant son affichage sur le site.",
+      "pageLoading": "Chargement de vos informations de marque et des sites admissibles…",
+      "pageLoadErrorTitle": "Votre page de marque n’a pas pu être chargée",
+      "pageLoadError": "Vos informations de marque ou vos sites admissibles n’ont pas pu être chargés. Réessayez.",
+      "retryPage": "Réessayer",
+      "sitesUnavailable": "Impossible de confirmer les sites admissibles pour le moment. Réessayez plus tard.",
+      "noExistingSites": "Aucun site client actif et géré par les scripts ne peut encore être mis à jour.",
+      "previousSites": "Sites précédents",
+      "nextSites": "Sites suivants",
+      "applyToSite": "Appliquer à ce site",
+      "applying": "Préparation de la proposition…",
+      "changesAwaitingDeployment": "Enregistré. La modification attend l'examen de la plateforme et son déploiement avant son affichage sur le site.",
+      "changesAwaitingReview": "Une proposition attend déjà l'examen de la plateforme. Aucun doublon n'a été créé ; vérifiez son statut avant de proposer une autre modification.",
+      "alreadyApplied": "Aucune nouvelle mise à jour n'est nécessaire. Consultez le pied de page du site pour vérifier son affichage actuel.",
+      "viewProposal": "Vérifier la proposition",
+      "removalAwaitingDeployment": "Enregistré. Le retrait attend l'examen de la plateforme et son déploiement avant de disparaître du site.",
+      "tenantOptedOut": "Le registre indique que ce restaurant a refusé l'attribution. Consultez le pied de page du site pour vérifier son affichage actuel."
     },
     "baseDomain": {
       "title": "Vos propres domaines",

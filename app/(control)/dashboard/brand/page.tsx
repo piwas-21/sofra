@@ -1,9 +1,28 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requirePartner } from "@/lib/rbac";
 import { controlLocale } from "@/lib/control-locale";
 import { db } from "@/lib/db";
 import { prefillFromBillingIdentity } from "@/lib/partner-brand";
+import { loadTenantRegistry } from "@/lib/tenant-registry";
+import { partnerBrandRuntimeConfig } from "@/lib/partner-brand-config";
 import PartnerBrandForm from "@/components/control/PartnerBrandForm";
+import PartnerBrandApplyForm from "@/components/control/PartnerBrandApplyForm";
+import {
+  assemblePartnerBrandSitesPage,
+  eligiblePartnerBrandCursorBoundary,
+  parsePartnerBrandSiteCursor,
+  partnerBrandSiteQuery,
+  type ActivePartnerBrandSiteCursor,
+  type PartnerBrandSitesPage,
+  type PartnerBrandSiteRow,
+} from "@/lib/partner-brand-sites-pagination";
+
+type PartnerBrandPageSearchParams = Readonly<{
+  siteAfter?: string | string[];
+  siteBefore?: string | string[];
+}>;
+type PartnerBrandPageProps = Readonly<{ searchParams: Promise<PartnerBrandPageSearchParams> }>;
 
 /**
  * `/dashboard/brand` — the partner's own public details (SOFRA-PARTNER-PLAN §11).
@@ -20,12 +39,56 @@ import PartnerBrandForm from "@/components/control/PartnerBrandForm";
  */
 export const dynamic = "force-dynamic";
 
-export default async function PartnerBrandPage() {
+async function fetchPartnerBrandSiteRows(
+  partnerId: string,
+  eligibleSlugs: string[],
+  cursor: ActivePartnerBrandSiteCursor,
+  pageSize: number,
+): Promise<PartnerBrandSiteRow[]> {
+  if (eligibleSlugs.length === 0) return [];
+  return await db.client.findMany({
+    ...partnerBrandSiteQuery(partnerId, eligibleSlugs, pageSize, cursor),
+    select: { id: true, restaurantName: true, tenantSlug: true },
+  });
+}
+
+async function loadPartnerBrandSitesPage(
+  partnerId: string,
+  eligibleSlugSet: Set<string>,
+  search: PartnerBrandPageSearchParams,
+  pageSize: number,
+): Promise<PartnerBrandSitesPage> {
+  const eligibleSlugs = [...eligibleSlugSet];
+  const requestedCursor = parsePartnerBrandSiteCursor(search);
+  const cursorClient = requestedCursor
+    ? await db.client.findUnique({
+        where: { id: requestedCursor.clientId },
+        select: { id: true, restaurantName: true, partnerId: true, status: true, tenantSlug: true },
+      })
+    : null;
+  const boundary = eligiblePartnerBrandCursorBoundary(cursorClient, partnerId, eligibleSlugSet);
+  let activeCursor: ActivePartnerBrandSiteCursor = requestedCursor && boundary
+    ? { direction: requestedCursor.direction, boundary }
+    : null;
+  let rows = await fetchPartnerBrandSiteRows(partnerId, eligibleSlugs, activeCursor, pageSize);
+  if (activeCursor && rows.length === 0) {
+    activeCursor = null;
+    rows = await fetchPartnerBrandSiteRows(partnerId, eligibleSlugs, null, pageSize);
+  }
+  return assemblePartnerBrandSitesPage(rows, activeCursor, pageSize);
+}
+
+export default async function PartnerBrandPage({ searchParams }: PartnerBrandPageProps) {
   const partner = await requirePartner();
+  const { sitePageSize } = partnerBrandRuntimeConfig();
   const locale = await controlLocale();
   const t = await getTranslations({ locale, namespace: "control.brand" });
 
-  const brand = await db.partnerBrand.findUnique({ where: { partnerId: partner.id } });
+  const [brand, registry, query] = await Promise.all([
+    db.partnerBrand.findUnique({ where: { partnerId: partner.id } }),
+    loadTenantRegistry(),
+    searchParams,
+  ]);
 
   // Only consulted when there is no brand yet, and only for a NAME. Looked up by
   // `userId` — the simple link, which is the right one here: this page is about a
@@ -47,6 +110,17 @@ export default async function PartnerBrandPage() {
     select: { legalName: true, tradeName: true },
   });
   const prefill = brand ? null : prefillFromBillingIdentity(identity);
+  const eligibleSlugs = new Set(
+    registry.ok
+      ? registry.tenants
+          .filter((tenant) => tenant.status === "active" && tenant.managed === "scripts")
+          .map((tenant) => tenant.slug)
+      : [],
+  );
+  const sitePage = await loadPartnerBrandSitesPage(partner.id, eligibleSlugs, query, sitePageSize);
+  let siteMessage: string | null = null;
+  if (!registry.ok) siteMessage = t("sitesUnavailable");
+  else if (sitePage.sites.length === 0) siteMessage = t("noExistingSites");
 
   return (
     <div className="grid gap-8">
@@ -65,6 +139,38 @@ export default async function PartnerBrandPage() {
           legalName={identity?.legalName}
           hasTradeName={Boolean(identity?.tradeName?.trim())}
         />
+      </section>
+
+      <section className="hand-drawn-border bg-card p-6 grid gap-4">
+        <div>
+          <h2 className="font-hand text-3xl font-bold">{t("existingSitesTitle")}</h2>
+          <p className="mt-2 font-label text-sm text-muted-foreground">{t("existingSitesIntro")}</p>
+        </div>
+        {siteMessage ? (
+          <p className="font-label text-sm text-muted-foreground">{siteMessage}</p>
+        ) : (
+          <ul className="grid gap-4">
+            {sitePage.sites.map((client) => (
+              <li key={client.id} className="flex flex-wrap items-center justify-between gap-4 rounded-craft border-2 border-border p-4">
+                <div className="grid gap-1">
+                  <span className="font-label font-bold">{client.restaurantName}</span>
+                  <code className="font-mono text-xs text-muted-foreground">{client.tenantSlug}</code>
+                </div>
+                <PartnerBrandApplyForm clientId={client.id} />
+              </li>
+            ))}
+          </ul>
+        )}
+        {sitePage.sites.length > 0 && (sitePage.previousHref || sitePage.nextHref) && (
+          <nav aria-label={t("existingSitesTitle")} className="flex justify-between gap-4">
+            {sitePage.previousHref ? (
+              <Link href={sitePage.previousHref} className="font-label text-sm underline">{t("previousSites")}</Link>
+            ) : <span />}
+            {sitePage.nextHref && (
+              <Link href={sitePage.nextHref} className="font-label text-sm underline">{t("nextSites")}</Link>
+            )}
+          </nav>
+        )}
       </section>
     </div>
   );

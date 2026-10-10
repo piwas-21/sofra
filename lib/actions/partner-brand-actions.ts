@@ -3,12 +3,10 @@
 // A partner records the public brand their clients' guests may be shown
 // (SOFRA-PARTNER-PLAN §11).
 //
-// This slice STORES and EDITS. It publishes nothing: no tenant site reads
-// `PartnerBrand`, and `publishToTenants` is an intent flag whose only future
-// reader is `renderableBrand()` (§11e — the owner gate). The write path is built
-// now so that the day publishing is switched on, the details it publishes are
-// ones the partner typed knowing they were public — rather than the legal record,
-// which is a person's own name and home address for a sole trader.
+// This action STORES and EDITS the partner's opt-in and public details. New tenant
+// proposals and the separate existing-site apply action both pass through
+// `renderableBrand()` before a name or HTTPS URL reaches the registry. Billing
+// contacts and legal identity never cross that projection.
 
 import { revalidatePath } from "next/cache";
 import { requirePartner } from "@/lib/rbac";

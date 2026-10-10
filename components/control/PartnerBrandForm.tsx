@@ -48,12 +48,8 @@ export default function PartnerBrandForm({
     {},
   );
 
-  // Watched, so the partner is told BEFORE they save rather than after — and the
-  // same predicate the publish choke point uses (lib/partner-brand.ts), so the UI
-  // cannot promise something `renderableBrand` would then refuse. Saving is still
-  // allowed: it is their record, and refusing the write would leave them with no way
-  // to record their own name. What is refused is PUBLISHING it, and the note says so
-  // rather than the form accepting it silently and dropping it later (D-B1a).
+  // Watched, so the partner is told before saving when the value is the legal name.
+  // The same server-side projection refuses it at apply time (D-B1a).
   const [displayName, setDisplayName] = useState(defaults?.displayName ?? "");
   const echoesLegalName = isLegalNameEcho(displayName, legalName);
 
@@ -105,26 +101,19 @@ export default function PartnerBrandForm({
       {field("city", { maxLength: 120 })}
       {field("countryCode", { maxLength: 2 })}
 
-      {/* DISABLED on purpose, and the note says why. Nothing consumes
-          `publishToTenants` yet (§11e is an open owner decision), and a switch
-          that a partner can flip while nothing changes is a lie told to the one
-          person entitled to decide this. The column, the action and
-          `renderableBrand()` are all here, so enabling it later is this one
-          attribute. A disabled checkbox is not submitted, which the action already
-          reads as false. */}
+      {/* This is explicit opt-in for future guest-facing attribution. Existing
+          sites still require the separate reviewable apply action below. */}
       <fieldset className="sm:col-span-2 hand-drawn-border bg-card p-4 grid gap-2">
         <label className="flex items-start gap-3 font-label">
           <input
             type="checkbox"
             name="publishToTenants"
-            disabled
             defaultChecked={defaults?.publishToTenants ?? false}
             className="mt-1"
           />
           <span>{t("publishLabel")}</span>
         </label>
         <p className="font-label text-sm text-muted-foreground">{t("publishMeaning")}</p>
-        <p className="font-label text-sm text-craft-error-text">{t("publishUnavailable")}</p>
       </fieldset>
 
       <div className="sm:col-span-2 flex flex-wrap items-center gap-4">
@@ -133,7 +122,7 @@ export default function PartnerBrandForm({
         </button>
         {state.ok && (
           <span className="font-label text-craft-success-text dark:text-craft-success">
-            {t("saved")}
+            {t("savedApply")}
           </span>
         )}
         <ActionError code={state.error} />

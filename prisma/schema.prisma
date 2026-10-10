@@ -400,11 +400,9 @@ model PartnerDomain {
 // carries `notes`, which are never rendered to the partner — a founder-facing
 // row is the wrong home for a field whose audience is the public.
 //
-// `publishToTenants` defaults to FALSE and **NOTHING CONSUMES IT YET.** No tenant
-// site reads this table; the publishing half is gated on an owner decision about
-// what a restaurant's guests may be shown about a third party. The column exists
-// so the partner's intent is recorded rather than inferred later, and the single
-// reader that will ever exist is `renderableBrand()`.
+// `publishToTenants` defaults to FALSE. A partner's opt-in is projected through
+// `renderableBrand()` and reaches a tenant only through a reviewable registry
+// proposal; applying it to an existing tenant also requires re-provisioning.
 model PartnerBrand {
   partnerId String @id
   partner   User   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
